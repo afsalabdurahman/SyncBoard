@@ -1,0 +1,68 @@
+import { NextFunction, Request, Response } from "express";
+import {
+  RegisterUseCase,
+  RegisterInput,
+} from "../../../application/use-cases/auth/RegisterUsecase";
+import {LoginUsecase} from "../../../application/use-cases/auth/LoginUsecase"
+import { injectable, inject } from "tsyringe";
+import { HttpStatusCode } from "../../../common/errorCodes";
+import { ResponseMessages } from "../../../common/erroResponse";
+import { NotFoundError, ValidationError } from "../../../utils/errors";
+@injectable()
+export class AuthController {
+  constructor(
+    @inject("RegisterUseCase") private registerUseCase: RegisterUseCase,
+    @inject ('LoginUseCase') private loginUsecase :LoginUsecase
+  ) {}
+
+  async register(req: Request, res: Response , next:NextFunction): Promise<void> {
+    try {
+      const input: RegisterInput = req.body;
+      if (
+        !input.email ||
+        !input.email.includes("@") ||
+        !input.password ||
+        input.password.length < 6 ||
+        !input.name
+      ) {
+        throw new ValidationError("Invalid user name or password");
+      }
+      const { user, token, refreshToken } =
+        await this.registerUseCase.execute(input);
+      console.log(user, "userss");
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 15 * 60 * 1000, //  15mints
+      });
+      res.cookie("RefreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+      });
+      res.status(201).json({ user: user, token, refreshToken });
+    } catch (error) {
+     next(error)
+    }
+  }
+  async login(req: Request, res: Response,next:NextFunction): Promise<void> {
+    console.log(req)
+    let { email, password } = req.body;
+    console.log(email,password,"pasw+email")
+    const isValid = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{5,}$/;
+    try {
+      if (!email || !password || !isValid.test(password)) {
+        throw new ValidationError("Invalid user name or password");
+      }
+      let { user, token, refreshToken }: any = await this.loginUsecase.loginUser(
+        email,
+        password
+      );
+      res.status(HttpStatusCode.OK).json({ user, token, refreshToken });
+    } catch (error) {
+      next(error)
+    }
+  }
+}
