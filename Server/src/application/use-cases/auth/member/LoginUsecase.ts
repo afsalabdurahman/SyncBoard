@@ -1,10 +1,10 @@
 import { injectable, inject } from "tsyringe";
-import { User } from "../../../domain/entities/User";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
-import { IAuthService } from "../../../domain/interfaces/services/IAuthService";
-import { ResponseMessages } from "../../../common/erroResponse";
-import { HttpStatusCode } from "../../../common/errorCodes";
-import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { User } from "../../../../domain/entities/User";
+import { IUserRepository } from "../../../../domain/interfaces/repositories/IUserRepository";
+import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
+import { ResponseMessages } from "../../../../common/erroResponse";
+import { HttpStatusCode } from "../../../../common/errorCodes";
+import { NotFoundError, ValidationError } from "../../../../utils/errors";
 
 @injectable()
 export class LoginUsecase {
@@ -14,17 +14,17 @@ export class LoginUsecase {
   ) {}
 
   async loginUser(email: string, password: string): Promise<any> {
-    console.log(email,password,"usecases")
+    console.log(email, password, "usecases");
     let user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    console.log(user.password)
+    console.log(user.password);
     let isTrue = await this.authService.comparePassword(
       password,
       user.password
     );
-    console.log(isTrue,"####")
+    console.log(isTrue, "####");
     if (!isTrue) {
       throw new ValidationError("Password not match");
     }
@@ -40,6 +40,6 @@ export class LoginUsecase {
       email: user.email!,
       role: user.role!,
     });
-    return {user,token,refreshToken}
+    return { user, token, refreshToken };
   }
 }

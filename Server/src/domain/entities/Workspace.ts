@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import { ObjectId,Types } from "mongoose";
 
 interface Member {
   userId: string;
@@ -12,6 +12,7 @@ export class Workspace {
     public ownerId: string,
     public members: Member[],
     // optional
-    public createdAt: Date = new Date()
+    public createdAt: Date = new Date(),
+    public id?:string
   ) {}
 }

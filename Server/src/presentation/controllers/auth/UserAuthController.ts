@@ -2,20 +2,28 @@ import { NextFunction, Request, Response } from "express";
 import {
   RegisterUseCase,
   RegisterInput,
-} from "../../../application/use-cases/auth/RegisterUsecase";
-import {LoginUsecase} from "../../../application/use-cases/auth/LoginUsecase"
+} from "../../../application/use-cases/auth/admin/RegisterUsecase";
+import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUsecase";
 import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
 @injectable()
 export class AuthController {
   constructor(
     @inject("RegisterUseCase") private registerUseCase: RegisterUseCase,
-    @inject ('LoginUseCase') private loginUsecase :LoginUsecase
+    @inject("LoginUseCase") private loginUsecase: LoginUsecase,
+    @inject("Workspaceuse")
+    private CreateWorkspaceUsecases: CreateWorkspaceUsecases
+    // @inject('')
   ) {}
 
-  async register(req: Request, res: Response , next:NextFunction): Promise<void> {
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const input: RegisterInput = req.body;
       if (
@@ -44,25 +52,31 @@ export class AuthController {
       });
       res.status(201).json({ user: user, token, refreshToken });
     } catch (error) {
-     next(error)
+      next(error);
     }
   }
-  async login(req: Request, res: Response,next:NextFunction): Promise<void> {
-    console.log(req)
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    console.log(req);
     let { email, password } = req.body;
-    console.log(email,password,"pasw+email")
+    console.log(email, password, "pasw+email");
     const isValid = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{5,}$/;
     try {
       if (!email || !password || !isValid.test(password)) {
         throw new ValidationError("Invalid user name or password");
       }
-      let { user, token, refreshToken }: any = await this.loginUsecase.loginUser(
-        email,
-        password
+      let { user, token, refreshToken }: any =
+        await this.loginUsecase.loginUser(email, password);
+      console.log(user.workspace[0].workspaceId, "usererrrrrrr0000");
+
+      let workspaceData: any = await this.CreateWorkspaceUsecases.findWorkspace(
+        user.workspace[0].workspaceId
       );
-      res.status(HttpStatusCode.OK).json({ user, token, refreshToken });
+      console.log(workspaceData, "workspcedss55555555");
+      res
+        .status(HttpStatusCode.OK)
+        .json({ workspaceData, user, token, refreshToken });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }

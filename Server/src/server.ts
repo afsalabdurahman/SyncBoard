@@ -8,6 +8,7 @@ import { createServer } from "http";
 import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
+import memberRoutes from "./presentation/routes/memberRoute"
 import { Server } from "socket.io";
 import { initSocketServer } from "./domain/interfaces/services/websocket.service.impl";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
@@ -56,6 +57,6 @@ serverStart();
 // app.use("/", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/workspace", workspaceRoutes);
-// app.use("api/member",)
+app.use("/api/member",memberRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);

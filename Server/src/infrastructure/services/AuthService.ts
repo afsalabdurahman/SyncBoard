@@ -1,9 +1,12 @@
 import {IAuthService} from "../../domain/interfaces/services/IAuthService"
 import { injectable } from 'tsyringe';
 import * as bcrypt from 'bcrypt';
+import { envConfig } from "../config/env.config";
 import * as jwt from 'jsonwebtoken';
 @injectable()
 export class AuthService implements IAuthService {
+ private ACCESS_TOKEN_SECRET=envConfig.JWT_SECRET
+
  async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     return bcrypt.hash(password, saltRounds);
@@ -26,5 +29,12 @@ export class AuthService implements IAuthService {
       "mysecret",
       { expiresIn: "1d" }
     );
+  }
+  //hide
+  verifyAccessToken(token: string): { userId: string; role: string; } {
+     return jwt.verify(token, this.ACCESS_TOKEN_SECRET) as {
+      userId: string;
+      role: string;
+    };
   }
 }

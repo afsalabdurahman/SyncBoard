@@ -3,14 +3,17 @@ import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepos
 import { User } from "../../domain/entities/User";
 // import { DatabaseConfig } from "../config/DatabaseConfig";
 import { injectable, inject } from "tsyringe";
-import { Types, ObjectId } from "mongoose";
-
+import { Types, ObjectId, Date } from "mongoose";
+import {ConflictError} from "../../utils/errors";
+import { HttpStatusCode } from "../../common/errorCodes";
+import mongoose from "mongoose";
+import {WorkspaceMembership} from "../../domain/entities/User"
 @injectable()
 export class UserMongooseRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     try {
       const document = await UserModel.findOne({ email }).exec();
-      console.log(document, "check exist or not ");
+      console.log(document,"documenss")
       if (!document) return null;
       return new User(
         document.email,
@@ -18,7 +21,14 @@ export class UserMongooseRepository implements IUserRepository {
         document.name,
         document.role as "Member" | "Admin" | "SuperAdmin",
         document.createdAt,
-        document.updatedAt
+        document.updatedAt,
+        (document._id as Types.ObjectId).toString(),
+        document.workspace as WorkspaceMembership[],
+        document.title,
+        document.location,
+        document.imageUrl,
+        document.about,
+        document.phone
         // document.imageUrl
       );
     } catch (error) {
@@ -26,22 +36,29 @@ export class UserMongooseRepository implements IUserRepository {
       throw new Error("Failed to find user");
     }
   }
-
+async findById(id: string): Promise<|any> {
+  let user =await UserModel.findById(id)
+  return user
+}
   async create(entity: User): Promise<User | any> {
     try {
+      const isAdmin =entity.role=="Admin"?true:false
       const document = new UserModel({
         email: entity.email,
         password: entity.password,
         name: entity.name,
         role: entity.role,
-       
+        title:entity.title||null,
+        isAdmin:isAdmin,
+      
+
       });
       // Ensure mongoose connection is open before saving
       if (UserModel.db.readyState !== 1) {
         throw new Error("Database connection is not open");
       }
       const savedDocument = await document.save();
-      console.log(savedDocument, "dsaved doc");
+      
       return new User(
         savedDocument.email,
         savedDocument.password,
@@ -49,7 +66,16 @@ export class UserMongooseRepository implements IUserRepository {
         savedDocument.role as "Member" | "Admin" | "SuperAdmin",
         savedDocument.createdAt,
         savedDocument.updatedAt,
-       (savedDocument._id as Types.ObjectId).toString()
+        (savedDocument._id as Types.ObjectId).toString(),
+        undefined,
+        savedDocument.title,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        savedDocument.isAdmin,
+        undefined,
+        savedDocument.isBlock
         // savedDocument._id.toString()
         // savedDocument.profileImage
       );
@@ -57,5 +83,77 @@ export class UserMongooseRepository implements IUserRepository {
       console.error("Error creating user:", error);
       throw new Error("Failed to create user");
     }
+  }
+  async addToWorkspace(
+    userId: any,
+    workspaceId: any,
+    role: string,
+    joinDate?: Date
+  ): Promise<any> {
+   
+  
+    let data = { workspaceId, role, joinDate: new Date() };
+console.log(data,"from insertion +++")
+    try {
+      let updatedModel = await UserModel.updateOne(
+        { _id: userId },
+        { $push: { workspace: data } }
+      );
+    return updatedModel
+    } catch (error) {
+      console.log(error, "err");
+    }
+  }
+  async updateUser(
+    id: any,
+    updateFieldname: string,
+    value: string
+  ): Promise<User | any> {
+    
+    const objectId: any = new mongoose.Types.ObjectId(id.toString());
+   
+   const updatedUser = await UserModel.findOneAndUpdate(
+  { _id: objectId },
+  { $set: { [updateFieldname]: value } },
+  { new: true, upsert: true }
+);
+    
+    return updatedUser;
+  }
+  // Update profile
+  async updateProfile( userId:string,merge: any): Promise<User | any> {
+   const objectId: any = new mongoose.Types.ObjectId(userId.toString());
+console.log(objectId,"objId fro@Repository")
+    let updated = await UserModel.updateOne(
+  {_id:objectId},
+  { $set: merge.profileData },
+  { 
+    upsert: true, 
+    new: true,          // Return the new document
+    runValidators: true // Apply schema validation
+  }
+);
+
+    if(!updated) throw new ConflictError("Database error")
+      console.log(updated,"mogodb updated")
+return updated
+  }
+ async changePassword(userId: string, newPassword: string): Promise<boolean> {
+const result = await UserModel.findByIdAndUpdate(
+  userId,
+  { $set: { password: newPassword } },
+  { new: true,
+     upsert: true, 
+   }
+);
+
+console.log(result,"result...")
+  return true
+  }
+ async findUsersInsameWorkspace(workspaceId: ObjectId): Promise<any> {
+
+const users = await UserModel.find({ "workspace.workspaceId": workspaceId });
+
+return users
   }
 }

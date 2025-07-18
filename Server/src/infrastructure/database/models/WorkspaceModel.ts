@@ -30,7 +30,7 @@ const MemberSchema: Schema = new Schema({
   email:{
       type: String,
     }
-}, { _id: false })
+}, )
 const WorkspaceSchema: Schema<IWorkspace> = new Schema<IWorkspace>({
 
   name: {
