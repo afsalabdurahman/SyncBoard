@@ -8,6 +8,7 @@ import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { NotFoundError, ValidationError } from "../../../utils/errors";
+import {setTokensInCookies} from "../../../utils/CookieUtile"
 import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
 @injectable()
 export class AuthController {
@@ -35,21 +36,10 @@ export class AuthController {
       ) {
         throw new ValidationError("Invalid user name or password");
       }
-      const { user, token, refreshToken } =
-        await this.registerUseCase.execute(input);
+      const { user, token, refreshToken } = await this.registerUseCase.execute(input);
       console.log(user, "userss");
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 15 * 60 * 1000, //  15mints
-      });
-      res.cookie("RefreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
-      });
+setTokensInCookies(res,token,refreshToken)
+      
       res.status(201).json({ user: user, token, refreshToken });
     } catch (error) {
       next(error);
@@ -64,14 +54,13 @@ export class AuthController {
       if (!email || !password || !isValid.test(password)) {
         throw new ValidationError("Invalid user name or password");
       }
-      let { user, token, refreshToken }: any =
-        await this.loginUsecase.loginUser(email, password);
-      console.log(user.workspace[0].workspaceId, "usererrrrrrr0000");
+      let { user, token, refreshToken }: any = await this.loginUsecase.loginUser(email, password);
+     
 
       let workspaceData: any = await this.CreateWorkspaceUsecases.findWorkspace(
         user.workspace[0].workspaceId
       );
-      console.log(workspaceData, "workspcedss55555555");
+  setTokensInCookies(res,token,refreshToken)
       res
         .status(HttpStatusCode.OK)
         .json({ workspaceData, user, token, refreshToken });

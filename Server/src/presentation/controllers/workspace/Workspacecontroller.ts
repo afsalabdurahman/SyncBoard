@@ -5,19 +5,19 @@ import { slugify } from "../../../utils/slug";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { CustomError, NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
+
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
-import { SentInvitaion } from "../../../application/use-cases/invitation/SentInvitaion";
-import { workerData } from "worker_threads";
-import { ObjectId, Types } from "mongoose";
-import {IWokspaceMember} from "../../../application/repositories/IWorkspaceMembers"
+import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
+import { IWokspaceMember } from "../../../application/repositories/IWorkspaceMembers";
+
 @injectable()
 export class WorkspaceController {
   constructor(
     @inject("WorkspaceuseCases")
     private createWorkspceUsecases: CreateWorkspaceUsecases,
     @inject("UserRepository") private userRepository: IUserRepository,
-    @inject(SentInvitaion) private sentInvitaion: SentInvitaion,
-    @inject ("IWokspaceMember") private IworkspaceUsecase:IWokspaceMember
+    @inject("SentInvitaion") private sentInvitaionUsecase: ISentInvitaion,
+    @inject("IWokspaceMember") private IworkspaceUsecase: IWokspaceMember
   ) {}
 
   async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -62,33 +62,36 @@ export class WorkspaceController {
       next(error);
     }
   }
-  async inviteMembers(req: Request, res: Response): Promise<void> {
+  async inviteMembers(req: Request, res: Response,next:NextFunction): Promise<void> {
+      
     console.log(req.body, "sent email");
-    // let email = req.body.emails[0].email;
-    let invitationLink = req.body.invitationLink;
-    console.log(invitationLink);
-    let emails = req.body.emails;
-
+  
+  const {emails,invitationLink}=req.body
     try {
-      await Promise.all(
-        emails.map((singleEmail: string) =>
-          this.sentInvitaion.Send(singleEmail, invitationLink)
-        )
-      );
+     const isSend =await this.sentInvitaionUsecase.send(emails,invitationLink)
+     if (isSend) res.status(HttpStatusCode.OK).json(ResponseMessages.INVITAION_SEND);
+      
     } catch (error) {
-      console.log(error, "controller");
+     next(error)
     }
 
-    res.status(200).json("done");
+   
   }
   async getAllMembersData(
     req: Request,
     res: Response,
-    next: NextFunction): Promise<void> {
+    next: NextFunction
+  ): Promise<void> {
     let slug = req.params.workspaceslug;
-    console.log(slug,"sluggg@@@@@@@@@")
-    let workspaceData=await this.IworkspaceUsecase.getWorkspceDate(slug)
-    res.status(200).json(workspaceData)
-    
+try {
+      let workspaceData = await this.IworkspaceUsecase.getWorkspceDate(slug);
+      console.log(workspaceData,"workspcedata")
+      if(!workspaceData) throw new NotFoundError("Workspace not found")
+       res.status(HttpStatusCode.OK).json(workspaceData);
+} catch (error) {
+  next(error)
+}
+
+   
   }
 }

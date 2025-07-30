@@ -1,4 +1,6 @@
 export const ResponseMessages = {
+  DELETE:'Deletion completed',
+  INVITAION_SEND : 'Send invitaion',
   SUCCESS: 'Successfully Updated',
   CREATED: 'Resource created successfully',
   NO_CONTENT: 'No content to return',
@@ -19,7 +21,5 @@ export const ResponseMessages = {
   LOGGED_IN: 'Logged in successfully',
   LOGGED_OUT: 'Logged out successfully',
   PASSWORD_RESET: 'Password reset successfully',
-  PLAN_APPROVED: 'Plan approved',
-  PLAN_REJECTED: 'Plan rejected',
-  PLAN_DELETED: 'Plan deleted successfully',
+  ATTACHEMNT_REMOVE:"Attachment remove successfully "
 };

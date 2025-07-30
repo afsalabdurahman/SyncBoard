@@ -9,6 +9,8 @@ import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
 import memberRoutes from "./presentation/routes/memberRoute"
+import projectRoutes from "./presentation/routes/projectRoutes"
+import taskRoutes from "./presentation/routes/taskRoutes"
 import { Server } from "socket.io";
 import { initSocketServer } from "./domain/interfaces/services/websocket.service.impl";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
@@ -42,7 +44,7 @@ app.use(
 );
 app.use(express.json());
 
-app.use(errorMiddleware);
+
 
 initSocketServer(io);
 
@@ -58,5 +60,8 @@ serverStart();
 app.use("/api/auth", authRoutes);
 app.use("/api/workspace", workspaceRoutes);
 app.use("/api/member",memberRoutes)
+app.use("/api/project",projectRoutes)
+app.use("/api/task",taskRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);
+app.use(errorMiddleware);

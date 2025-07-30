@@ -23,7 +23,7 @@ export class MemberController {
   ): Promise<void> {
     try {
       let userId = req.params.id;
-      console.log(userId, "userId from @controler", req.params, req.body);
+      console.log(userId, req.params, "userId from @controler", req.params, req.body,"$$$$$$$$$$");
       if (!userId || !req.body) {
         throw new NotFoundError("user is not found");
       }

@@ -4,7 +4,7 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { HttpStatusCode } from "../../../../common/errorCodes";
-import { NotFoundError, ValidationError } from "../../../../utils/errors";
+import { CustomError, ForbiddenError, NotFoundError, ValidationError } from "../../../../utils/errors";
 
 @injectable()
 export class LoginUsecase {
@@ -15,11 +15,13 @@ export class LoginUsecase {
 
   async loginUser(email: string, password: string): Promise<any> {
     console.log(email, password, "usecases");
-    let user = await this.userRepository.findByEmail(email);
+    let user:User = await this.userRepository.findByEmail(email);
+    console.log(user,"userDatafrom usecses")
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    console.log(user.password);
+    if(user.isBlock) throw new ForbiddenError("User is blocked")
+ if(user.isDelete) throw new ForbiddenError("User is not found")
     let isTrue = await this.authService.comparePassword(
       password,
       user.password

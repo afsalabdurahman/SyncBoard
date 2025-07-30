@@ -9,8 +9,15 @@ export class GetUserUseCase {
   ) {}
 
   async execute(id: string): Promise<User | null> {
-    const Member = await this.userRepository.findById(id);
-    if (Member) return Member;
+    const userDetails = await this.userRepository.findById(id);
+    if (userDetails.role=="Member")
+      return userDetails;
+    else if(userDetails.role=="Admin"){
+      return userDetails 
+    }
+    else if(userDetails.role=="SuperAdmin"){
+      return userDetails
+    }
     return null;
   }
 }

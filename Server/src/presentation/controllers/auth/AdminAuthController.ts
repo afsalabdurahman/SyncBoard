@@ -6,7 +6,7 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 
 @injectable()
 export class AdminAuthController {
-  constructor(@inject("ILoginUsesCase") private IloginUseCase: ILoginUseCase) {}
+  constructor(@inject("ILoginUsesCase") private loginUseCase: ILoginUseCase) {}
 
   async LoginUsesCase(
     req: Request,
@@ -16,7 +16,7 @@ export class AdminAuthController {
     console.log(req.body, "bodyyyyy");
     let { email, password } = req.body;
     try {
-      let { user, workspace }: any = await this.IloginUseCase.execute(
+      let { user, workspace }: any = await this.loginUseCase.execute(
         email,
         password
       );

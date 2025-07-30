@@ -25,7 +25,8 @@ export class OTPRepository implements IOtpRepository {
     return Promise.resolve();
   }
   async findByEmail(email: string): Promise<OTP | any> {
-    let otp = await OTPModel.findOne({ email: email });
+   let otp = await OTPModel.findOne({ email }).sort({ createdAt: -1 });
+
 
     return otp;
   }

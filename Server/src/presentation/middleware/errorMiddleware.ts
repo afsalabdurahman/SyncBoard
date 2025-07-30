@@ -10,6 +10,7 @@ export const errorMiddleware = (
   next: NextFunction
 ): void => {
   if (err instanceof CustomError) {
+    console.log(err,"midleware")
     res.status(err.statusCode).json({
       success: false,
       error: err.name,

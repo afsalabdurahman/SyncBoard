@@ -1,43 +1,60 @@
-class Project {
-  id?: string;
+import { ObjectId } from "mongoose";
+
+export type PriorityTypes = "Low" | "Medium" | "High";
+export type StatusTypes = "Planning" | "In Progress" | "Completed" | "On Hold";
+
+export class Project {
+  id?: ObjectId | string;
   name?: string;
   description?: string;
-  assignedUsers?: [string];
+  assignedUsers?: string[];
   deadline?: Date;
-  status?: string;
-  priority?: string;
+  status?: StatusTypes;
+  priority?: PriorityTypes;
   clientName?: string;
   projectAdminId?: string;
-  attachedUrl?: [string];
+  attachedUrl?: string[];
   createdAt?: Date;
-  updateAt?: Date;
+  updatedAt?: Date; // Corrected typo from `updateAt` to `updatedAt`
 
-  constructor(
-    id?: string,
-    name?: string,
-    description?: string,
-    assignedUsers?: [string],
-    deadline?: Date,
-    status?: string,
-    priority?: string,
-    clientName?: string,
-    projectAdminId?: string,
-    attachedUrl: [string],
-    createdAt: Date,
-    updateAt: Date
-  ) {
-    this.id=id;
-    this.assignedUsers=assignedUsers;
-    this.attachedUrl=attachedUrl;
-    this.clientName=clientName;
-    this.createdAt=createdAt;
-    this.deadline=deadline;
-    this.description=description;
-    this.name=name;
-    this.priority=priority;
-    this.projectAdminId=projectAdminId;
-    this.status=status;
-    this.updateAt=updateAt;
+  constructor({
+    id,
+    name,
+    description,
+    assignedUsers,
+    deadline,
+    status,
+    priority,
+    clientName,
+    projectAdminId,
+    attachedUrl,
+    createdAt,
+    updatedAt,
+  }: {
+    id?: ObjectId | string;
+    name?: string;
+    description?: string;
+    assignedUsers?: string[];
+    deadline?: Date;
+    status?: StatusTypes;
+    priority?: PriorityTypes;
+    clientName?: string;
+    projectAdminId?: string;
+    attachedUrl?: string[];
+    createdAt?: Date;
+    updatedAt?: Date;
+  }) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.assignedUsers = assignedUsers;
+    this.deadline = deadline;
+    this.status = status;
+    this.priority = priority;
+    this.clientName = clientName;
+    this.projectAdminId = projectAdminId;
+    this.attachedUrl = attachedUrl;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
-  
 }

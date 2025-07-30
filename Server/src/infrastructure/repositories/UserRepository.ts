@@ -28,7 +28,12 @@ export class UserMongooseRepository implements IUserRepository {
         document.location,
         document.imageUrl,
         document.about,
-        document.phone
+        document.phone,
+        document.isAdmin,
+        document.isSuperAdmin,
+        document.isBlock,
+        document.isDelete,
+   
         // document.imageUrl
       );
     } catch (error) {
@@ -75,7 +80,8 @@ async findById(id: string): Promise<|any> {
         undefined,
         savedDocument.isAdmin,
         undefined,
-        savedDocument.isBlock
+        savedDocument.isBlock,
+        savedDocument.isDelete,
         // savedDocument._id.toString()
         // savedDocument.profileImage
       );

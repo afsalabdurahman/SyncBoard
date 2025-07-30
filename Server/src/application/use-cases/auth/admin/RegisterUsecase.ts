@@ -23,6 +23,7 @@ export class RegisterUseCase {
     // Manual validation
 
     const existingUser = await this.userRepository.findByEmail(input.email);
+    console.log(existingUser, "exist");
     if (existingUser) throw new NotFoundError("user already have an account");
 
     const validRoles = ["Member", "Admin", "SuperAdmin"];
@@ -45,9 +46,10 @@ export class RegisterUseCase {
     // Save user to database
 
     const savedUser = await this.userRepository.create(user);
+    console.log(savedUser, "saved user");
     if (!savedUser) throw new InternalServerError("Failed mongodb");
     const token = this.authService.generateToken({
-      id: savedUser._id!,
+      id: savedUser._id,
       email: savedUser.email!,
       role: savedUser.role!,
     });

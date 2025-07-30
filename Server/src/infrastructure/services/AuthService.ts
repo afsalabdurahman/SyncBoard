@@ -6,6 +6,7 @@ import * as jwt from 'jsonwebtoken';
 @injectable()
 export class AuthService implements IAuthService {
  private ACCESS_TOKEN_SECRET=envConfig.JWT_SECRET
+ private REFRESH_TOKEN_SECRET=envConfig.JWT_SECRET
 
  async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
@@ -17,22 +18,30 @@ export class AuthService implements IAuthService {
 };
 
  generateToken(user: { id:string, email: string; role: string }): string {
+  console.log(user,"user@from token")
     return jwt.sign(
-      { email: user.email, role: user.role },
-      "mysecret",
-      { expiresIn: "10m" }
+
+      {userId:user.id, email: user.email, role: user.role },
+       this.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
     );
   }
   generateRefreshToken(user: { id: string; email: string; role: string; }): string {
     return jwt.sign(
-      { email: user.email, role: user.role },
-      "mysecret",
+      { userId:user.id,email: user.email, role: user.role },
+      this.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
   }
   //hide
   verifyAccessToken(token: string): { userId: string; role: string; } {
      return jwt.verify(token, this.ACCESS_TOKEN_SECRET) as {
+      userId: string;
+      role: string;
+    };
+  }
+    verifyRefreshToken(token: string): { userId: string; role: string } {
+    return jwt.verify(token, this.REFRESH_TOKEN_SECRET) as {
       userId: string;
       role: string;
     };

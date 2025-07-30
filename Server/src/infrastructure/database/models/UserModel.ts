@@ -45,6 +45,7 @@ export interface IUser extends Document {
   isAdmin:boolean;
   isSuperAdmin:boolean;
   isBlock:boolean;
+  isDelete:boolean;
   
 }
 
@@ -68,7 +69,8 @@ const userSchema = new Schema<IUser>(
     imageUrl:{type:String},
     isAdmin:{type:Boolean,default:false},
     isSuperAdmin:{type:Boolean,default:false},
-    isBlock:{type:Boolean,default:false}
+    isBlock:{type:Boolean,default:false},
+    isDelete:{type:Boolean,default:false},
   },
   { timestamps: true }
 );

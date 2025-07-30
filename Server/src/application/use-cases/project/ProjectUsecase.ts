@@ -1,0 +1,40 @@
+import { ProjectRequstDTO } from "../../../presentation/dots/projectDTO/requestDTO";
+import { ProjectResponseDTO } from "../../../presentation/dots/projectDTO/resposnseDTO";
+import {IProjectUsecase} from "../../repositories/IProject";
+import { inject,injectable } from "tsyringe";
+import {IProjectRepository} from "../../../domain/interfaces/repositories/IProjectRepository"
+import { Project } from "../../../domain/entities/Project";
+import { NotFoundError } from "../../../utils/errors";
+
+@injectable()
+export class ProjectUsecase implements IProjectUsecase{
+constructor(@inject ("ProjectRepository")private projectRepository:IProjectRepository ){}
+
+async excute(dto: ProjectRequstDTO): Promise<Project> {
+const projectData=await this.projectRepository.create(dto)
+if(!projectData) throw new NotFoundError("Project not created")
+return projectData;
+}
+
+async getAllProjects(): Promise<Project> {
+   let allProjects= await this.projectRepository.getAllProjects()
+   if(!allProjects) throw new NotFoundError("Project is not found")
+   return allProjects
+}
+async removeAttachment(projectId: string, attachedUrl: string): Promise<void> {
+  await this.projectRepository.removeAttachment(projectId,attachedUrl)
+  
+}
+async update(projectId: string, ...args: Record<string, any>[]): Promise<boolean> {
+  console.log(projectId,"@usecase Project ID")
+  console.log(...args,"@usecaser ARG")
+   const merged = Object.assign({}, ...args);
+   console.log(merged,"@merge usecase");
+   let updateProject = await this.projectRepository.updateProject(projectId,merged)
+   console.log(updateProject,"@updatedProject");
+   return true
+}
+async deleteProject(projectId: string): Promise<void> {
+  await this.projectRepository.deleteProject(projectId)
+}
+}
