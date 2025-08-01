@@ -34,8 +34,10 @@ import {ProjectUsecase} from"../../../application/use-cases/project/ProjectUseca
 import {ProjectRepository} from"../../repositories/ProjectRepository"
 import {TaskRepository} from "../../repositories/TaskRepository"
 import {TaskUsecase} from "../../../application/use-cases/task/TaskUsecase"
-
-
+import { ChatUsecase } from "../../../application/use-cases/chat/ChatUsecase";
+import { ChatRepository } from "../../repositories/ChatRepository";
+container.register("ChatUseCase",{useClass:ChatUsecase})
+container.register("ChatRepository",{useClass:ChatRepository})
 container.register("TaskUsecase",{useClass:TaskUsecase})
 container.register("TaskRepository",{useClass:TaskRepository})
 container.register("ProjectUsecase",{useClass:ProjectUsecase})

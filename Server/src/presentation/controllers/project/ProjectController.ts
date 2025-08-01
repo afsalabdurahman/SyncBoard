@@ -21,6 +21,8 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
+
+      
       const dto = new ProjectRequstDTO(req.body.newProject);
       dto.toValidate();
 

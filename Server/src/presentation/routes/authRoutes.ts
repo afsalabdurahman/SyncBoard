@@ -9,12 +9,10 @@ import { sharedController } from "../controllers/auth/SharedController";
 import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";
 
-
 const authController = container.resolve(AuthController);
 const otpController = container.resolve(OTPController);
 const adminController = container.resolve(AdminAuthController);
 const sharedAuthController = container.resolve(sharedController);
-
 
 router.post("/user/register", (req, res, next) =>
   authController.register(req, res, next)
@@ -25,10 +23,10 @@ router.post("/user/login", (req, res, next) =>
   authController.login(req, res, next)
 );
 
- router.post("/admin/login", (req, res, next) =>
-   adminController.LoginUsesCase(req, res, next)
- );
-//router.post('/refresh-token', sharedAuthController.refreshToken.bind(sharedAuthController));
+router.post("/admin/login", (req, res, next) =>
+  adminController.LoginUsesCase(req, res, next)
+);
+
 router.post("/refresh-token", (req, res, next) =>
   sharedAuthController.generateNewToken(req, res, next)
 );

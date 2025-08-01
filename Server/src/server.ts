@@ -9,14 +9,14 @@ import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
 import memberRoutes from "./presentation/routes/memberRoute"
+import chatRoutes from "./presentation/routes/chatRoutes"
 import projectRoutes from "./presentation/routes/projectRoutes"
 import taskRoutes from "./presentation/routes/taskRoutes"
 import { Server } from "socket.io";
-import { initSocketServer } from "./domain/interfaces/services/websocket.service.impl";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
 import { CustomRequest } from "./presentation/types/CustomRequest";
 import { errorMiddleware } from "./presentation/middleware/errorMiddleware";
-
+import {initSocketServer} from"./infrastructure/services/SocketService"
 dotenv.config();
 const app = express();
 
@@ -62,6 +62,7 @@ app.use("/api/workspace", workspaceRoutes);
 app.use("/api/member",memberRoutes)
 app.use("/api/project",projectRoutes)
 app.use("/api/task",taskRoutes)
+app.use("/api/chat",chatRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);
 app.use(errorMiddleware);
