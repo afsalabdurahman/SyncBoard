@@ -4,10 +4,11 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { url } from "inspector";
-
+const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
+const VITE_TOKEN_API_URL =import.meta.env.VITE_TOKEN_API_URL
 // Create a base axios instance
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api/",
+  baseURL: API_BASE_URL,
   withCredentials: true,
   timeout: 10000,
 
@@ -20,7 +21,7 @@ const axiosInstance = axios.create({
 // Request interceptor for adding auth token, etc.
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -51,7 +52,9 @@ axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
 
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
     const data = error.response?.data as { message?: string; error?: string };
     const status = error.response?.status;
@@ -59,7 +62,7 @@ axiosInstance.interceptors.response.use(
     if (
       status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes('/api/auth/refresh-token')
+      !originalRequest.url?.includes("/api/auth/refresh-token")
       // !originalRequest.url?.includes('/api/auth/logout')
     ) {
       originalRequest._retry = true;
@@ -82,14 +85,14 @@ axiosInstance.interceptors.response.use(
 
       try {
         const refreshResponse = await axios.post(
-          'http://localhost:5000/api/auth/refresh-token',
+          VITE_TOKEN_API_URL,
           {},
           { withCredentials: true }
         );
 
         const newToken = refreshResponse.data?.accessToken;
 
-        localStorage.setItem('accessToken', newToken);
+        localStorage.setItem("accessToken", newToken);
         axiosInstance.defaults.headers.common.Authorization = `Bearer ${newToken}`;
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
@@ -100,8 +103,8 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.removeItem('accessToken');
-        window.location.href = '/login'; // Force logout
+        localStorage.removeItem("accessToken");
+        window.location.href = "/login"; // Force logout
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -109,20 +112,24 @@ axiosInstance.interceptors.response.use(
     }
 
     // Handle other errors
-    if (status === 403 && (data.message=="User is blocked"||data.message=="User is removed") && error.config.url !=="auth/user/login") {
-      console.log(error,"api error")
-      console.log(error.config.url,"url")
-    
-      window.location.href = '/login';
+    if (
+      status === 403 &&
+      (data.message == "User is blocked" ||
+        data.message == "User is removed") &&
+      error.config.url !== "auth/user/login"
+    ) {
+      console.log(error, "api error");
+      console.log(error.config.url, "url");
 
-           
-   //   window.location.href = '/login';
+      window.location.href = "/login";
+
+      //   window.location.href = '/login';
     } else if (status === 404) {
-      console.warn('404 Not Found:', error.config?.url);
+      console.warn("404 Not Found:", error.config?.url);
     } else if (status && status >= 500) {
-      console.error('Server Error:', status);
+      console.error("Server Error:", status);
     } else if (!error.response) {
-      console.error('Network error:', error.request);
+      console.error("Network error:", error.request);
     }
 
     return Promise.reject(error);
