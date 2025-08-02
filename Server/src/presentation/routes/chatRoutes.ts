@@ -9,6 +9,6 @@ const route=Router()
 const memberAuth=[authMiddelware(),roleMiddleware(["Member","Admin"])]
 const chatController=container.resolve(ChatController)
 route.get("/history",memberAuth,chatController.chatHistor.bind(chatController))
-
+route.get("/online",memberAuth,chatController.findOnlineStatus.bind(chatController))
 
 export default route

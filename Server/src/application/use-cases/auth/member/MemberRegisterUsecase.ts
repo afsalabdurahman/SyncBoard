@@ -53,6 +53,17 @@ export class MemberRegisterUsecase implements IMemberRegister {
 
     let createMember = await this.userRepository.create(user);
     if (!createMember) throw new InternalServerError("Member creation Failed");
+    const token = this.authService.generateToken({
+      id: createMember._id,
+      email: createMember.email!,
+      role: createMember.role!,
+    });
+     const refreshToken = this.authService.generateRefreshToken({
+      id: createMember._id!,
+      email: createMember.email!,
+      role: createMember.role!,
+    });
+    
     console.log(createMember,"member is created++");
     if (!this.workspaceRepository.findbySlug) {
       throw new NotFoundError("not found repo");
@@ -78,6 +89,6 @@ export class MemberRegisterUsecase implements IMemberRegister {
         title
       );
       console.log(insertToWorkspce,"worspce.pushmemners++++")
-    return {createMember,insertToWorkspce}
+    return {createMember,insertToWorkspce,token,refreshToken}
   }
 }

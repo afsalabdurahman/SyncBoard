@@ -5,7 +5,7 @@ import {TaskRequstDTO} from "../../../presentation/dots/taskDTO/requestDTO"
 import { NotFoundError } from "../../../utils/errors";
 import {ITaskRepository} from "../../../domain/interfaces/repositories/ITaskRepository"
 import { ITaskUseCase } from "../../repositories/ITask";
-
+import { io } from "../../../server";
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
 
@@ -15,6 +15,10 @@ async execute(taskEntiry: Task): Promise<Task> {
      console.log(taskEntiry,"from usecase@2")
      const taskData=await this.taskRepository.create(taskEntiry)
      if(!taskData) throw new NotFoundError("Project not created")
+      io.emit("new-task", {
+      name: taskData.name,
+      message: `🚀 New task "${taskData.name}" has been added!`,
+    });
     return taskData;
 }
 

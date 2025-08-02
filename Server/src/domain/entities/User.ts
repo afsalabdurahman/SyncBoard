@@ -26,6 +26,7 @@ export class User {
   isSuperAdmin?:boolean;
   isBlock?:boolean;
   isDelete?:boolean;
+  isOnline?:boolean;
 
   constructor(
     email: string,
@@ -45,6 +46,7 @@ export class User {
     isSuperAdmin?:boolean,
     isBlock?:boolean,
     isDelete?:boolean,
+    isOnline?:boolean
 
     // profileImage?: string
   ) {
@@ -65,6 +67,7 @@ export class User {
     this.isAdmin=isAdmin;
     this.isSuperAdmin=isSuperAdmin;
     this.isBlock=isBlock;
-    this.isDelete=isDelete
+    this.isDelete=isDelete;
+    this.isOnline=isOnline
   }
 }

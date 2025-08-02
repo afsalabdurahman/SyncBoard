@@ -20,8 +20,15 @@ await this.chatuseCase.sendMessage(message)
 }
 async chatHistor(req:Request,res:Response,next:NextFunction):Promise<void>{
 const historyData=await this.chatuseCase.history()
-console.log(historyData,"@controller history")
+
 res.status(HttpStatusCode.OK).json(historyData)
 }
+
+async findOnlineStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
+
+    const users=await this.chatuseCase.findUserSatatus()
+    res.status(HttpStatusCode.OK).json(users)
+}
+
 
 }

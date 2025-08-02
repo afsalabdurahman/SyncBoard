@@ -66,3 +66,4 @@ app.use("/api/chat",chatRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);
 app.use(errorMiddleware);
+export { io };

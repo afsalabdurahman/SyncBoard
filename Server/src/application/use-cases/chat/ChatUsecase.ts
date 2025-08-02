@@ -24,4 +24,9 @@ export class ChatUsecase implements IChatUsecase {
      const chats=await this.chatRepository.findAllChats() 
      return chats
    }
+  async findUserSatatus(): Promise<any> {
+     const users = await this.chatRepository.Onlinestatus()
+     return users
+   }
+
 }

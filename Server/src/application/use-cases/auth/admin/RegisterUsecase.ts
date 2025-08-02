@@ -11,7 +11,7 @@ export interface RegisterInput {
 }
 
 @injectable()
-export class RegisterUseCase {
+export class RegisterUseCase  {
   constructor(
     @inject("AuthService") private authService: IAuthService,
     @inject("UserRepository") private userRepository: IUserRepository

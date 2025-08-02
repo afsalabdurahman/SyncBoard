@@ -1,12 +1,12 @@
 import { Server } from "socket.io";
 // import { SendMessage } from "../../application/use-cases/Workapace/chat/SendMessage";
 // import { ChatRepositoryMongo } from "../../domain/repositories/ChatRepository";
-
+import { MemberController } from "../../presentation/controllers/member/MemberController";
 import { ChatController } from "../../presentation/controllers/chat/ChatController";
 import { container } from "tsyringe";
 import { AuthService } from "./AuthService";
 const chatController = container.resolve(ChatController);
-
+const memberController = container.resolve(MemberController);
 export const initSocketServer = (io: Server) => {
   io.on("connect", async (socket) => {
     console.log("✅ Socket connected:", socket.id);
@@ -14,6 +14,7 @@ export const initSocketServer = (io: Server) => {
     socket.on("UserId", async (userId) => {
       console.log(userId, "333");
       io.emit("userStatus", userId);
+      await memberController.changeOnlinestatus(userId);
     });
 
     socket.on("send-message", async (msgData) => {

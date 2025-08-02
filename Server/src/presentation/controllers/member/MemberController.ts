@@ -7,6 +7,7 @@ import { IUpdateProfileUsecases } from "../../../application/repositories/IUpdat
 import { NotFoundError, InternalServerError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
+import { setTokensInCookies } from "../../../utils/CookieUtile";
 @injectable()
 export class MemberController {
   constructor(
@@ -23,7 +24,7 @@ export class MemberController {
   ): Promise<void> {
     try {
       let userId = req.params.id;
-      console.log(userId, req.params, "userId from @controler", req.params, req.body,"$$$$$$$$$$");
+
       if (!userId || !req.body) {
         throw new NotFoundError("user is not found");
       }
@@ -69,17 +70,30 @@ export class MemberController {
     console.log(req.body, "invitaion from mener");
     let { name, email, password, workspaceSlug, title, role } = req.body;
     try {
-      let {createMember,insertToWorkspce}:any = await this.memberRegister.execute(
-        name,
-        email,
-        password,
-        workspaceSlug,
-        title,
-        role
-      );
-      res.status(HttpStatusCode.CREATED).json({user:createMember,workspace:insertToWorkspce})
+      let { createMember, insertToWorkspce, token, refreshToken }: any =
+        await this.memberRegister.execute(
+          name,
+          email,
+          password,
+          workspaceSlug,
+          title,
+          role
+        );
+
+      setTokensInCookies(res, token, refreshToken);
+      res
+        .status(HttpStatusCode.CREATED)
+        .json({ user: createMember, workspace: insertToWorkspce });
     } catch (error) {
       next(error);
+    }
+  }
+  async changeOnlinestatus(userId: string): Promise<void> {
+    try {
+      console.log(userId, "fromController");
+      await this.updateProfileUsecase.updateOnlineStatus(userId);
+    } catch (error) {
+      console.log(error, "errorcatch");
     }
   }
 }

@@ -10,13 +10,11 @@ export class GetUserUseCase {
 
   async execute(id: string): Promise<User | null> {
     const userDetails = await this.userRepository.findById(id);
-    if (userDetails.role=="Member")
+    if (userDetails.role == "Member") return userDetails;
+    else if (userDetails.role == "Admin") {
       return userDetails;
-    else if(userDetails.role=="Admin"){
-      return userDetails 
-    }
-    else if(userDetails.role=="SuperAdmin"){
-      return userDetails
+    } else if (userDetails.role == "SuperAdmin") {
+      return userDetails;
     }
     return null;
   }
