@@ -4,11 +4,13 @@ import { VerifyOtp } from "../../../application/use-cases/otp/VerifyOtpUsecases"
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
+import { IOTP } from "../../../application/repositories/IOTP";
+import { NotFoundError } from "../../../utils/errors";
 @injectable()
 export class OTPController {
   constructor(
-    @inject(OTPService) private otpService: OTPService,
-    @inject(VerifyOtp) private verifyOTPservice: VerifyOtp
+    @inject(OTPService) private otpService: IOTP,
+    @inject(VerifyOtp) private verifyOTPservice: IOTP
   ) {}
 
   async sendOTP(req: Request, res: Response): Promise<void> {
@@ -20,7 +22,7 @@ export class OTPController {
           .json({ message: ResponseMessages.NOT_FOUND + "email" });
         return;
       }
-
+if(!this.otpService.sendOTP) throw new NotFoundError("Notfound")
       const otp = await this.otpService.sendOTP(email);
 
       res
@@ -34,6 +36,7 @@ export class OTPController {
     let { email, otp } = req.body;
     console.log(req.body, "body");
     try {
+      if(!this.verifyOTPservice.verifyOTP) throw new NotFoundError("Not found")
       let isTrue = await this.verifyOTPservice.verifyOTP(email, otp);
       console.log(isTrue);
       if (isTrue) {

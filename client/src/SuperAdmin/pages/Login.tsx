@@ -12,6 +12,7 @@ let navigate=useNavigate()
     e.preventDefault();
     console.log("Logging in with:", { email, password });
 try {
+  navigate("/platform/admin")
   let response=await apiService.post("/super/login",{email,password})
   console.log(response,"res")
   if(response.status==200){

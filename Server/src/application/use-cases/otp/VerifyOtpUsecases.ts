@@ -8,8 +8,9 @@ import {
   NotFoundError,
   InternalServerError,
 } from "../../../utils/errors";
+import { IOTP } from "../../repositories/IOTP";
 @injectable()
-export class VerifyOtp {
+export class VerifyOtp implements IOTP {
   constructor(@inject("OTPRepository") private otpRespository: IOtpRepository) {}
 
   async verifyOTP(email: string, otp: string): Promise<boolean> {
