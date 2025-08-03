@@ -49,5 +49,5 @@ Watch the full walkthrough of the app on YouTube:
 1. **Clone the repository**
    ```bash
    git clone https://github.com/afsalabdurahman/SyncBoard
-   cd projectpilot
+
 
