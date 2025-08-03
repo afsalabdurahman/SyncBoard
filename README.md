@@ -51,5 +51,3 @@ Watch the full walkthrough of the app on YouTube:
    git clone https://github.com/afsalabdurahman/SyncBoard
    cd projectpilot
 
-   git clone https://github.com/your-username/projectpilot.git
-   cd projectpilot
