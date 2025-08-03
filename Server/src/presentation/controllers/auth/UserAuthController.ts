@@ -8,15 +8,19 @@ import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { NotFoundError, ValidationError } from "../../../utils/errors";
-import {setTokensInCookies} from "../../../utils/CookieUtile"
+import { setTokensInCookies } from "../../../utils/CookieUtile";
 import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
+import { IAuth } from "../../../application/repositories/iauth/IAuth";
+import { ILogin } from "../../../application/repositories/iauth/ILogin";
+import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
+
 @injectable()
 export class AuthController {
   constructor(
-    @inject("RegisterUseCase") private registerUseCase: RegisterUseCase,
-    @inject("LoginUseCase") private loginUsecase: LoginUsecase,
+    @inject("RegisterUseCase") private registerUseCase: IAuth,
+    @inject("LoginUseCase") private loginUsecase: ILogin,
     @inject("Workspaceuse")
-    private CreateWorkspaceUsecases: CreateWorkspaceUsecases
+    private CreateWorkspaceUsecases: IWorkspace
     // @inject('')
   ) {}
 
@@ -36,10 +40,11 @@ export class AuthController {
       ) {
         throw new ValidationError("Invalid user name or password");
       }
-      const { user, token, refreshToken } = await this.registerUseCase.execute(input);
+      const { user, token, refreshToken } =
+        await this.registerUseCase.execute(input);
       console.log(user, "userss");
-setTokensInCookies(res,token,refreshToken)
-      
+      setTokensInCookies(res, token, refreshToken);
+
       res.status(201).json({ user: user, token, refreshToken });
     } catch (error) {
       next(error);
@@ -54,13 +59,13 @@ setTokensInCookies(res,token,refreshToken)
       if (!email || !password || !isValid.test(password)) {
         throw new ValidationError("Invalid user name or password");
       }
-      let { user, token, refreshToken }: any = await this.loginUsecase.loginUser(email, password);
-     
+      let { user, token, refreshToken }: any =
+        await this.loginUsecase.loginUser(email, password);
 
       let workspaceData: any = await this.CreateWorkspaceUsecases.findWorkspace(
         user.workspace[0].workspaceId
       );
-  setTokensInCookies(res,token,refreshToken)
+      setTokensInCookies(res, token, refreshToken);
       res
         .status(HttpStatusCode.OK)
         .json({ workspaceData, user, token, refreshToken });

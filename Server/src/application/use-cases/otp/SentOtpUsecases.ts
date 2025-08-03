@@ -3,9 +3,10 @@ import { IEmailService } from "../../../domain/interfaces/services/IEmailService
 import { IOtpRepository } from "../../../domain/interfaces/repositories/IOtpRepository";
 import { OTPRepository } from "../../../infrastructure/repositories/OTPRepository";
 import { OTP } from "../../../domain/entities/Otp";
+import { IOTP } from "../../repositories/IOTP";
 
 @injectable()
-export class OTPService {
+export class OTPService implements IOTP{
   constructor(
     @inject("OTPRepository") private otpRepository: OTPRepository,
     @inject("IEmailService") private emailService: IEmailService

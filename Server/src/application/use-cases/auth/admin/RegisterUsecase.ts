@@ -3,6 +3,7 @@ import { User } from "../../../../domain/entities/User";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { injectable, inject } from "tsyringe";
 import { NotFoundError, InternalServerError } from "../../../../utils/errors";
+import { IAuth } from "../../../repositories/iauth/IAuth";
 export interface RegisterInput {
   email: string;
   password: string;
@@ -11,7 +12,7 @@ export interface RegisterInput {
 }
 
 @injectable()
-export class RegisterUseCase  {
+export class RegisterUseCase implements IAuth {
   constructor(
     @inject("AuthService") private authService: IAuthService,
     @inject("UserRepository") private userRepository: IUserRepository

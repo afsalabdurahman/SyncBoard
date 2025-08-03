@@ -4,10 +4,16 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { HttpStatusCode } from "../../../../common/errorCodes";
-import { CustomError, ForbiddenError, NotFoundError, ValidationError } from "../../../../utils/errors";
+import {
+  CustomError,
+  ForbiddenError,
+  NotFoundError,
+  ValidationError,
+} from "../../../../utils/errors";
+import { ILogin } from "../../../repositories/iauth/ILogin";
 
 @injectable()
-export class LoginUsecase {
+export class LoginUsecase implements ILogin {
   constructor(
     @inject("UserRepository") private userRepository: IUserRepository,
     @inject("authservice") private authService: IAuthService
@@ -15,13 +21,13 @@ export class LoginUsecase {
 
   async loginUser(email: string, password: string): Promise<any> {
     console.log(email, password, "usecases");
-    let user:User = await this.userRepository.findByEmail(email);
-    console.log(user,"userDatafrom usecses")
+    let user: User = await this.userRepository.findByEmail(email);
+    console.log(user, "userDatafrom usecses");
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    if(user.isBlock) throw new ForbiddenError("User is blocked")
- if(user.isDelete) throw new ForbiddenError("User is not found")
+    if (user.isBlock) throw new ForbiddenError("User is blocked");
+    if (user.isDelete) throw new ForbiddenError("User is not found");
     let isTrue = await this.authService.comparePassword(
       password,
       user.password
