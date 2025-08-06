@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IWorkspaceRepository";
 import { Workspace } from "../../../domain/entities/Workspace";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { ConflictError } from "../../../utils/errors";
+import { ConflictError, InternalServerError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { Types } from "mongoose";
@@ -41,5 +41,11 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     let data = await this.workspaceRepository.findByObjectId(id);
     console.log(data, "workspceusecse");
     return data;
+  }
+ async updateWorkspace(id: Types.ObjectId,logId:Types.ObjectId): Promise<boolean> {
+    const result=this.workspaceRepository.addlogId(id,logId)
+    if(!result) throw new InternalServerError("Something went to wrong")
+      return true 
+
   }
 }

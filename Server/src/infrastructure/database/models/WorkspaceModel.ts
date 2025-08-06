@@ -12,6 +12,7 @@ export interface IWorkspace extends Document {
   ownerId: string;
   createdAt: Date;
   members: IMember[];
+  logId:Schema.Types.ObjectId
 }
 const MemberSchema: Schema = new Schema({
   userId: {
@@ -60,7 +61,9 @@ type:String
   members: {
     type: [MemberSchema],
     default: [],
-  }
+  },
+  logId:{type:Schema.Types.ObjectId}
+
 });
 
 export const WorkspaceModel = mongoose.model<IWorkspace>('Workspace', WorkspaceSchema);
