@@ -3,7 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "../../../Redux/store";
-import { setLog } from "../../../Redux/features/LogSlice";
+
 import Loader from "../../page-components/utility/loadingPages/Loader";
 
 import {

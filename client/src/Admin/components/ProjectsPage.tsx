@@ -54,7 +54,10 @@ export function ProjectsPage() {
   const adminId = useSelector((state: any) => state?.user?.user?._id);
   const adminName = useSelector((state: any) => state?.user?.user?.name);
   const projects = useSelector((state: any) => state.projects.list);
-
+const logId=useSelector((state)=>{
+  return state.workspace.workspace.logId
+})
+console.log(logId,"ad++++")
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -89,18 +92,18 @@ export function ProjectsPage() {
       toast.success("Created project successfully");
 
       const response: AxiosResponse<any, any> = await api.post(
-        "project/create",
-        { newProject: projectData }
+        `project/create/${adminName}?activityId=${logId}`,
+        
+        { newProject: projectData, },
+        {
+
+    // withCredentials: true // Uncomment if needed
+  }
         // { withCredentials: true }
       );
       setLoader("");
       setRefreshKey((prev) => prev + 1);
-      // After successful creation, refetch projects
-      // if (adminId) {
-      //   dispatch(fetchProjectData(adminId));
-      // }
-      // Refresh projects after adding by triggering useEffect dependency
-      // This will re-fetch projects due to adminId in useEffect dependency array
+    
 
     
     } catch (error) {
