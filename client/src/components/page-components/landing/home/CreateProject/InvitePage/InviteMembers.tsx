@@ -8,7 +8,7 @@ import { AxiosResponse } from "axios";
 import { Navigate, useNavigate } from "react-router";
 import { UseSelector, useDispatch } from "react-redux";
 import { workspace } from "../../../../../../Redux/features/WorkspaceSlice";
-import { setLog } from "../../../../../../Redux/features/LogSlice";
+
 import { useSelector } from "react-redux";
 import Loader from "../../../../utility/loadingPages/Loader";
 
