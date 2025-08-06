@@ -10,7 +10,7 @@ let router = express.Router();
 const adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
 const memberAuth = [authMiddelware(), roleMiddleware(["Member","Admin"])];
 
-router.post('/create',adminAuth,projectController.createProject.bind(projectController))
+router.post('/create/:adminName',adminAuth,projectController.createProject.bind(projectController))
 router.get('/projects',memberAuth,projectController.allProjects.bind(projectController))
 router.delete('/remove/attachment/:projectId/:encodedUrl',adminAuth,projectController.removeAttchmentInProject.bind(projectController))
 router.patch('/update/:id',adminAuth,projectController.updateProject.bind(projectController))

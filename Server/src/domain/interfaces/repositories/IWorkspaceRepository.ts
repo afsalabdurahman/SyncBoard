@@ -1,5 +1,5 @@
 import { Workspace } from "../../entities/Workspace";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 export interface IWorkspaceRepository {
   create(workspace: Workspace): Promise<Workspace|null>;
   findbyWorkSpaceName?(name: string): Promise<Workspace | null>;
@@ -15,5 +15,5 @@ export interface IWorkspaceRepository {
   ): Promise<void>;
   allWorkspace?(email: string): Promise<Workspace | null>;
   findByObjectId(id: mongoose.Types.ObjectId): Promise<any | null>;
-  
+  addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
 }

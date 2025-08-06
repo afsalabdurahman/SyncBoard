@@ -6,6 +6,7 @@ import { CustomError, InternalServerError } from "../../utils/errors";
 import { HttpStatusCode } from "../../common/errorCodes";
 import { Types, ObjectId } from "mongoose";
 import mongoose from "mongoose";
+import { truncate } from "fs/promises";
 @injectable()
 export class WorkspaceRepository implements IWorkspaceRepository {
   async create(workspace: Workspace): Promise<Workspace> {
@@ -69,5 +70,10 @@ export class WorkspaceRepository implements IWorkspaceRepository {
         (workspaceData?.id as Types.ObjectId).toString()
       );
     }
+  }
+ async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{
+    const result= await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})
+console.log(result,"resultss@usecase")
+return true
   }
 }

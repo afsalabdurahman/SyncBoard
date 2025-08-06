@@ -9,7 +9,8 @@ import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
 import memberRoutes from "./presentation/routes/memberRoute"
-import chatRoutes from "./presentation/routes/chatRoutes"
+import chatRoutes from "./presentation/routes/chatRoutes";
+import activityRoutes  from"./presentation/routes/activityRoutes"
 import projectRoutes from "./presentation/routes/projectRoutes"
 import taskRoutes from "./presentation/routes/taskRoutes"
 import { Server } from "socket.io";
@@ -63,6 +64,7 @@ app.use("/api/member",memberRoutes)
 app.use("/api/project",projectRoutes)
 app.use("/api/task",taskRoutes)
 app.use("/api/chat",chatRoutes)
+app.use("/api/activities",activityRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);
 app.use(errorMiddleware);

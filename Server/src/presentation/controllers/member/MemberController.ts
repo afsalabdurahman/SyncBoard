@@ -8,13 +8,15 @@ import { NotFoundError, InternalServerError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
+import {IActivity} from "../../../application/repositories/IActivity"
 @injectable()
 export class MemberController {
   constructor(
     @inject("UpdateProfileUsecase")
     private updateProfileUsecase: IUpdateProfileUsecases,
     @inject("ChangePasswordUsecase") private changePassword: IChangePasword,
-    @inject("MemberRegisterUsecase") private memberRegister: IMemberRegister
+    @inject("MemberRegisterUsecase") private memberRegister: IMemberRegister,
+    @inject("ActivityUsecase") private activityUsecase: IActivity
   ) {}
 
   async updateUserProfile(
@@ -32,6 +34,7 @@ export class MemberController {
         userId,
         req.body
       );
+      console.log(req.body,"user updatess")
       res
         .status(HttpStatusCode.CREATED)
         .json({ message: ResponseMessages.SUCCESS, updatedData });
@@ -79,7 +82,12 @@ export class MemberController {
           title,
           role
         );
-
+    const activityId:string = insertToWorkspce.logId;
+     await this.activityUsecase.userActivity(
+          name,
+          activityId
+        );
+      
       setTokensInCookies(res, token, refreshToken);
       res
         .status(HttpStatusCode.CREATED)

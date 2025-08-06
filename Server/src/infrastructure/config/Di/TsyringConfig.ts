@@ -25,23 +25,29 @@ import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUs
 import { AuthController } from "../../../presentation/controllers/auth/UserAuthController";
 import { UpdateUserProfileUsecase } from "../../../application/use-cases/profiles/UpdateUserProfile";
 // Register dependencies
-import {ISentInvitaion} from "../../../application/repositories/imail/ISentInvitation"
+import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
 import { RefreshTokenUsecase } from "../../../application/use-cases/auth/shared/RefreshTokenUsecase";
 import { AdminLoginUseCase } from "../../../application/use-cases/auth/admin/LoginUsecase";
 import { GetWorkspaceUsecase } from "../../../application/use-cases/workspace/GetWorkspaceUsecase";
 import { MemberRegisterUsecase } from "../../../application/use-cases/auth/member/MemberRegisterUsecase";
-import {ProjectUsecase} from"../../../application/use-cases/project/ProjectUsecase"
-import {ProjectRepository} from"../../repositories/ProjectRepository"
-import {TaskRepository} from "../../repositories/TaskRepository"
-import {TaskUsecase} from "../../../application/use-cases/task/TaskUsecase"
+import { ProjectUsecase } from "../../../application/use-cases/project/ProjectUsecase";
+import { ProjectRepository } from "../../repositories/ProjectRepository";
+import { TaskRepository } from "../../repositories/TaskRepository";
+import { TaskUsecase } from "../../../application/use-cases/task/TaskUsecase";
 import { ChatUsecase } from "../../../application/use-cases/chat/ChatUsecase";
 import { ChatRepository } from "../../repositories/ChatRepository";
-container.register("ChatUseCase",{useClass:ChatUsecase})
-container.register("ChatRepository",{useClass:ChatRepository})
-container.register("TaskUsecase",{useClass:TaskUsecase})
-container.register("TaskRepository",{useClass:TaskRepository})
-container.register("ProjectUsecase",{useClass:ProjectUsecase})
-container.register("ProjectRepository",{useClass:ProjectRepository})
+import { ActivityUsecase } from "../../../application/use-cases/activity/ActivityUsecase";
+import { ActivityRepository } from "../../repositories/ActivityRepository";
+
+container.register("ActivityRepository", { useClass: ActivityRepository });
+container.register("ActivityUsecase", { useClass: ActivityUsecase });
+
+container.register("ChatUseCase", { useClass: ChatUsecase });
+container.register("ChatRepository", { useClass: ChatRepository });
+container.register("TaskUsecase", { useClass: TaskUsecase });
+container.register("TaskRepository", { useClass: TaskRepository });
+container.register("ProjectUsecase", { useClass: ProjectUsecase });
+container.register("ProjectRepository", { useClass: ProjectRepository });
 container.register("MemberRegisterUsecase", {
   useClass: MemberRegisterUsecase,
 });

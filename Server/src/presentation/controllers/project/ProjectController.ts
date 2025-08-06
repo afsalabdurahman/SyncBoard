@@ -8,11 +8,12 @@ import { ProjectMapper } from "../../dots/projectDTO/projectMapper";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { InternalServerError, NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
-
+import { IActivity } from "../../../application/repositories/IActivity";
 @injectable()
 export class ProjectController {
   constructor(
-    @inject("ProjectUsecase") private projectUsecase: IProjectUsecase
+    @inject("ProjectUsecase") private projectUsecase: IProjectUsecase,
+    @inject("ActivityUsecase") private activityUsecase: IActivity
   ) {}
 
   async createProject(
@@ -21,8 +22,11 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-
+      console.log(req.query, "quryyy+++",);
       
+      const activityId:string = req.query.activityId?.toString()??"123"
+      const createdBy = req.params.adminName;
+      console.log(activityId, createdBy, "admiName+creatdBy");
       const dto = new ProjectRequstDTO(req.body.newProject);
       dto.toValidate();
 
@@ -31,6 +35,14 @@ export class ProjectController {
       const savedProject = await this.projectUsecase.excute(projectEntity);
 
       const resposeDTO = ProjectMapper.toRegisterDTO(savedProject);
+      console.log(resposeDTO.name, "response");
+      if (resposeDTO.name) {
+        await this.activityUsecase.projctActivity(
+          resposeDTO.name,
+          createdBy,
+          activityId
+        );
+      }
 
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
     } catch (error) {
@@ -44,56 +56,66 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-
       const projects = await this.projectUsecase.getAllProjects();
       res.status(HttpStatusCode.OK).json(projects);
-
     } catch (error) {
       console.log(error, "error from get projects");
       next(error);
     }
   }
- async removeAttchmentInProject (req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
-    console.log(req.body,"body")
-    console.log(req.params,"parms")
-     if(!req.params.projectId || !req.params.encodedUrl)  throw new NotFoundError("Prams not found");
-   
-    const projectId =req.params.projectId;
-    const attachedUrl = req.params.encodedUrl;
+  async removeAttchmentInProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      console.log(req.body, "body");
+      console.log(req.params, "parms");
+      if (!req.params.projectId || !req.params.encodedUrl)
+        throw new NotFoundError("Prams not found");
 
-    await this.projectUsecase.removeAttachment(projectId,attachedUrl);
-  
-    res.status(HttpStatusCode.OK).json({message:ResponseMessages.ATTACHEMNT_REMOVE})
-  }
-  catch (error) {
-    console.log(error,"error from comntoller")
-    next(error)
-  }
-  }
-  async updateProject(req:Request,res:Response,next:NextFunction):Promise<void>{
-    console.log(req.body,"biodyyyy")
-    console.log(req.params,"params@contro")
-    const projectId=req.params.id;
-   const responseFromUsecas =await this.projectUsecase.update(projectId,req.body.editingProject)
-   console.log(responseFromUsecas,)
-   res.send(200)
-  }
-  
-  async deleteProject(req:Request,res:Response,next:NextFunction):Promise<void>{
-   try {
-     const projectId=req.params.id
-     if(!projectId) throw new NotFoundError("ProjectId not found")
-    console.log(req.params)
-    await this.projectUsecase.deleteProject(projectId)
-    res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE)
-   } catch (error) {
-    next(error)
-   }
-   
-    
-  }
- 
- }
+      const projectId = req.params.projectId;
+      const attachedUrl = req.params.encodedUrl;
 
+      await this.projectUsecase.removeAttachment(projectId, attachedUrl);
 
+      res
+        .status(HttpStatusCode.OK)
+        .json({ message: ResponseMessages.ATTACHEMNT_REMOVE });
+    } catch (error) {
+      console.log(error, "error from comntoller");
+      next(error);
+    }
+  }
+  async updateProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    console.log(req.body, "biodyyyy");
+    console.log(req.params, "params@contro");
+    const projectId = req.params.id;
+    const responseFromUsecas = await this.projectUsecase.update(
+      projectId,
+      req.body.editingProject
+    );
+    console.log(responseFromUsecas);
+    res.send(200);
+  }
+
+  async deleteProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const projectId = req.params.id;
+      if (!projectId) throw new NotFoundError("ProjectId not found");
+      console.log(req.params);
+      await this.projectUsecase.deleteProject(projectId);
+      res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
