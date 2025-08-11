@@ -7,6 +7,8 @@ import {
   CheckSquare,
   Moon,
   Sun,
+  FileCheck,
+  Icon
   
 } from "lucide-react";
 //import { useTheme } from "next-themes"
@@ -24,6 +26,7 @@ import {
   SidebarRail,
 } from "../../components/ui/sidebar";
 import { Button } from "../../components/ui/button";
+import { title } from "process";
 
 const menuItems = [
   {
@@ -45,6 +48,10 @@ const menuItems = [
     title: "Tasks",
     icon: CheckSquare,
     id: "tasks",
+  },
+  {title:"Task Approval",
+    icon:FileCheck,
+    id:"approval"
   },
   {
     title: "Settings",

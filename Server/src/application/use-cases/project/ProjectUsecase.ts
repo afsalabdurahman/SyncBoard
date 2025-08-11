@@ -31,8 +31,7 @@ async removeAttachment(projectId: string, attachedUrl: string): Promise<void> {
   
 }
 async update(projectId: string, ...args: Record<string, any>[]): Promise<boolean> {
-  console.log(projectId,"@usecase Project ID")
-  console.log(...args,"@usecaser ARG")
+
    const merged = Object.assign({}, ...args);
    console.log(merged,"@merge usecase");
    let updateProject = await this.projectRepository.updateProject(projectId,merged)

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { Task } from "../../domain/entities/Task";
 import { ITaskRepository } from "../../domain/interfaces/repositories/ITaskRepository";
-import { NotFoundError } from "../../utils/errors";
-import { TaskModel } from "../database/models/TaskModel";
+import { InternalServerError, NotFoundError } from "../../utils/errors";
+import { ITask, TaskModel } from "../database/models/TaskModel";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -31,10 +31,75 @@ export class TaskRepository implements ITaskRepository {
     const objectId: any = new mongoose.Types.ObjectId(taskId.toString());
     await TaskModel.deleteOne({ _id: objectId });
   }
-  async myTask(userName: string): Promise<Task | any> {
-    console.log(userName, "mogodb username");
-    const myTask = await TaskModel.find({ assignedUser: userName });
+  async myTask(userName: string, query?: any): Promise<Task | any> {
+    console.log(userName, query, "repoooo");
+    if (query == "count") {
+      const myTask = await TaskModel.find({
+        assignedUser: userName,
+      });
+      console.log(myTask, "muyDVBBB");
+      return myTask;
+    }
+
+    const myTask = await TaskModel.find({
+      assignedUser: userName,
+      approvalStatus: { $ne: "Approved" },
+    });
+
+    //   isApprove: { $ne: "approved" }
     console.log(myTask, "db mongo###");
     return myTask;
+  }
+  async updateTaskStatus(taskId: string, updatedStatus: string): Promise<void> {
+    const objId = new mongoose.Types.ObjectId(taskId.toString());
+    if (updatedStatus == "Completed") {
+      await TaskModel.updateOne(
+        { _id: objId },
+        {
+          $set: { status: updatedStatus, approvalStatus: "Waiting" },
+          upsert: true,
+        }
+      );
+    } else {
+      const updated = await TaskModel.updateOne(
+        { _id: objId },
+        { $set: { status: updatedStatus } }
+      );
+    }
+  }
+  async allCompletedTasks(): Promise<any> {
+    const completedTasks = await TaskModel.find({ status: "Completed" });
+    const taskReject =  await TaskModel.find({approvalStatus:"Rejected"})
+
+    return [completedTasks,taskReject]
+  }
+  async updateApprovalStatus(
+    taskId: string,
+    status: String,
+    msg: string | null
+  ): Promise<void> {
+    const objId = new mongoose.Types.ObjectId(taskId.toString());
+    if (msg == null) {
+      const updated = await TaskModel.updateOne(
+        { _id: objId },
+        { $set: { approvalStatus: "Approved",rejectionMsg:null } }
+      );
+    } else {
+      const updated = await TaskModel.updateOne(
+        { _id: objId },
+        {
+          $set: {
+            approvalStatus: "Rejected",
+            rejectionMsg: msg,
+            status: "In Progress",
+          },
+        },
+        { upsert: true }
+      );
+    }
+  }
+ async findTaskByProjectId(projectId: string): Promise<any> {
+    const ProjectTask=await TaskModel.find({projectId:projectId})
+    return ProjectTask
   }
 }

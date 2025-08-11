@@ -1,5 +1,5 @@
 import mongoose,{ model, Schema,Document } from "mongoose";
-import { Task,priorityType,statusType } from "../../../domain/entities/Task";
+import { Task,priorityType,statusType,approvalType } from "../../../domain/entities/Task";
 export interface ITask extends Document {
   name: string;
   assignedUser: string;
@@ -9,6 +9,8 @@ export interface ITask extends Document {
   status?: statusType;
   projectId?:string;
   project?:string;
+  approvalStatus?:approvalType;
+  rejectionMsg?:string;
 
 }
 
@@ -21,6 +23,8 @@ priority:{type:String,enum:["Low","Medium","High"]},
 status:{type:String,enum:["To Do" , "In Progress" , "Completed" , ]},
 projectId:{type:String},
 project:{type:String},
+approvalStatus:{type:String,enum:["Approved","Rejected","Waiting"]},
+rejectionMsg:{type:String}
 },{timestamps:true})
 
 export const TaskModel = model<ITask>("Task", TaskSchema);
