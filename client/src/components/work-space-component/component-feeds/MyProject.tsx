@@ -37,30 +37,15 @@ const initialProjects=useSelector((state)=>{
   });
   const [projects, setProjects] = useState(initialProjects);
   console.log(projects, "newProjects");
-  // useEffect(() => {
-  //   apiService.get("/projects")
-  //     .then((response) => {
-  //       console.log(response.data, "response from axios");
-  //       console.log(userName, "username");
-
-  //       const myProjectsData = response.data.AllProjects.filter((project) =>
-  //         project.assignedUsers.includes(userName)
-  //       );
-
-  //       setProjects(myProjectsData);
-  //       console.log(myProjectsData, "my projectData");
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, [userName]);
+  
 
   useEffect(() => {
      if (!userName) return;
     dispatch(fetchProjectData());
- apiService.get(`/task/mytask/${userName}`).then((response)=>{
- dispatch(setTasks(response.data))
-      })
+//  apiService.get(`/task/mytask/${userName}?count=all`).then((response)=>{
+//   console.log( response, "re000000")
+//  dispatch(setTasks(response.data))
+//       })
   }, [dispatch,userName]);
  
   
@@ -221,22 +206,7 @@ const initialProjects=useSelector((state)=>{
                   </p>
 
                   {/* Progress Bar */}
-                  <div className='mb-4'>
-                    <div className='flex justify-between items-center mb-1'>
-                      <span className='text-sm font-medium text-gray-700'>
-                        Progress
-                      </span>
-                      <span className='text-sm text-gray-500'>
-                        {project.progress}0%
-                      </span>
-                    </div>
-                    <div className='w-full bg-gray-200 rounded-full h-2'>
-                      <div
-                        className='bg-blue-1 h-2 rounded-full transition-all duration-300'
-                        style={{ width: `${project.progress}%` }}
-                      ></div>
-                    </div>
-                  </div>
+                
                 </div>
 
                 {/* Project Details */}
@@ -250,7 +220,7 @@ const initialProjects=useSelector((state)=>{
 
                     <div className='flex items-center gap-1'>
                       <Clock className='w-4 h-4' />
-                      <span>Started: not yet</span>
+                      <span>Started: {formatDate(project.createdAt)}</span>
                     </div>
                   </div>
 

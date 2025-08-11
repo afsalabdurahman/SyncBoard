@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 
 export type statusType = "To Do" | "In Progress" | "Completed";
 export type priorityType = "Low" | "Medium" | "High";
-
+export type approvalType= "Approved"|"Rejected"|"Waiting"
 export class Task {
   id?: string | ObjectId;
   assignedUser?: string;
@@ -13,6 +13,9 @@ export class Task {
   projectId?: string;
   status?: statusType;
   project?:string;
+  approvalStatus?:approvalType;
+  rejectionMsg?:string;
+
 
   constructor({
     id,
@@ -24,6 +27,8 @@ export class Task {
     projectId,
     status,
     project,
+    approvalStatus,
+    rejectionMsg,
   }: {
     id?: ObjectId | string;
     description?: string;
@@ -34,6 +39,8 @@ export class Task {
     projectId?: string;
     status?: statusType;
     project?:string;
+    approvalStatus?:approvalType;
+    rejectionMsg?:string
   }) {
     this.id = id;
     this.assignedUser = assignedUser;
@@ -44,5 +51,7 @@ export class Task {
     this.projectId = projectId;
     this.status = status;
     this.project=project;
+    this.approvalStatus=approvalStatus;
+    this.rejectionMsg=rejectionMsg;
   }
 }

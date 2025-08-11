@@ -15,4 +15,8 @@ router.get('/alltasks',memberAuth,taskController.allTasks.bind(taskController))
 router.patch('/update/:id',adminAuth,taskController.updateTask.bind(taskController))
 router.delete('/delete/:id',adminAuth,taskController.deleteTask.bind(taskController))
 router.get("/mytask/:username",memberAuth,taskController.findMyTask.bind(taskController))
+router.patch("/status/:id",memberAuth,taskController.updateTaskStatus.bind(taskController))
+router.get("/completed",adminAuth,taskController.findAllCompletedTasks.bind(taskController))
+router.patch("/update/approval/status/:id",adminAuth,taskController.controllApprovalSatatus.bind(taskController))
+router.get("/project/:projectId",memberAuth,taskController.findTaskByProject.bind(taskController))
 export default router;

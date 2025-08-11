@@ -1,4 +1,4 @@
-import {Task,priorityType,statusType} from "../../../domain/entities/Task"
+import { Task, priorityType, statusType } from "../../../domain/entities/Task";
 import { ObjectId } from "mongoose";
 export class TaskResponseDTO {
   id?: ObjectId | any;
@@ -9,7 +9,7 @@ export class TaskResponseDTO {
   status?: statusType;
   priority?: priorityType;
   projectId?: string;
- project?:string;
+  project?: string;
 
   constructor({
     id,
@@ -19,9 +19,9 @@ export class TaskResponseDTO {
     deadline,
     status,
     priority,
-   
+
     projectId,
-project,
+    project,
   }: Task) {
     ((this.id = id),
       (this.name = name),
@@ -31,6 +31,31 @@ project,
       (this.status = status),
       (this.priority = priority),
       (this.projectId = projectId),
-    this.project=project)
+      (this.project = project));
+  }
+}
+export class CompletedTaskReposnseDTO {
+  taskName?: string;
+  project?: string;
+  username?: string;
+  status?: string;
+  submittedAt?: string;
+  constructor({
+    taskName,
+    project,
+    username,
+    status,
+    submittedAt,
+  }: {
+    taskName?: string;
+    project?: string;
+    username?: string;
+    status?: string;
+    submittedAt?: string;
+  }) {
+    ((this.taskName = taskName),
+      (this.project = project),
+      (this.username = username));
+    ((this.status = status), (this.submittedAt = submittedAt));
   }
 }

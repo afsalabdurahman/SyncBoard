@@ -6,7 +6,7 @@ import { UsersPage } from "../components/UsersPage";
 import { ProjectsPage } from "../components/ProjectsPage";
 import { TasksPage } from "../components/TasksPage";
 import { SettingsPage } from "../components/SettingsPage";
-
+import {TaskApproval} from "../components/TaskApproval"
 //import { ThemeProvider } from ""
 
 export default function AdminDashboard() {
@@ -28,6 +28,8 @@ export default function AdminDashboard() {
         return <TasksPage />;
       case "settings":
         return <SettingsPage />;
+        case "approval":
+          return <TaskApproval/>;
       default:
         return <DashboardPage />;
     }

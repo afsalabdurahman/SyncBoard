@@ -39,10 +39,47 @@ async update(taskId: string, ...args: any[]): Promise<boolean> {
 async deleteTask(taskId: string): Promise<void> {
    await this.taskRepository.deleteTask(taskId)
 }
-async myTask(userName: string): Promise<Task> {
-   const myTask=await this.taskRepository.myTask(userName)
+async myTask(userName: string,query:any): Promise<Task> {
+   console.log(userName,"@task use,",query,"@task use")
+
+   const myTask=await this.taskRepository.myTask(userName,query)
    console.log(myTask,"from usecase##")
    return myTask
 }
+async updateTaskStatus(taskId: string, status: string): Promise<void> {
+  await this.taskRepository.updateTaskStatus(taskId,status)
+}
+async completedTask(): Promise<any> {
+    
+   const [completedTasks,taskReject] = await this.taskRepository.allCompletedTasks()
+   const tasks=[...completedTasks,...taskReject]
+ const mappedData = tasks.map((task:any) => {
+  return {
+   id:task._id,
+    taskName: task.name,
+    project: task.project,
+    username: task.assignedUser,
+    status: task.approvalStatus=="Waiting"?"pending":
+            task.approvalStatus=="Approved"?"approved":
+            task.approvalStatus=="Rejected"?"rejected":"pending",
+            
+    submittedAt: task.updatedAt,
+    rejectionReason : task.rejectionMsg,
+    
+  };
+});
 
+console.log(mappedData,"mapped")
+   return mappedData
+}
+async updateApprovalStatus(taskId: string, status: string, msg?: string|null): Promise<void> {
+   await this.taskRepository.updateApprovalStatus(taskId,status,msg)
+}
+
+async findTaskByProjectId(projectId: string): Promise<any> {
+const  projectTask = await this.taskRepository.findTaskByProjectId(projectId)
+
+console.log(projectTask,"from useCse@projec++")
+return projectTask
+}
 }

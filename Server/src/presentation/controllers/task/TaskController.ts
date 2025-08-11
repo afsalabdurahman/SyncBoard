@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 import { TaskRequstDTO } from "../../dots/taskDTO/requestDTO";
 import { TaskMapper } from "../../dots/taskDTO/taskMapper";
-import {ITaskUseCase } from "../../../application/repositories/ITask";
+import { ITaskUseCase } from "../../../application/repositories/ITask";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { InternalServerError, NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
@@ -16,66 +16,132 @@ export class TaskController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body,"bosy");
+      console.log(req.body, "bosy");
       const dto = new TaskRequstDTO(req.body.newTask);
-      console.log(dto,"return dto @control")
+      console.log(dto, "return dto @control");
       dto.toValidate();
       const tasktEntity = await TaskMapper.toEntity(dto);
-      console.log(tasktEntity,"entifty from controller")
+      console.log(tasktEntity, "entifty from controller");
 
       const savedTask = await this.taskUsecase.execute(tasktEntity);
       const resposeDTO = TaskMapper.toRegisterDTO(savedTask);
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
     } catch (error) {
-      console.log(error,"from final eror");
+      console.log(error, "from final eror");
       next(error);
     }
   }
-async allTasks(req:Request,res:Response,next:NextFunction):Promise<void>{
- try {
-  const tasks= await this.taskUsecase.getAllTasks()
-  console.log(tasks,"from@controller")
- res.status(HttpStatusCode.OK).json(tasks);
- } catch (error) {
-  next(error)
- }
-}
-async updateTask(req:Request,res:Response,next:NextFunction):Promise<void>{
-console.log(req.body,"body")
-console.log(req.params,"params@contro")
- const taskId=req.params.id;
- try {
-  const response = await this.taskUsecase.update(taskId,req.body.taskData)
-  res.send(200)
- } catch (error) {
-  console.log(error)
-  next(error)
- }
+  async allTasks(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const tasks = await this.taskUsecase.getAllTasks();
+      console.log(tasks, "from@controller");
+      res.status(HttpStatusCode.OK).json(tasks);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updateTask(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    console.log(req.body, "body");
+    console.log(req.params, "params@contro");
+    const taskId = req.params.id;
+    try {
+      const response = await this.taskUsecase.update(taskId, req.body.taskData);
+      res.send(200);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+  async deleteTask(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    console.log(req.params, "req.sparams");
+    try {
+      const taskId = req.params.id;
+      await this.taskUsecase.deleteTask(taskId);
+      res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
+    } catch (error) {
+      console.log(error, "final eroor");
+      next(error);
+    }
+  }
+  async findMyTask(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      console.log(req.params, "params");
+      console.log(req.query,"quey");
+      const alltask:any=req.query.count
+      console.log(alltask)
+      const userName = req.params.username;
+      if (!req.params.username) throw new NotFoundError("User not found");
+      if(alltask=="all") 
+        { const data =await this.taskUsecase.myTask(userName,alltask)
+
+        }
+      const task = await this.taskUsecase.myTask(userName);
+      console.log(task, "tasks");
+      res.status(HttpStatusCode.OK).json(task);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async updateTaskStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    console.log(req.body, "nbody++++");
+    const status = req.body.status;
+    const taskID = req.params.id;
+    console.log(taskID, status, "+++Params");
+    try {
+      if (!status || !taskID) throw new NotFoundError("Status not found");
+      await this.taskUsecase.updateTaskStatus(taskID, status);
+      res.status(HttpStatusCode.OK);
+    } catch (error) {
+      next(error);
+    }
+  }
+async findAllCompletedTasks(req:Request,res:Response):Promise<void>{
+const task= await this.taskUsecase.completedTask()
+res.status(HttpStatusCode.OK).json(task)
 
 }
-async deleteTask(req:Request,res:Response,next:NextFunction):Promise<void>{
-  console.log(req.params,"req.sparams")
+async controllApprovalSatatus(req:Request,res:Response,next:NextFunction){
+  console.log(req.body,"Boduy+++",req.params,"+++pramm")
   try {
-    const taskId=req.params.id
-    await this.taskUsecase.deleteTask(taskId)
-     res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
+      const taskId=req.params.id;
+  const status=req.body.status;
+  const msg =req.body.msg;
+  if(!taskId||!status) throw new NotFoundError("Task id or status not found")
+  await this.taskUsecase.updateApprovalStatus(taskId,status,msg)
+  res.status(HttpStatusCode.OK).json({message:"Updated"})
   } catch (error) {
-    console.log(error,"final eroor")
     next(error)
   }
-}
-async findMyTask(req:Request,res:Response,next:NextFunction):Promise<void>{
-try {
-  console.log(req.params,"params")
-  const userName= req.params.username;
-  if(!req.params.username) throw new NotFoundError("User not found");
-   const task = await this.taskUsecase.myTask(userName)
-   console.log(task,"tasks")
-   res.status(HttpStatusCode.OK).json(task)
-} catch (error) {
-  next(error);
-}
 
+}
+async findTaskByProject(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    if(!req.params.projectId) throw new NotFoundError("Id is not found")
+    const task = await this.taskUsecase.findTaskByProjectId(req.params.projectId)
+res.status(HttpStatusCode.OK).json(task)
+  } catch (error) {
+    next(error)
+  }
   
 }
 }

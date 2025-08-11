@@ -7,10 +7,10 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import { Badge } from "../../../components/ui/badge";
-import { Calendar, Flag } from "lucide-react";
+import { Calendar, Flag, Lock, MessageCircleMoreIcon, MessageSquareMoreIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import apiService from "../../../services/api";
-
+import SimpleAlert from "../../ui/alertBox";
 interface Task {
   id: string;
   projectName: string;
@@ -19,6 +19,8 @@ interface Task {
   dueDate: string;
   priority: "low" | "medium" | "high";
   status: "todo" | "progress" | "completed";
+  approvalStatus: any;
+  rejectionMsg: string | null;
 }
 
 // const initialTasks: Task[] = [
@@ -27,20 +29,18 @@ interface Task {
 
 export default function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [approval, setApproval] = useState<[string]>();
+
   let user = useSelector((state: any) => state.user.user);
   useSelector((state) => {
     console.log(state, "redux@@@@@@");
   });
   console.log(user, "userrrr");
   useEffect(() => {
-    // if (!user?.id || !user?.name) return;
-
     const fetchTasks = async () => {
       try {
-        console.log("fetchin......");
-        // Option 1: Fetching by user.name (if applicable)
         const res1 = await apiService.get(`task/mytask/${user.name}`);
-        console.log(res1, "respons1 axios000000000000");
+        console.log(res1, "+++response111");
         setTasks(res1.data);
         const tasksFromMyTask: Task[] = res1.data.map((data: any) => ({
           id: data._id.toString(),
@@ -48,31 +48,19 @@ export default function KanbanBoard() {
           taskName: data.name || "Untitled Task",
           description: data.description || "No description provided.",
           dueDate: data.dueDate || "2024-01-20",
+          approvalStatus: data.approvalStatus,
+          rejectionMsg: data.rejectionMsg,
           priority: (data.priority?.toLowerCase?.() ||
             "medium") as Task["priority"],
           status: (() => {
-            const s = data.status?.toLowerCase?.();
+            const s = data.status;
+
             if (s === "To Do") return "todo";
             if (s === "In Progress") return "progress";
             if (s === "Completed") return "completed";
             return "todo";
           })() as Task["status"],
         }));
-
-        // Option 2: Fetching by user.id (if this endpoint is active)
-        // const res2 = await apiService.get(`/users/${user.id}/todo`);
-        // const tasksFromTodos: Task[] = res2.data.todos.map((data: any) => ({
-        //   id: data._id.toString(),
-        //   projectName: data.projectName || "Abcd",
-        //   taskName: data.name || "Untitled Task",
-        //   description: data.description || "No description provided.",
-        //   dueDate: data.dueDate || "2024-01-20",
-        //   priority: data.priority as Task["priority"],
-        //   status: "todo",
-        // }));
-
-        // Merge both sources if needed (or pick one based on requirement)
-        // const combinedTasks = [...tasksFromMyTask, ...tasksFromTodos];
 
         setTasks(tasksFromMyTask);
       } catch (error) {
@@ -86,6 +74,7 @@ export default function KanbanBoard() {
   console.log(tasks, "tasks");
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [message,SetMessage]=useState("")
   const [newTask, setNewTask] = useState({
     projectName: "",
     taskName: "",
@@ -95,6 +84,8 @@ export default function KanbanBoard() {
   });
 
   const handleDragStart = (e: React.DragEvent, task: Task) => {
+    console.log(task, "task drag$$$4");
+    if (task.status == "completed") return false;
     setDraggedTask(task);
     e.dataTransfer.effectAllowed = "move";
   };
@@ -113,21 +104,29 @@ export default function KanbanBoard() {
         )
       );
     }
-    let status =
-      newStatus == "progress"
+    const status =
+      newStatus === "progress"
         ? "In Progress"
-        : newStatus == "completed"
+        : newStatus === "completed"
         ? "Completed"
-        : newStatus == "todo"
+        : newStatus === "todo"
         ? "To Do"
-        : "";
+        : "To Do";
 
-    let response = await apiService.patch(
-      `/user/task/${draggedTask?.id}/status`,
-      {
-        status,
-      }
-    );
+    //   const res1 = await apiService.get(`task/mytask/${user.name}`);
+    console.log(draggedTask, "sss", status, "+++");
+    try {
+      const response = await apiService.patch(
+        `task/status/${draggedTask?.id}`,
+        {
+          status,
+        }
+      );
+      if (status == "Completed") setApproval(draggedTask?.id);
+    } catch (error) {
+      console.log(error, "++++from chajhch");
+    }
+
     setDraggedTask(null);
   };
 
@@ -170,7 +169,7 @@ export default function KanbanBoard() {
     //  setTasks([...tasks, newMytodo])
   };
 
-  const getPriorityColor = (priority: Task["priority"]) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
         return "bg-red-500";
@@ -178,6 +177,12 @@ export default function KanbanBoard() {
         return "bg-yellow-500";
       case "low":
         return "bg-green-500";
+      case "Waiting":
+        return "bg-yellow-500";
+      case "Approved":
+        return "bg-green-500";
+      case "Rejected":
+        return "bg-red-500";
       default:
         return "bg-gray-500";
     }
@@ -206,12 +211,19 @@ export default function KanbanBoard() {
   const getTasksByStatus = (status: Task["status"]) => {
     return tasks.filter((task) => task.status === status);
   };
-
+const [popup,setPopup] = useState(false)
   const columns = [
     { id: "todo", title: "Todo", status: "todo" as const },
     { id: "progress", title: "In Progress", status: "progress" as const },
     { id: "completed", title: "Completed", status: "completed" as const },
   ];
+
+const Popup = (msg) =>{
+  setPopup(true);
+ SetMessage(msg)
+  console.log(msg, "onpopup")
+}
+
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen' style={{ marginTop: "1.5em" }}>
@@ -369,11 +381,15 @@ export default function KanbanBoard() {
                             {task.taskName}
                           </CardTitle>
                         </div>
-                        <div
-                          className={`w-3 h-3 rounded-full ${getPriorityColor(
-                            task.priority
-                          )}`}
-                        />
+                        {task.status == "completed" ? (
+                          <Lock color='red' size={15} />
+                        ) : (
+                          <div
+                            className={`w-3 h-3 rounded-full ${getPriorityColor(
+                              task.priority
+                            )}`}
+                          />
+                        )}
                       </div>
                     </CardHeader>
 
@@ -396,6 +412,25 @@ export default function KanbanBoard() {
                           {task.priority}
                         </Badge>
                       </div>
+                      {task.status == "completed" ? (
+                        <div className='flex justify-center items-center  h-20'>
+                          <Badge variant={getPriorityBadgeVariant("low")}>
+                            <p className='text-center '>
+                              Waiting for approval...
+                            </p>
+                          </Badge>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      {task.rejectionMsg &&
+                        task.approvalStatus === "Rejected" && (
+                          <div className='flex justify-center items-center h-20'>
+                            <Badge variant={getPriorityBadgeVariant("low")}/>
+                              <MessageSquareMoreIcon size={5}  className='w-10 h-8 mr-1 mt-10 cursor-pointer' onClick={()=>Popup(task.rejectionMsg)} />
+                          
+                          </div>
+                        )}
                     </CardContent>
                   </Card>
                 ))}
@@ -406,10 +441,14 @@ export default function KanbanBoard() {
                     <p className='text-xs mt-1'>Drag tasks here</p>
                   </div>
                 )}
+                  
               </div>
             </div>
           ))}
+       
         </div>
+        {popup?<SimpleAlert message={message} onclose={setPopup}/>:null}
+       
       </div>
     </div>
   );
