@@ -16,7 +16,7 @@ async getAllProjects(): Promise<any | null> {
 }
 async removeAttachment( projectId: string, attachedUrl: string): Promise<void> {
    const isRemove=await ProjectModel.updateOne({_id:projectId},{$pull:{attachedUrl:attachedUrl}})
-   console.log(isRemove,"@reposReove")
+   
    if(!isRemove) throw new NotFoundError("Attachment not found")
 
 }
