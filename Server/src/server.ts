@@ -41,6 +41,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    
   })
 );
 app.use(express.json());
@@ -56,6 +57,7 @@ let serverStart = async () => {
   });
 };
 serverStart();
+//
 
 // app.use("/", userRoutes);
 app.use("/api/auth", authRoutes);
