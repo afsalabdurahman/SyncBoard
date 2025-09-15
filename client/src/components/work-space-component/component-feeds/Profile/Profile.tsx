@@ -134,7 +134,7 @@ export default function Profile() {
           imageUrl,
         };
         const axiosResponse: AxiosResponse<any> = await api.patch(
-          `/api/member/profile/update/${userId}`,
+          `member/profile/update/${userId}`,
           {
             profileData: updatedProfile,
           },
