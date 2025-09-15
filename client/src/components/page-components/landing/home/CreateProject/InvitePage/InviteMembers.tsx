@@ -120,7 +120,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
           console.log(response, "fromserver after invite");
           toast.success("Invitation send");
           setTimeout(() => {
-            dispatch(setLog(response.data.logs));
+          
             navigate("/work-space");
           }, 5000);
         }

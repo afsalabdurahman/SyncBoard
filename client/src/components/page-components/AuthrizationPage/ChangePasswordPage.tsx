@@ -121,7 +121,7 @@ console.log(userId,"userId")
     setLoading(true)
     try {
   const response: AxiosResponse<any, any> = await api.patch(
-        `/api/member/change/password/${userId}`,
+        `member/change/password/${userId}`,
         { currentPassword:formData.currentPassword, newPassword: formData.confirmPassword }
       );
 if(response.status){
