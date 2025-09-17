@@ -186,7 +186,7 @@ setRefreshKey((prev) => prev + 1);
     // call your delete function here
   };
   const openAddModal = () => {
-    if (projects.length > 5) {
+    if (projects.length > 2) {
       setSuscription(true);
     } else {
       setEditingProject(null);

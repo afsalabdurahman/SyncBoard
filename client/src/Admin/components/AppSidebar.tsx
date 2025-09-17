@@ -8,7 +8,8 @@ import {
   Moon,
   Sun,
   FileCheck,
-  Icon
+  Icon,
+  CreditCard ,
   
 } from "lucide-react";
 //import { useTheme } from "next-themes"
@@ -52,6 +53,11 @@ const menuItems = [
   {title:"Task Approval",
     icon:FileCheck,
     id:"approval"
+  },
+  {
+    title:"Suscription",
+    icon:CreditCard,
+    id:"suscription"
   },
   {
     title: "Settings",

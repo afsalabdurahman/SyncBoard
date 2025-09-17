@@ -15,11 +15,17 @@ const Invite = () => {
   });
   if (workspaceName.isAdmin !== true) {
     return (
-      <div className='flex items-center justify-center h-screen'>
-        <h1 className='text-2xl font-bold text-red-600'>
-          You are not authorized to access this page.
-        </h1>
-      </div>
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+  <div className="text-center p-8 rounded-2xl shadow-md bg-white">
+    <h1 className="text-3xl font-semibold text-gray-800 mb-4">
+      🚫 Access Denied
+    </h1>
+    <p className="text-lg text-gray-600">
+      You are not authorized to access this page.
+    </p>
+  </div>
+</div>
+
     );
   }
 

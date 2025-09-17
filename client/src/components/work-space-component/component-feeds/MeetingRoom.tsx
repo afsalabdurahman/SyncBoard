@@ -81,7 +81,7 @@ export default function MeetingRoom() {
               <div className='flex items-center'>
                 <div className='relative mr-3'>
                   <img
-                    src={participant.imageUrl}
+                    src={participant.imageUrl?participant.imageUrl:"images/user.jpeg"}
                     alt={participant.name}
                     className='w-10 h-10 rounded-full object-cover border-2 border-slate-200'
                   />

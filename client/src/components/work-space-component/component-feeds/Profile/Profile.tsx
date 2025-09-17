@@ -73,11 +73,13 @@ export default function Profile() {
       workspace: state.workspace,
       joinDate: formateDate,
       userData: state.user,
+      
     };
     return data;
   });
-  console.log(Userdata.userData.user._id, "userdata from profile");
+  console.log(Userdata.userData, "userdata from profile");
   const userId = Userdata.userData.user._id;
+  const isAdmin= Userdata.userData.user.role=="Admin"?true:false;
   const [activeTab, setActiveTab] = useState("about");
   const [isEditing, setIsEditing] = useState(false);
   const [editSection, setEditSection] = useState(null);
@@ -380,6 +382,7 @@ export default function Profile() {
                         >
                           Save Changes
                         </button>
+                        
                       </div>
                     </div>
                   ) : (
@@ -414,6 +417,25 @@ export default function Profile() {
                         <MapPin size={14} className='mr-1' />
                         <span>{profileData.location}</span>
                       </div>
+ {isAdmin&&( <div className="go to admin">
+    <a 
+  href="/admin" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium
+             border border-slate-200 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-200
+             text-slate-700 transition-colors"
+  aria-label="Go to admin page"
+>
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M3 13.5V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 21v-6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M7 21h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+  Go to admin
+</a>
+  </div>)}
+
                     </>
                   )}
                 </div>
@@ -448,8 +470,11 @@ export default function Profile() {
                   <Key className='flex-shrink-0 h-5 w-5 text-white' />
                   Change Password
                 </button>
+                
               </div>
             </div>
+
+
 
             {/* Tabs */}
             <div className='border-b border-gray-200'>
