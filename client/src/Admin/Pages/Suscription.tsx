@@ -41,7 +41,7 @@ export const Suscription = (props:any) => {
         "Custom workflows",
       ],
       popular: true,
-      buttonText: "Start Free Trial",
+      buttonText: "Upgrade to Pro",
     },
     {
       name: "Enterprise",
