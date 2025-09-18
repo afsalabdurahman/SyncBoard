@@ -13,6 +13,7 @@ import chatRoutes from "./presentation/routes/chatRoutes";
 import activityRoutes  from"./presentation/routes/activityRoutes"
 import projectRoutes from "./presentation/routes/projectRoutes"
 import taskRoutes from "./presentation/routes/taskRoutes"
+import checkoutRoutes from "./presentation/routes/checkoutRoutes"
 import { Server } from "socket.io";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
 import { CustomRequest } from "./presentation/types/CustomRequest";
@@ -67,6 +68,7 @@ app.use("/api/project",projectRoutes)
 app.use("/api/task",taskRoutes)
 app.use("/api/chat",chatRoutes)
 app.use("/api/activities",activityRoutes)
+app.use("/api/checkout",checkoutRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);
 app.use(errorMiddleware);
