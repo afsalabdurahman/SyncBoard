@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, model, Document,Types } from "mongoose";
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId|string;
   role: "Member" | "Admin" | "SuperAdmin";
@@ -47,6 +47,8 @@ export interface IUser extends Document {
   isBlock:boolean;
   isDelete:boolean;
   isOnline:boolean;
+  stripeCustomerId?: string;
+  currentSubscription?: Types.ObjectId;
   
 }
 
@@ -72,7 +74,9 @@ const userSchema = new Schema<IUser>(
     isSuperAdmin:{type:Boolean,default:false},
     isBlock:{type:Boolean,default:false},
     isDelete:{type:Boolean,default:false},
-    isOnline:{type:Boolean,default:false}
+    isOnline:{type:Boolean,default:false},
+     stripeCustomerId: {type:String},
+  currentSubscription: { type: Schema.Types.ObjectId, ref: 'Subscription' },
   },
   { timestamps: true }
 );

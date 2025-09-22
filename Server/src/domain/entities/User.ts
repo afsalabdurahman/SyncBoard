@@ -1,6 +1,6 @@
-import { AnyMxRecord } from "dns";
-import mongoose from "mongoose";
 
+import mongoose from "mongoose";
+import { ObjectId } from "mongoose";
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
   role: "Member" | "Admin" | "SuperAdmin";
@@ -27,6 +27,8 @@ export class User {
   isBlock?:boolean;
   isDelete?:boolean;
   isOnline?:boolean;
+    stripeCustomerId?: string;
+  currentSubscription?: ObjectId;
 
   constructor(
     email: string,

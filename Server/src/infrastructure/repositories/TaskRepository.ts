@@ -6,6 +6,7 @@ import { ITask, TaskModel } from "../database/models/TaskModel";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
+
     console.log(dto, "task repostir@");
     let task = await TaskModel.create(dto);
     console.log(task, "MOngodb repostir@");
@@ -17,6 +18,7 @@ export class TaskRepository implements ITaskRepository {
     return tasks;
   }
   async updatetask(taskId: string, merged: any): Promise<boolean> {
+    
     const objectId: any = new mongoose.Types.ObjectId(taskId.toString());
     const update = await TaskModel.updateOne(
       { _id: objectId },

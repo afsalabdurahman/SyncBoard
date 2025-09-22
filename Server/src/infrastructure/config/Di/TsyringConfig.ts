@@ -38,10 +38,18 @@ import { ChatUsecase } from "../../../application/use-cases/chat/ChatUsecase";
 import { ChatRepository } from "../../repositories/ChatRepository";
 import { ActivityUsecase } from "../../../application/use-cases/activity/ActivityUsecase";
 import { ActivityRepository } from "../../repositories/ActivityRepository";
-
+import {SuscriptionRepository} from "../../repositories/SuscriptionRepository"
+import {SubscriptionUsecase} from "../../../application/use-cases/suscription/SuscriptionUsecase"
+import {PlanUsecase} from "../../../application/use-cases/suscription/plans/PlanUsecase"
+import {StripeService} from "../../services/StripeService"
+import {PlanRepository} from "../../repositories/PlanRepository"
+container.register("SuscriptionRepository",{useClass:SuscriptionRepository})
+container.register("IStripeServices",{useClass:StripeService})
+container.register("PlanRepository",{useClass:PlanRepository})
 container.register("ActivityRepository", { useClass: ActivityRepository });
 container.register("ActivityUsecase", { useClass: ActivityUsecase });
-
+container.register("SuscriptionUsecase",{useClass:SubscriptionUsecase})
+container.register("PlanUsecase",{useClass:PlanUsecase})
 container.register("ChatUseCase", { useClass: ChatUsecase });
 container.register("ChatRepository", { useClass: ChatRepository });
 container.register("TaskUsecase", { useClass: TaskUsecase });

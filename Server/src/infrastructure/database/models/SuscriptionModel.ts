@@ -1,9 +1,9 @@
-// models/Subscription.ts
+
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface ISubscription extends Document {
   user: Types.ObjectId;
-  planKey: string; // 'free'|'pro'|'enterprise'
+  planKey: string; 
   status: 'trialing' | 'active' | 'past_due' | 'canceled' | 'unpaid' | 'expired';
   startedAt?: Date;
   currentPeriodStart?: Date;
@@ -11,7 +11,7 @@ export interface ISubscription extends Document {
   cancelAtPeriodEnd?: boolean;
   stripeSubscriptionId?: string;
   stripePriceId?: string;
-  quantity?: number; // seats or similar
+  quantity?: number; 
   metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
@@ -31,4 +31,4 @@ const SubscriptionSchema = new Schema<ISubscription>({
   metadata: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
-export const Subscription = model<ISubscription>('Subscription', SubscriptionSchema);
+export const SubscriptionModel = model<ISubscription>('Subscription', SubscriptionSchema);
