@@ -255,6 +255,7 @@ const closeDialog = () =>{
                       >
                         <Edit className='h-4 w-4' />
                       </Button>
+                      {user.isAdmin?null:
                       <>
                         {user.isDelete ? (
                           <Button
@@ -274,6 +275,7 @@ const closeDialog = () =>{
                           </Button>
                         )}
                       </>
+}
                     </div>
                   </TableCell>
                 </TableRow>

@@ -18,10 +18,9 @@ export class TaskController {
     try {
       console.log(req.body, "bosy");
       const dto = new TaskRequstDTO(req.body.newTask);
-      console.log(dto, "return dto @control");
+
       dto.toValidate();
       const tasktEntity = await TaskMapper.toEntity(dto);
-      console.log(tasktEntity, "entifty from controller");
 
       const savedTask = await this.taskUsecase.execute(tasktEntity);
       const resposeDTO = TaskMapper.toRegisterDTO(savedTask);
@@ -38,7 +37,7 @@ export class TaskController {
   ): Promise<void> {
     try {
       const tasks = await this.taskUsecase.getAllTasks();
-      console.log(tasks, "from@controller");
+  
       res.status(HttpStatusCode.OK).json(tasks);
     } catch (error) {
       next(error);
@@ -49,12 +48,18 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log(req.body, "body");
-    console.log(req.params, "params@contro");
     const taskId = req.params.id;
     try {
       const response = await this.taskUsecase.update(taskId, req.body.taskData);
-      res.send(200);
+      if (!response) {
+        res.status(HttpStatusCode.NOT_FOUND).json({ success: false, message: "Task not found" });
+        return;
+      }
+      
+      res.status(HttpStatusCode.OK).json({
+        success: true,
+        message: ResponseMessages.SUCCESS,
+      });
     } catch (error) {
       console.log(error);
       next(error);
@@ -82,15 +87,14 @@ export class TaskController {
   ): Promise<void> {
     try {
       console.log(req.params, "params");
-      console.log(req.query,"quey");
-      const alltask:any=req.query.count
-      console.log(alltask)
+      console.log(req.query, "quey");
+      const alltask: any = req.query.count;
+      console.log(alltask);
       const userName = req.params.username;
       if (!req.params.username) throw new NotFoundError("User not found");
-      if(alltask=="all") 
-        { const data =await this.taskUsecase.myTask(userName,alltask)
-
-        }
+      if (alltask == "all") {
+        const data = await this.taskUsecase.myTask(userName, alltask);
+      }
       const task = await this.taskUsecase.myTask(userName);
       console.log(task, "tasks");
       res.status(HttpStatusCode.OK).json(task);
@@ -115,33 +119,41 @@ export class TaskController {
       next(error);
     }
   }
-async findAllCompletedTasks(req:Request,res:Response):Promise<void>{
-const task= await this.taskUsecase.completedTask()
-res.status(HttpStatusCode.OK).json(task)
-
-}
-async controllApprovalSatatus(req:Request,res:Response,next:NextFunction){
-  console.log(req.body,"Boduy+++",req.params,"+++pramm")
-  try {
-      const taskId=req.params.id;
-  const status=req.body.status;
-  const msg =req.body.msg;
-  if(!taskId||!status) throw new NotFoundError("Task id or status not found")
-  await this.taskUsecase.updateApprovalStatus(taskId,status,msg)
-  res.status(HttpStatusCode.OK).json({message:"Updated"})
-  } catch (error) {
-    next(error)
+  async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
+    const task = await this.taskUsecase.completedTask();
+    res.status(HttpStatusCode.OK).json(task);
   }
-
-}
-async findTaskByProject(req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
-    if(!req.params.projectId) throw new NotFoundError("Id is not found")
-    const task = await this.taskUsecase.findTaskByProjectId(req.params.projectId)
-res.status(HttpStatusCode.OK).json(task)
-  } catch (error) {
-    next(error)
+  async controllApprovalSatatus(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log(req.body, "Boduy+++", req.params, "+++pramm");
+    try {
+      const taskId = req.params.id;
+      const status = req.body.status;
+      const msg = req.body.msg;
+      if (!taskId || !status)
+        throw new NotFoundError("Task id or status not found");
+      await this.taskUsecase.updateApprovalStatus(taskId, status, msg);
+      res.status(HttpStatusCode.OK).json({ message: "Updated" });
+    } catch (error) {
+      next(error);
+    }
   }
-  
-}
+  async findTaskByProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      if (!req.params.projectId) throw new NotFoundError("Id is not found");
+      const task = await this.taskUsecase.findTaskByProjectId(
+        req.params.projectId
+      );
+      res.status(HttpStatusCode.OK).json(task);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

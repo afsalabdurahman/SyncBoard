@@ -1,14 +1,16 @@
-"use client"
 
 import { useState } from "react"
 import CurrentPlanOverview from "../components/CurrentPlanSus"
 import UsageMetricsComponent from "../components/UsagesInSus"
 import PaymentInfoComponent from "../components/PaymentInfoSus"
 import BillingHistory from "../components/BillSuscription"
-
+import ButtonSus from "./ButtonSus"
+import { useSearchParams, useNavigate } from "react-router-dom";
+import CheckoutPage from "./CheckoutPage"
 export type Plan = "Free" | "Pro" | "Enterprise"
 
 export interface PaymentInfo {
+  plan:Plan
   amount: string
   date: string
   status: "Success" | "Failed" | "Pending"
@@ -33,7 +35,7 @@ export default function SubscriptionPage() {
   const [currentPlan, setCurrentPlan] = useState<Plan>("Free")
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-
+const [checkout,setCheckout]=useState(false)
   const [usageMetrics] = useState<UsageMetrics>(() => {
     const baseMetrics = {
       Free: {
@@ -84,21 +86,28 @@ export default function SubscriptionPage() {
 
   const handleUpgrade = async (targetPlan: Plan) => {
     setIsProcessing(true)
-
+console.log(targetPlan,"taget")
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     const amount = targetPlan === "Pro" ? "$10/month" : "$50/month"
     const currentDate = new Date().toLocaleDateString()
 
     setPaymentInfo({
+      plan:targetPlan,
       amount,
       date: currentDate,
       status: "Success",
     })
-
-    setCurrentPlan(targetPlan)
-    setIsProcessing(false)
+ setCheckout(true)
+    // setCurrentPlan(targetPlan)
+    // setIsProcessing(false)
   }
+
+if(checkout){
+  return(<CheckoutPage setCheckout={setCheckout} payamentInfo={paymentInfo}/>)
+}
+
+
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
@@ -109,6 +118,7 @@ export default function SubscriptionPage() {
       {paymentInfo && <PaymentInfoComponent paymentInfo={paymentInfo} />}
 
       <BillingHistory billingHistory={billingHistory} />
+      {/* <ButtonSus/> */}
     </div>
   )
 }

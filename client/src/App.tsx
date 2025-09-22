@@ -17,8 +17,9 @@ import AdminDashboard from "./Admin/Pages/AdminDashboard";
 import AdminLogin from "./Admin/Pages/AdminLogin";
 
 import Invite from "./components/work-space-component/component-feeds/Invite";
-import {Layout} from "./SuperAdmin/Layout/Layout"
-import {Login} from "./SuperAdmin/pages/Login"
+import { Layout } from "./SuperAdmin/Layout/Layout";
+import { Login } from "./SuperAdmin/pages/Login";
+import CheckoutPage from "./Admin/Pages/CheckoutPage";
 
 function App() {
   return (
@@ -46,47 +47,26 @@ function App() {
             path='/create-workspace'
             element={<CreateWorkspacePage />}
           ></Route>
-             <Route
-            path='/invite-members'
-            element={<InviteMembers />}
-          ></Route>
-            <Route
-            path='/work-space'
-            element={<WorkSpacePage />}
-          ></Route>
-           <Route
+          <Route path='/invite-members' element={<InviteMembers />}></Route>
+          <Route path='/work-space' element={<WorkSpacePage />}></Route>
+          <Route
             path='/invite-members/:workspaceSlug'
             element={<LinkInvitaionPage />}
           ></Route>
-           <Route
+          <Route
             path='/multiple-workspace'
-            element={< MulipleWorkspace/>}
+            element={<MulipleWorkspace />}
           ></Route>
-          <Route
-            path='/user-profile'
-            element={< Profile/>}
-          ></Route>
+          <Route path='/user-profile' element={<Profile />}></Route>
           {/* Admin DashBorad */}
-          <Route
-            path='/admin'
-            element={< AdminLogin/>}
-          ></Route>
-           <Route
-            path='/admin-dashboard'
-            element={< AdminDashboard/>}
-          ></Route>
-          <Route
-            path='/test'
-            element={< Invite/>}
-          ></Route>
-  
-
-
+          <Route path='/admin' element={<AdminLogin />}></Route>
+          <Route path='/admin-dashboard' element={<AdminDashboard />}></Route>
+          <Route path='/test' element={<Invite />}></Route>
+         {/* // <Route path='/checkout' element={<CheckoutPage />}></Route> */}
 
           {/* SuperAdmin */}
-         <Route path="/platform/login" element = {<Login/>}/>
-          <Route path="/platform/admin"
-          element ={<Layout/>}/>
+          <Route path='/platform/login' element={<Login />} />
+          <Route path='/platform/admin' element={<Layout />} />
         </Routes>
       </BrowserRouter>
     </>

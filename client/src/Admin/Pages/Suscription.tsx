@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import { X, Check, Users, Shield, Zap } from "lucide-react"

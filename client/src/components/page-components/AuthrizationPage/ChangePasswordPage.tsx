@@ -162,7 +162,7 @@ if(response.status){
 }}
     } catch (error) {
       console.error('Error changing password:', error);
-      setErrors({ api: 'Failed to change password. Please try again.' });
+      // setErrors({ api: 'Failed to change password. Please try again.' });
       setLoading(false)
     }
 
