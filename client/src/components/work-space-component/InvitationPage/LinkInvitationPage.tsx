@@ -120,12 +120,9 @@ const LinkInvitaionPage = () => {
         setLoading(false);
         console.log(response, "this repose from new meber");
         dispatch(setWorkspace(response.data.workspace));
-        //  dispatch(setUserEmail(email));
-        //  dispatch(setUserPassword(password));
-        //  dispatch(setUserName(name));
-        console.log(response, "from axios luinkde");
-        //  let data={name,email,password,role,title}
-        // dispatch(setLog(response.data.logs))
+
+     
+        
         dispatch(setUserData(response.data.user));
         //  console.log(response.data.userData,"user data from new member")
         navigate("/work-space");

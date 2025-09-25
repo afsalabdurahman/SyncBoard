@@ -1,85 +1,100 @@
 import { inject, injectable } from "tsyringe";
 import { Task } from "../../../domain/entities/Task";
-import {TaskRequstDTO} from "../../../presentation/dots/taskDTO/requestDTO"
+
 //import { ITaskRepository } from "../../repositories/ITask";
-import { NotFoundError } from "../../../utils/errors";
-import {ITaskRepository} from "../../../domain/interfaces/repositories/ITaskRepository"
+import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { ITaskRepository } from "../../../domain/interfaces/repositories/ITaskRepository";
 import { ITaskUseCase } from "../../repositories/ITask";
 import { io } from "../../../server";
+import { TaskRequestDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
+import { TaskMapper } from "../../mappers/TaskMapper";
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
+  constructor(
+    @inject("TaskRepository") private _taskRepository: ITaskRepository
+  ) {}
 
-constructor(@inject ("TaskRepository")private taskRepository:ITaskRepository ){}
-
-async execute(taskEntiry: Task): Promise<Task> {
-     console.log(taskEntiry,"from usecase@2")
-     const taskData=await this.taskRepository.create(taskEntiry)
-     if(!taskData) throw new NotFoundError("Project not created")
-      io.emit("new-task", {
+  async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
+    const isValid = TaskMapper.validateTask(input);
+    if (!isValid.success) throw new ValidationError("Validation failed");
+    const taskEntity = TaskMapper.mapTaskToEntity(input);
+    const taskData = await this._taskRepository.create(taskEntity);
+    if (!taskData) throw new NotFoundError("Task not created");
+    const responseDTO = TaskMapper.mapEntityToTask("Task is created");
+    io.emit("new-task", {
       name: taskData.name,
       message: `🚀 New task "${taskData.name}" has been added!`,
     });
-    return taskData;
-}
+    return responseDTO;
+  }
 
-async getAllTasks(): Promise<Task> {
-   let allTasks= await this.taskRepository.getAlltask()
-   console.log("@usecase",allTasks)
-   if(!allTasks) throw new NotFoundError("Task is not found")
-   return allTasks
-}
-async update(taskId: string, ...args: any[]): Promise<boolean> {
-     console.log(taskId,"@usecase Project ID")
-  console.log(...args,"@usecaser ARG")
-   const merged = Object.assign({}, ...args);
-    console.log(merged,"@merge usecase");
-      let updatetask = await this.taskRepository.updatetask(taskId,merged)
-      return true
-}
-async deleteTask(taskId: string): Promise<void> {
-   await this.taskRepository.deleteTask(taskId)
-}
-async myTask(userName: string,query:any): Promise<Task> {
-   console.log(userName,"@task use,",query,"@task use")
+  async getAllTasks(): Promise<Task> {
+    let allTasks = await this._taskRepository.getAlltask();
+    console.log("@usecase", allTasks);
+    if (!allTasks) throw new NotFoundError("Task is not found");
+    return allTasks;
+  }
+  async update(taskId: string, ...args: any[]): Promise<boolean> {
+    console.log(taskId, "@usecase Project ID");
+    console.log(...args, "@usecaser ARG");
+    const merged = Object.assign({}, ...args);
+    console.log(merged, "@merge usecase");
+    let updatetask = await this._taskRepository.updatetask(taskId, merged);
+    return true;
+  }
+  async deleteTask(taskId: string): Promise<void> {
+    await this._taskRepository.deleteTask(taskId);
+  }
+  async myTask(userName: string, query: any): Promise<Task> {
+    console.log(userName, "@task use,", query, "@task use");
 
-   const myTask=await this.taskRepository.myTask(userName,query)
-   console.log(myTask,"from usecase##")
-   return myTask
-}
-async updateTaskStatus(taskId: string, status: string): Promise<void> {
-  await this.taskRepository.updateTaskStatus(taskId,status)
-}
-async completedTask(): Promise<any> {
-    
-   const [completedTasks,taskReject] = await this.taskRepository.allCompletedTasks()
-   const tasks=[...completedTasks,...taskReject]
- const mappedData = tasks.map((task:any) => {
-  return {
-   id:task._id,
-    taskName: task.name,
-    project: task.project,
-    username: task.assignedUser,
-    status: task.approvalStatus=="Waiting"?"pending":
-            task.approvalStatus=="Approved"?"approved":
-            task.approvalStatus=="Rejected"?"rejected":"pending",
-            
-    submittedAt: task.updatedAt,
-    rejectionReason : task.rejectionMsg,
-    
-  };
-});
+    const myTask = await this._taskRepository.myTask(userName, query);
+    console.log(myTask, "from usecase##");
+    return myTask;
+  }
+  async updateTaskStatus(taskId: string, status: string): Promise<void> {
+    await this._taskRepository.updateTaskStatus(taskId, status);
+  }
+  async completedTask(): Promise<any> {
+    const [completedTasks, taskReject] =
+      await this._taskRepository.allCompletedTasks();
+    const tasks = [...completedTasks, ...taskReject];
+    const mappedData = tasks.map((task: any) => {
+      return {
+        id: task._id,
+        taskName: task.name,
+        project: task.project,
+        username: task.assignedUser,
+        status:
+          task.approvalStatus == "Waiting"
+            ? "pending"
+            : task.approvalStatus == "Approved"
+              ? "approved"
+              : task.approvalStatus == "Rejected"
+                ? "rejected"
+                : "pending",
 
-console.log(mappedData,"mapped")
-   return mappedData
-}
-async updateApprovalStatus(taskId: string, status: string, msg?: string|null): Promise<void> {
-   await this.taskRepository.updateApprovalStatus(taskId,status,msg)
-}
+        submittedAt: task.updatedAt,
+        rejectionReason: task.rejectionMsg,
+      };
+    });
 
-async findTaskByProjectId(projectId: string): Promise<any> {
-const  projectTask = await this.taskRepository.findTaskByProjectId(projectId)
+    console.log(mappedData, "mapped");
+    return mappedData;
+  }
+  async updateApprovalStatus(
+    taskId: string,
+    status: string,
+    msg?: string | null
+  ): Promise<void> {
+    await this._taskRepository.updateApprovalStatus(taskId, status, msg);
+  }
 
-console.log(projectTask,"from useCse@projec++")
-return projectTask
-}
+  async findTaskByProjectId(projectId: string): Promise<any> {
+    const projectTask =
+      await this._taskRepository.findTaskByProjectId(projectId);
+
+    console.log(projectTask, "from useCse@projec++");
+    return projectTask;
+  }
 }

@@ -74,9 +74,7 @@ console.log(response,"sent otp")
       if (response.status === 200) {
         setLoading(false);
         
-        // dispatch(setUserEmail(email));
-        // dispatch(setUserPassword(password));
-        // dispatch(setUserName(name));
+     
       let data={email,password,name,isAdmin:true,superAdmin:true}
         dispatch(setUserData(data))
         navigate("/verify-otp");

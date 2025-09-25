@@ -10,85 +10,85 @@ import { IAuthService } from "../../../../domain/interfaces/services/IAuthServic
 import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../../common/errorCodes";
 import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository";
+import {
+  MemberRegisterResposeDTO,
+  MemeberRegisterRequestDTO,
+} from "../../../dto/AuthDTOs";
+import { AuthMapper } from "../../../mappers/AuthMapper";
 @injectable()
 export class MemberRegisterUsecase implements IMemberRegister {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("AuthService") private authService: IAuthService,
+    @inject("UserRepository") private _userRepository: IUserRepository,
+    @inject("AuthService") private _authService: IAuthService,
     @inject("WorkspaceRepository")
     private workspaceRepository: IWorkspaceRepository
   ) {}
 
   async execute(
-    name: string,
-    email: string,
-    password: string,
-    slug: string,
-    title: string,
-    role: "Member" | "Admin" | "SuperAdmin"
-  ): Promise<User|any> {
-    let isFound = await this.userRepository.findByEmail(email);
+    dto: MemeberRegisterRequestDTO
+  ): Promise<MemberRegisterResposeDTO> {
+    let isFound = await this._userRepository.findByEmail(dto.email);
     if (isFound)
       throw new CustomError("User is exists", HttpStatusCode.CONFLICT);
-    let hashedPassword = await this.authService.hashPassword(password);
+    let hashedPassword = await this._authService.hashPassword(dto.password);
+    dto.password = hashedPassword;
     if (!hashedPassword)
       throw new CustomError(
         "Something went to wrong ",
         HttpStatusCode.CONFLICT
       );
-    //   await this.workspaceRepository.addMemberToWorkspace()
-    //create userEntity
+    const newMember = AuthMapper.mapMemebrToEntity(dto);
 
-    const user = new User(
-      email,
-      hashedPassword,
-      name,
-      role,
-      new Date(),
-      new Date(),
-      undefined,
-      undefined,
-      title
-    );
-
-    let createMember = await this.userRepository.create(user);
-    if (!createMember) throw new InternalServerError("Member creation Failed");
-    const token = this.authService.generateToken({
-      id: createMember._id,
+    let createMember = await this._userRepository.create(newMember);
+    if (!createMember || !createMember._id)
+      throw new InternalServerError("Member creation Failed");
+    const token = this._authService.generateToken({
+      id: createMember._id ?? "",
       email: createMember.email!,
       role: createMember.role!,
     });
-     const refreshToken = this.authService.generateRefreshToken({
+    const refreshToken = this._authService.generateRefreshToken({
       id: createMember._id!,
       email: createMember.email!,
       role: createMember.role!,
     });
-    
-    console.log(createMember,"member is created++");
+
     if (!this.workspaceRepository.findbySlug) {
       throw new NotFoundError("not found repo");
     }
 
-    let workspace: any = await this.workspaceRepository.findbySlug(slug);
-    if (!workspace) throw new NotFoundError("Workspace not found ");
-    console.log(workspace,"workspce created++")
-    const addToWorkspace = await this.userRepository.addToWorkspace(
+    let workspace: any = await this.workspaceRepository.findbySlug(
+      dto.slug ?? ""
+    );
+    if (!workspace || workspace.slug)
+      throw new NotFoundError("Workspace not found ");
+
+    const addToWorkspace = await this._userRepository.addToWorkspace(
       createMember._id,
       workspace.id,
-      role
+      dto.role
     );
-    console.log(addToWorkspace,"user.push mebrss+++")
+
     if (!this.workspaceRepository.addMemberToWorkspace)
       throw new NotFoundError("member not found ");
-    const insertToWorkspce =await this.workspaceRepository.addMemberToWorkspace(
-        slug,
+
+    const insertToWorkspce =
+      await this.workspaceRepository.addMemberToWorkspace(
+        workspace.slug,
         createMember._id,
-        role,
-        name,
-        email,
-        title
+        dto.role,
+        dto.name,
+        dto.email,
+        dto.title
       );
-      console.log(insertToWorkspce,"worspce.pushmemners++++")
-    return {createMember,insertToWorkspce,token,refreshToken}
+
+    const response = AuthMapper.mapEntityToMember(
+      createMember,
+      insertToWorkspce,
+      token,
+      refreshToken
+    );
+
+    return response;
   }
 }

@@ -1,5 +1,5 @@
-import { User } from "../../domain/entities/User";
 
+import { MemberRegisterResposeDTO, MemeberRegisterRequestDTO,  } from "../dto/AuthDTOs";
 export interface IMemberRegister {
-    execute (name:string,email:string,password:string,slug:string,title:string,role:string) :Promise<User>
+    execute (dto:MemeberRegisterRequestDTO) :Promise<MemberRegisterResposeDTO>
 }
