@@ -100,7 +100,7 @@ export function TasksPage() {
     console.log(taskData, "data submitteddd");
     const newTask = {
       ...taskData,
-      id: Math.max(...tasks.map((t) => t.id)) + 1,
+      // id: Math.max(...tasks.map((t) => t.id)) + 1,
     };
     setTasks([...tasks, newTask]);
     try {

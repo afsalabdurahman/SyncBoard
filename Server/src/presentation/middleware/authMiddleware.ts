@@ -39,10 +39,10 @@ if (!accessToken) {
         if (!user) {
         throw new AuthenticationError('User not found');
       }
-       if (user.isBlock) {
+       if (user.isBlocked) {
         throw new ForbiddenError('User is blocked');
       }
-      if(user.isDelete){
+      if(user.isDeleted){
          throw new ForbiddenError('User is removed');
       }
             req.user = { id: decoded.userId, role };

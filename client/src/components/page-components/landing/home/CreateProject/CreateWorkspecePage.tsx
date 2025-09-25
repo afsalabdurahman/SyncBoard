@@ -19,13 +19,16 @@ interface FormField {
 }
 
 const CreateWorkspacePage: React.FC = () => {
+  useSelector((state)=>{
+    console.log(state.user.user.id)
+  })
   let navigate=useNavigate()
 let dispach=useDispatch()
   const email = useSelector((state: RootState) => state?.user?.user?.email);
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
- const ownerId=useSelector((state:RootState) =>state?.user?.user?._id);
+ const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
 
-  console.log(email, "emailsss");
+  console.log(email,Userrole,ownerId, "emailsss");
 
 
   const [formFields, setFormFields] = useState<FormField[]>([
@@ -72,10 +75,10 @@ let dispach=useDispatch()
         }
         ,{withCredentials: true}
       );
-      console.log(response,"responseive axoios");
+      console.log(response,"responseive axoio+++++++++++++++s");
       if (response) {
-dispach(setWorkspace(response.data.WorkSpace.isCreate))
-dispach(setUserData(response.data.WorkSpace.user))
+dispach(setWorkspace(response.data.workspaceResponseDTO.workspace))
+dispach(setUserData(response.data.workspaceResponseDTO.user))
        navigate('/invite-members')
       }
     } catch (error) {

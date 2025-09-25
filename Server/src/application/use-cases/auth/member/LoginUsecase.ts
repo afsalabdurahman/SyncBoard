@@ -10,26 +10,32 @@ import {
   NotFoundError,
   ValidationError,
 } from "../../../../utils/errors";
+
 import { ILogin } from "../../../repositories/iauth/ILogin";
+import { LoginRequestDTO,LoginResponseDTO } from "../../../dto/AuthDTOs";
+import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository";
+import { AuthMapper } from "../../../mappers/AuthMapper";
 
 @injectable()
 export class LoginUsecase implements ILogin {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("authservice") private authService: IAuthService
+    @inject("UserRepository") private _userRepository: IUserRepository,
+    @inject("authservice") private _authService: IAuthService,
+     @inject("WorkspaceRepository")
+        private _workspaceRepository: IWorkspaceRepository
   ) {}
 
-  async loginUser(email: string, password: string): Promise<any> {
-    console.log(email, password, "usecases");
-    let user: User = await this.userRepository.findByEmail(email);
+  async loginUser(input:LoginRequestDTO): Promise<LoginResponseDTO> {
+    if(!input.email||!input.password) throw new NotFoundError("Email or Password not found")
+    let user: User = await this._userRepository.findByEmail(input.email);
     console.log(user, "userDatafrom usecses");
-    if (!user) {
-      throw new NotFoundError("User not found");
+    if (!user || !user.workspace) {
+      throw new NotFoundError("User or Workspace not found");
     }
-    if (user.isBlock) throw new ForbiddenError("User is blocked");
-    if (user.isDelete) throw new ForbiddenError("User is not found");
-    let isTrue = await this.authService.comparePassword(
-      password,
+    if (user.isBlocked) throw new ForbiddenError("User is blocked");
+    if (user.isDeleted) throw new ForbiddenError("User is not found");
+    let isTrue = await this._authService.comparePassword(
+      input.password,
       user.password
     );
     console.log(isTrue, "####");
@@ -37,17 +43,19 @@ export class LoginUsecase implements ILogin {
       throw new ValidationError("Password not match");
     }
 
-    let token = await this.authService.generateToken({
+    let token = await this._authService.generateToken({
       id: user._id!,
       email: user.email!,
       role: user.role!,
     });
 
-    let refreshToken = await this.authService.generateRefreshToken({
+    let refreshToken = await this._authService.generateRefreshToken({
       id: user._id!,
       email: user.email!,
       role: user.role!,
     });
-    return { user, token, refreshToken };
+   const workspaceData=await this._workspaceRepository.findByObjectId(user.workspace[0].workspaceId)
+return AuthMapper.mapEntityToMember(user,workspaceData,token,refreshToken)
+   
   }
 }

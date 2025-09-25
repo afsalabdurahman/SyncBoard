@@ -294,7 +294,7 @@ setRefreshKey((prev) => prev + 1);
                     </TableCell>
                     <TableCell>
                       <Badge variant='secondary' className='text-xs'>
-                        High
+                        {project.priority}
                       </Badge>
                     </TableCell>
                     <TableCell>

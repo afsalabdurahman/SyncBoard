@@ -4,6 +4,8 @@ import { IAuthService } from "../../../../domain/interfaces/services/IAuthServic
 import { injectable, inject } from "tsyringe";
 import { NotFoundError, InternalServerError } from "../../../../utils/errors";
 import { IAuth } from "../../../repositories/iauth/IAuth";
+import { AdminSignupRequestDTO,AdminSignupResponseDTO } from "../../../dto/AuthDTOs";
+import { AuthMapper } from "../../../mappers/AuthMapper";
 export interface RegisterInput {
   email: string;
   password: string;
@@ -14,52 +16,42 @@ export interface RegisterInput {
 @injectable()
 export class RegisterUseCase implements IAuth {
   constructor(
-    @inject("AuthService") private authService: IAuthService,
-    @inject("UserRepository") private userRepository: IUserRepository
+    @inject("AuthService") private _authService: IAuthService,
+    @inject("UserRepository") private _userRepository: IUserRepository
   ) {}
 
   async execute(
-    input: RegisterInput
-  ): Promise<{ user: User; token: string } | any> {
-    // Manual validation
+    input: AdminSignupRequestDTO
+  ): Promise<AdminSignupResponseDTO> {
 
-    const existingUser = await this.userRepository.findByEmail(input.email);
+    const existingUser = await this._userRepository.findByEmail(input.email);
     console.log(existingUser, "exist");
     if (existingUser) throw new NotFoundError("user already have an account");
 
     const validRoles = ["Member", "Admin", "SuperAdmin"];
-    const role =
-      input.role && validRoles.includes(input.role) ? input.role : "Admin";
+    const role = input.role && validRoles.includes(input.role) ? input.role : "Admin";
 
     // Hash password
-    const hashedPassword = await this.authService.hashPassword(input.password);
-
-    const user = new User(
-      input.email,
-      hashedPassword,
-      input.name,
-      role,
-      new Date(),
-      new Date(),
-      undefined
-    );
+    const hashedPassword = await this._authService.hashPassword(input.password);
+input.password=hashedPassword;
+  const newAdmin = AuthMapper.mapUserToEntity(input)
 
     // Save user to database
 
-    const savedUser = await this.userRepository.create(user);
-    console.log(savedUser, "saved user");
+    const savedUser = await this._userRepository.create(newAdmin);
+  console.log(savedUser,"user from db @registerUseCse")
     if (!savedUser) throw new InternalServerError("Failed mongodb");
-    const token = this.authService.generateToken({
-      id: savedUser._id,
+    const token = this._authService.generateToken({
+      id: savedUser._id??"",
       email: savedUser.email!,
       role: savedUser.role!,
     });
-    const refreshToken = this.authService.generateRefreshToken({
+    const refreshToken = this._authService.generateRefreshToken({
       id: savedUser._id!,
       email: savedUser.email!,
       role: savedUser.role!,
     });
-
-    return { user: savedUser, token, refreshToken };
+   return AuthMapper.mapEntityToUser(savedUser,token,refreshToken)
+    
   }
 }

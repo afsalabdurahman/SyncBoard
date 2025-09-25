@@ -1,9 +1,11 @@
 import mongoose, { Types } from "mongoose";
 import { Workspace } from "../../../domain/entities/Workspace";
+import { WorkspaceRequestDTO,WorkspaceResponseDTO } from "../../dto/WorkspaceDTOs";
+import { WorkspaceRepository } from "../../../infrastructure/repositories/WorkspaceRepository";
 
 export interface IWorkspace {
-    
-    createWorksapce(workspaceData: any,userId:any,title:string,value:string):Promise<Workspace|any>
+      createWorkspace(input: WorkspaceRequestDTO): Promise<WorkspaceResponseDTO>;
+   
     findWorkspace(id:Types.ObjectId):Promise<any>;
     updateWorkspace(id:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
 }
