@@ -1,10 +1,10 @@
 import { UserModel, IUser } from "../database/models/UserModel";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
-// import { DatabaseConfig } from "../config/DatabaseConfig";
+
 import { injectable, inject } from "tsyringe";
 import { Types, ObjectId, Date } from "mongoose";
-import { ConflictError } from "../../utils/errors";
+import { ConflictError, ValidationError } from "../../utils/errors";
 import { HttpStatusCode } from "../../common/errorCodes";
 import mongoose from "mongoose";
 import { WorkspaceMembership } from "../../domain/entities/User";
@@ -12,30 +12,12 @@ import { WorkspaceMembership } from "../../domain/entities/User";
 export class UserMongooseRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     try {
-      const document = await UserModel.findOne({ email }).exec();
-      console.log(document, "documenss");
+      const document = await UserModel.findOne({ email })
+      
+        .exec();
+      console.log(document, "documenss from db mongos user");
       if (!document) return null;
-      return new User(
-        document.email,
-        document.password,
-        document.name,
-        document.role as "Member" | "Admin" | "SuperAdmin",
-        document.createdAt,
-        document.updatedAt,
-        (document._id as Types.ObjectId).toString(),
-        document.workspace as WorkspaceMembership[],
-        document.title,
-        document.location,
-        document.imageUrl,
-        document.about,
-        document.phone,
-        document.isAdmin,
-        document.isSuperAdmin,
-        document.isBlock,
-        document.isDelete
-
-        // document.imageUrl
-      );
+      return document as User;
     } catch (error) {
       console.error(`Error finding user by email ${email}:`, error);
       throw new Error("Failed to find user");
@@ -45,62 +27,38 @@ export class UserMongooseRepository implements IUserRepository {
     let user = await UserModel.findById(id);
     return user;
   }
-  async create(entity: User): Promise<User | any> {
+  async create(entity: User): Promise<User> {
     try {
-      const isAdmin = entity.role == "Admin" ? true : false;
-      const document = new UserModel({
-        email: entity.email,
-        password: entity.password,
-        name: entity.name,
-        role: entity.role,
-        title: entity.title || null,
-        isAdmin: isAdmin,
-      });
       // Ensure mongoose connection is open before saving
       if (UserModel.db.readyState !== 1) {
         throw new Error("Database connection is not open");
       }
-      const savedDocument = await document.save();
-
-      return new User(
-        savedDocument.email,
-        savedDocument.password,
-        savedDocument.name,
-        savedDocument.role as "Member" | "Admin" | "SuperAdmin",
-        savedDocument.createdAt,
-        savedDocument.updatedAt,
-        (savedDocument._id as Types.ObjectId).toString(),
-        undefined,
-        savedDocument.title,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        savedDocument.isAdmin,
-        undefined,
-        savedDocument.isBlock,
-        savedDocument.isDelete
-        // savedDocument._id.toString()
-        // savedDocument.profileImage
-      );
+      const savedDocument = await UserModel.create(entity);
+      console.log(savedDocument, "svaeDoc ment in repo");
+      return savedDocument.toObject() as User;
     } catch (error) {
       console.error("Error creating user:", error);
       throw new Error("Failed to create user");
     }
   }
   async addToWorkspace(
-    userId: any,
-    workspaceId: any,
+    userId: string | ObjectId,
+    workspaceId: string | ObjectId,
     role: string,
     joinDate?: Date
-  ): Promise<any> {
-    let data = { workspaceId, role, joinDate: new Date() };
-    console.log(data, "from insertion +++");
+  ): Promise<User | any> {
+    const data = { workspaceId, role, joinDate: new Date() };
+
     try {
-      let updatedModel = await UserModel.updateOne(
+      const updatedModel = await UserModel.findOneAndUpdate(
         { _id: userId },
-        { $push: { workspace: data } }
-      );
+        {
+          $set: { title: role },
+          $push: { workspace: data },
+        },
+        { new: true }
+      ).lean<User | null>();
+
       return updatedModel;
     } catch (error) {
       console.log(error, "err");
@@ -157,19 +115,19 @@ export class UserMongooseRepository implements IUserRepository {
     return users;
   }
   async updateOnlineStatus(userId: string): Promise<void> {
-let objectId=new mongoose.Types.ObjectId(userId.toString());
-  const user = await UserModel.findByIdAndUpdate(
-  objectId,
-  { isOnline: true },
-  { new: true,upsert:true } 
-);
-// if(user.isOnline==true){
-//    await UserModel.findByIdAndUpdate(
-//   objectId,
-//   { isOnline: false },
-//   { new: true,upsert:true } 
-// );
-// }
-console.log(user,"#resposirioty")
+    let objectId = new mongoose.Types.ObjectId(userId.toString());
+    const user = await UserModel.findByIdAndUpdate(
+      objectId,
+      { isOnline: true },
+      { new: true, upsert: true }
+    );
+    // if(user.isOnline==true){
+    //    await UserModel.findByIdAndUpdate(
+    //   objectId,
+    //   { isOnline: false },
+    //   { new: true,upsert:true }
+    // );
+    // }
+    console.log(user, "#resposirioty");
   }
 }

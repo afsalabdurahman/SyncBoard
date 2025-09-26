@@ -100,13 +100,13 @@ export function TasksPage() {
     console.log(taskData, "data submitteddd");
     const newTask = {
       ...taskData,
-      id: Math.max(...tasks.map((t) => t.id)) + 1,
+      // id: Math.max(...tasks.map((t) => t.id)) + 1,
     };
     setTasks([...tasks, newTask]);
     try {
       let response = await apiService.post("task/create", { newTask });
       console.log(response, "from dba");
-        setRefreshKey((prev) => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       console.log(error, "errirorr");
     }

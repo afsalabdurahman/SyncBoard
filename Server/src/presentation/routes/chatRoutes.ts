@@ -2,13 +2,21 @@ import express from "express";
 import { Router } from "express";
 import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";
-import {ChatController} from "../controllers/chat/ChatController"
+import { ChatController } from "../controllers/chat/ChatController";
 import { container, registry } from "tsyringe";
 
-const route=Router()
-const memberAuth=[authMiddelware(),roleMiddleware(["Member","Admin"])]
-const chatController=container.resolve(ChatController)
-route.get("/history",memberAuth,chatController.chatHistor.bind(chatController))
-route.get("/online",memberAuth,chatController.findOnlineStatus.bind(chatController))
+const route = Router();
+const memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin"])];
+const chatController = container.resolve(ChatController);
+route.get(
+  "/history",
+  memberAuth,
+  chatController.chatHistor.bind(chatController)
+);
+route.get(
+  "/online",
+  memberAuth,
+  chatController.findOnlineStatus.bind(chatController)
+);
 
-export default route
+export default route;

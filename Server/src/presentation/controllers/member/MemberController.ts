@@ -8,15 +8,16 @@ import { NotFoundError, InternalServerError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
-import {IActivity} from "../../../application/repositories/IActivity"
+import { IActivity } from "../../../application/repositories/IActivity";
+import { MemeberRegisterRequestDTO } from "../../../application/dto/AuthDTOs";
 @injectable()
 export class MemberController {
   constructor(
     @inject("UpdateProfileUsecase")
     private updateProfileUsecase: IUpdateProfileUsecases,
-    @inject("ChangePasswordUsecase") private changePassword: IChangePasword,
-    @inject("MemberRegisterUsecase") private memberRegister: IMemberRegister,
-    @inject("ActivityUsecase") private activityUsecase: IActivity
+    @inject("ChangePasswordUsecase") private _changePasswordUsecase: IChangePasword,
+    @inject("MemberRegisterUsecase") private _memberRegisterUsecase: IMemberRegister,
+    @inject("ActivityUsecase") private _activityUsecase: IActivity
   ) {}
 
   async updateUserProfile(
@@ -34,7 +35,7 @@ export class MemberController {
         userId,
         req.body
       );
-      console.log(req.body,"user updatess")
+      console.log(req.body, "user updatess");
       res
         .status(HttpStatusCode.CREATED)
         .json({ message: ResponseMessages.SUCCESS, updatedData });
@@ -55,7 +56,7 @@ export class MemberController {
       if (!currentPassword || !newPassword) {
         throw new NotFoundError("filed is emty please enter");
       }
-      let status = await this.changePassword.execute(
+      let status = await this._changePasswordUsecase.execute(
         userId,
         currentPassword,
         newPassword
@@ -70,28 +71,24 @@ export class MemberController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log(req.body, "invitaion from mener");
-    let { name, email, password, workspaceSlug, title, role } = req.body;
+    const input: MemeberRegisterRequestDTO = {
+      email: req.body.email,
+      name: req.body.name,
+      password: req.body.password,
+      role: req.body.role,
+      title: req.body.title,
+      slug: req.body.workspaceSlug,
+    };
     try {
-      let { createMember, insertToWorkspce, token, refreshToken }: any =
-        await this.memberRegister.execute(
-          name,
-          email,
-          password,
-          workspaceSlug,
-          title,
-          role
-        );
-    const activityId:string = insertToWorkspce.logId;
-     await this.activityUsecase.userActivity(
-          name,
-          activityId
-        );
-      
-      setTokensInCookies(res, token, refreshToken);
+      let  response =
+        await this._memberRegisterUsecase.execute(input);
+      // const activityId: string = insertToWorkspce.logId;
+      // await this._activityUsecase.userActivity(name, activityId);
+
+      setTokensInCookies(res, response.token, response.refreshToken);
       res
         .status(HttpStatusCode.CREATED)
-        .json({ user: createMember, workspace: insertToWorkspce });
+        .json({ user: response.user, workspace: response.workspace });
     } catch (error) {
       next(error);
     }

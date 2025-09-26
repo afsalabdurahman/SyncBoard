@@ -1,8 +1,8 @@
-import {ProjectRequstDTO} from "../../presentation/dots/projectDTO/requestDTO"
-import {ProjectResponseDTO} from"../../presentation/dots/projectDTO/resposnseDTO"
+
 import { Project } from "../../domain/entities/Project"
+import { ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 export interface IProjectUsecase{
-excute(projectEntity:Project):Promise<Project>
+excute(input:ProjectRequstDTO):Promise<ProjectResponseDTO>
 getAllProjects():Promise<Project>
 removeAttachment(projectId:string,attachedUrl:string):Promise<void>
 update(projectId:string,...args: any[]): Promise<boolean>;

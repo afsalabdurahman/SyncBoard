@@ -9,13 +9,9 @@ import axios, { AxiosResponse } from "axios";
 const OtpVerification = () => {
   let navigate = useNavigate();
   let dispatch = useDispatch()
-  // const email = useSelector((state: RootState) => state.register.user_email);
-  // const name = useSelector((state: RootState) => state.register.user_name);
-  // const password = useSelector(
-  //   (state: RootState) => state.register.user_password
-  // );
+
   const userData = useSelector((state: RootState) => {
-    console.log(state, "state from otp verify");
+  
     let email = state?.user?.user?.email;
     let name = state?.user?.user?.name;
     let password = state?.user?.user?.password;
@@ -54,7 +50,7 @@ const OtpVerification = () => {
            
             { email:userData.email, otp: otpValue }
           );
-          console.log(response,"response from verify otp")
+          
           setIsValidTrue(true);
           
           setIsValidFalse(false);
@@ -63,7 +59,8 @@ const OtpVerification = () => {
             "auth/user/register",
             { name:userData.name, email:userData.email, password:userData.password,role:"Admin" },{withCredentials:true}
           );
-          console.log(addUserToDb,"userdata after verifyOtp")
+          console.log(addUserToDb,"response from register$$$")
+          console.log(addUserToDb,"userdata after verifyOtp IMPORTSNT")
           dispatch(setUserData(addUserToDb.data.user))
           setTimeout(() => {
             navigate('/create-workspace')

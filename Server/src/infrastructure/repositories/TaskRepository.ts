@@ -6,10 +6,7 @@ import { ITask, TaskModel } from "../database/models/TaskModel";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
-
-    console.log(dto, "task repostir@");
     let task = await TaskModel.create(dto);
-    console.log(task, "MOngodb repostir@");
     return task;
   }
   async getAlltask(): Promise<any | null> {
@@ -71,9 +68,9 @@ export class TaskRepository implements ITaskRepository {
   }
   async allCompletedTasks(): Promise<any> {
     const completedTasks = await TaskModel.find({ status: "Completed" });
-    const taskReject =  await TaskModel.find({approvalStatus:"Rejected"})
+    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" });
 
-    return [completedTasks,taskReject]
+    return [completedTasks, taskReject];
   }
   async updateApprovalStatus(
     taskId: string,
@@ -84,7 +81,7 @@ export class TaskRepository implements ITaskRepository {
     if (msg == null) {
       const updated = await TaskModel.updateOne(
         { _id: objId },
-        { $set: { approvalStatus: "Approved",rejectionMsg:null } }
+        { $set: { approvalStatus: "Approved", rejectionMsg: null } }
       );
     } else {
       const updated = await TaskModel.updateOne(
@@ -100,8 +97,8 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
- async findTaskByProjectId(projectId: string): Promise<any> {
-    const ProjectTask=await TaskModel.find({projectId:projectId})
-    return ProjectTask
+  async findTaskByProjectId(projectId: string): Promise<any> {
+    const ProjectTask = await TaskModel.find({ projectId: projectId });
+    return ProjectTask;
   }
 }
