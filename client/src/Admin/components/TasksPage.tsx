@@ -106,7 +106,7 @@ export function TasksPage() {
     try {
       let response = await apiService.post("task/create", { newTask });
       console.log(response, "from dba");
-        setRefreshKey((prev) => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       console.log(error, "errirorr");
     }
