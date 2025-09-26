@@ -13,7 +13,7 @@ export class AdminAuthController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log(req.body, "bodyyyyy");
+
     let { email, password } = req.body;
     try {
       let { user, workspace }: any = await this.loginUseCase.execute(

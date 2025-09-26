@@ -1,3 +1,5 @@
+import { LoginRequestDTO, LoginResponseDTO } from "../../dto/AuthDTOs";
+
 export interface ILogin{
-    loginUser(email:string,password:string):Promise<any>
+    loginUser(input:LoginRequestDTO):Promise<LoginResponseDTO>
 }

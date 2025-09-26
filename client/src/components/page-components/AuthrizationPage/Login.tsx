@@ -49,7 +49,7 @@ function Login() {
       if (response.status == 200) {
         console.log("response from login:", response);
 
-        dispatch(setWorkspace(response.data.workspaceData));
+        dispatch(setWorkspace(response.data.workspace));
         //  dispatch(setLog(response.data.logs))
         dispatch(setUserData(response.data.user));
         navigate("/work-space");

@@ -11,7 +11,8 @@ constructor(@inject("WorkspaceRepository")private workspaceRepository:IWorkspace
 ){}
 
 async getWorkspceDate(slug: string): Promise<Workspace> {
-    if(!this.workspaceRepository.findbySlug) throw new NotFoundError("Not found Repo")
+  console.log(slug,"slug from repo")
+ //   if(!this.workspaceRepository.findbySlug) throw new NotFoundError("Not found Repo")
       const workspceData = await this.workspaceRepository.findbySlug(slug)
     console.log(workspceData,"wprData++++")
     if(!workspceData) throw new NotFoundError("Workspace not found")

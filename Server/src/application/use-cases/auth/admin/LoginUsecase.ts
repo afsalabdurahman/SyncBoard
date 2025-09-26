@@ -8,13 +8,13 @@ import {IWorkspaceRepository} from "../../../../domain/interfaces/repositories/I
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
+    @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private authService: IAuthService,
     @inject("WorkspaceRepository") private workspceRepository:IWorkspaceRepository
   ) {}
   async execute(email: string, password: string): Promise<any | null> {
-    let user: User = await this.userRepository.findByEmail(email);
-    console.log(user, "user000,");
+    let user: User = await this._userRepository.findByEmail(email);
+    console.log(user, "user000+++++++++++++++++++,");
     if(!user.workspace) throw new NotFoundError("Workspace not found")
     const workspceId:any=user.workspace[0].workspaceId
     if (!user) throw new NotFoundError("Admin not found");

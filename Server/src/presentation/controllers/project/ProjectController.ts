@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 import { IProjectUsecase } from "../../../application/repositories/IProject";
-import { Project } from "../../../domain/entities/Project";
-import { ProjectRequstDTO } from "../../dots/projectDTO/requestDTO";
+import { ProjectRequstDTO } from "../../../application/dto/ProjectDTOs";
 
-import { ProjectMapper } from "../../dots/projectDTO/projectMapper";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { InternalServerError, NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
@@ -12,7 +10,7 @@ import { IActivity } from "../../../application/repositories/IActivity";
 @injectable()
 export class ProjectController {
   constructor(
-    @inject("ProjectUsecase") private projectUsecase: IProjectUsecase,
+    @inject("ProjectUsecase") private _projectUsecase: IProjectUsecase,
     @inject("ActivityUsecase") private activityUsecase: IActivity
   ) {}
 
@@ -22,33 +20,33 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.query, "quryyy+++",);
-      
-      const activityId:string = req.query.activityId?.toString()??"123"
-      const createdBy = req.params.adminName;
-      console.log(activityId, createdBy, "admiName+creatdBy");
-      const dto = new ProjectRequstDTO(req.body.newProject);
-      dto.toValidate();
+      const input: ProjectRequstDTO = {
+        name: req.body.newProject.name,
+        description: req.body.newProject.description,
+        assignedUsers: req.body.newProject.assignedUsers,
+        deadline: req.body.newProject.deadline,
+        status: req.body.newProject.status,
+        priority: req.body.newProject.priority,
+        clientName: req.body.newProject.clientName,
+        projectAdminId: req.body.newProject.projectAdminId,
+        attachedUrl: req.body.newProject.attachedUrl,
+      };
 
-      const projectEntity = ProjectMapper.toEntity(dto);
+      const ResponseDTO = await this._projectUsecase.excute(input);
 
-      const savedProject = await this.projectUsecase.excute(projectEntity);
-
-      const resposeDTO = ProjectMapper.toRegisterDTO(savedProject);
-      console.log(resposeDTO.name, "response");
-      if (resposeDTO.name) {
-        await this.activityUsecase.projctActivity(
-          resposeDTO.name,
-          createdBy,
-          activityId
-        );
-      }
-
-      res.status(HttpStatusCode.CREATED).json(resposeDTO);
+      res.status(HttpStatusCode.CREATED).json({ message: ResponseDTO });
     } catch (error) {
-      console.log(error);
       next(error);
     }
+    // const activityId:string = req.query.activityId?.toString()??"123"
+
+    // if (resposeDTO.name) {
+    //   await this.activityUsecase.projctActivity(
+    //     resposeDTO.name,
+    //     createdBy,
+    //     activityId
+    //   );
+    // }
   }
   async allProjects(
     req: Request,
@@ -56,7 +54,7 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const projects = await this.projectUsecase.getAllProjects();
+      const projects = await this._projectUsecase.getAllProjects();
       res.status(HttpStatusCode.OK).json(projects);
     } catch (error) {
       console.log(error, "error from get projects");
@@ -77,7 +75,7 @@ export class ProjectController {
       const projectId = req.params.projectId;
       const attachedUrl = req.params.encodedUrl;
 
-      await this.projectUsecase.removeAttachment(projectId, attachedUrl);
+      await this._projectUsecase.removeAttachment(projectId, attachedUrl);
 
       res
         .status(HttpStatusCode.OK)
@@ -95,7 +93,7 @@ export class ProjectController {
     console.log(req.body, "biodyyyy");
     console.log(req.params, "params@contro");
     const projectId = req.params.id;
-    const responseFromUsecas = await this.projectUsecase.update(
+    const responseFromUsecas = await this._projectUsecase.update(
       projectId,
       req.body.editingProject
     );
@@ -112,7 +110,7 @@ export class ProjectController {
       const projectId = req.params.id;
       if (!projectId) throw new NotFoundError("ProjectId not found");
       console.log(req.params);
-      await this.projectUsecase.deleteProject(projectId);
+      await this._projectUsecase.deleteProject(projectId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
     } catch (error) {
       next(error);

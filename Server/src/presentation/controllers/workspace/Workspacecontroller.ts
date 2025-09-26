@@ -1,7 +1,7 @@
 import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
 import { injectable, inject } from "tsyringe";
 import { Request, Response, NextFunction } from "express";
-import { slugify } from "../../../utils/slug";
+// import { slugify } from "../../../utils/slug";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { CustomError, NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
@@ -9,62 +9,45 @@ import { IActivity } from "../../../application/repositories/IActivity";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
 import { IWokspaceMember } from "../../../application/repositories/IWorkspaceMembers";
-
+import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";
+import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
 @injectable()
 export class WorkspaceController {
   constructor(
     @inject("WorkspaceuseCases")
-    private createWorkspceUsecases: CreateWorkspaceUsecases,
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("SentInvitaion") private sentInvitaionUsecase: ISentInvitaion,
-    @inject("IWokspaceMember") private IworkspaceUsecase: IWokspaceMember,
-    @inject("ActivityUsecase") private activityUsecase: IActivity
+    private _createWorkspceUsecases: IWorkspace,
+    @inject("UserRepository") private _userRepository: IUserRepository,
+    @inject("SentInvitaion") private _sentInvitaionUsecase: ISentInvitaion,
+    @inject("IWokspaceMember") private _workspaceUsecase: IWokspaceMember,
+    
   ) {}
 
   async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
-    let { email, WorkspaceName, slug, role, ownerId, title } = req.body;
+    const input: WorkspaceRequestDTO = {
+      email: req.body.email,
+      ownerId: req.body.ownerId,
+      slug: req.body.slug,
+      title: req.body.title,
+      role: req.body.role,
+      workspaceName: req.body.WorkspaceName,
+    };
+    console.log(req.body,"bodyyyy")
     try {
-      let dataEmail = await this.userRepository.findByEmail(email);
+      if (
+        !input.email ||
+        !input.ownerId ||
+        !input.slug ||
+        !input.title ||
+        !input.workspaceName
+      )
+        throw new NotFoundError("Data is not Found");
 
-      if (!dataEmail) throw new NotFoundError();
+      const workspaceResponseDTO = await this._createWorkspceUsecases.createWorkspace(input);
 
-      let slugfyied = slugify(slug);
-      let data = {
-        name: WorkspaceName,
-        slug: slugfyied,
-        role,
-        ownerId,
-        members: [{ userId: ownerId, title: title }],
-      };
-
-      let WorkSpace = await this.createWorkspceUsecases.createWorksapce(
-        data,
-        dataEmail?._id,
-        "title",
-        title
-      );
-      console.log(WorkSpace, "++++workspce");
-      if (!WorkSpace)
-        throw new CustomError(
-          "something went to wrong",
-          HttpStatusCode.CONFLICT
-        );
-      //push add work pace under user)
-      let addToWorkspace = await this.userRepository.addToWorkspace(
-        dataEmail._id,
-        WorkSpace.isCreate._id,
-        dataEmail.role
-      );
-
-      const logMessage = await this.activityUsecase.execute(
-        WorkSpace.isCreate._id,
-        WorkspaceName,
-        dataEmail?.name
-      );
-      console.log(logMessage, "messagelog");
       res
         .status(HttpStatusCode.OK)
-        .json({ message: ResponseMessages.CREATED, WorkSpace, addToWorkspace });
+        .json({ message: ResponseMessages.CREATED,workspaceResponseDTO  });
+      
     } catch (error) {
       next(error);
     }
@@ -78,7 +61,7 @@ export class WorkspaceController {
 
     const { emails, invitationLink } = req.body;
     try {
-      const isSend = await this.sentInvitaionUsecase.send(
+      const isSend = await this._sentInvitaionUsecase.send(
         emails,
         invitationLink
       );
@@ -95,7 +78,8 @@ export class WorkspaceController {
   ): Promise<void> {
     let slug = req.params.workspaceslug;
     try {
-      let workspaceData = await this.IworkspaceUsecase.getWorkspceDate(slug);
+      console.log(slug,"slug @Controlller")
+      let workspaceData = await this._workspaceUsecase.getWorkspceDate(slug);
       console.log(workspaceData, "workspcedata");
       if (!workspaceData) throw new NotFoundError("Workspace not found");
       res.status(HttpStatusCode.OK).json(workspaceData);

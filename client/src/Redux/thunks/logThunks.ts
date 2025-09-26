@@ -7,7 +7,7 @@ export const fetchAllLogs = createAsyncThunk(
   async (workspaceId) => {
     const response = await apiService.get("activities/all", {
       workspaceId,
-    }); // Replace with real endpoint
+    }); 
     return response.data;
   }
 );

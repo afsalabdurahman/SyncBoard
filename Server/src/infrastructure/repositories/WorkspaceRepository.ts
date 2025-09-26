@@ -9,27 +9,10 @@ import mongoose from "mongoose";
 import { truncate } from "fs/promises";
 @injectable()
 export class WorkspaceRepository implements IWorkspaceRepository {
-  async create(workspace: Workspace): Promise<Workspace> {
-    console.log(workspace, "spacee");
+  async create(workspaceEntity: Workspace): Promise<Workspace|null> {
+     const workspace =await WorkspaceModel.create(workspaceEntity)
+     return workspace.toObject() as Workspace??null
 
-    try {
-      let document = new Workspace(
-        workspace.name,
-        workspace.slug,
-        workspace.role,
-        workspace.ownerId,
-        workspace.members,
-        workspace.createdAt
-      );
-
-      let data = await WorkspaceModel.create(document);
-
-      console.log(data, "from workspce,");
-      if (data) return data;
-      throw new CustomError("Workspace Exist", HttpStatusCode.CONFLICT);
-    } catch (error) {
-      throw new InternalServerError("NotFound");
-    }
   }
 
   async findByObjectId(id: Types.ObjectId): Promise<Workspace | null> {
@@ -55,21 +38,23 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     );
     return updatedWorkspce;
   }
+  
   async findbySlug(slug: string): Promise<Workspace | any> {
     console.log(slug, "slugg");
     let workspaceData = await WorkspaceModel.findOne({ slug: slug });
     console.log(workspaceData, "work@slug");
-    if (workspaceData) {
-      return new Workspace(
-        workspaceData?.name,
-        workspaceData?.slug,
-        workspaceData?.role,
-        workspaceData?.ownerId,
-        workspaceData?.members,
-        workspaceData?.createdAt,
-        (workspaceData?.id as Types.ObjectId).toString()
-      );
-    }
+    // if (workspaceData) {
+    //   return new Workspace(
+    //     workspaceData?.name,
+    //     workspaceData?.slug,
+    //     workspaceData?.role,
+    //     workspaceData?.ownerId,
+    //     workspaceData?.members,
+    //     workspaceData?.createdAt,
+    //     (workspaceData?.id as Types.ObjectId).toString()
+    //   );
+    // }
+    return workspaceData
   }
  async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{
     const result= await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})

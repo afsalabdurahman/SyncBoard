@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
+
 import {
-  RegisterUseCase,
-  RegisterInput,
-} from "../../../application/use-cases/auth/admin/RegisterUsecase";
-import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUsecase";
+  AdminSignupRequestDTO,
+  AdminSignupResponseDTO,
+  LoginRequestDTO,
+} from "../../../application/dto/AuthDTOs";
 import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
-import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { ValidationError } from "../../../utils/errors";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
-import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
 import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
@@ -17,11 +17,10 @@ import { IWorkspace } from "../../../application/repositories/iworkspace/IWorksp
 @injectable()
 export class AuthController {
   constructor(
-    @inject("RegisterUseCase") private registerUseCase: IAuth,
-    @inject("LoginUseCase") private loginUsecase: ILogin,
+    @inject("RegisterUseCase") private _registerUseCase: IAuth,
+    @inject("LoginUseCase") private _loginUsecase: ILogin,
     @inject("Workspaceuse")
-    private CreateWorkspaceUsecases: IWorkspace
-    // @inject('')
+    private _CreateWorkspaceUsecases: IWorkspace
   ) {}
 
   async register(
@@ -30,7 +29,13 @@ export class AuthController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const input: RegisterInput = req.body;
+      const input: AdminSignupRequestDTO = {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        role: "Admin",
+      };
+
       if (
         !input.email ||
         !input.email.includes("@") ||
@@ -40,9 +45,9 @@ export class AuthController {
       ) {
         throw new ValidationError("Invalid user name or password");
       }
-      const { user, token, refreshToken } =
-        await this.registerUseCase.execute(input);
-      console.log(user, "userss");
+      const { user, token, refreshToken }: AdminSignupResponseDTO =
+        await this._registerUseCase.execute(input);
+
       setTokensInCookies(res, token, refreshToken);
 
       res.status(201).json({ user: user, token, refreshToken });
@@ -51,26 +56,21 @@ export class AuthController {
     }
   }
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    console.log(req);
-    let { email, password } = req.body;
-    console.log(email, password, "pasw+email");
-    const isValid = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{5,}$/;
+    let input: LoginRequestDTO = {
+      email: req.body.email,
+      password: req.body.password,
+    };
     try {
-      if (!email || !password || !isValid.test(password)) {
-        throw new ValidationError("Invalid user name or password");
-      }
-      let { user, token, refreshToken }: any =
-        await this.loginUsecase.loginUser(email, password);
+       const responseDTO = await this._loginUsecase.loginUser(input);
 
-      let workspaceData: any = await this.CreateWorkspaceUsecases.findWorkspace(
-        user.workspace[0].workspaceId
-      );
-      setTokensInCookies(res, token, refreshToken);
-      res
-        .status(HttpStatusCode.OK)
-        .json({ workspaceData, user, token, refreshToken });
+    setTokensInCookies(res, responseDTO.token, responseDTO.refreshToken);
+    res
+      .status(HttpStatusCode.OK)
+      .json({ workspace: responseDTO.workspace, user: responseDTO.user });
+  
     } catch (error) {
-      next(error);
+      next(error)
     }
-  }
+   
+    }
 }
