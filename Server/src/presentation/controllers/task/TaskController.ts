@@ -16,19 +16,18 @@ export class TaskController {
     next: NextFunction
   ): Promise<void> {
     try {
+      const input: TaskRequestDTO = {
+        name: req.body.newTask.name,
+        description: req.body.newTask.description,
+        project: req.body.newTask.project,
+        assignedUser: req.body.newTask.assignedUser,
+        status: req.body.newTask.status,
+        deadline: req.body.newTask.deadline,
+        priority: req.body.newTask.priority,
+        projectId: req.body.newTask.projectId,
+      };
 
-const input:TaskRequestDTO={
-  name:req.body.newTask.name,
-  description:req.body.newTask.description,
-  project:req.body.newTask.project,
-  assignedUser:req.body.newTask.assignedUser,
-  status:req.body.newTask.status,
-  deadline:req.body.newTask.deadline,
-  priority:req.body.newTask.priority,
-  projectId:req.body.newTask.projectId,
-}
-
-const resposeDTO = this._taskUsecase.execute(input)
+      const resposeDTO = this._taskUsecase.execute(input);
 
       // console.log(req.body, "bosdddddy");
       // const dto = new TaskRequstDTO(req.body.newTask);
@@ -41,7 +40,6 @@ const resposeDTO = this._taskUsecase.execute(input)
       // const resposeDTO = TaskMapper.toRegisterDTO(savedTask);
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
     } catch (error) {
-   
       next(error);
     }
   }
@@ -67,7 +65,10 @@ const resposeDTO = this._taskUsecase.execute(input)
     console.log(req.params, "params@contro");
     const taskId = req.params.id;
     try {
-      const response = await this._taskUsecase.update(taskId, req.body.taskData);
+      const response = await this._taskUsecase.update(
+        taskId,
+        req.body.taskData
+      );
       res.send(200);
     } catch (error) {
       console.log(error);
@@ -96,15 +97,14 @@ const resposeDTO = this._taskUsecase.execute(input)
   ): Promise<void> {
     try {
       console.log(req.params, "params");
-      console.log(req.query,"quey");
-      const alltask:any=req.query.count
-      console.log(alltask)
+      console.log(req.query, "quey");
+      const alltask: any = req.query.count;
+      console.log(alltask);
       const userName = req.params.username;
       if (!req.params.username) throw new NotFoundError("User not found");
-      if(alltask=="all") 
-        { const data =await this._taskUsecase.myTask(userName,alltask)
-
-        }
+      if (alltask == "all") {
+        const data = await this._taskUsecase.myTask(userName, alltask);
+      }
       const task = await this._taskUsecase.myTask(userName);
       console.log(task, "tasks");
       res.status(HttpStatusCode.OK).json(task);
@@ -129,33 +129,41 @@ const resposeDTO = this._taskUsecase.execute(input)
       next(error);
     }
   }
-async findAllCompletedTasks(req:Request,res:Response):Promise<void>{
-const task= await this._taskUsecase.completedTask()
-res.status(HttpStatusCode.OK).json(task)
-
-}
-async controllApprovalSatatus(req:Request,res:Response,next:NextFunction){
-  console.log(req.body,"Boduy+++",req.params,"+++pramm")
-  try {
-      const taskId=req.params.id;
-  const status=req.body.status;
-  const msg =req.body.msg;
-  if(!taskId||!status) throw new NotFoundError("Task id or status not found")
-  await this._taskUsecase.updateApprovalStatus(taskId,status,msg)
-  res.status(HttpStatusCode.OK).json({message:"Updated"})
-  } catch (error) {
-    next(error)
+  async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
+    const task = await this._taskUsecase.completedTask();
+    res.status(HttpStatusCode.OK).json(task);
   }
-
-}
-async findTaskByProject(req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
-    if(!req.params.projectId) throw new NotFoundError("Id is not found")
-    const task = await this._taskUsecase.findTaskByProjectId(req.params.projectId)
-res.status(HttpStatusCode.OK).json(task)
-  } catch (error) {
-    next(error)
+  async controllApprovalSatatus(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log(req.body, "Boduy+++", req.params, "+++pramm");
+    try {
+      const taskId = req.params.id;
+      const status = req.body.status;
+      const msg = req.body.msg;
+      if (!taskId || !status)
+        throw new NotFoundError("Task id or status not found");
+      await this._taskUsecase.updateApprovalStatus(taskId, status, msg);
+      res.status(HttpStatusCode.OK).json({ message: "Updated" });
+    } catch (error) {
+      next(error);
+    }
   }
-  
-}
+  async findTaskByProject(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      if (!req.params.projectId) throw new NotFoundError("Id is not found");
+      const task = await this._taskUsecase.findTaskByProjectId(
+        req.params.projectId
+      );
+      res.status(HttpStatusCode.OK).json(task);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
