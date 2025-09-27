@@ -20,6 +20,7 @@ import { CustomRequest } from "./presentation/types/CustomRequest";
 import { errorMiddleware } from "./presentation/middleware/errorMiddleware";
 import {initSocketServer} from"./infrastructure/services/SocketService"
 dotenv.config();
+
 const app = express();
 
 const CLIENT_URL = envConfig.MONGODB_URI;

@@ -42,7 +42,8 @@ import {SuscriptionRepository} from "../../repositories/SuscriptionRepository"
 import {SubscriptionUsecase} from "../../../application/use-cases/suscription/SuscriptionUsecase"
 import {PlanUsecase} from "../../../application/use-cases/suscription/plans/PlanUsecase"
 import {StripeService} from "../../services/StripeService"
-import {PlanRepository} from "../../repositories/PlanRepository"
+import {PlanRepository} from "../../repositories/PlanRepository";
+
 container.register("SuscriptionRepository",{useClass:SuscriptionRepository})
 container.register("IStripeServices",{useClass:StripeService})
 container.register("PlanRepository",{useClass:PlanRepository})
