@@ -1,7 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { IChatRepository } from "../../../domain/interfaces/repositories/IChatRepository";
-import { MessageDTO } from "../../../presentation/dots/chatDTO/requestDTO";
-import { MessageMapper } from "../../../presentation/dots/chatDTO/chatMapper";
+
 import { IChatUsecase } from "../../repositories/IChat";
 import { ISoketService } from "../../repositories/ISoketService";
 import { Chat } from "../../../domain/entities/Chat";
@@ -14,10 +13,10 @@ export class ChatUsecase implements IChatUsecase {
   async sendMessage(dto: any): Promise<void> {
   
    const data={content:dto.content,senderName:dto.sender}
-    const message: Chat = MessageMapper.toEntity(data);
+    // const message: Chat = MessageMapper.toEntity(data);
    
-    await this.chatRepository.saveChats(message);
-     const messageDTO = MessageMapper.toDTO(message);
+   // await this.chatRepository.saveChats("hgdu");
+    //  const messageDTO = MessageMapper.toDTO(message);
       // this.socketService.broadcastMessage(messageDTO);
   }
    async history(): Promise<any> {
