@@ -1,7 +1,8 @@
 import Stripe from "stripe";
+import {envConfig} from"../config/env.config"
 import { IStripeService } from "../../domain/interfaces/services/IStripService";
 export const stripe = new Stripe(
-  "sk_test_51S8KkWQZLJQHIIBAQy12rOmlMRK2hORCEajD1bZfPQ2FJWSVMOQLM4TwlwyyN4LuCk6EDbxsyLm5llzzvhGlmIlm00rDvap61a",
+  envConfig.STRIP_KEY,
   { apiVersion: "2025-08-27.basil" }
 );
 export class StripeService implements IStripeService {

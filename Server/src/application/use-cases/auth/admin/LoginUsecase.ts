@@ -5,20 +5,24 @@ import { ILoginUseCase } from "../../../repositories/admin/ILoginUseCase";
 import { User } from "../../../../domain/entities/User";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import {IWorkspaceRepository} from "../../../../domain/interfaces/repositories/IWorkspaceRepository"
+import { ISuscription } from "../../../../domain/interfaces/repositories/ISuscriptionRepository";
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
   constructor(
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private authService: IAuthService,
-    @inject("WorkspaceRepository") private workspceRepository:IWorkspaceRepository
+    @inject("WorkspaceRepository") private workspceRepository:IWorkspaceRepository,
+    @inject("SuscriptionRepository")private _suscriptionRepository:ISuscription,
   ) {}
   async execute(email: string, password: string): Promise<any | null> {
     let user: User = await this._userRepository.findByEmail(email);
-  let 
+
+  
 
     if(!user.workspace) throw new NotFoundError("Workspace not found")
     const workspceId:any=user.workspace[0].workspaceId
-    if (!user) throw new NotFoundError("Admin not found");
+    if (!user||user._id) throw new NotFoundError("Admin not found");
+    //let isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id)
     const isValid = await this.authService.comparePassword(
       password,
       user.password
