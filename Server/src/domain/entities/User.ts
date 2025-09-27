@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import mongoose from "mongoose";
 
 export interface WorkspaceMembership {
@@ -12,7 +13,8 @@ export class User {
   password: string;
   name: string;
   role: "Member" | "Admin" | "SuperAdmin";
-
+stripeCustomerId?: string;
+  currentSubscription?: Types.ObjectId;
   // 🔹 Optional fields
   _id?: string;
   title?: string;
@@ -54,6 +56,9 @@ export class User {
     isOnline?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
+    stripeCustomerId?:string;
+    currentSubscription?:Types.ObjectId
+
   }) {
     this.email = params.email;
     this.password = params.password;
@@ -77,5 +82,7 @@ export class User {
 
     this.createdAt = params.createdAt ?? new Date();
     this.updatedAt = params.updatedAt ?? new Date();
+    this.stripeCustomerId=params.stripeCustomerId;
+    this.currentSubscription=params.currentSubscription
   }
 }

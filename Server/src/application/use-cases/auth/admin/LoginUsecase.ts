@@ -14,7 +14,8 @@ export class AdminLoginUseCase implements ILoginUseCase {
   ) {}
   async execute(email: string, password: string): Promise<any | null> {
     let user: User = await this._userRepository.findByEmail(email);
-    console.log(user, "user000+++++++++++++++++++,");
+  let 
+
     if(!user.workspace) throw new NotFoundError("Workspace not found")
     const workspceId:any=user.workspace[0].workspaceId
     if (!user) throw new NotFoundError("Admin not found");

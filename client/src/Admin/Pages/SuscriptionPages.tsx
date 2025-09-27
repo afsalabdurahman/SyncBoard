@@ -7,6 +7,7 @@ import BillingHistory from "../components/BillSuscription"
 import ButtonSus from "./ButtonSus"
 import { useSearchParams, useNavigate } from "react-router-dom";
 import CheckoutPage from "./CheckoutPage"
+import apiService from "../../services/api"
 export type Plan = "Free" | "Pro" | "Enterprise"
 
 export interface PaymentInfo {
@@ -98,7 +99,12 @@ console.log(targetPlan,"taget")
       date: currentDate,
       status: "Success",
     })
- setCheckout(true)
+
+    apiService.post("/checkout/pay").then((res)=>{
+      console.log(res,"checkout response")
+       window.location.href = res.data
+    })
+//  setCheckout(true)
     // setCurrentPlan(targetPlan)
     // setIsProcessing(false)
   }

@@ -19,7 +19,7 @@ export interface ISubscription extends Document {
 
 const SubscriptionSchema = new Schema<ISubscription>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  planKey: { type: String, required: true },
+  planKey: { type: String, required: true,default:"free" },
   status: { type: String, required: true, default: 'trialing' },
   startedAt: Date,
   currentPeriodStart: Date,
