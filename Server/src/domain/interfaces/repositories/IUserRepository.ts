@@ -20,4 +20,5 @@ export interface IUserRepository {
   ): Promise<User|null>;
   findUsersInsameWorkspace(worspaceId: any): Promise<any>;
   updateOnlineStatus(userId: string): Promise<void>;
+  countUser():Promise<any>
 }

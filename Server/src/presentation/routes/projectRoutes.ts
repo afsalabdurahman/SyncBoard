@@ -3,11 +3,11 @@ import { container } from "tsyringe"
 import {ProjectController} from "../../presentation/controllers/project/ProjectController"
 import { authMiddelware } from "../middleware/authMiddleware"
 import { roleMiddleware } from "../middleware/roleMiddleware"
-
+import {subscriptionMiddle} from "../middleware/subscriptionMiddleware"
 let projectController = container.resolve(ProjectController)
 
 let router = express.Router();
-const adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
+const adminAuth = [authMiddelware(), roleMiddleware(["Admin"]),subscriptionMiddle("project")];
 const memberAuth = [authMiddelware(), roleMiddleware(["Member","Admin"])];
 
 router.post('/create/:adminName',adminAuth,projectController.createProject.bind(projectController))

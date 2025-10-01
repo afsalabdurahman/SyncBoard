@@ -16,7 +16,7 @@ export class AdminAuthController {
 
     let { email, password } = req.body;
     try {
-      let { user, workspace }: any = await this.loginUseCase.execute(
+      let { user, workspace,suscribe }: any = await this.loginUseCase.execute(
         email,
         password
       );
@@ -24,7 +24,7 @@ export class AdminAuthController {
       if (!user) {
         throw new NotFoundError("user not found");
       }
-      res.status(HttpStatusCode.OK).json({ user, workspace });
+      res.status(HttpStatusCode.OK).json({ user, workspace,suscribe });
     } catch (error) {
       next(error);
     }

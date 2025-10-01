@@ -5,15 +5,17 @@ import { X, Check, Users, Shield, Zap } from "lucide-react"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
 import { Badge } from "../../components/ui/badge"
-
+import {setForward} from "../../Redux/features/ForwardSlice"
+import { useDispatch } from "react-redux"
 export const Suscription = (props:any) => {
-  
+
+  const dispacth = useDispatch()
   const [isOpen, setIsOpen] = useState(true)
 
   const plans = [
     {
       name: "Basic",
-      price: "₹599",
+      price: "$10",
       period: "/month",
       description: "Perfect for small teams getting started",
       features: [
@@ -29,12 +31,12 @@ export const Suscription = (props:any) => {
     },
     {
       name: "Pro",
-      price: "₹999",
+      price: "$20",
       period: "/month",
       description: "Best for growing teams and businesses",
       features: [
-        "Up to 15 projects",
-        "30 team members",
+        "Up to 8 projects",
+        "25 team members",
         "Supports attachments of images, PDFs, and DOC file",
         "Priority email support",
         "Custom workflows",
@@ -44,7 +46,7 @@ export const Suscription = (props:any) => {
     },
     {
       name: "Enterprise",
-      price: "₹1,599",
+      price: "$50",
       period: "/month",
       description: "For large organizations with advanced needs",
       features: [
@@ -60,7 +62,7 @@ export const Suscription = (props:any) => {
     
       ],
       popular: false,
-      buttonText: "Contact Sales",
+      buttonText: "Upgrade to Enterprise",
     },
   ]
 
@@ -111,7 +113,7 @@ const handleClose = () =>{
                 </CardContent>
 
                 <CardFooter>
-                  <Button
+                  <Button onClick={()=>dispacth(setForward(true))}
                     className={`w-full ${plan.popular ? "bg-primary hover:bg-primary/90" : ""}`}
                     variant={plan.popular ? "default" : "outline"}
                   >

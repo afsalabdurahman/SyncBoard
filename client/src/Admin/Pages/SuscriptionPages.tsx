@@ -6,8 +6,9 @@ import PaymentInfoComponent from "../components/PaymentInfoSus"
 import BillingHistory from "../components/BillSuscription"
 import ButtonSus from "./ButtonSus"
 import { useSearchParams, useNavigate } from "react-router-dom";
-import CheckoutPage from "./CheckoutPage"
+// import CheckoutPage from "./CheckoutPage"
 import apiService from "../../services/api"
+import { useSelector } from "react-redux"
 export type Plan = "Free" | "Pro" | "Enterprise"
 
 export interface PaymentInfo {
@@ -33,27 +34,42 @@ export interface UsageMetrics {
 }
 
 export default function SubscriptionPage() {
-  const [currentPlan, setCurrentPlan] = useState<Plan>("Free")
+    const myPlan=useSelector((state)=>{
+console.log(state,"mystate")
+   return state.suscription.subscription.planKey ?? "free"
+})
+  const [currentPlan, setCurrentPlan] = useState<Plan>(myPlan)
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 const [checkout,setCheckout]=useState(false)
+const userId=useSelector((state)=>state.user.user._id)
+const projectCount= useSelector((state)=>state.projects.list.length)
+const userCount = useSelector((state)=>state.alluser.users.length)
+
+console.log(projectCount,"count project++++",userCount)
   const [usageMetrics] = useState<UsageMetrics>(() => {
     const baseMetrics = {
-      Free: {
-        projects: { current: 2, limit: 3 },
-        users: { current: 1, limit: 1 },
+      free: {
+        projects: { current: projectCount, limit: 3 },
+        users: { current: userCount, limit: 1 },
         storage: { current: 0.5, limit: 1, unit: "GB" },
         apiCalls: { current: 850, limit: 1000 },
       },
-      Pro: {
-        projects: { current: 8, limit: 25 },
-        users: { current: 3, limit: 10 },
+        basic: {
+        projects: { current: projectCount, limit: 3 },
+        users: { current: projectCount, limit: 1 },
+        storage: { current: 0.5, limit: 1, unit: "GB" },
+        apiCalls: { current: 850, limit: 1000 },
+      },
+      pro: {
+        projects: { current: projectCount, limit: 25 },
+        users: { current: userCount, limit: 10 },
         storage: { current: 12, limit: 50, unit: "GB" },
         apiCalls: { current: 15000, limit: 50000 },
       },
-      Enterprise: {
-        projects: { current: 45, limit: -1 },
-        users: { current: 25, limit: -1 },
+      enterprise: {
+        projects: { current: projectCount, limit: -1 },
+        users: { current: userCount, limit: -1 },
         storage: { current: 180, limit: 500, unit: "GB" },
         apiCalls: { current: 125000, limit: -1 },
       },
@@ -67,18 +83,18 @@ const [checkout,setCheckout]=useState(false)
       amount: "$10.00",
       date: "2024-01-15",
       status: "Success",
-      description: "Pro Plan - Monthly",
+      description: "Basic Plan - Monthly",
     },
     {
       id: "2",
-      amount: "$10.00",
+      amount: "$20.00",
       date: "2023-12-15",
       status: "Success",
       description: "Pro Plan - Monthly",
     },
     {
       id: "3",
-      amount: "$10.00",
+      amount: "$50.00",
       date: "2023-11-15",
       status: "Success",
       description: "Pro Plan - Monthly",
@@ -86,21 +102,25 @@ const [checkout,setCheckout]=useState(false)
   ])
 
   const handleUpgrade = async (targetPlan: Plan) => {
+
     setIsProcessing(true)
-console.log(targetPlan,"taget")
+
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    const amount = targetPlan === "Pro" ? "$10/month" : "$50/month"
+ const amount =
+  targetPlan === "Basic"
+    ? "$10/month"
+    : targetPlan === "Pro"
+    ? "$20/month"
+    : "$50/month";
+
     const currentDate = new Date().toLocaleDateString()
 
-    setPaymentInfo({
-      plan:targetPlan,
-      amount,
-      date: currentDate,
-      status: "Success",
-    })
 
-    apiService.post("/checkout/pay").then((res)=>{
+console.log(paymentInfo,"info pay")
+    apiService.post(`/checkout/payment/${userId}`,{
+      plan:targetPlan
+    }).then((res)=>{
       console.log(res,"checkout response")
        window.location.href = res.data
     })
@@ -109,9 +129,9 @@ console.log(targetPlan,"taget")
     // setIsProcessing(false)
   }
 
-if(checkout){
-  return(<CheckoutPage setCheckout={setCheckout} payamentInfo={paymentInfo}/>)
-}
+// if(checkout){
+//   return(<CheckoutPage setCheckout={setCheckout} payamentInfo={paymentInfo}/>)
+// }
 
 
 

@@ -16,10 +16,10 @@ export class WorkspaceRepository implements IWorkspaceRepository {
   }
 
   async findByObjectId(id: Types.ObjectId): Promise<Workspace | null> {
-    console.log(id, "iod @repo woks");
+   
     let dbData = await WorkspaceModel.findById(id);
 
-    console.log(dbData, "databsesa");
+
     return dbData;
   }
 
@@ -40,9 +40,9 @@ export class WorkspaceRepository implements IWorkspaceRepository {
   }
   
   async findbySlug(slug: string): Promise<Workspace | any> {
-    console.log(slug, "slugg");
+    
     let workspaceData = await WorkspaceModel.findOne({ slug: slug });
-    console.log(workspaceData, "work@slug");
+  
     // if (workspaceData) {
     //   return new Workspace(
     //     workspaceData?.name,
@@ -58,7 +58,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
   }
  async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{
     const result= await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})
-console.log(result,"resultss@usecase")
+
 return true
   }
 }

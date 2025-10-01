@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import {envConfig} from"../config/env.config"
 import { IStripeService } from "../../domain/interfaces/services/IStripService";
+import { ObjectId } from "mongodb";
 export const stripe = new Stripe(
   envConfig.STRIP_KEY,
   { apiVersion: "2025-08-27.basil" }
@@ -11,14 +12,19 @@ export class StripeService implements IStripeService {
   async createCheckoutSession(
     name: any,
     customer_email: string,
-    price: any
+    price: any,
+    userId:any,
+    key:string,
   ): Promise<any> {
+    const id = userId.toString();
+     console.log(userId,"userID increacte checkout")
     const response = await stripe.checkout.sessions.create({
+     
       payment_method_types: ["card"],
-      customer_email: "Ajjjj@gmail.com",
+      customer_email: customer_email,
       line_items: [
         {
-          price: "price_1S8hM3QZLJQHIIBAyGUG1mQk", // coming from frontend
+          price: price, // coming from frontend
           quantity: 1,
         },
       ],
@@ -26,7 +32,9 @@ export class StripeService implements IStripeService {
       success_url: "http://localhost:5173/admin-dashboard",
       cancel_url: "http://localhost:5173/",
       metadata: {
-        userName: "SuperArrow",
+        userName: name,
+        userId:id,
+        planName:key
       },
     });
     console.log(response, "chechkout reponse");

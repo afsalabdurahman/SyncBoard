@@ -101,4 +101,8 @@ export class TaskRepository implements ITaskRepository {
     const ProjectTask = await TaskModel.find({ projectId: projectId });
     return ProjectTask;
   }
+  countTask(): Promise<any> {
+    const countTask = TaskModel.countDocuments();
+    return countTask
+  }
 }

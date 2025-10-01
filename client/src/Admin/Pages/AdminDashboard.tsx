@@ -8,14 +8,26 @@ import { TasksPage } from "../components/TasksPage";
 import { SettingsPage } from "../components/SettingsPage";
 import {TaskApproval} from "../components/TaskApproval"
 import SubscriptionPage from "../Pages/SuscriptionPages"
+import { useSelector } from "react-redux";
 //import { ThemeProvider } from ""
 
-export default function AdminDashboard() {
+export default function AdminDashboard(props) {
  
    
+  let page="dashboard";
+  const isForward=useSelector((state)=>state.forward);
+    const [currentPage, setCurrentPage] = useState("dashboard");
+  console.log(isForward,"forward")
+   useEffect(() => {
+    if (isForward) {
+      setCurrentPage("suscription");
+    } else {
+      setCurrentPage("dashboard");
+    }
+  }, [isForward]);
   
 
-  const [currentPage, setCurrentPage] = useState("dashboard");
+ 
 
   const renderPage = () => {
     switch (currentPage) {

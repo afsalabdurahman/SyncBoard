@@ -31,7 +31,7 @@ export class WorkspaceController {
       role: req.body.role,
       workspaceName: req.body.WorkspaceName,
     };
-    console.log(req.body,"bodyyyy")
+   
     try {
       if (
         !input.email ||
@@ -57,7 +57,7 @@ export class WorkspaceController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log(req.body, "sent email");
+
 
     const { emails, invitationLink } = req.body;
     try {
@@ -78,9 +78,9 @@ export class WorkspaceController {
   ): Promise<void> {
     let slug = req.params.workspaceslug;
     try {
-      console.log(slug,"slug @Controlller")
+ 
       let workspaceData = await this._workspaceUsecase.getWorkspceDate(slug);
-      console.log(workspaceData, "workspcedata");
+     
       if (!workspaceData) throw new NotFoundError("Workspace not found");
       res.status(HttpStatusCode.OK).json(workspaceData);
     } catch (error) {

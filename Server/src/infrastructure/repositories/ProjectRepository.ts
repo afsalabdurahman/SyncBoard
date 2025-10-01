@@ -35,4 +35,8 @@ async deleteProject(projectId: string): Promise<void> {
    await ProjectModel.deleteOne({_id:objectId})
 }
 
+async countProject(): Promise<any> {
+  const count= await ProjectModel.countDocuments();
+  return count
+}
 }

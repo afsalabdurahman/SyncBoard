@@ -11,6 +11,7 @@ import {
   removeProject,
   fetchProjectData,
 } from "../../Redux/workspace/admin/ProjectSlice";
+import {findLimit} from"../../services/upgradeSubscription"
 import api from "../../services/api";
 import { AxiosResponse } from "axios";
 
@@ -51,9 +52,11 @@ export function ProjectsPage() {
   // Select Redux state directly
   const [refreshKey, setRefreshKey] = useState(0);
   const [loader, setLoader] = useState("");
+  const plankey= useSelector((state:any)=>state.suscription.subscription.planKey)
   const adminId = useSelector((state: any) => state?.user?.user?._id);
   const adminName = useSelector((state: any) => state?.user?.user?.name);
   const projects = useSelector((state: any) => state.projects.list);
+  console.log(plankey)
 const logId=useSelector((state)=>{
   return state.workspace.workspace.logId
 })
@@ -63,6 +66,8 @@ console.log(logId,"ad++++")
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
   // Fetch projects when adminId available
+const mylimit = findLimit(plankey)
+   console.log(mylimit,"mylimit")
   useEffect(() => {
     if (adminId) {
       dispatch(fetchProjectData(adminId));
@@ -186,7 +191,7 @@ setRefreshKey((prev) => prev + 1);
     // call your delete function here
   };
   const openAddModal = () => {
-    if (projects.length > 2) {
+    if (projects.length >= mylimit.maxProjects) {
       setSuscription(true);
     } else {
       setEditingProject(null);

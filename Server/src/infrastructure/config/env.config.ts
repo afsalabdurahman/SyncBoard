@@ -13,5 +13,6 @@ export const envConfig = {
   EMAIL_PORT: parseInt(process.env.EMAIL_PORT || '587', 10),
   EMAIL_USER: process.env.EMAIL_USER || 'your_email_user',
   EMAIL_PASS: process.env.EMAIL_PASS || 'your_email_password',
-  STRIP_KEY:process.env.STRIPE_KEY || ""
+  STRIP_KEY:process.env.STRIPE_KEY || "",
+  STRIPE_WEBHOOK_SECRET:process.env.STRIPE_WEBHOOK_SECRET
 };
