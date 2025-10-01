@@ -1,47 +1,57 @@
-import { ObjectId } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export class Subscription {
-  user: ObjectId;
+  // 🔹 Required fields
+  user: string | Types.ObjectId;
   planKey: string;
   status: string;
-  startedAt: Date;
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
-  cancelAtPeriodEnd: boolean;
-  stripeSubscriptionId: string;
+
+  // 🔹 Optional fields
+  startedAt?: Date;
+  currentPeriodStart?: Date;
+  currentPeriodEnd?: Date;
+  cancelAtPeriodEnd?: boolean;
+  stripeSubscriptionId?: string;
   stripePriceId?: string;
   quantity?: number;
   metadata?: string;
+
+  // 🔹 Timestamps
   createdAt?: Date;
   updatedAt?: Date;
 
-  constructor(
-    user: ObjectId,
-    planKey: string,
-    status: string,
-    startedAt: Date,
-    currentPeriodStart: Date,
-    currentPeriodEnd: Date,
-    cancelAtPeriodEnd: boolean,
-    stripeSubscriptionId: string,
-    stripePriceId?: string,
-    quantity?: number,
-    metadata?: string,
-    createdAt?: Date,
-    updatedAt?: Date
-  ) {
-    this.user = user;
-    this.planKey = planKey;
-    this.status = status;
-    this.startedAt = startedAt;
-    this.currentPeriodStart = currentPeriodStart;
-    this.currentPeriodEnd = currentPeriodEnd;
-    this.cancelAtPeriodEnd = cancelAtPeriodEnd;
-    this.stripeSubscriptionId = stripeSubscriptionId; // Fixed typo
-    this.stripePriceId = stripePriceId;
-    this.quantity = quantity;
-    this.metadata = metadata;
-    this.createdAt = createdAt || new Date(); // Default to current date if not provided
-    this.updatedAt = updatedAt || new Date(); // Default to current date if not provided
+  constructor(params: {
+    user: string | Types.ObjectId;
+    planKey: string;
+    status: string;
+    startedAt?: Date;
+    currentPeriodStart?: Date;
+    currentPeriodEnd?: Date;
+    cancelAtPeriodEnd?: boolean;
+    stripeSubscriptionId?: string;
+    stripePriceId?: string;
+    quantity?: number;
+    metadata?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }) {
+    this.user = params.user;
+    this.planKey = params.planKey;
+    this.status = params.status;
+
+    this.startedAt = params.startedAt ?? new Date();
+    this.currentPeriodStart = params.currentPeriodStart ?? new Date();
+    this.currentPeriodEnd =
+      params.currentPeriodEnd ??
+      new Date(new Date().setMonth(new Date().getMonth() + 1));
+    this.cancelAtPeriodEnd = params.cancelAtPeriodEnd ?? false;
+
+    this.stripeSubscriptionId = params.stripeSubscriptionId ?? "not available";
+    this.stripePriceId = params.stripePriceId;
+    this.quantity = params.quantity ?? 1;
+    this.metadata = params.metadata ?? "";
+
+    this.createdAt = params.createdAt ?? new Date();
+    this.updatedAt = params.updatedAt ?? new Date();
   }
 }

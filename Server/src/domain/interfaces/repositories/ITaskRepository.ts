@@ -8,5 +8,6 @@ export interface ITaskRepository {
   updateTaskStatus(taskId:string,updatedStatus:string):Promise<void>;
   allCompletedTasks():Promise<any>;
   updateApprovalStatus(taskId:string,status:string,msg?:string|null):Promise<void>
-  findTaskByProjectId(projectId:string):Promise<any>
+  findTaskByProjectId(projectId:string):Promise<any>;
+  countTask():Promise<any>
 }

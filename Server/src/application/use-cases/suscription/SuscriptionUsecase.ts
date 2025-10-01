@@ -10,7 +10,7 @@ import { IStripeService } from "../../../domain/interfaces/services/IStripServic
 export class SubscriptionUsecase implements ISuscriptionUsecase {
   constructor(
     @inject("SuscriptionRepository")
-    private SuscriptionRepository: ISuscription,
+    private _suscriptionRepository: ISuscription,
     @inject("IUserRepository") private userRepository: IUserRepository,
     @inject("IStripeServices") private istripeService: IStripeService
   ) {}
@@ -25,8 +25,8 @@ export class SubscriptionUsecase implements ISuscriptionUsecase {
 
 
 
-  let result = await this.istripeService.createCheckoutSession("jdgj","fusuif","fjsgjf")
-  return result 
+  // let result = await this.istripeService.createCheckoutSession("jdgj","fusuif","fjsgjf")
+  // return result 
   //   let user = await this.userRepository.findById(userId);
   
   //   if (!user) throw new NotFoundError("User not found");
@@ -79,5 +79,9 @@ export class SubscriptionUsecase implements ISuscriptionUsecase {
   //     stripePriceId: myplan.stripePriceId,
   //   };
   //   await this.SuscriptionRepository.create(dbSub);
+   }
+
+   getSuscription(userid:string){
+return this._suscriptionRepository.findSuscriptionByUserId(userid)
    }
 }

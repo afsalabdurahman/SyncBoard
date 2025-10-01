@@ -7,6 +7,8 @@ import usersliceReducer from "./features/UserDataSlice";
 import logsliceReducer from "./features/LogSlice"
 import projectReducer from './workspace/admin/ProjectSlice';
 import alluserReducer from "./features/AlluserSlice";
+import subscriptionReducer from "./features/SuscriptionSlice";
+import forwardReducer from "./features/ForwardSlice"
 
 import taskReducer from "./workspace/admin/TaskSlice";
 const rootReducer = combineReducers({
@@ -17,7 +19,9 @@ const rootReducer = combineReducers({
   projects: projectReducer,
   alluser: alluserReducer,
   task:taskReducer,
-  logs:logsliceReducer
+  logs:logsliceReducer,
+   suscription:subscriptionReducer,
+   forward:forwardReducer
 });
 
 export default rootReducer;

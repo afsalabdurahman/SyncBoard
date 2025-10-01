@@ -24,12 +24,13 @@ export default function CurrentPlanOverview({
   onUpgrade,
 }: CurrentPlanOverviewProps) {
   const planDetails = {
-    Free: { price: "$0", features: ["Basic features", "Limited usage"] },
-    Pro: {
-      price: "$10",
+    free: { price: "$0", features: ["Basic features", "Limited usage"] },
+ basic: { price: "$10", features: ["Basic features", "Limited usage"] ,priceId:"this isprice id"},
+    pro: {
+      price: "$20",
       features: ["All basic features", "Advanced tools", "Priority support"],
     },
-    Enterprise: {
+    enterprise: {
       price: "$50",
       features: [
         "All Pro features",
@@ -70,10 +71,42 @@ export default function CurrentPlanOverview({
         </div>
 
         <div className='space-y-3'>
-          {currentPlan === "Free" && (
+          {currentPlan === "free" && (
             <>
               <Button
+                onClick={() => onUpgrade("Basic")}
+                disabled={isProcessing}
+                className='w-full'
+                size='lg'
+              >
+                {isProcessing ? "Processing..." : "Upgrade to Basic - $10/month"}
+              </Button>
+              <Button
                 onClick={() => onUpgrade("Pro")}
+                disabled={isProcessing}
+                className='w-full'
+                size='lg'
+              >
+                {isProcessing ? "Processing..." : "Upgrade to Pro - $20/month"}
+              </Button>
+              <Button
+                onClick={() => onUpgrade("Enterprise")}
+                disabled={isProcessing}
+                variant='outline'
+                className='w-full'
+                size='lg'
+              >
+                {isProcessing
+                  ? "Processing..."
+                  : "Upgrade to Enterprise - $50/month"}
+              </Button>
+            </>
+          )}
+
+{currentPlan === "basic" && (
+            <>
+              <Button
+                onClick={() => onUpgrade("Basic")}
                 disabled={isProcessing}
                 className='w-full'
                 size='lg'
@@ -94,7 +127,8 @@ export default function CurrentPlanOverview({
             </>
           )}
 
-          {currentPlan === "Pro" && (
+
+          {currentPlan === "pro" && (
             <Button
               onClick={() => onUpgrade("Enterprise")}
               disabled={isProcessing}
@@ -107,7 +141,7 @@ export default function CurrentPlanOverview({
             </Button>
           )}
 
-          {currentPlan === "Enterprise" && (
+          {currentPlan === "enterprise" && (
             <div className='text-center py-4'>
               <p className='text-muted-foreground'>
                 You're on our highest tier plan!

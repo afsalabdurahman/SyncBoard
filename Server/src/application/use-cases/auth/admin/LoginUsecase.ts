@@ -6,6 +6,7 @@ import { User } from "../../../../domain/entities/User";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import {IWorkspaceRepository} from "../../../../domain/interfaces/repositories/IWorkspaceRepository"
 import { ISuscription } from "../../../../domain/interfaces/repositories/ISuscriptionRepository";
+import { Subscription } from "../../../../domain/entities/Suscription";
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
   constructor(
@@ -17,12 +18,12 @@ export class AdminLoginUseCase implements ILoginUseCase {
   async execute(email: string, password: string): Promise<any | null> {
     let user: User = await this._userRepository.findByEmail(email);
 
-  
+
 
     if(!user.workspace) throw new NotFoundError("Workspace not found")
     const workspceId:any=user.workspace[0].workspaceId
-    if (!user||user._id) throw new NotFoundError("Admin not found");
-    //let isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id)
+    if (!user) throw new NotFoundError("Admin not found");
+    //
     const isValid = await this.authService.comparePassword(
       password,
       user.password
@@ -30,7 +31,19 @@ export class AdminLoginUseCase implements ILoginUseCase {
     if (!isValid) throw new ValidationError("Passwod not match");
 
    let workspace=await this.workspceRepository.findByObjectId(workspceId)
-
-    return {user,workspace};
+   if(!user._id) throw new NotFoundError("id is not found")
+const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id);
+ 
+ let mySuscription;
+   if(!isSuscribed){
+const entity = new Subscription({
+  user: user._id,
+  planKey: "free",
+  status: "trialing"
+});
+    mySuscription=this._suscriptionRepository.create(entity)
+   }
+   let suscribe=isSuscribed?isSuscribed:mySuscription
+    return {user,workspace,suscribe};
   }
 }

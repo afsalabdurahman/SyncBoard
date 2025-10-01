@@ -1,4 +1,6 @@
 import { Plan } from "../../domain/entities/Plan"
+import { SuscriptionRequestDTO } from "../dto/SuscriptionDTOs"
 export interface IPlanUsecase{
-excute(planKey:string):Promise<any>
+excute(input:SuscriptionRequestDTO):Promise<string>
+
 }

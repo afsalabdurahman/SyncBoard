@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../Redux/store";
 import LoadingSpinner from "../utility/loadingPages/LoadingSpinner";
+
 import {
   setUserName,
   setUserEmail,
@@ -52,6 +53,7 @@ function Login() {
         dispatch(setWorkspace(response.data.workspace));
         //  dispatch(setLog(response.data.logs))
         dispatch(setUserData(response.data.user));
+        
         navigate("/work-space");
       }
     } catch (error: any) {

@@ -7,7 +7,7 @@ import { setUserData } from "../../Redux/features/UserDataSlice";
 import { setWorkspace } from "../../Redux/features/WorkspaceSlice";
 import { setLog } from "../../Redux/features/LogSlice";
 import LoadingSpinner from "../../components/page-components/utility/loadingPages/LoadingSpinner";
-
+import {setSubscription} from "../../Redux/features/SuscriptionSlice";
 const AdminLogin = () => {
 
 
@@ -39,6 +39,7 @@ const [loading, setLoading] = useState(false);
       // Handle successful login response
        dispatch(setWorkspace(response.data.workspace))
             //  dispatch(setLog(response.data.logs))
+             dispatch(setSubscription(response.data.suscribe))
             dispatch(setUserData(response.data.user))
       navigate("/admin-dashboard");
    

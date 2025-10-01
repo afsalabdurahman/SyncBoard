@@ -49,6 +49,18 @@ const success = searchParams.get("success");
   const [isSuccess, setIsSuccess] = useState(false);
 
   const planDetails = {
+     Basic: {
+      price: 10,
+      monthly: "$10",
+      yearly: "$100",
+      features: [
+        "All basic features",
+        "Advanced tools",
+        "Priority support",
+        "25 projects",
+        "10 team members",
+      ],
+    },
     Pro: {
       price: 10,
       monthly: "$10",
@@ -112,7 +124,7 @@ const success = searchParams.get("success");
       email: formData.email,
     };
     try {
-      const res = await apiService.post(`checkout/pay/${sessionId}`, {
+      const res = await apiService.post(`checkout/payment/${sessionId}`, {
         data,
       });
     } catch (error) {

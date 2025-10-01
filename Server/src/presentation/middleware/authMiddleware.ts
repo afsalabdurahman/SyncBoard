@@ -19,7 +19,7 @@ export const authMiddelware = () => {
  return async  (req:CustomRequest,res:Response,next:NextFunction):Promise<void>=>{
     let authService= container.resolve(AuthService) 
     let getUserUseCase=container.resolve(GetUserUseCase)
-    console.log(req.cookies,"cokkies")
+   
     const accessToken = req.cookies.accessToken;
 if (!accessToken) {
       throw next(new AuthenticationError('No token provided'));

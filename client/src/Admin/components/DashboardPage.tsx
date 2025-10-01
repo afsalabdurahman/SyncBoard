@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { AppDispatch } from "../../Redux/store";
 import {
   ChartContainer,
   ChartTooltip,
@@ -21,6 +22,8 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+
+
 import { Users, FolderOpen, AlertTriangle, CheckCircle } from "lucide-react";
 import { useEffect } from "react";
 const taskStatusData = [
@@ -51,8 +54,12 @@ export function DashboardPage() {
     };
   });
 
-  //useEffetct
-  let dispacth = useDispatch();
+  //useEffetc
+    let dispacth = useDispatch<AppDispatch>();
+
+
+
+
   const workspaceslug = useSelector(
     (state: any) => state.workspace.workspace.slug
   );

@@ -3,12 +3,14 @@ import { Request, Response } from "express";
 import {SubscriptionController} from "../controllers/suscription/SuscriptionController"
 import { stripe } from "../../infrastructure/services/StripeService";
 import { injectable,container } from "tsyringe";
+import bodyParser from "body-parser";
+
 
 const router = express.Router();
 const suscriptionController=container.resolve(SubscriptionController)
 
-router.post("/pay",suscriptionController.addCheckout.bind(suscriptionController))
-
+router.post("/payment/:userid",suscriptionController.addCheckout.bind(suscriptionController))
+//router.post("pay/webhook", bodyParser.raw({ type: "application/json" }),suscriptionController.webHookNotify.bind(suscriptionController))
 
 
 

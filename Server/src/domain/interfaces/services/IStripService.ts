@@ -1,5 +1,5 @@
 export interface IStripeService {
-   createCheckoutSession(name:any,customer_email:string,price:any):Promise<any>
+   createCheckoutSession(name:any,customer_email:string,price:any,userId:string|any,key:string):Promise<any>
   createStripeCustomerId(email:string,name:string):Promise<any>
   paymentMethods(paymentMethodId:string,stripeCustomerId:string):Promise<any>
   updateStripeOfCustomer(stripeCustomerId:string,paymentMethodId :string):Promise<any>;

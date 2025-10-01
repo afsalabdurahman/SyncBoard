@@ -15,7 +15,7 @@ export class UserMongooseRepository implements IUserRepository {
       const document = await UserModel.findOne({ email })
       
         .exec();
-      console.log(document, "documenss from db mongos user");
+   
       if (!document) return null;
       return document as User;
     } catch (error) {
@@ -24,7 +24,7 @@ export class UserMongooseRepository implements IUserRepository {
     }
   }
   async findById(id: string): Promise<any> {
-    let user = await UserModel.findById(id);
+    let user = await UserModel.findById(id).exec();
     return user;
   }
   async create(entity: User): Promise<User> {
@@ -34,7 +34,7 @@ export class UserMongooseRepository implements IUserRepository {
         throw new Error("Database connection is not open");
       }
       const savedDocument = await UserModel.create(entity);
-      console.log(savedDocument, "svaeDoc ment in repo");
+
       return savedDocument.toObject() as User;
     } catch (error) {
       console.error("Error creating user:", error);
@@ -82,7 +82,7 @@ export class UserMongooseRepository implements IUserRepository {
   // Update profile
   async updateProfile(userId: string, merge: any): Promise<User | any> {
     const objectId: any = new mongoose.Types.ObjectId(userId.toString());
-    console.log(objectId, "objId fro@Repository");
+   
     let updated = await UserModel.updateOne(
       { _id: objectId },
       { $set: merge.profileData },
@@ -94,7 +94,7 @@ export class UserMongooseRepository implements IUserRepository {
     );
 
     if (!updated) throw new ConflictError("Database error");
-    console.log(updated, "mogodb updated");
+ 
     return updated;
   }
   async changePassword(userId: string, newPassword: string): Promise<boolean> {
@@ -104,7 +104,7 @@ export class UserMongooseRepository implements IUserRepository {
       { new: true, upsert: true }
     );
 
-    console.log(result, "result...");
+  
     return true;
   }
   async findUsersInsameWorkspace(workspaceId: ObjectId): Promise<any> {
@@ -128,6 +128,10 @@ export class UserMongooseRepository implements IUserRepository {
     //   { new: true,upsert:true }
     // );
     // }
-    console.log(user, "#resposirioty");
+ 
+  }
+  async countUser(): Promise<any> {
+    const countUser = await UserModel.countDocuments()
+    return countUser;
   }
 }
