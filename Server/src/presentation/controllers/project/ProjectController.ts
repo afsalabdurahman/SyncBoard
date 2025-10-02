@@ -116,4 +116,25 @@ export class ProjectController {
       next(error);
     }
   }
+ async pagination (req: Request,
+    res: Response,
+    next: NextFunction):Promise<void> {
+try {
+  console.log("callinngg... pagination")
+     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+
+    console.log(page,limit,skip)
+const {items,totalItems} =await this._projectUsecase.paginationProjecust(page,limit,skip)
+res.status(200).json({
+  items,
+  currentPage: page,
+      totalPages: Math.ceil(totalItems / limit),
+      totalItems,
+})
+} catch (error) {
+  console.log(error,"error pagination")
+}
+ }
 }

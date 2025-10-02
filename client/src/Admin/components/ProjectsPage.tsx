@@ -11,6 +11,7 @@ import {
   removeProject,
   fetchProjectData,
 } from "../../Redux/workspace/admin/ProjectSlice";
+import {TablePagination} from"@mui/material"
 import {findLimit} from"../../services/upgradeSubscription"
 import api from "../../services/api";
 import { AxiosResponse } from "axios";
@@ -46,16 +47,48 @@ import apiService from "../../services/api";
 import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
 
 export function ProjectsPage() {
+   const [projects,setProject]=useState()
+const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalItems, setTotalItems] = useState(0)
+const [refreshKey, setRefreshKey] = useState(0);
+   useEffect(() => {
+    fetchItems();
+  }, [page, rowsPerPage,refreshKey]);
+     
+const fetchItems = async () => {
+    try {
+      const response = await apiService.get(`project/myprojects?page=${page + 1}&limit=${rowsPerPage}`);
+      setProject(response.data.items);
+      setTotalItems(response.data.totalItems);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+  console.log(totalItems,"totalItems",page,"pages")
+ const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const dispatch: AppDispatch = useDispatch();
   let [suscription, setSuscription] = useState(false);
 
   // Select Redux state directly
-  const [refreshKey, setRefreshKey] = useState(0);
+  
   const [loader, setLoader] = useState("");
   const plankey= useSelector((state:any)=>state.suscription.subscription.planKey)
   const adminId = useSelector((state: any) => state?.user?.user?._id);
   const adminName = useSelector((state: any) => state?.user?.user?.name);
-  const projects = useSelector((state: any) => state.projects.list);
+//  const projects = useSelector((state: any) => state.projects.list);
+
+
+
+
   console.log(plankey)
 const logId=useSelector((state)=>{
   return state.workspace.workspace.logId
@@ -66,6 +99,7 @@ console.log(logId,"ad++++")
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
   // Fetch projects when adminId available
+ 
 const mylimit = findLimit(plankey)
    console.log(mylimit,"mylimit")
   useEffect(() => {
@@ -340,6 +374,7 @@ setRefreshKey((prev) => prev + 1);
                     </TableCell>
                   </TableRow>
                 ))
+                
               ) : (
                 <TableRow>
                   <TableCell colSpan={8}>No projects found.</TableCell>
@@ -367,6 +402,15 @@ setRefreshKey((prev) => prev + 1);
         onConfirm={handleConfirmDelete}
         title='Delete Project?'
         description='This project will be permanently deleted.'
+      />
+  <TablePagination
+        rowsPerPageOptions={[3, 7, 25]}
+        component="div"
+        count={totalItems}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </div>
   );

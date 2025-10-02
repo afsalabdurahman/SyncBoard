@@ -164,4 +164,18 @@ export class TaskController {
       next(error);
     }
   }
+async pagination (req:Request,res:Response):Promise<void> {
+ console.log("callinngg... pagination")
+     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+const {items,totalItems} =await this._taskUsecase.paginationTask(page,limit,skip)
+res.status(200).json({
+  items,
+  currentPage: page,
+      totalPages: Math.ceil(totalItems / limit),
+      totalItems,
+})
+}
+
 }

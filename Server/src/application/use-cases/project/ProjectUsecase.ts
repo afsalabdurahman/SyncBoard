@@ -32,6 +32,8 @@ export class ProjectUsecase implements IProjectUsecase {
   }
 
   async getAllProjects(): Promise<Project> {
+
+    
     let allProjects = await this._projectRepository.getAllProjects();
     if (!allProjects) throw new NotFoundError("Project is not found");
     return allProjects;
@@ -57,5 +59,9 @@ export class ProjectUsecase implements IProjectUsecase {
   }
   async deleteProject(projectId: string): Promise<void> {
     await this._projectRepository.deleteProject(projectId);
+  }
+  async paginationProjecust(page: number, limit: number, skip: number): Promise<any> {
+   const {items,totalItems} = await this._projectRepository.getPagenationProjects(page,limit,skip)
+   return {items:items,totalItems}
   }
 }

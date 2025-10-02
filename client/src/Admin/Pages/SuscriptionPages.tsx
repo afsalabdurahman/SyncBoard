@@ -9,6 +9,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 // import CheckoutPage from "./CheckoutPage"
 import apiService from "../../services/api"
 import { useSelector } from "react-redux"
+import { stat } from "fs"
 export type Plan = "Free" | "Pro" | "Enterprise"
 
 export interface PaymentInfo {
@@ -35,9 +36,13 @@ export interface UsageMetrics {
 
 export default function SubscriptionPage() {
     const myPlan=useSelector((state)=>{
-console.log(state,"mystate")
    return state.suscription.subscription.planKey ?? "free"
 })
+const planStatus = useSelector((state)=>{
+  return state.suscription.subscription.status
+})
+
+
   const [currentPlan, setCurrentPlan] = useState<Plan>(myPlan)
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -113,7 +118,7 @@ console.log(projectCount,"count project++++",userCount)
     : targetPlan === "Pro"
     ? "$20/month"
     : "$50/month";
-
+console.log(targetPlan,"targetplan  ++")
     const currentDate = new Date().toLocaleDateString()
 
 

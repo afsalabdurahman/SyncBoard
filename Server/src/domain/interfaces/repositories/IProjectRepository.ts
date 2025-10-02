@@ -5,5 +5,6 @@ export interface IProjectRepository {
     removeAttachment(projectId:string,attachedUrl:string):Promise<void>
     updateProject(projectId:string,merged:any):Promise<boolean>
     deleteProject(projectId:string):Promise<void>;
-    countProject():Promise<any>
+    countProject():Promise<any>;
+    getPagenationProjects(page:number,limit:number,skip:number):Promise<any>
 }

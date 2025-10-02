@@ -25,7 +25,7 @@ export default function CurrentPlanOverview({
 }: CurrentPlanOverviewProps) {
   const planDetails = {
     free: { price: "$0", features: ["Basic features", "Limited usage"] },
- basic: { price: "$10", features: ["Basic features", "Limited usage"] ,priceId:"this isprice id"},
+    basic: { price: "$10", features: ["Basic features", "Limited usage"] ,priceId:"this isprice id"},
     pro: {
       price: "$20",
       features: ["All basic features", "Advanced tools", "Priority support"],
@@ -106,12 +106,12 @@ export default function CurrentPlanOverview({
 {currentPlan === "basic" && (
             <>
               <Button
-                onClick={() => onUpgrade("Basic")}
+                onClick={() => onUpgrade("Pro")}
                 disabled={isProcessing}
                 className='w-full'
                 size='lg'
               >
-                {isProcessing ? "Processing..." : "Upgrade to Pro - $10/month"}
+                {isProcessing ? "Processing..." : "Upgrade to Pro - $20/month"}
               </Button>
               <Button
                 onClick={() => onUpgrade("Enterprise")}

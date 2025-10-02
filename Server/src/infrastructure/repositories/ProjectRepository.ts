@@ -39,4 +39,13 @@ async countProject(): Promise<any> {
   const count= await ProjectModel.countDocuments();
   return count
 }
+
+async getPagenationProjects(page: number, limit: number, skip: number): Promise<any> {
+   const totalItems = await ProjectModel.countDocuments();
+     const items = await ProjectModel.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+      return {items,totalItems}
+}
 }

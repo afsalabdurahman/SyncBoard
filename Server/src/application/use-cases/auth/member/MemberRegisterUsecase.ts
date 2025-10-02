@@ -54,13 +54,13 @@ export class MemberRegisterUsecase implements IMemberRegister {
     });
 
     if (!this.workspaceRepository.findbySlug) {
-      throw new NotFoundError("not found repo");
+      throw new NotFoundError("not found rep0o");
     }
 
     let workspace: any = await this.workspaceRepository.findbySlug(
       dto.slug ?? ""
     );
-    if (!workspace || workspace.slug)
+    if (!workspace || !workspace.slug)
       throw new NotFoundError("Workspace not found ");
 
     const addToWorkspace = await this._userRepository.addToWorkspace(

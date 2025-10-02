@@ -19,4 +19,5 @@ router.patch("/status/:id",memberAuth,taskController.updateTaskStatus.bind(taskC
 router.get("/completed",adminAuth,taskController.findAllCompletedTasks.bind(taskController))
 router.patch("/update/approval/status/:id",adminAuth,taskController.controllApprovalSatatus.bind(taskController))
 router.get("/project/:projectId",memberAuth,taskController.findTaskByProject.bind(taskController))
+router.get('/mytask',taskController.pagination.bind(taskController))
 export default router;

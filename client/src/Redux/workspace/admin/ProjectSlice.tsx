@@ -28,7 +28,7 @@ const initialState: ProjectsState = {
   status: 'idle',
 };
 
-export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async (AdminId:string) => {
+export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async (AdminId:string,) => {
   const response = await apiService.get<Project[]>('project/projects',{AdminId}); // Adjust endpoint
   console.log(response,"axios project repos")
   return response?.data;

@@ -29,7 +29,7 @@ console.log(input,"input+++++")
 
 const haveSuscription = await this._suscriptionRepository.findSuscriptionByUserId(user._id) 
 if(!SuscriptionRepository) throw new NotFoundError("Suscription not found");
-const upgradePlan = await this._suscriptionRepository.updateSuscriptionPlan(user._id,myKey.key,"unpaid")
+//const upgradePlan = await this._suscriptionRepository.updateSuscriptionPlan(user._id,myKey.key,"unpaid")
 const isCreateLink=await this._stripeService.createCheckoutSession(user.name,user.email,myKey.stripePriceId,user._id,myKey.key)
       if(!isCreateLink) throw new ValidationError("Not a valid id")
             console.log(isCreateLink,"linkecrearte plan usecse");
