@@ -1,9 +1,9 @@
-"use client";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "../../components/ui/button";
 import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
+import {TablePagination} from"@mui/material"
 import {
   Card,
   CardContent,
@@ -55,6 +55,9 @@ const initialTasks: Task[] = [
 ];
 
 export function TasksPage() {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalItems, setTotalItems] = useState(0)
   let AdminId = useSelector((state: any) => {
     return state?.user?.user?.id;
   });
@@ -63,18 +66,26 @@ export function TasksPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
   useEffect(() => {
-    const fetchTasks = async () => {
+    fetchTasks();
+  }, [refreshKey,page,rowsPerPage]);
+   const fetchTasks = async () => {
       try {
-        const response = await apiService.get(`task/alltasks`);
-        setTasks(response.data);
+        const response = await apiService.get(`task/mytask?page=${page + 1}&limit=${rowsPerPage}`);
+        setTasks(response.data.items);
+          console.log(response,"resp++")
+      setTotalItems(response.data.totalItems);
       } catch (error) {
         console.error("Failed to fetch tasks:", error);
       }
     };
+ const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-    fetchTasks();
-  }, [refreshKey]);
-
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   let projects = useSelector((state) => state.projects.list);
   let users = new Set(
     projects
@@ -293,6 +304,15 @@ export function TasksPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={editingTask ? handleEditTask : handleAddTask}
         task={editingTask}
+      />
+        <TablePagination
+        rowsPerPageOptions={[3, 7, 25]}
+        component="div"
+        count={totalItems}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </div>
   );

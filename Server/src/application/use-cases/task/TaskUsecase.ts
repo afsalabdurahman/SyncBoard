@@ -97,4 +97,8 @@ export class TaskUsecase implements ITaskUseCase {
     console.log(projectTask, "from useCse@projec++");
     return projectTask;
   }
+ async paginationTask(page: number, limit: number, skip: number): Promise<any> {
+    const {items,totalItems} = await this._taskRepository.getPagenationaTask(page,limit,skip)
+   return {items:items,totalItems}
+ }
 }

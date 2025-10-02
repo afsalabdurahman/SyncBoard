@@ -6,7 +6,7 @@ import { Badge } from "../../components/ui/badge"
 import { Textarea } from "../../components/ui/textarea"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog"
 import { Label } from "../../components/ui/label"
-import { Check, X, Clock } from 'lucide-react'
+import { Check, X, Clock,CheckCircle } from 'lucide-react'
 import apiService from "../../services/api"
 
 interface Task {
@@ -93,7 +93,29 @@ apiService.get("task/completed").then((response)=>{
     })
   }
 if(tasks.length==0){
-  return(<><p>No penfing</p></>)
+return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+        <div className="flex justify-center mb-6">
+          <CheckCircle className="w-16 h-16 text-green-500" />
+        </div>
+        
+        <h1 className="text-2xl font-bold text-gray-800 mb-3">
+          All Clear!
+        </h1>
+        
+        <p className="text-gray-600 mb-6">
+          There are no pending task approvals at this time.
+        </p>
+        
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <p className="text-sm text-green-800">
+            You're up to date with all your approvals. Check back later for new items.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
   return (
     <div className="container mx-auto p-6 space-y-6">

@@ -10,4 +10,5 @@ export interface ITaskRepository {
   updateApprovalStatus(taskId:string,status:string,msg?:string|null):Promise<void>
   findTaskByProjectId(projectId:string):Promise<any>;
   countTask():Promise<any>
+   getPagenationaTask(page:number,limit:number,skip:number):Promise<any>
 }

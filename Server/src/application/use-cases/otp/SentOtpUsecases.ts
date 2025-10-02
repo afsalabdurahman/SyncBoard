@@ -17,7 +17,7 @@ export class OTPService implements IOTP{
       throw new Error("OTP Repository is not defined");
     }
     const otp = this.otpRepository.generateOTP();
-   // await this.emailService.sendOtp(email, otp);
+    await this.emailService.sendOtp(email, otp);
     try {
       let SaveOtp = new OTP(email, otp);
       await this.otpRepository.save(SaveOtp);

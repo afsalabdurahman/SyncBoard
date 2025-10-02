@@ -17,9 +17,9 @@ import { UserMongooseRepository } from "../../infrastructure/repositories/UserRe
 
 const SUBSCRIPTION_LIMITS :any = {
   free: { maxProjects: 2, maxTasks: 2, maxUsers: 2 },
-  basic: { maxProjects: 3, maxTasks: 10, maxUsers: 10 },
+  basic: { maxProjects: 4, maxTasks: 10, maxUsers: 10 },
   pro: { maxProjects: 10, maxTasks: 100, maxUsers: 30 },
-  enterprise: { maxProjects: Infinity, maxTasks: Infinity, maxUsers: Infinity },
+  enterprise:  { maxProjects: Infinity, maxTasks: Infinity, maxUsers: Infinity },
 };
 
 export const subscriptionMiddle=(resorce:string)=>{
@@ -51,7 +51,7 @@ console.log(limit,";imlit")
 if(resorce == "project"){
 const ProjectCount = await projectRepo.countProject();
 console.log(ProjectCount,"Projectcount")
-  if (ProjectCount >= limit.maxProjects && limit.maxProjects !== Infinity){
+  if (ProjectCount > limit.maxProjects && limit.maxProjects !== Infinity){
     console.log("Project limit excced")
 throw new ForbiddenError("Project is exceed")
   }

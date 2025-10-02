@@ -105,4 +105,13 @@ export class TaskRepository implements ITaskRepository {
     const countTask = TaskModel.countDocuments();
     return countTask
   }
+  async getPagenationaTask(page: number, limit: number, skip: number): Promise<any> {
+     const totalItems = await TaskModel.countDocuments();
+         const items = await TaskModel.find()
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 });
+          return {items,totalItems}
+    
+  }
 }
