@@ -33,7 +33,7 @@ export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProject
   console.log(response,"axios project repos")
   return response?.data;
 });
-//
+
 const projectsSlice = createSlice({
   name: 'projects',
   initialState,

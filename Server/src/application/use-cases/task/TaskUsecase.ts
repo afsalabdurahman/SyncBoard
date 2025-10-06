@@ -17,14 +17,17 @@ export class TaskUsecase implements ITaskUseCase {
   async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
     const isValid = TaskMapper.validateTask(input);
     if (!isValid.success) throw new ValidationError("Validation failed");
+
     const taskEntity = TaskMapper.mapTaskToEntity(input);
     const taskData = await this._taskRepository.create(taskEntity);
     if (!taskData) throw new NotFoundError("Task not created");
+
     const responseDTO = TaskMapper.mapEntityToTask("Task is created");
     io.emit("new-task", {
       name: taskData.name,
       message: `🚀 New task "${taskData.name}" has been added!`,
     });
+    
     return responseDTO;
   }
 

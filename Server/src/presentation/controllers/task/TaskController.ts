@@ -16,29 +16,11 @@ export class TaskController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const input: TaskRequestDTO = {
-        name: req.body.newTask.name,
-        description: req.body.newTask.description,
-        project: req.body.newTask.project,
-        assignedUser: req.body.newTask.assignedUser,
-        status: req.body.newTask.status,
-        deadline: req.body.newTask.deadline,
-        priority: req.body.newTask.priority,
-        projectId: req.body.newTask.projectId,
-      };
+      const input: TaskRequestDTO = req.body.newTask as TaskRequestDTO
 
       const resposeDTO = this._taskUsecase.execute(input);
-
-      // console.log(req.body, "bosdddddy");
-      // const dto = new TaskRequstDTO(req.body.newTask);
-      // console.log(dto, "return dto @control");
-      // dto.toValidate();
-      // const tasktEntity = await TaskMapper.toEntity(dto);
-      // console.log(tasktEntity, "entifty from controller");
-
-      // const savedTask = await this.taskUsecase.execute(tasktEntity);
-      // const resposeDTO = TaskMapper.toRegisterDTO(savedTask);
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
+      
     } catch (error) {
       next(error);
     }

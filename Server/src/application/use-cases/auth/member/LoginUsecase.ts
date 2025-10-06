@@ -27,13 +27,13 @@ export class LoginUsecase implements ILogin {
 
   async loginUser(input:LoginRequestDTO): Promise<LoginResponseDTO> {
     if(!input.email||!input.password) throw new NotFoundError("Email or Password not found")
-    let user: User = await this._userRepository.findByEmail(input.email);
+    let user = await this._userRepository.findByEmail(input.email);
     console.log(user, "userDatafrom usecses");
     if (!user || !user.workspace) {
       throw new NotFoundError("User or Workspace not found");
     }
-    if (user.isBlocked) throw new ForbiddenError("User is blocked");
-    if (user.isDeleted) throw new ForbiddenError("User is not found");
+    if (user.isBlock) throw new ForbiddenError("User is blocked");
+    if (user.isDelete) throw new ForbiddenError("User is not found");
     let isTrue = await this._authService.comparePassword(
       input.password,
       user.password

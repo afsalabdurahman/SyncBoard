@@ -116,7 +116,7 @@ export const cancelSubscription = createAsyncThunk<
 >("subscription/cancel", async ({ id, atPeriodEnd = true }, thunkAPI) => {
   try {
     const token = thunkAPI.getState()?.auth?.token;
-    // Example: PATCH /api/subscriptions/:id/cancel  OR PATCH /api/subscriptions/:id { cancelAtPeriodEnd:true }
+ 
     const res = await fetch(
       `/api/subscriptions/${encodeURIComponent(id)}/cancel`,
       {
@@ -129,7 +129,7 @@ export const cancelSubscription = createAsyncThunk<
       }
     );
 
-    // Fallback: if your API doesn't have /cancel route, consider PATCH to the resource.
+  
     if (res.status === 404) {
       // fallback: patch main resource
       const fallback = await fetch(

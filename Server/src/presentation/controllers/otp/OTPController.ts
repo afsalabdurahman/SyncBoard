@@ -34,7 +34,7 @@ if(!this.otpService.sendOTP) throw new NotFoundError("Notfound")
   }
   async verifyOtp(req: Request, res: Response): Promise<any> {
     let { email, otp } = req.body;
-    console.log(req.body, "body");
+ 
     try {
       if(!this.verifyOTPservice.verifyOTP) throw new NotFoundError("Not found")
       let isTrue = await this.verifyOTPservice.verifyOTP(email, otp);
@@ -52,7 +52,7 @@ if(!this.otpService.sendOTP) throw new NotFoundError("Notfound")
       return res
         .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
         .json({ message: ResponseMessages.INTERNAL_SERVER_ERROR });
-      console.log(error, "errr");
+    
     }
   }
 }

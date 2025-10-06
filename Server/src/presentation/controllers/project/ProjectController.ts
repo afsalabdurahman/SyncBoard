@@ -38,15 +38,7 @@ export class ProjectController {
     } catch (error) {
       next(error);
     }
-    // const activityId:string = req.query.activityId?.toString()??"123"
-
-    // if (resposeDTO.name) {
-    //   await this.activityUsecase.projctActivity(
-    //     resposeDTO.name,
-    //     createdBy,
-    //     activityId
-    //   );
-    // }
+   
   }
   async allProjects(
     req: Request,

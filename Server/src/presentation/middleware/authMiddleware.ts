@@ -35,14 +35,14 @@ if (!accessToken) {
       if (!Object.values(UserRole).includes(role)) {
         throw new AuthenticationError('Invalid user role');
       }
-      const user:User|null = await getUserUseCase.execute(decoded.userId);
+      const user:any|null = await getUserUseCase.execute(decoded.userId);
         if (!user) {
         throw new AuthenticationError('User not found');
       }
-       if (user.isBlocked) {
+       if (user.isBlock) {
         throw new ForbiddenError('User is blocked');
       }
-      if(user.isDeleted){
+      if(user.isDelete){
          throw new ForbiddenError('User is removed');
       }
             req.user = { id: decoded.userId, role };
