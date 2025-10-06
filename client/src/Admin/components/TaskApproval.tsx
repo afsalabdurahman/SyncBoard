@@ -1,87 +1,96 @@
+import { useEffect, useState } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Textarea } from "../../components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Label } from "../../components/ui/label";
+import { Check, X, Clock, CheckCircle } from 'lucide-react';
+import {  fetchTasks,updateTaskStatus } from "../../services/apiService";
+import { Task } from "../../services/TaskTypes";
 
-import { useEffect, useState } from "react"
-import { Button } from "../../components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Badge } from "../../components/ui/badge"
-import { Textarea } from "../../components/ui/textarea"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog"
-import { Label } from "../../components/ui/label"
-import { Check, X, Clock,CheckCircle } from 'lucide-react'
-import apiService from "../../services/api"
+interface TaskApprovalProps {}
 
-interface Task {
-  id: string
-  taskName: string
-  project: string
-  username: string
-  status: 'pending' | 'approved' | 'rejected'
-  submittedAt: string
-  rejectionReason?: string
-}
+export const TaskApproval: React.FC<TaskApprovalProps> = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-export  const TaskApproval=()=> {
-  const [tasks, setTasks] = useState<Task[]>([])
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const fetchedTasks = await fetchTasks();
+        setTasks(fetchedTasks);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load tasks. Please try again later.");
+        console.error("Error fetching tasks:", err);
+      }
+    };
+    loadTasks();
+  }, [refreshKey]);
 
-
-    const [refreshKey, setRefreshKey] = useState(0);
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
-  const [rejectionReason, setRejectionReason] = useState("")
-
-// axios call all completed task
-useEffect(()=>{
-apiService.get("task/completed").then((response)=>{
-  console.log(response,"from server+++")
-  const data=response.data
-  setTasks([...data])
-})
-},[refreshKey])
-
-//
-
-
-  const handleApprove = async(taskId: string) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId 
-        ? { ...task, status: 'approved' as const }
-        : task
-    ))
-    await apiService.patch(`task/update/approval/status/${taskId}`,{
-      status:"Approved",
-      msg:null
-    }) 
- setRefreshKey((prev) => prev + 1);
-    // await response=apiService.patch("")
-
-  }
+  const handleApprove = async (taskId: string) => {
+    try {
+      await updateTaskStatus(taskId, "Approved", null);
+      setTasks(tasks.map(task =>
+        task.id === taskId ? { ...task, status: 'approved' } : task
+      ));
+      setRefreshKey(prev => prev + 1);
+    } catch (err) {
+      setError("Failed to approve task. Please try again.");
+      console.error("Error approving task:", err);
+    }
+  };
 
   const handleRejectClick = (task: Task) => {
-    setSelectedTask(task)
-    setRejectDialogOpen(true)
-    setRejectionReason("")
-  }
+    setSelectedTask(task);
+    setRejectDialogOpen(true);
+    setRejectionReason("");
+  };
 
-  const handleRejectConfirm = async() => {
-  await apiService.patch(`task/update/approval/status/${selectedTask?.id}`,{
-      status:"Approved",
-      msg:rejectionReason
-    }) 
-     setRejectDialogOpen(false)
-      setSelectedTask(null)
-      setRejectionReason("")
-      setRefreshKey((prev) => prev + 1);
-  }
+  const handleRejectConfirm = async () => {
+    if (!selectedTask) return;
+    try {
+      await updateTaskStatus(selectedTask.id, "Rejected", rejectionReason);
+      setTasks(tasks.map(task =>
+        task.id === selectedTask.id ? { ...task, status: 'rejected', rejectionReason } : task
+      ));
+      setRejectDialogOpen(false);
+      setSelectedTask(null);
+      setRejectionReason("");
+      setRefreshKey(prev => prev + 1);
+    } catch (err) {
+      setError("Failed to reject task. Please try again.");
+      console.error("Error rejecting task:", err);
+    }
+  };
 
   const getStatusBadge = (status: Task['status']) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="text-orange-600 border-orange-600"><Clock className="w-3 h-3 mr-1" />Pending</Badge>
+        return (
+          <Badge variant="outline" className="text-orange-600 border-orange-600">
+            <Clock className="w-3 h-3 mr-1" /> Pending
+          </Badge>
+        );
       case 'approved':
-        return <Badge variant="outline" className="text-green-600 border-green-600"><Check className="w-3 h-3 mr-1" />Approved</Badge>
+        return (
+          <Badge variant="outline" className="text-green-600 border-green-600">
+            <Check className="w-3 h-3 mr-1" /> Approved
+          </Badge>
+        );
       case 'rejected':
-        return <Badge variant="outline" className="text-red-600 border-red-600"><X className="w-3 h-3 mr-1" />Rejected</Badge>
+        return (
+          <Badge variant="outline" className="text-red-600 border-red-600">
+            <X className="w-3 h-3 mr-1" /> Rejected
+          </Badge>
+        );
     }
-  }
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -89,34 +98,40 @@ apiService.get("task/completed").then((response)=>{
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
-if(tasks.length==0){
-return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
-        <div className="flex justify-center mb-6">
-          <CheckCircle className="w-16 h-16 text-green-500" />
-        </div>
-        
-        <h1 className="text-2xl font-bold text-gray-800 mb-3">
-          All Clear!
-        </h1>
-        
-        <p className="text-gray-600 mb-6">
-          There are no pending task approvals at this time.
-        </p>
-        
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-sm text-green-800">
-            You're up to date with all your approvals. Check back later for new items.
-          </p>
+      minute: '2-digit',
+    });
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+          <h1 className="text-2xl font-bold text-red-800 mb-3">Error</h1>
+          <p className="text-red-600 mb-6">{error}</p>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
+  if (tasks.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+          <div className="flex justify-center mb-6">
+            <CheckCircle className="w-16 h-16 text-green-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">All Clear!</h1>
+          <p className="text-gray-600 mb-6">There are no pending task approvals at this time.</p>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <p className="text-sm text-green-800">
+              You're up to date with all your approvals. Check back later for new items.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -151,17 +166,16 @@ return (
                   <p className="text-sm text-red-700">{task.rejectionReason}</p>
                 </div>
               )}
-              
               {task.status === 'pending' && (
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={() => handleApprove(task.id)}
                     className="bg-green-600 hover:bg-green-700"
                   >
                     <Check className="w-4 h-4 mr-2" />
                     Approve
                   </Button>
-                  <Button 
+                  <Button
                     variant="destructive"
                     onClick={() => handleRejectClick(task)}
                   >
@@ -199,8 +213,8 @@ return (
             <Button variant="outline" onClick={() => setRejectDialogOpen(false)}>
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleRejectConfirm}
               disabled={!rejectionReason.trim()}
             >
@@ -210,5 +224,6 @@ return (
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
+  );
+};
+

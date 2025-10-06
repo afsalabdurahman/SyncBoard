@@ -18,16 +18,23 @@ export class ProjectUsecase implements IProjectUsecase {
 
     const projectEntity = ProjectMapper.mapProjectToEntity(dto);
 
+const countProjects = await this._projectRepository.countProject();
+
+if(countProjects>=1 )  throw new ValidationError("project not created");
+const projects= await this._projectRepository.getAllProjects();
+console.log(projects[0],"frist projectss")
+
+
     const projectData = await this._projectRepository.create(projectEntity);
 
     if (!projectData) throw new NotFoundError("Project not created");
+
     io.emit("new-project", {
       name: "New Project is Added",
       message: `🚀 New project ${projectData.name} has been added!`,
     });
-    const responseDTO = ProjectMapper.mapEntityToProject(
-      "Project Create is Success"
-    );
+
+    const responseDTO = ProjectMapper.mapEntityToProject("Project Create is Success" );
     return responseDTO;
   }
 

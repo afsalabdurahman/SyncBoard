@@ -15,6 +15,7 @@ export const initSocketServer = (io: Server) => {
       console.log(userId, "333");
       io.emit("userStatus", userId);
       await memberController.changeOnlinestatus(userId);
+      
     });
 
     socket.on("send-message", async (msgData) => {

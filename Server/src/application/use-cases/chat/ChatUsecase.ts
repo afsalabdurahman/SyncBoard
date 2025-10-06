@@ -4,6 +4,7 @@ import { IChatRepository } from "../../../domain/interfaces/repositories/IChatRe
 import { IChatUsecase } from "../../repositories/IChat";
 import { ISoketService } from "../../repositories/ISoketService";
 import { Chat } from "../../../domain/entities/Chat";
+import { ChatMapper } from "../../mappers/ChatMapper";
 @injectable()
 export class ChatUsecase implements IChatUsecase {
   constructor(
@@ -13,9 +14,11 @@ export class ChatUsecase implements IChatUsecase {
   async sendMessage(dto: any): Promise<void> {
   
    const data={content:dto.content,senderName:dto.sender}
+  const message= ChatMapper.chatToEntity(dto)
+  console.log(message,"reved from dto to enti for syopre db")
     // const message: Chat = MessageMapper.toEntity(data);
    
-   // await this.chatRepository.saveChats("hgdu");
+   await this.chatRepository.saveChats(message);
     //  const messageDTO = MessageMapper.toDTO(message);
       // this.socketService.broadcastMessage(messageDTO);
   }

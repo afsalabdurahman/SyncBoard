@@ -3,7 +3,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { url } from "inspector";
+
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 const VITE_TOKEN_API_URL =import.meta.env.VITE_TOKEN_API_URL
 // Create a base axios instance
@@ -82,11 +82,11 @@ axiosInstance.interceptors.response.use(
       }
 
       isRefreshing = true;
-
+  const refreshToken = localStorage.getItem("refreshToken");
       try {
         const refreshResponse = await axios.post(
           VITE_TOKEN_API_URL,
-          {},
+          {refreshToken},
           { withCredentials: true }
         );
 
@@ -136,62 +136,6 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// axiosInstance.interceptors.request.use(
-//   (config: InternalAxiosRequestConfig) => {
-//     const token = localStorage.getItem('accessToken');
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     console.log(config,"axios config")
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// Response interceptor for handling errors globally
-// axiosInstance.interceptors.response.use(
-//   (response: AxiosResponse) => {
-//     return response;
-//   },
-
-//   (error) => {
-//      const originalRequest = error.config as AxiosRequestConfig & {
-//       _retry?: boolean;}
-//       console.log(originalRequest,"response err intercep")
-
-//     const data = error.response?.data as { message?: string; error?: string };
-//     if (error.response) {
-//       const { status } = error.response;
-//     console.log(originalRequest,"orih=ginal request")
-//       if (status === 401&&originalRequest && !originalRequest._retry) {
-//         localStorage.removeItem('accessToken');
-//         originalRequest._retry = true;
-//         if (
-//         originalRequest.url?.includes('/api/auth/refresh-token') ||
-//         originalRequest.url?.includes('/api/auth/logout')
-//       ){     console.error('401 error on auth endpoint:', data?.message);
-
-//         return Promise.reject({ message: data?.message, status });}
-//         // Redirect to login or show notification
-//       } else if (status === 403&& data?.error === 'ForbiddenError' &&
-//       data?.message === 'User is blocked') {
-//         window.location.href = '/login';
-//       } else if (status === 404) {
-//         // Handle not found
-//       } else if (status >= 500) {
-//         // Handle server errors
-//       }
-//     } else if (error.request) {
-//       console.error('Network error:', error.request);
-//     } else {
-//       console.error('Error:', error.message);
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
 
 // API Service methods with TypeScript typing
 const apiService = {

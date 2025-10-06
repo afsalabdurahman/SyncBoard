@@ -6,12 +6,14 @@ import { NotFoundError } from "../../utils/errors"
 import mongoose from "mongoose"
 
 export class ProjectRepository implements IProjectRepository {
+
+   
 async create(dto: Project): Promise<Project | null> {
    const projectData=await ProjectModel.create(dto)
    return projectData
 }
 async getAllProjects(): Promise<any | null> {
-   const projects = await ProjectModel.find()
+   const projects = await ProjectModel.find().sort({ createdAt: -1 });
    return projects
 }
 async removeAttachment( projectId: string, attachedUrl: string): Promise<void> {

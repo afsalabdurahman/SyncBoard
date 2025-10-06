@@ -7,20 +7,18 @@ import {
 } from "../../../application/dto/AuthDTOs";
 import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { ResponseMessages } from "../../../common/erroResponse";
 import { ValidationError } from "../../../utils/errors";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";
-import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
+
 
 @injectable()
 export class AuthController {
   constructor(
     @inject("RegisterUseCase") private _registerUseCase: IAuth,
     @inject("LoginUseCase") private _loginUsecase: ILogin,
-    @inject("Workspaceuse")
-    private _CreateWorkspaceUsecases: IWorkspace
+    
   ) {}
 
   async register(

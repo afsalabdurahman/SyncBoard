@@ -101,7 +101,7 @@ console.log(logId,"ad++++")
   // Fetch projects when adminId available
  
 const mylimit = findLimit(plankey)
-   console.log(mylimit,"mylimit")
+   
   useEffect(() => {
     if (adminId) {
       dispatch(fetchProjectData(adminId));
@@ -152,12 +152,12 @@ const mylimit = findLimit(plankey)
 
   const handleEditProject = async (projectData: any) => {
    setLoader("Updating project ...");
-   console.log(projectData,"edit updates")
+
    let attachedUrl=[];
    if(projectData.attachment){
     for (const files of projectData.attachment) {
             let result=  await uploadAttachment(files.file);
-            console.log(result,"$$$$$$$results")
+     
       attachedUrl.push(result)
    }}
    delete projectData.attachment;
@@ -232,9 +232,9 @@ setRefreshKey((prev) => prev + 1);
       setIsModalOpen(true);
     }
   };
-  console.log(editingProject, "edit$$$");
+
   const openEditModal = (project: Project) => {
-    console.log("Editing project222222222:", project);
+   
     setEditingProject(project);
 
     setIsModalOpen(true);

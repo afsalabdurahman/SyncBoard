@@ -9,6 +9,7 @@ export class AuthMapper {
       name: dto.name,
       password: dto.password,
       role: dto.role,
+      isAdmin:true,
    
     });
   }

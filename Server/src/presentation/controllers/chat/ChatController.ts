@@ -15,7 +15,7 @@ export class ChatController{
    
 async saveMessage(message:any):Promise<void>{
 
-
+console.log(message,"mesge from emit io revecd from controllelr")
 await this.chatuseCase.sendMessage(message)
 }
 async chatHistor(req:Request,res:Response,next:NextFunction):Promise<void>{

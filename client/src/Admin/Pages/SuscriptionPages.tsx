@@ -56,13 +56,13 @@ console.log(projectCount,"count project++++",userCount)
     const baseMetrics = {
       free: {
         projects: { current: projectCount, limit: 3 },
-        users: { current: userCount, limit: 1 },
+        users: { current: userCount, limit: 2 },
         storage: { current: 0.5, limit: 1, unit: "GB" },
         apiCalls: { current: 850, limit: 1000 },
       },
         basic: {
         projects: { current: projectCount, limit: 3 },
-        users: { current: projectCount, limit: 1 },
+        users: { current: userCount, limit: 5 },
         storage: { current: 0.5, limit: 1, unit: "GB" },
         apiCalls: { current: 850, limit: 1000 },
       },
@@ -147,8 +147,8 @@ console.log(paymentInfo,"info pay")
       <UsageMetricsComponent usageMetrics={usageMetrics} />
 
       {paymentInfo && <PaymentInfoComponent paymentInfo={paymentInfo} />}
-
-      <BillingHistory billingHistory={billingHistory} />
+{/* 
+      <BillingHistory billingHistory={billingHistory} /> */}
       {/* <ButtonSus/> */}
     </div>
   )
