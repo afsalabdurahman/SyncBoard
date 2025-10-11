@@ -1,7 +1,6 @@
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { injectable, inject } from "tsyringe";
-
 import { NextFunction, Request, Response } from "express";
 import { IUpdateProfileUsecases } from "../../../application/repositories/IUpdateProfile";
 import { NotFoundError, InternalServerError } from "../../../utils/errors";
@@ -14,7 +13,7 @@ import { MemeberRegisterRequestDTO } from "../../../application/dto/AuthDTOs";
 export class MemberController {
   constructor(
     @inject("UpdateProfileUsecase")
-    private updateProfileUsecase: IUpdateProfileUsecases,
+    private _updateProfileUsecase: IUpdateProfileUsecases,
     @inject("ChangePasswordUsecase") private _changePasswordUsecase: IChangePasword,
     @inject("MemberRegisterUsecase") private _memberRegisterUsecase: IMemberRegister,
     @inject("ActivityUsecase") private _activityUsecase: IActivity
@@ -31,11 +30,11 @@ export class MemberController {
       if (!userId || !req.body) {
         throw new NotFoundError("user is not found");
       }
-      let updatedData = await this.updateProfileUsecase.execute(
+      let updatedData = await this._updateProfileUsecase.execute(
         userId,
         req.body
       );
-      console.log(req.body, "user updatess");
+
       res
         .status(HttpStatusCode.CREATED)
         .json({ message: ResponseMessages.SUCCESS, updatedData });
@@ -96,7 +95,7 @@ export class MemberController {
   async changeOnlinestatus(userId: string): Promise<void> {
     try {
       console.log(userId, "fromController");
-      await this.updateProfileUsecase.updateOnlineStatus(userId);
+      await this._updateProfileUsecase.updateOnlineStatus(userId);
     } catch (error) {
       console.log(error, "errorcatch");
     }

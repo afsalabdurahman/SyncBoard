@@ -9,8 +9,9 @@ import {
   addProject,
   updateProject,
   removeProject,
-  fetchProjectData,
+  
 } from "../../Redux/workspace/admin/ProjectSlice";
+import { fetchProjectData } from "../../Redux/thunks/projectThunks";
 import {TablePagination} from"@mui/material"
 import {findLimit} from"../../services/upgradeSubscription"
 import api from "../../services/api";

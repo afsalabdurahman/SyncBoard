@@ -4,6 +4,7 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { HttpStatusCode } from "../../../../common/errorCodes";
+import { ILogger } from "../../../repositories/ilogger/ILogger";
 import {
   CustomError,
   ForbiddenError,
@@ -22,13 +23,14 @@ export class LoginUsecase implements ILogin {
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("authservice") private _authService: IAuthService,
      @inject("WorkspaceRepository")
-        private _workspaceRepository: IWorkspaceRepository
+        private _workspaceRepository: IWorkspaceRepository,
+          @inject('ILogger') private _logger: ILogger
   ) {}
 
   async loginUser(input:LoginRequestDTO): Promise<LoginResponseDTO> {
     if(!input.email||!input.password) throw new NotFoundError("Email or Password not found")
     let user = await this._userRepository.findByEmail(input.email);
-    console.log(user, "userDatafrom usecses");
+  this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user || !user.workspace) {
       throw new NotFoundError("User or Workspace not found");
     }
@@ -38,7 +40,7 @@ export class LoginUsecase implements ILogin {
       input.password,
       user.password
     );
-    console.log(isTrue, "####");
+  
     if (!isTrue) {
       throw new ValidationError("Password not match");
     }

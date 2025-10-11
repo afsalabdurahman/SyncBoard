@@ -33,6 +33,9 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   async createWorkspace(
     input: WorkspaceRequestDTO
   ): Promise<WorkspaceResponseDTO> {
+ console.log(input)
+  const isValid =  WorkspaceMapper.validateWorkspace(input);
+     if (!isValid.success) throw new ValidationError("Validation failed");
     const user = await this._userRepository.findByEmail(input.email);
 
     if (!user) throw new NotFoundError("User not found");
@@ -44,8 +47,8 @@ export class CreateWorkspaceUsecases implements IWorkspace {
       user._id,
       input.title
     );
-    const isCreateWorkspace =
-      await this._workspaceRepository.create(workspaceEntity);
+  
+    const isCreateWorkspace =await this._workspaceRepository.create(workspaceEntity);
     if (!isCreateWorkspace || !isCreateWorkspace._id)
       throw new ValidationError("Not matched with schema");
 
@@ -61,6 +64,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   //     user.name
   //   );
     // console.log(msg,"from activity")
+
     return WorkspaceMapper.mapEntityToWorkspace(updatedUser, isCreateWorkspace);
   }
 

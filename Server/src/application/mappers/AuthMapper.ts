@@ -2,6 +2,7 @@ import { User } from "../../domain/entities/User";
 import { AdminSignupRequestDTO, AdminSignupResponseDTO, MemeberRegisterRequestDTO } from "../dto/AuthDTOs";
 import { WorkspaceMembership } from "../../domain/entities/User";
 import { Workspace } from "../../domain/entities/Workspace";
+import { z } from "zod";
 export class AuthMapper {
   static mapUserToEntity(dto: AdminSignupRequestDTO): User {
     return new User({
@@ -47,5 +48,12 @@ export class AuthMapper {
       token,
       refreshToken
     }
+  }
+  static registerValidation(input:AdminSignupRequestDTO){
+const isValid=z.object({email: z.string().email({ message: "Invalid email format" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  name: z.string().min(1, { message: "Name is required" }),
+  role: z.literal("Admin"), })
+  return isValid.safeParse(input);
   }
 }

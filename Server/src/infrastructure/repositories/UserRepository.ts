@@ -1,7 +1,7 @@
 import { UserModel, IUser } from "../database/models/UserModel";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
-
+import { BaseRepository } from "./BaseRepository";
 import { injectable, inject } from "tsyringe";
 import { Types, ObjectId, Date } from "mongoose";
 import { ConflictError, ValidationError } from "../../utils/errors";
@@ -9,10 +9,14 @@ import { HttpStatusCode } from "../../common/errorCodes";
 import mongoose from "mongoose";
 import { WorkspaceMembership } from "../../domain/entities/User";
 @injectable()
-export class UserMongooseRepository implements IUserRepository {
+export class UserMongooseRepository  extends BaseRepository <User> implements IUserRepository {
+    constructor() {
+    super(UserModel);
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     try {
-      const document = await UserModel.findOne({ email })
+      const document = await this.model.findOne({ email })
       
         .exec();
    
@@ -24,23 +28,24 @@ export class UserMongooseRepository implements IUserRepository {
     }
   }
   async findById(id: string): Promise<any> {
-    let user = await UserModel.findById(id).exec();
+    let user = await this.model.findById(id).exec();
     return user;
   }
-  async create(entity: User): Promise<User> {
-    try {
-      // Ensure mongoose connection is open before saving
-      if (UserModel.db.readyState !== 1) {
-        throw new Error("Database connection is not open");
-      }
-      const savedDocument = await UserModel.create(entity);
+  
+  // async create(entity: User): Promise<User> {
+  //   try {
+  //     // Ensure mongoose connection is open before saving
+  //     if (this.model.db.readyState !== 1) {
+  //       throw new Error("Database connection is not open");
+  //     }
+  //     const savedDocument = await this.model.create(entity);
 
-      return savedDocument.toObject() as User;
-    } catch (error) {
-      console.error("Error creating user:", error);
-      throw new Error("Failed to create user");
-    }
-  }
+  //     return savedDocument.toObject() as User;
+  //   } catch (error) {
+  //     console.error("Error creating user:", error);
+  //     throw new Error("Failed to create user");
+  //   }
+  // }
   async addToWorkspace(
     userId: string | ObjectId,
     workspaceId: string | ObjectId,
@@ -71,7 +76,7 @@ export class UserMongooseRepository implements IUserRepository {
   ): Promise<User | any> {
     const objectId: any = new mongoose.Types.ObjectId(id.toString());
 
-    const updatedUser = await UserModel.findOneAndUpdate(
+    const updatedUser = await this.model.findOneAndUpdate(
       { _id: objectId },
       { $set: { [updateFieldname]: value } },
       { new: true, upsert: true }
@@ -83,7 +88,7 @@ export class UserMongooseRepository implements IUserRepository {
   async updateProfile(userId: string, merge: any): Promise<User | any> {
     const objectId: any = new mongoose.Types.ObjectId(userId.toString());
    
-    let updated = await UserModel.updateOne(
+    let updated = await this.model.updateOne(
       { _id: objectId },
       { $set: merge.profileData },
       {
@@ -98,7 +103,7 @@ export class UserMongooseRepository implements IUserRepository {
     return updated;
   }
   async changePassword(userId: string, newPassword: string): Promise<boolean> {
-    const result = await UserModel.findByIdAndUpdate(
+    const result = await this.model.findByIdAndUpdate(
       userId,
       { $set: { password: newPassword } },
       { new: true, upsert: true }
@@ -108,7 +113,7 @@ export class UserMongooseRepository implements IUserRepository {
     return true;
   }
   async findUsersInsameWorkspace(workspaceId: ObjectId): Promise<any> {
-    const users = await UserModel.find({
+    const users = await this.model.find({
       "workspace.workspaceId": workspaceId,
     });
 
@@ -116,13 +121,13 @@ export class UserMongooseRepository implements IUserRepository {
   }
   async updateOnlineStatus(userId: string): Promise<void> {
     let objectId = new mongoose.Types.ObjectId(userId.toString());
-    const user = await UserModel.findByIdAndUpdate(
+    const user = await this.model.findByIdAndUpdate(
       objectId,
       { isOnline: true },
       { new: true, upsert: true }
     );
     // if(user.isOnline==true){
-    //    await UserModel.findByIdAndUpdate(
+    //    await this.model.findByIdAndUpdate(
     //   objectId,
     //   { isOnline: false },
     //   { new: true,upsert:true }
@@ -131,7 +136,7 @@ export class UserMongooseRepository implements IUserRepository {
  
   }
   async countUser(): Promise<any> {
-    const countUser = await UserModel.countDocuments()
+    const countUser = await this.model.countDocuments()
     return countUser;
   }
 }

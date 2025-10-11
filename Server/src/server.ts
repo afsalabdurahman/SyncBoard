@@ -139,7 +139,6 @@ serverStart();
 
 // app.use("/", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/workspace", workspaceRoutes);
 app.use("/api/member",memberRoutes)
 app.use("/api/project",projectRoutes)
 app.use("/api/task",taskRoutes)
@@ -147,7 +146,7 @@ app.use("/api/chat",chatRoutes)
 app.use("/api/activities",activityRoutes)
 app.use("/api/checkout",checkoutRoutes);
 app.use("/api/subscription",suscriptionRoutes)
-
+app.use("/api/workspace",workspaceRoutes)
 // app.use("/admin", adminRouter);
 // app.use("/super", superRouter);
 app.use(errorMiddleware);

@@ -7,7 +7,7 @@ import { Request,Response,NextFunction } from "express";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 @injectable()
 export class sharedController{
-    constructor(@inject ("RefreshToken")private refreshTokenUsecase:IRefreshtoken){}
+    constructor(@inject ("RefreshToken")private _refreshTokenUsecase:IRefreshtoken){}
 
    async generateNewToken( req: Request,
     res: Response,
@@ -16,7 +16,7 @@ export class sharedController{
              const token  = req.cookies.refreshToken;
              console.log(token,req.cookies,"refresh token")
                 if (!token) throw new NotFoundError("Token not found")
-     let {accessToken,refreshToken}  = await this.refreshTokenUsecase.exceute(token)
+     let {accessToken,refreshToken}  = await this._refreshTokenUsecase.exceute(token)
      if(!accessToken||!refreshToken) throw new NotFoundError("Tokens are not generated")
         setTokensInCookies(res,accessToken,refreshToken)
       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS })

@@ -1,3 +1,4 @@
+import { Subscription } from "../../domain/entities/Suscription";
 import { User, WorkspaceMembership } from "../../domain/entities/User";
 import { Workspace } from "../../domain/entities/Workspace";
 
@@ -53,4 +54,9 @@ export interface MemberRegisterResposeDTO{
 token:string;
 refreshToken:string
   
+}
+export interface adminResponseDTO{
+ user:User;
+ workspace:Workspace,
+ suscribe:Subscription
 }

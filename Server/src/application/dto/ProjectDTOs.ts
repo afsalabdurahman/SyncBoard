@@ -20,3 +20,7 @@ export interface ProjectRequstDTO{
 export interface ProjectResponseDTO{
     message:string
 }
+export interface ProjectAttchementRemoveDTO{
+  projectId:string;
+  encodedUrl:string;
+}

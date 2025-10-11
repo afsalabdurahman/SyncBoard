@@ -1,53 +1,55 @@
 import { NotBeforeError } from "jsonwebtoken"
 import { Project } from "../../domain/entities/Project"
-import {IProjectRepository} from "../../domain/interfaces/repositories/IProjectRepository"
-import {ProjectModel} from "../database/models/ProjectModel"
+import { IProjectRepository } from "../../domain/interfaces/repositories/IProjectRepository"
+import { ProjectModel } from "../database/models/ProjectModel"
 import { NotFoundError } from "../../utils/errors"
+import { BaseRepository } from "./BaseRepository"
 import mongoose from "mongoose"
 
-export class ProjectRepository implements IProjectRepository {
+export class ProjectRepository extends BaseRepository<Project> implements IProjectRepository {
+   constructor() {
+      super(ProjectModel)
+   }
 
-   
-async create(dto: Project): Promise<Project | null> {
-   const projectData=await ProjectModel.create(dto)
-   return projectData
-}
-async getAllProjects(): Promise<any | null> {
-   const projects = await ProjectModel.find().sort({ createdAt: -1 });
-   return projects
-}
-async removeAttachment( projectId: string, attachedUrl: string): Promise<void> {
-   const isRemove=await ProjectModel.updateOne({_id:projectId},{$pull:{attachedUrl:attachedUrl}})
-   
-   if(!isRemove) throw new NotFoundError("Attachment not found")
+   // async create(dto: Project): Promise<Project | null> {
+   //    const projectData=await ProjectModel.create(dto)
+   //    return projectData
+   // }
+   async getAllProjects(): Promise<any | null> {
+      const projects = await this.model.findAll().sort({ createdAt: -1 });
+      return projects
+   }
+   async removeAttachment(projectId: string, attachedUrl: string): Promise<void> {
+      const isRemove = await ProjectModel.updateOne({ _id: projectId }, { $pull: { attachedUrl: attachedUrl } })
 
-}
-async updateProject(projectId: string, merged:any): Promise<boolean> {
-console.log(projectId,"@repository")
-const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
-const update=await ProjectModel.updateOne({_id:objectId},{$set:merged},{upsert:true,new:true,runValidators: true}
-)
+      if (!isRemove) throw new NotFoundError("Attachment not found")
 
-    console.log(update,"updatedProject")
-    return true
- 
-}
-async deleteProject(projectId: string): Promise<void> {
-   const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
-   await ProjectModel.deleteOne({_id:objectId})
-}
+   }
+   async updateProject(projectId: string, merged: any): Promise<boolean> {
 
-async countProject(): Promise<any> {
-  const count= await ProjectModel.countDocuments();
-  return count
-}
+      const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
+      const update = await ProjectModel.updateOne({ _id: objectId }, { $set: merged }, { upsert: true, new: true, runValidators: true }
+      )
 
-async getPagenationProjects(page: number, limit: number, skip: number): Promise<any> {
-   const totalItems = await ProjectModel.countDocuments();
-     const items = await ProjectModel.find()
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-      return {items,totalItems}
-}
+      return true
+
+   }
+   async deleteProject(projectId: string): Promise<void> {
+      const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
+      await ProjectModel.deleteOne({ _id: objectId })
+   }
+
+   async countProject(): Promise<any> {
+      const count = await ProjectModel.countDocuments();
+      return count
+   }
+
+   async getPagenationProjects(page: number, limit: number, skip: number): Promise<any> {
+      const totalItems = await ProjectModel.countDocuments();
+      const items = await ProjectModel.find()
+         .skip(skip)
+         .limit(limit)
+         .sort({ createdAt: -1 });
+      return { items, totalItems }
+   }
 }

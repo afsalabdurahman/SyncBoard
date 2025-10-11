@@ -23,25 +23,11 @@ export class WorkspaceController {
   ) {}
 
   async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const input: WorkspaceRequestDTO = {
-      email: req.body.email,
-      ownerId: req.body.ownerId,
-      slug: req.body.slug,
-      title: req.body.title,
-      role: req.body.role,
-      workspaceName: req.body.WorkspaceName,
-    };
+    const input: WorkspaceRequestDTO = req.body 
    
     try {
-      if (
-        !input.email ||
-        !input.ownerId ||
-        !input.slug ||
-        !input.title ||
-        !input.workspaceName
-      )
-        throw new NotFoundError("Data is not Found");
-
+   
+console.log(input,"from controler workspace")
       const workspaceResponseDTO = await this._createWorkspceUsecases.createWorkspace(input);
 
       res

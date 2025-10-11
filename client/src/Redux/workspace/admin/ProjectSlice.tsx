@@ -1,9 +1,9 @@
 
-import { createSlice, PayloadAction,createAsyncThunk } from '@reduxjs/toolkit';
-import apiService from '../../../services/api';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { fetchProjectData } from '../../thunks/projectThunks';
 
-interface Project {
+export interface Project {
   id?: number | string;
   name: string;
   description: string;
@@ -28,11 +28,7 @@ const initialState: ProjectsState = {
   status: 'idle',
 };
 
-export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async (AdminId:string,) => {
-  const response = await apiService.get<Project[]>('project/projects',{AdminId}); // Adjust endpoint
-  console.log(response,"axios project repos")
-  return response?.data;
-});
+
 
 const projectsSlice = createSlice({
   name: 'projects',

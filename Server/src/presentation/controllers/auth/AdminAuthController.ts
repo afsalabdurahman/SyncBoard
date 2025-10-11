@@ -3,10 +3,11 @@ import { NotFoundError } from "../../../utils/errors";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
 import { inject, injectable } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
+import { LoginRequestDTO } from "../../../application/dto/AuthDTOs";
 
 @injectable()
 export class AdminAuthController {
-  constructor(@inject("ILoginUsesCase") private loginUseCase: ILoginUseCase) {}
+  constructor(@inject("ILoginUsesCase") private _loginUseCase: ILoginUseCase) {}
 
   async LoginUsesCase(
     req: Request,
@@ -14,11 +15,10 @@ export class AdminAuthController {
     next: NextFunction
   ): Promise<void> {
 
-    let { email, password } = req.body;
+    let input:LoginRequestDTO = req.body as LoginRequestDTO;
     try {
-      let { user, workspace,suscribe }: any = await this.loginUseCase.execute(
-        email,
-        password
+      let { user, workspace,suscribe }: any = await this._loginUseCase.execute(
+        input
       );
 
       if (!user) {

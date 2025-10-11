@@ -4,7 +4,7 @@ export type PriorityTypes = "Low" | "Medium" | "High";
 export type StatusTypes = "Planning" | "In Progress" | "Completed" | "On Hold";
 
 export class Project {
-  id?: ObjectId | string;
+  _id?: ObjectId | string;
   name?: string;
   description?: string;
   assignedUsers?: string[];
@@ -18,7 +18,7 @@ export class Project {
   updatedAt?: Date; // Corrected typo from `updateAt` to `updatedAt`
 
   constructor({
-    id,
+    _id,
     name,
     description,
     assignedUsers,
@@ -31,7 +31,7 @@ export class Project {
     createdAt,
     updatedAt,
   }: {
-    id?: ObjectId | string;
+    _id?: ObjectId | string;
     name?: string;
     description?: string;
     assignedUsers?: string[];
@@ -44,7 +44,7 @@ export class Project {
     createdAt?: Date;
     updatedAt?: Date;
   }) {
-    this.id = id;
+    this._id = _id;
     this.name = name;
     this.description = description;
     this.assignedUsers = assignedUsers;

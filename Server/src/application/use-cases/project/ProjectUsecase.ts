@@ -13,16 +13,16 @@ export class ProjectUsecase implements IProjectUsecase {
   ) {}
 
   async excute(dto: ProjectRequstDTO): Promise<ProjectResponseDTO> {
+
     const isValid = ProjectMapper.ValidateProjectData(dto);
     if (!isValid.success) throw new ValidationError("Validation failed");
 
     const projectEntity = ProjectMapper.mapProjectToEntity(dto);
 
-const countProjects = await this._projectRepository.countProject();
+console.log(projectEntity,"entity is creted....")
 
-if(countProjects>=1 )  throw new ValidationError("project not created");
-const projects= await this._projectRepository.getAllProjects();
-console.log(projects[0],"frist projectss")
+// const projects= await this._projectRepository.getAllProjects();
+// console.log(projects[0],"frist projectss")
 
 
     const projectData = await this._projectRepository.create(projectEntity);
