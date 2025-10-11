@@ -1,9 +1,11 @@
 import { Date } from "mongoose";
 import { User } from "../../entities/User";
 import { ObjectId } from "mongoose";
-export interface IUserRepository {
+import {IBaseRepository} from "./IBaseReposiory"
+export interface IUserRepository extends IBaseRepository<User>  {
+  
   findByEmail(email: string): Promise<any | null>;
-  create(entity: User): Promise<User>;
+  // create(entity: User): Promise<User>;
   findById(id: string): Promise<User>;
   updateUser(
     id: any,

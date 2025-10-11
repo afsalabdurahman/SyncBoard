@@ -3,7 +3,7 @@ import { injectable, inject } from "tsyringe";
 
 import { ITaskUseCase } from "../../../application/repositories/ITask";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { InternalServerError, NotFoundError } from "../../../utils/errors";
+import {  NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { TaskRequestDTO } from "../../../application/dto/TaskDTOs";
 @injectable()
@@ -32,7 +32,7 @@ export class TaskController {
   ): Promise<void> {
     try {
       const tasks = await this._taskUsecase.getAllTasks();
-      console.log(tasks, "from@controller");
+
       res.status(HttpStatusCode.OK).json(tasks);
     } catch (error) {
       next(error);
@@ -60,13 +60,13 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log(req.params, "req.sparams");
+
     try {
       const taskId = req.params.id;
       await this._taskUsecase.deleteTask(taskId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
     } catch (error) {
-      console.log(error, "final eroor");
+   
       next(error);
     }
   }
@@ -76,8 +76,7 @@ export class TaskController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.params, "params");
-      console.log(req.query, "quey");
+     
       const alltask: any = req.query.count;
       console.log(alltask);
       const userName = req.params.username;
@@ -86,7 +85,7 @@ export class TaskController {
         const data = await this._taskUsecase.myTask(userName, alltask);
       }
       const task = await this._taskUsecase.myTask(userName);
-      console.log(task, "tasks");
+
       res.status(HttpStatusCode.OK).json(task);
     } catch (error) {
       next(error);
@@ -97,10 +96,10 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log(req.body, "nbody++++");
+   
     const status = req.body.status;
     const taskID = req.params.id;
-    console.log(taskID, status, "+++Params");
+ 
     try {
       if (!status || !taskID) throw new NotFoundError("Status not found");
       await this._taskUsecase.updateTaskStatus(taskID, status);
@@ -118,7 +117,7 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ) {
-    console.log(req.body, "Boduy+++", req.params, "+++pramm");
+ 
     try {
       const taskId = req.params.id;
       const status = req.body.status;
@@ -147,7 +146,7 @@ export class TaskController {
     }
   }
 async pagination (req:Request,res:Response):Promise<void> {
- console.log("callinngg... pagination")
+
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;

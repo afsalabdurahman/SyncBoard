@@ -1,4 +1,5 @@
 import { User } from "../../../domain/entities/User"
+import { adminResponseDTO, LoginRequestDTO } from "../../dto/AuthDTOs"
 export interface ILoginUseCase {
-execute(email:string,password:string):Promise<User|null>
+execute(input:LoginRequestDTO):Promise<adminResponseDTO|null>
 }

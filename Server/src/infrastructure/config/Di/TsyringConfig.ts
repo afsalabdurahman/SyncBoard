@@ -8,6 +8,8 @@ import { RegisterUseCase } from "../../../application/use-cases/auth/admin/Regis
 // import { EmailService } from '../services/email.service.impl';
 // import { IEmailService } from '../../domain/interfaces/services/email.service';
 import { User } from "../../../domain/entities/User";
+import { ILogger } from "../../../application/repositories/ilogger/ILogger";
+import { WinstonLoggerImpl } from "../../logger/WinstonLoggerImpl";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailServices";
 import { NodemailerService } from "../../services/NodeMailerService";
 import { SentInvitaionUsecase } from "../../../application/use-cases/invitation/SentInvitaion";
@@ -44,6 +46,7 @@ import {PlanUsecase} from "../../../application/use-cases/suscription/plans/Plan
 import {StripeService} from "../../services/StripeService"
 import {PlanRepository} from "../../repositories/PlanRepository";
 
+container.registerSingleton<ILogger>('ILogger', WinstonLoggerImpl);
 container.register("SuscriptionRepository",{useClass:SuscriptionRepository})
 container.register("IStripeServices",{useClass:StripeService})
 container.register("PlanRepository",{useClass:PlanRepository})

@@ -2,7 +2,7 @@ import { Project } from "../../domain/entities/Project";
 import { ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 import { z } from "zod";
 
-export const StatusTypesSchema = z.enum(["Pending", "In Progress", "Completed", "On Hold" , "Planning"]);
+export const StatusTypesSchema = z.enum(["Pending", "In Progress", "Completed", "On Hold", "Planning"]);
 export type StatusTypes = z.infer<typeof StatusTypesSchema>;
 
 export const PriorityTypesSchema = z.enum(["Low", "Medium", "High", "Critical"]);
@@ -27,25 +27,25 @@ export class ProjectMapper {
         : undefined,
     });
   }
-  static mapEntityToProject(msg:string):ProjectResponseDTO{
-      return{
-message:msg
-      }
+  static mapEntityToProject(msg: string): ProjectResponseDTO {
+    return {
+      message: msg
+    }
   }
-  static ValidateProjectData(input:ProjectRequstDTO){
-    
-const isValid=z.object({
- name: z.string().min(1, "Project name is required"),
-  description: z.string().min(1, "Description is required"),
-  assignedUsers: z.array(z.string().min(1)).min(1, "At least one user must be assigned"),
-  status: StatusTypesSchema,
-  priority: PriorityTypesSchema,
-  clientName: z.string().min(1, "Client name is required"),
-  projectAdminId: z.string().min(1, "Project Admin ID is required"),
+  static ValidateProjectData(input: ProjectRequstDTO) {
 
-})
+    const isValid = z.object({
+      name: z.string().min(1, "Project name is required"),
+      description: z.string().min(1, "Description is required"),
+      assignedUsers: z.array(z.string().min(1)).min(1, "At least one user must be assigned"),
+      status: StatusTypesSchema,
+      priority: PriorityTypesSchema,
+      clientName: z.string().min(1, "Client name is required"),
+      projectAdminId: z.string().min(1, "Project Admin ID is required"),
 
-return isValid.safeParse(input);
+    })
+
+    return isValid.safeParse(input);
   }
-  
+
 }

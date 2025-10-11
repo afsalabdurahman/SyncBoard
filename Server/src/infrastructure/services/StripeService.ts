@@ -17,7 +17,7 @@ export class StripeService implements IStripeService {
     key:string,
   ): Promise<any> {
     const id = userId.toString();
-     console.log(userId,"userID increacte checkout")
+     
     const response = await stripe.checkout.sessions.create({
      
       payment_method_types: ["card"],
@@ -37,14 +37,14 @@ export class StripeService implements IStripeService {
         planName:key
       },
     });
-    console.log(response, "chechkout reponse");
+
 
     return response.url;
   }
 
   async createStripeCustomerId(email: string, name: string): Promise<any> {
     let stripeCustomer = await stripe.customers.create({ email, name });
-    console.log(stripeCustomer, "stripcustomer from api 44444");
+  
     return stripeCustomer;
   }
 
@@ -55,7 +55,7 @@ export class StripeService implements IStripeService {
     let paymentattched = await stripe.paymentMethods.attach(paymentMethodId, {
       customer: stripeCustomerId,
     });
-    console.log(paymentattched);
+   
     return true;
   }
 
@@ -69,7 +69,7 @@ export class StripeService implements IStripeService {
       });
       return true;
     } catch (error) {
-      console.log(error, "csathc update customer");
+  
     }
   }
   async createStripeSuscription(

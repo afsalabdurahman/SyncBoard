@@ -2,11 +2,9 @@ import { Workspace } from "../../domain/entities/Workspace";
 import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { IWorkspaceRepository } from "../../domain/interfaces/repositories/IWorkspaceRepository";
 import { injectable } from "tsyringe";
-import { CustomError, InternalServerError } from "../../utils/errors";
-import { HttpStatusCode } from "../../common/errorCodes";
-import { Types, ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { truncate } from "fs/promises";
+
 @injectable()
 export class WorkspaceRepository implements IWorkspaceRepository {
   async create(workspaceEntity: Workspace): Promise<Workspace|null> {
@@ -43,17 +41,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     
     let workspaceData = await WorkspaceModel.findOne({ slug: slug });
   
-    // if (workspaceData) {
-    //   return new Workspace(
-    //     workspaceData?.name,
-    //     workspaceData?.slug,
-    //     workspaceData?.role,
-    //     workspaceData?.ownerId,
-    //     workspaceData?.members,
-    //     workspaceData?.createdAt,
-    //     (workspaceData?.id as Types.ObjectId).toString()
-    //   );
-    // }
+ 
     return workspaceData
   }
  async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{

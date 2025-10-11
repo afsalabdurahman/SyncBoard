@@ -8,7 +8,7 @@ import {PlanModel} from "../database/models/PlanModel"
 export class PlanRepository implements IPlanRepository {
 
   async  findByKey(key: string): Promise<any | null> {
-    console.log(key,"my keyyy")
+  
         const planKey=await PlanModel.findOne({key:key})
         return planKey
     }

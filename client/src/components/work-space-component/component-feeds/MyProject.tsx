@@ -16,10 +16,12 @@ import {
   addProject,
   updateProject,
   removeProject,
-  fetchProjectData,
+  
 } from "../../../Redux/workspace/admin/ProjectSlice";
+
 import { socket } from "../../../services/socket";
 import {setTasks} from "../../../Redux/workspace/admin/TaskSlice"
+import { fetchProjectData } from "../../../Redux/thunks/projectThunks";
 
 const MyProject = () => {
   const dispatch = useDispatch();

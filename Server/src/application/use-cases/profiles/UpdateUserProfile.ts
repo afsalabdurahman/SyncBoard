@@ -7,7 +7,7 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 @injectable()
 export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository
+    @inject("UserRepository") private _userRepository: IUserRepository
   ) {}
   async execute(
     userId: string,
@@ -16,7 +16,7 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
    
     const merged = Object.assign({}, ...args);
    
-    let updatedUser = await this.userRepository.updateProfile(userId, merged);
+    let updatedUser = await this._userRepository.updateProfile(userId, merged);
   
     if (!updatedUser) {
       throw new CustomError("Profile Updation Failed", HttpStatusCode.CONFLICT);
@@ -24,6 +24,6 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
     return updatedUser;
   }
  async  updateOnlineStatus(userId: string): Promise<void> {
-   await this.userRepository.updateOnlineStatus(userId)
+   await this._userRepository.updateOnlineStatus(userId)
   }
 }

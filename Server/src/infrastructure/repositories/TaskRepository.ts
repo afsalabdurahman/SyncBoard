@@ -11,7 +11,7 @@ export class TaskRepository implements ITaskRepository {
   }
   async getAlltask(): Promise<any | null> {
     const tasks = await TaskModel.find();
-    console.log(tasks, "from mongodb");
+ 
     return tasks;
   }
   async updatetask(taskId: string, merged: any): Promise<boolean> {
@@ -22,7 +22,7 @@ export class TaskRepository implements ITaskRepository {
       { $set: merged },
       { upsert: true, new: true, runValidators: true }
     );
-    console.log(update, "updated mogo@repositoruy");
+    
     return true;
   }
 
@@ -31,12 +31,12 @@ export class TaskRepository implements ITaskRepository {
     await TaskModel.deleteOne({ _id: objectId });
   }
   async myTask(userName: string, query?: any): Promise<Task | any> {
-    console.log(userName, query, "repoooo");
+   
     if (query == "count") {
       const myTask = await TaskModel.find({
         assignedUser: userName,
       });
-      console.log(myTask, "muyDVBBB");
+     
       return myTask;
     }
 
@@ -46,7 +46,7 @@ export class TaskRepository implements ITaskRepository {
     });
 
     //   isApprove: { $ne: "approved" }
-    console.log(myTask, "db mongo###");
+  
     return myTask;
   }
   async updateTaskStatus(taskId: string, updatedStatus: string): Promise<void> {

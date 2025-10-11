@@ -27,24 +27,8 @@ export class AuthController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const input: AdminSignupRequestDTO = {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        role: "Admin",
-      };
-
-      if (
-        !input.email ||
-        !input.email.includes("@") ||
-        !input.password ||
-        input.password.length < 6 ||
-        !input.name
-      ) {
-        throw new ValidationError("Invalid user name or password");
-      }
-      const { user, token, refreshToken }: AdminSignupResponseDTO =
-        await this._registerUseCase.execute(input);
+      const input: AdminSignupRequestDTO = req.body as AdminSignupRequestDTO
+      const { user, token, refreshToken }: AdminSignupResponseDTO = await this._registerUseCase.execute(input);
 
       setTokensInCookies(res, token, refreshToken);
 
@@ -54,10 +38,7 @@ export class AuthController {
     }
   }
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    let input: LoginRequestDTO = {
-      email: req.body.email,
-      password: req.body.password,
-    };
+    let input: LoginRequestDTO = req.body as LoginRequestDTO;
     try {
        const responseDTO = await this._loginUsecase.loginUser(input);
 

@@ -10,16 +10,15 @@ export class OTPRepository implements IOtpRepository {
   }
 
   async save(entity: OTP): Promise<void> {
-    try {
+
       let document = new OTPModel({
         email: entity.email,
         otp: entity.otp,
         expAt: entity.expireAt,
       });
       const savedDocument = await document.save();
-    } catch (error) {
-      console.log(error, "error");
-    }
+    
+    
 
     //    OTPModel.create()
     return Promise.resolve();
