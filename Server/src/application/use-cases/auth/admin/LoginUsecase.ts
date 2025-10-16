@@ -7,7 +7,9 @@ import { IAuthService } from "../../../../domain/interfaces/services/IAuthServic
 import {IWorkspaceRepository} from "../../../../domain/interfaces/repositories/IWorkspaceRepository"
 import { ISuscription } from "../../../../domain/interfaces/repositories/ISuscriptionRepository";
 import { Subscription } from "../../../../domain/entities/Suscription";
-import { adminResponseDTO, LoginRequestDTO } from "../../../dto/AuthDTOs";
+import {ISuperAdminRepository} from"../../../../domain/interfaces/repositories/ISuperAdminRepository"
+import { adminResponseDTO, LoginRequestDTO, SuperadminResponseDTO } from "../../../dto/AuthDTOs";
+import { AuthMapper } from "../../../mappers/AuthMapper";
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
   constructor(
@@ -15,6 +17,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     @inject("AuthService") private _authService: IAuthService,
     @inject("WorkspaceRepository") private _workspceRepository:IWorkspaceRepository,
     @inject("SuscriptionRepository")private _suscriptionRepository:ISuscription,
+    @inject("SuperAdminRepository") private _superAdminRepository:ISuperAdminRepository
   ) {}
   async execute(input:LoginRequestDTO): Promise<adminResponseDTO | null> {
     let user: User = await this._userRepository.findByEmail(input.email)
@@ -36,6 +39,7 @@ const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(us
    if(!isSuscribed){
 const entity = new Subscription({
   user: user._id,
+  workspace:workspace._id,
   planKey: "free",
   status: "trialing"
 });
@@ -43,5 +47,26 @@ const entity = new Subscription({
    }
    let suscribe=isSuscribed?isSuscribed:mySuscription
     return {user,workspace,suscribe} as adminResponseDTO;
+  }
+ async superAdmin(input: LoginRequestDTO): Promise<any | null> {
+      let superAdmin: User = await this._userRepository.findByEmail(input.email)
+      if(!superAdmin) throw new NotFoundError("User not found");
+      // const {data,userCount,workspaceCount}= await this._superAdminRepository.getAllCount();
+      let token = this._authService.generateToken({
+        id:superAdmin._id ?? "",
+      email: superAdmin.email!,
+      role: superAdmin.role!,
+      })
+      if(!token) throw new ValidationError("Token is not Found")
+       const refreshToken = this._authService.generateRefreshToken({
+      id: superAdmin._id!,
+      email: superAdmin.email!,
+      role: superAdmin.role!,
+    });
+    if(!refreshToken) throw new ValidationError("Refrestoken is not Found")
+   
+      // const responseDTO=AuthMapper.mapSuperEntityToResponse(token,refreshToken,userCount,workspaceCount,data)
+      // console.log(responseDTO,"responseDTO")
+      return {token,refreshToken}
   }
 }

@@ -3,6 +3,7 @@ import mongoose, { Types } from "mongoose";
 export class Subscription {
   // 🔹 Required fields
   user: string | Types.ObjectId;
+  workspace:string|Types.ObjectId;
   planKey: string;
   status: string;
 
@@ -22,6 +23,7 @@ export class Subscription {
 
   constructor(params: {
     user: string | Types.ObjectId;
+    workspace:string | Types.ObjectId;
     planKey: string;
     status: string;
     startedAt?: Date;
@@ -36,6 +38,7 @@ export class Subscription {
     updatedAt?: Date;
   }) {
     this.user = params.user;
+    this.workspace=params.workspace;
     this.planKey = params.planKey;
     this.status = params.status;
 

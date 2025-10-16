@@ -6,7 +6,8 @@ import { Header } from "../components/Header"
 import  {WorkspaceFilters}  from "../components/workspace/workspaceFilter"
 import {WorkspaceStats} from "../components/workspace/workspaceState"
 import { WorkspaceTable, type Workspace } from "../components/workspace/workspaceTable"
-
+import WorkSapceDetails from "../components/workspace/WorkspaceDetailsPage"
+import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
 // Mock data
 const mockWorkspaces: Workspace[] = [
   {
@@ -91,11 +92,13 @@ const mockWorkspaces: Workspace[] = [
   },
 ]
 
-export  const  Workspaces =()=> {
+export  const  Workspaces =(props)=> {
+  const [details,setDetails] =useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [planFilter, setPlanFilter] = useState("all")
+  const [page,setPage]=useState("")
 
   // Filter workspaces based on search and filters
   const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
@@ -110,6 +113,7 @@ export  const  Workspaces =()=> {
     return matchesSearch && matchesStatus && matchesPlan
   })
 
+
   // Calculate stats
   const stats = {
     totalWorkspaces: mockWorkspaces.length,
@@ -121,10 +125,14 @@ export  const  Workspaces =()=> {
   const handleViewWorkspace = (workspace: Workspace) => {
     console.log("View workspace:", workspace)
     // Implement view workspace logic
+    setDetails(true);
+    setPage("details")
   }
 
   const handleEditWorkspace = (workspace: Workspace) => {
     console.log("Edit workspace:", workspace)
+      setDetails(true);
+      setPage("edit")
     // Implement edit workspace logic
   }
 
@@ -147,8 +155,20 @@ export  const  Workspaces =()=> {
     console.log("Create new workspace")
     // Implement create workspace logic
   }
+if(details){
+  switch (page) {
+    case "details":
+      return<WorkSapceDetails/>
+  
+      case "edit":
+        return <WorkSpaceEdit/>
 
-  return (
+    default:
+       return  <WorkSapceDetails/>
+  }
+ 
+}else{
+ return (
     <div className="min-h-screen bg-gray-50">
       
 
@@ -194,4 +214,6 @@ export  const  Workspaces =()=> {
       </main>
     </div>
   )
+}
+ 
 }

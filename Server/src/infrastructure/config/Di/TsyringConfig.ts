@@ -45,7 +45,10 @@ import {SubscriptionUsecase} from "../../../application/use-cases/suscription/Su
 import {PlanUsecase} from "../../../application/use-cases/suscription/plans/PlanUsecase"
 import {StripeService} from "../../services/StripeService"
 import {PlanRepository} from "../../repositories/PlanRepository";
-
+import { SuperAdminRepository } from "../../repositories/SuperAdminRepository";
+import { DatahandleUsecase } from "../../../application/use-cases/super/DatahandleUsecase";
+container.register("SuperAdminRepository",{useClass:SuperAdminRepository})
+container.register("DatahandleUsecase",{useClass:DatahandleUsecase})
 container.registerSingleton<ILogger>('ILogger', WinstonLoggerImpl);
 container.register("SuscriptionRepository",{useClass:SuscriptionRepository})
 container.register("IStripeServices",{useClass:StripeService})
