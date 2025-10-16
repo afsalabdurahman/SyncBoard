@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import apiService from "../../services/api";
 import { useNavigate } from "react-router";
+import { fetchCountData } from "../../Redux/thunks/countThunks";
+import { useDispatch } from "react-redux";
 export const Login = () => {
+  let dispacth=useDispatch()
 let navigate=useNavigate()
 
   const [email, setEmail] = useState("");
@@ -11,19 +14,7 @@ let navigate=useNavigate()
   const handleLogin = async (e) => {
     e.preventDefault();
     console.log("Logging in with:", { email, password });
-try {
-  navigate("/platform/admin")
-  let response=await apiService.post("/super/login",{email,password})
-  console.log(response,"res")
-  if(response.status==200){
-navigate("/platform/admin")
-  }else{
-    setError(true)
-  }
-
-} catch (error) {
- setError(true)
-}
+dispacth(fetchCountData(email,password))
 
 
    

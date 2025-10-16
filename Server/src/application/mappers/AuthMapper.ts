@@ -56,4 +56,16 @@ const isValid=z.object({email: z.string().email({ message: "Invalid email format
   role: z.literal("Admin"), })
   return isValid.safeParse(input);
   }
+
+static mapSuperEntityToResponse(token:string,refreshToken:string,userCount:number,workspaceCount:number,data:any){
+  return {
+    token,
+    refreshToken,
+    userCount,
+    workspaceCount,
+    subscriptionCount:data[0].count,
+    subscriptionChanges:data[0].data,
+  }
+}
+
 }

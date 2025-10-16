@@ -7,6 +7,9 @@ import { RecentActivity } from "../components/RecentActivity"
 import Dashboard from "../pages/SuperDashboard"
 import {UsersPage} from "../pages/Users"
 import {Workspaces} from "../pages/Workspace"
+import {AnalyticsPage} from "../pages/Analytic"
+import {SubscriptionsPage} from "../pages/Subscription"
+import { SupportTicketsPage } from "../pages/SupportTickets"
 export const Layout = () =>{
  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
  const [currentPage, setCurrentPage] = useState("dashboard");
@@ -18,11 +21,13 @@ const renderPage = () => {
       case "Users":
         return <UsersPage />;
       case "Workspaces":
-        return <Workspaces />;
-      case "tasks":
-       // return <TasksPage />;
-      case "settings":
-       // return <SettingsPage />;
+        return <Workspaces setCurrentPage={setCurrentPage} />;
+      case "Subscriptions":
+        return <SubscriptionsPage />;
+      case "Analytics":
+        return <AnalyticsPage />;
+        case "Support Tickets":
+          return <SupportTicketsPage/>
       default:
         return <Dashboard />;
     }

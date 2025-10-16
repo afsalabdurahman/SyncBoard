@@ -5,6 +5,8 @@ import { useState } from "react"
 // import { Header } from "./components/header"
 import { UserStats } from "../components/users/userState"
 import { UserFilters } from "../components/users/userFilter"
+import ProfieViewPage from"../components/users/UserProfilePage";
+import ProfileEditPage from "../components/users/UserProfileEditPage"
 import { UserTable, type User } from "../components/users/userTable"
 
 // Mock data
@@ -114,7 +116,8 @@ export const  UsersPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [roleFilter, setRoleFilter] = useState("all")
-  const [planFilter, setPlanFilter] = useState("all")
+  const [planFilter, setPlanFilter] = useState("all");
+  const [page,setPage] = useState("")
 
   // Filter users based on search and filters
   const filteredUsers = mockUsers.filter((user) => {
@@ -140,11 +143,13 @@ export const  UsersPage = () => {
 
   const handleViewUser = (user: User) => {
     console.log("View user:", user)
+    setPage("view")
     // Implement view user logic
   }
 
   const handleEditUser = (user: User) => {
     console.log("Edit user:", user)
+    setPage("edit")
     // Implement edit user logic
   }
 
@@ -172,6 +177,21 @@ export const  UsersPage = () => {
     console.log("Invite new user")
     // Implement invite user logic
   }
+
+if(page){
+  switch (page) {
+    case "view":
+      return <ProfieViewPage/>
+      case "edit":
+        return <ProfileEditPage/>
+  
+    default:
+      break;
+  }
+}else{
+
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -218,4 +238,5 @@ export const  UsersPage = () => {
       </main>
     </div>
   )
+}
 }

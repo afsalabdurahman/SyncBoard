@@ -17,7 +17,7 @@ import AdminDashboard from "./Admin/Pages/AdminDashboard";
 import AdminLogin from "./Admin/Pages/AdminLogin";
 
 import Invite from "./components/work-space-component/component-feeds/Invite";
-import { Layout } from "./SuperAdmin/Layout/Layout";
+import { Layout } from "./SuperAdmin/layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import CheckoutPage from "./Admin/Pages/CheckoutPage";
 

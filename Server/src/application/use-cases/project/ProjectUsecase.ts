@@ -10,7 +10,7 @@ import { ProjectMapper } from "../../mappers/ProjectMapper";
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
     @inject("ProjectRepository") private _projectRepository: IProjectRepository
-  ) {}
+  ) { }
 
   async excute(dto: ProjectRequstDTO): Promise<ProjectResponseDTO> {
 
@@ -19,10 +19,10 @@ export class ProjectUsecase implements IProjectUsecase {
 
     const projectEntity = ProjectMapper.mapProjectToEntity(dto);
 
-console.log(projectEntity,"entity is creted....")
+    console.log(projectEntity, "entity is creted....")
 
-// const projects= await this._projectRepository.getAllProjects();
-// console.log(projects[0],"frist projectss")
+    // const projects= await this._projectRepository.getAllProjects();
+    // console.log(projects[0],"frist projectss")
 
 
     const projectData = await this._projectRepository.create(projectEntity);
@@ -34,13 +34,13 @@ console.log(projectEntity,"entity is creted....")
       message: `🚀 New project ${projectData.name} has been added!`,
     });
 
-    const responseDTO = ProjectMapper.mapEntityToProject("Project Create is Success" );
+    const responseDTO = ProjectMapper.mapEntityToProject("Project Create is Success");
     return responseDTO;
   }
 
   async getAllProjects(): Promise<Project> {
 
-    
+
     let allProjects = await this._projectRepository.getAllProjects();
     if (!allProjects) throw new NotFoundError("Project is not found");
     return allProjects;
@@ -68,7 +68,7 @@ console.log(projectEntity,"entity is creted....")
     await this._projectRepository.deleteProject(projectId);
   }
   async paginationProjecust(page: number, limit: number, skip: number): Promise<any> {
-   const {items,totalItems} = await this._projectRepository.getPagenationProjects(page,limit,skip)
-   return {items:items,totalItems}
+    const { items, totalItems } = await this._projectRepository.getPagenationProjects(page, limit, skip)
+    return { items: items, totalItems }
   }
 }

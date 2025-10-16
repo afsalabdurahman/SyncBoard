@@ -7,7 +7,7 @@ const router = express.Router();
 let memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin"])];
 let memberController = container.resolve(MemberController);
 
-router.patch("/profile/update/:id",memberAuth,memberController.updateUserProfile.bind(memberController))
+router.patch("/profile/update/:id", memberAuth, memberController.updateUserProfile.bind(memberController))
 router.patch("/change/password/:id", (req, res, next) =>
   memberController.changeUserPassword(req, res, next)
 );

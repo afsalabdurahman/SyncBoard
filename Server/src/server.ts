@@ -1,4 +1,4 @@
-import express, { NextFunction, Response,Request } from "express";
+import express, { NextFunction, Response, Request } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "reflect-metadata";
@@ -10,7 +10,7 @@ import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
 import memberRoutes from "./presentation/routes/memberRoute"
 import chatRoutes from "./presentation/routes/chatRoutes";
-import activityRoutes  from"./presentation/routes/activityRoutes"
+import activityRoutes from "./presentation/routes/activityRoutes"
 import projectRoutes from "./presentation/routes/projectRoutes"
 import taskRoutes from "./presentation/routes/taskRoutes"
 import checkoutRoutes from "./presentation/routes/checkoutRoutes"
@@ -18,18 +18,21 @@ import { Server } from "socket.io";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
 import { CustomRequest } from "./presentation/types/CustomRequest";
 import { errorMiddleware } from "./presentation/middleware/errorMiddleware";
-import {initSocketServer} from"./infrastructure/services/SocketService"
+import { initSocketServer } from "./infrastructure/services/SocketService"
 import bodyParser from "body-parser"
 import Stripe from "stripe";
+import superRoutes from "./presentation/routes/superRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
 import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
 const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
+console.log("start...")
 dotenv.config();
-const strip = new Stripe(envConfig.STRIP_KEY,{
-  apiVersion:"2025-08-27.basil"
+console.log("Enddstart...")
+const strip = new Stripe(envConfig.STRIP_KEY, {
+  apiVersion: "2025-08-27.basil"
 })
-const suscriptionRepo=container.resolve(SuscriptionRepository)
-console.log(STRIPE_WEBHOOK_SECRET,"hookStripe verigyf")
+const suscriptionRepo = container.resolve(SuscriptionRepository)
+console.log(STRIPE_WEBHOOK_SECRET, "hookStripe verigyf")
 const app = express();
 
 const CLIENT_URL = envConfig.MONGODB_URI;
@@ -44,8 +47,8 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
- // For Stripe webhook
-
+// For Stripe webhook
+console.log("wonokk22222")
 
 app.post(
   "/api/checkout/pay/webhook",
@@ -68,10 +71,10 @@ app.post(
         sig,
         STRIPE_WEBHOOK_SECRET
       );
-      
+
       // suscriptionRepo.updateSuscriptionPlan()
       console.log("✅ Webhook received:", event.type);
-      
+
     } catch (err: any) {
       console.error("❌ Webhook signature verification failed:", err.message);
       res.status(400).send(`Webhook Error: ${err.message}`);
@@ -83,12 +86,12 @@ app.post(
       case "checkout.session.completed":
         const session = event.data.object as Stripe.Checkout.Session;
         console.log("🎉 Checkout completed:", session);
-        
-        if(session.metadata){
+
+        if (session.metadata) {
           console.log(session.metadata)
-await suscriptionRepo.updateSuscriptionPlan(session.metadata.userId,session.metadata.planName,"active")
+          await suscriptionRepo.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
         }
-        
+
         // Save subscription to DB
         break;
       case "invoice.payment_failed":
@@ -106,9 +109,9 @@ await suscriptionRepo.updateSuscriptionPlan(session.metadata.userId,session.meta
 
 
 
- app.use(express.json());
- app.use(express.raw({ type: 'application/json' }));
- 
+app.use(express.json());
+app.use(express.raw({ type: 'application/json' }));
+
 app.use(cookieParser());
 
 
@@ -119,12 +122,12 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-    
+
   })
 );
 
 
-
+console.log("wonokk")
 
 initSocketServer(io);
 
@@ -139,15 +142,15 @@ serverStart();
 
 // app.use("/", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/member",memberRoutes)
-app.use("/api/project",projectRoutes)
-app.use("/api/task",taskRoutes)
-app.use("/api/chat",chatRoutes)
-app.use("/api/activities",activityRoutes)
-app.use("/api/checkout",checkoutRoutes);
-app.use("/api/subscription",suscriptionRoutes)
-app.use("/api/workspace",workspaceRoutes)
+app.use("/api/member", memberRoutes)
+app.use("/api/project", projectRoutes)
+app.use("/api/task", taskRoutes)
+app.use("/api/chat", chatRoutes)
+app.use("/api/activities", activityRoutes)
+app.use("/api/checkout", checkoutRoutes);
+app.use("/api/subscription", suscriptionRoutes)
+app.use("/api/workspace", workspaceRoutes)
 // app.use("/admin", adminRouter);
-// app.use("/super", superRouter);
+// app.use("/api/super", superRoutes);
 app.use(errorMiddleware);
 export { io };
