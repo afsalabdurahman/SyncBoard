@@ -3,10 +3,10 @@
 import type React from "react"
 
 import { useState, useRef } from "react"
-import { Button } from "../../components/ui/button"
+import { Button } from "../../Custom/ui/button"
 import { toast, ToastContainer } from "react-toastify";
-import { Card, CardContent } from "../../components/ui/card"
-import {Dialog,DialogClose,DialogContent,DialogFooter,DialogHeader} from"../../components/ui/dialog"
+import { Card, CardContent } from "../../Custom/ui/card"
+import {Dialog,DialogClose,DialogContent,DialogFooter,DialogHeader} from"../../Custom/ui/dialog"
 import { X, Upload as UploadIcon, File, FileText, ImageIcon } from "lucide-react"
 
 interface UploadedFile {

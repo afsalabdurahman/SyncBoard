@@ -35,8 +35,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "../../components/ui/sidebar";
-import { Button } from "../../components/ui/button";
+} from "../../Custom/ui/sidebar";
+import { Button } from "../../Custom/ui/button";
 import { title } from "process";
 
 import { fetchSubscription } from "../../Redux/thunks/suscriptionTunks";

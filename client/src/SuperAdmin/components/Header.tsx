@@ -1,8 +1,8 @@
 
 import { Search, Bell, ChevronDown } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
+import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
+import { Button } from "../../Custom/ui/button"
+import { Input } from "../../Custom/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
+} from "../../Custom/ui/dropdown-menu"
 
 interface HeaderProps {
   sidebarCollapsed: boolean

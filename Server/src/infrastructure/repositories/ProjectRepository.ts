@@ -16,7 +16,8 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
    //    return projectData
    // }
    async getAllProjects(): Promise<any | null> {
-      const projects = await this.model.findAll().sort({ createdAt: -1 });
+      const projects = await ProjectModel.find().sort({ createdAt: -1 });
+      console.log(projects, "projects")
       return projects
    }
    async removeAttachment(projectId: string, attachedUrl: string): Promise<void> {
@@ -25,15 +26,18 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
       if (!isRemove) throw new NotFoundError("Attachment not found")
 
    }
-   async updateProject(projectId: string, merged: any): Promise<boolean> {
 
-      const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
-      const update = await ProjectModel.updateOne({ _id: objectId }, { $set: merged }, { upsert: true, new: true, runValidators: true }
-      )
+  async updateProject(projectId: string, merged: any): Promise<Project | null> {
+  const objectId = new mongoose.Types.ObjectId(projectId);
+  const updatedProject = await ProjectModel.findByIdAndUpdate(
+    objectId,
+    { $set: merged },
+    { new: true, upsert: true, runValidators: true }
+  )
 
-      return true
+  return updatedProject as Project;
+}
 
-   }
    async deleteProject(projectId: string): Promise<void> {
       const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
       await ProjectModel.deleteOne({ _id: objectId })

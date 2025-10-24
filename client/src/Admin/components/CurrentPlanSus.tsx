@@ -1,14 +1,14 @@
 
 
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/card";
+import { Badge } from "../../Custom/ui/badge";
 import { CheckCircle } from "lucide-react";
 import type { Plan } from "../subscription-page";
 

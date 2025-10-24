@@ -1,4 +1,4 @@
-import { Card, CardContent } from "../../../components/ui/card"
+import { Card, CardContent } from "../../../Custom/ui/card"
 import { Headphones, Clock, CheckCircle2, AlertTriangle } from "lucide-react"
 
 interface TicketStatsProps {

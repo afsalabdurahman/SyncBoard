@@ -2,10 +2,10 @@
 import { useState } from "react"
 import { X, Check, Users, Shield, Zap } from "lucide-react"
 
-import { Button } from "../../components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
-import { Badge } from "../../components/ui/badge"
-import {setForward} from "../../Redux/features/ForwardSlice"
+import { Button } from "../../Custom/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../Custom/ui/card"
+import { Badge } from "../../Custom/ui/badge"
+import {setForward} from "../../Redux/feature/ForwardSlice"
 import { useDispatch } from "react-redux"
 export const Suscription = (props:any) => {
 

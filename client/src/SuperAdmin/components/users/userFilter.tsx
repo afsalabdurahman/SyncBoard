@@ -1,10 +1,10 @@
 "use client"
 
 import { Search, Download, Plus, Filter } from "lucide-react"
-import { Button } from "../../../components/ui/button"
-import { Input } from "../../../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
-import { Badge } from "../../../components/ui/badge"
+import { Button } from "../../../Custom/ui/button"
+import { Input } from "../../../Custom/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
+import { Badge } from "../../../Custom/ui/badge"
 
 interface UserFiltersProps {
   searchTerm: string

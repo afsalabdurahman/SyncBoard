@@ -1,9 +1,8 @@
-"use client";
 
 import type React from "react";
 
 import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,17 +10,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+} from "../../Custom/ui/dialog";
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { useSelector } from "react-redux";
+} from "../../Custom/ui/select";
+
+import { useProjects } from "../hooks/projectshooks";
 
 
 interface Task {
@@ -57,11 +57,9 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
     priority: "Medium" as "Low" | "Medium" | "High",
     projectId:"",
   });
-useSelector((state)=>{
-  console.log(state,"state fromredux+++")
-})
 
-let projects=useSelector(state=>state.projects.list)
+
+let projects=useProjects()
 let users = new Set(
   projects.map((user: { id: number; name: string; assignedUsers: string[] }) => {
     return user.assignedUsers.map((name: string) => {
@@ -154,7 +152,7 @@ let users = new Set(
                 onValueChange={(value) =>
                 {
                    const { name, id } = JSON.parse(value);
-                   console.log(value,"values")
+                 
                    setFormData({ ...formData, project: name,projectId:id })
                 }
                   

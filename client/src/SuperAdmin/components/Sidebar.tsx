@@ -12,7 +12,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+import { cn } from "../../Utility/cn"
 import { useEffect, useState } from "react";
 
 interface SidebarProps {

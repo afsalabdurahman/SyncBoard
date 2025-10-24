@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
-import { Progress } from "../../components/ui/progress"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../Custom/ui/card"
+import { Progress } from "../../Custom/ui/progress"
 import { Activity, FolderOpen, Users, HardDrive } from "lucide-react"
 import type { UsageMetrics as UsageMetricsType } from "../subscription-page"
 

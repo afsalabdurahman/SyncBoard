@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import { useDispatch } from "react-redux";
-import apiService from "../../services/api";
+import apiService from "../../Services/api";
 
 import {
   Card,
@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
 import {
   Table,
   TableBody,
@@ -17,13 +17,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/table";
+import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
+import { Badge } from "../../Custom/ui/badge";
 import { UserModal } from "./UserModal";
 import { Edit, Trash2, Plus, RotateCcw } from "lucide-react";
 import { useSelector } from "react-redux";
-import { setUsers, addUser } from "../../Redux/features/AlluserSlice";
+import { setUsers, addUser } from "../../Redux/feature/AlluserSlice";
 import { describe } from "node:test";
 interface User {
   id: number;

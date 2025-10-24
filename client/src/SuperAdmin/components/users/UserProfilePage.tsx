@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Separator } from "../../../components/ui/separator"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
+import { Badge } from "../../../Custom/ui/badge"
+import { Button } from "../../../Custom/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Separator } from "../../../Custom/ui/separator"
 // import { useToast } from ""
 import {toast} from "react-toastify"
 import { cn } from "../../../lib/utils"

@@ -1,5 +1,5 @@
 import type React from "react"
-import { Card, CardContent } from "../../../components/ui/card"
+import { Card, CardContent } from "../../../Custom/ui/card"
 import { MessageSquare, Users, Activity, Clock } from "lucide-react"
 
 type Stat = {

@@ -16,8 +16,8 @@ import {
   BarChart,
   Bar,
 } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../../../components/ui/chart"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../../../Custom/ui/chart"
 
 type SeriesPoint = { label: string; messages: number; dau: number }
 

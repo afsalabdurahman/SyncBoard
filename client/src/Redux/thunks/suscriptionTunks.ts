@@ -1,25 +1,25 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import apiService from "../../services/api";
-import {Subscription,PartialSubscriptionUpdate} from"../features/SuscriptionSlice"
+import apiService from "../../Services/api";
+import { Subscription, PartialSubscriptionUpdate } from "../feature/SuscriptionSlice"
 export const fetchSubscription = createAsyncThunk<
   Subscription,
   string,
   { rejectValue: string; state: any }
 >("subscription/fetch", async (userId, thunkAPI) => {
   try {
-    
+
     const res = await apiService.get(`subscription/mysubscription/${(userId)}`, {
       method: "GET",
-     
+
     });
-    console.log(res,"response from ap++ think")
+    console.log(res, "response from ap++ think")
 
     if (!res.data) {
-      
-    console.log("failed")
+
+      console.log("failed")
     }
     const data = res.data as Subscription;
-    console.log(data,"from sucf++++++++DATA")
+    console.log(data, "from sucf++++++++DATA")
     return data;
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err?.message || "fetchSubscription failed");

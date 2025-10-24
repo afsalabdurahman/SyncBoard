@@ -18,6 +18,7 @@ export interface ProjectRequstDTO{
 }
 
 export interface ProjectResponseDTO{
+    project:Project
     message:string
 }
 export interface ProjectAttchementRemoveDTO{

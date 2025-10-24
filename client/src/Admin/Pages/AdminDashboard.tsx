@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { SidebarProvider } from "../../components/ui/sidebar";
+import { SidebarProvider } from "../../Custom/ui/sidebar";
 import { AppSidebar } from "../components/AppSidebar";
 import { DashboardPage } from "../components/DashboardPage";
 import { UsersPage } from "../components/UsersPage";

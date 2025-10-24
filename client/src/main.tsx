@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import { store, persistor } from "./Redux/store.tsx";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,7 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <PersistGate loading={null} persistor={persistor}>
         
  <App />
-      
+       <ToastContainer position="top-right" autoClose={3000} />
        
       </PersistGate>
     </Provider>

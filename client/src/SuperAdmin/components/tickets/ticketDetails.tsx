@@ -1,11 +1,11 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog"
-import { Badge } from "../../../components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Card, CardContent } from "../../../components/ui/card"
-import { Textarea } from "../../../components/ui/textarea"
-import { Button } from "../../../components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../Custom/ui/dialog"
+import { Badge } from "../../../Custom/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Card, CardContent } from "../../../Custom/ui/card"
+import { Textarea } from "../../../Custom/ui/textarea"
+import { Button } from "../../../Custom/ui/button"
 import { Send, Tag, Clock, MessageSquare, UserRound } from "lucide-react"
 import type { Ticket } from "./ticketTable"
 

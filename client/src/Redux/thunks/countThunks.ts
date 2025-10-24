@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import apiService from "../../services/api";
-import { Count } from "../superadmin/countSlice"
+import apiService from "../../Services/api";
+import { Count } from "../feature/countSlice"
 
 
 export const fetchCountData = createAsyncThunk('/superCountData/fetchCounts', async (email: string, pwd) => {

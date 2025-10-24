@@ -16,13 +16,15 @@ export class TaskUsecase implements ITaskUseCase {
 
   async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
     const isValid = TaskMapper.validateTask(input);
+    console.log(input)
     if (!isValid.success) throw new ValidationError("Validation failed");
 
     const taskEntity = TaskMapper.mapTaskToEntity(input);
     const taskData = await this._taskRepository.create(taskEntity);
+    console.log(taskData,"task data")
     if (!taskData) throw new NotFoundError("Task not created");
 
-    const responseDTO = TaskMapper.mapEntityToTask("Task is created");
+    const responseDTO = await TaskMapper.mapEntityToTask("Task is created",taskData);
     io.emit("new-task", {
       name: taskData.name,
       message: `🚀 New task "${taskData.name}" has been added!`,
@@ -37,13 +39,13 @@ export class TaskUsecase implements ITaskUseCase {
     if (!allTasks) throw new NotFoundError("Task is not found");
     return allTasks;
   }
-  async update(taskId: string, ...args: any[]): Promise<boolean> {
-    console.log(taskId, "@usecase Project ID");
-    console.log(...args, "@usecaser ARG");
+  async update(taskId: string, ...args: any[]): Promise<TaskResponseDTO> {
+  
     const merged = Object.assign({}, ...args);
     console.log(merged, "@merge usecase");
     let updatetask = await this._taskRepository.updatetask(taskId, merged);
-    return true;
+    const responseDTO=TaskMapper.mapEntityToTask("Task is updated",updatetask)
+    return responseDTO;
   }
   async deleteTask(taskId: string): Promise<void> {
     await this._taskRepository.deleteTask(taskId);
@@ -101,6 +103,7 @@ export class TaskUsecase implements ITaskUseCase {
     return projectTask;
   }
  async paginationTask(page: number, limit: number, skip: number): Promise<any> {
+  console.log(page,limit, skip ,"TAsK  PAGINATION" )
     const {items,totalItems} = await this._taskRepository.getPagenationaTask(page,limit,skip)
    return {items:items,totalItems}
  }

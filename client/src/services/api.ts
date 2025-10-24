@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
-const VITE_TOKEN_API_URL =import.meta.env.VITE_TOKEN_API_URL
+const VITE_TOKEN_API_URL = import.meta.env.VITE_TOKEN_API_URL
 // Create a base axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -82,11 +82,11 @@ axiosInstance.interceptors.response.use(
       }
 
       isRefreshing = true;
-  const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = localStorage.getItem("refreshToken");
       try {
         const refreshResponse = await axios.post(
           VITE_TOKEN_API_URL,
-          {refreshToken},
+          { refreshToken },
           { withCredentials: true }
         );
 
