@@ -11,5 +11,6 @@ export interface TaskRequestDTO {
 }
 
 export interface TaskResponseDTO{
-    message:string
+    message:string,
+    task:Task
 }

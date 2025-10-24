@@ -14,16 +14,22 @@ export class TaskRepository implements ITaskRepository {
  
     return tasks;
   }
-  async updatetask(taskId: string, merged: any): Promise<boolean> {
+  async updatetask(taskId: string, merged: any): Promise<Task> {
     
     const objectId: any = new mongoose.Types.ObjectId(taskId.toString());
-    const update = await TaskModel.updateOne(
-      { _id: objectId },
-      { $set: merged },
-      { upsert: true, new: true, runValidators: true }
-    );
+ const updatedTask = await TaskModel.findByIdAndUpdate(
+  objectId,
+  { $set: merged },
+  { new: true, runValidators: true } 
+);
+
+if (!updatedTask) {
+  throw new Error("Task not found");
+}
+
+return updatedTask;
     
-    return true;
+   
   }
 
   async deleteTask(taskId: string): Promise<void> {

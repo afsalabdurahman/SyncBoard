@@ -1,10 +1,10 @@
 "use client"
 
 import { MoreHorizontal, Mail, Calendar, Shield, AlertTriangle, CheckCircle, Clock, XCircle } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent } from "../../../components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Badge } from "../../../Custom/ui/badge"
+import { Button } from "../../../Custom/ui/button"
+import { Card, CardContent } from "../../../Custom/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table"
+} from "../../../Custom/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
 
 export interface User {
   id: string

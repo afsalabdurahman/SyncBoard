@@ -1,6 +1,6 @@
 
 import { loadStripe } from '@stripe/stripe-js';
-import apiService from '../../services/api';
+import apiService from '../../Services/api';
 
 const stripePromise = loadStripe("pk_test_51S8JawHNHB0pEq2tQemS9BWEztf7DOce7UozEXOyBkl9ZA5BzBB3rKVXfYHauQi4HyewbOw1IBZvYapaZm19Xpfy00zJK78Rju");
 

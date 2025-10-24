@@ -1,11 +1,11 @@
 "use client"
 
 import { MoreHorizontal, Mail, Calendar, Shield } from "lucide-react"
-import { Card, CardContent } from "../../../components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
+import { Card, CardContent } from "../../../Custom/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Badge } from "../../../Custom/ui/badge"
+import { Button } from "../../../Custom/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu"
+} from "../../../Custom/ui/dropdown-menu"
 
 export type MemberRole = "owner" | "admin" | "member" | "guest"
 export type MemberStatus = "active" | "inactive" | "suspended" | "pending"

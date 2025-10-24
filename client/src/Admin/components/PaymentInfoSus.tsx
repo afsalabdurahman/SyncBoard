@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Badge } from "../../components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "../../Custom/ui/card"
+import { Badge } from "../../Custom/ui/badge"
 import { CreditCard } from "lucide-react"
 import type { PaymentInfo as PaymentInfoType } from "../subscription-page"
 

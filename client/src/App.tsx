@@ -1,25 +1,25 @@
-import LandingPage from "./components/page-components/landing/home/LandingPage";
+import LandingPage from "./Member/pages/LandingPage";
 
-import LoginPage from "./components/page-components/AuthrizationPage/Login";
-import SignupPage from "./components/page-components/AuthrizationPage/SignupPage";
-import PasswordResetPage from "./components/page-components/AuthrizationPage/PasswordResetPage";
-import OtpVerification from "./components/page-components/AuthrizationPage/OtpVerification";
+import LoginPage from "./Member/pages/Login";
+import SignupPage from "./Member/pages/SignupPage";
+import PasswordResetPage from "./Member/pages/PasswordResetPage";
+import OtpVerification from "./Member/pages/OtpVerification";
 import { BrowserRouter, Routes, Route } from "react-router";
-import ForgotPasswordOtpPage from "./components/page-components/AuthrizationPage/ForgotPasswordOtpPage";
-import ChangePasswordPage from "./components/page-components/AuthrizationPage/ChangePasswordPage";
-import CreateWorkspacePage from "./components/page-components/landing/home/CreateProject/CreateWorkspecePage";
-import InviteMembers from "./components/page-components/landing/home/CreateProject/InvitePage/InviteMembers";
-import WorkSpacePage from "./components/work-space-component/WorkSpacePage";
-import LinkInvitaionPage from "./components/work-space-component/InvitationPage/LinkInvitationPage";
-import MulipleWorkspace from "./components/page-components/landing/home/MulipleWorkspace/MulipleWorkspace";
-import Profile from "./components/work-space-component/component-feeds/Profile/Profile";
+import ForgotPasswordOtpPage from "./Member/pages/ForgotPasswordOtpPage";
+import ChangePasswordPage from "./Member/pages/ChangePasswordPage";
+import CreateWorkspacePage from "./Member/pages/CreateWorkspecePage";
+import InviteMembers from "./Member/pages/InviteMembers";
+import WorkSpacePage from "./Worksapce/pages/WorkSpacePage";
+import LinkInvitaionPage from "./Worksapce/pages/LinkInvitationPage";
+//import MulipleWorkspace from "./Member/components/landing/home/MulipleWorkspace/MulipleWorkspace";
+import Profile from "./Worksapce/components/Profile";
 import AdminDashboard from "./Admin/Pages/AdminDashboard";
 import AdminLogin from "./Admin/Pages/AdminLogin";
 
-import Invite from "./components/work-space-component/component-feeds/Invite";
+import Invite from "./Worksapce/components/Invite";
 import { Layout } from "./SuperAdmin/layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
-import CheckoutPage from "./Admin/Pages/CheckoutPage";
+// import CheckoutPage from "./Admin/Pages/CheckoutPage";
 
 function App() {
   return (
@@ -53,10 +53,10 @@ function App() {
             path='/invite-members/:workspaceSlug'
             element={<LinkInvitaionPage />}
           ></Route>
-          <Route
+          {/* <Route
             path='/multiple-workspace'
             element={<MulipleWorkspace />}
-          ></Route>
+          ></Route> */}
           <Route path='/user-profile' element={<Profile />}></Route>
           {/* Admin DashBorad */}
           <Route path='/admin' element={<AdminLogin />}></Route>

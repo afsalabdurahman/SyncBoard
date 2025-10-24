@@ -2,29 +2,21 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../Redux/store";
 import { toast, ToastContainer } from "react-toastify";
-import { uploadAttachment } from "../../services/Cloudinary";
 import { Suscription } from "../Pages/Suscription";
-import ProjectLoader from "../../components/page-components/utility/loadingPages/ProjectLoader";
-import {
-  addProject,
-  updateProject,
-  removeProject,
-  
-} from "../../Redux/workspace/admin/ProjectSlice";
-import { fetchProjectData } from "../../Redux/thunks/projectThunks";
+import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
+import { fetchProjectData,deleteProject,createProject,updateProjectApi } from "../../Redux/feature/project/projectThunks";
 import {TablePagination} from"@mui/material"
-import {findLimit} from"../../services/upgradeSubscription"
-import api from "../../services/api";
-import { AxiosResponse } from "axios";
 
-import { Button } from "../../components/ui/button";
+import {findLimit} from"../../Utility/upgradeSubscription"
+import { Button } from "../../Custom/ui/button";
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
 import {
   Table,
   TableBody,
@@ -32,8 +24,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/table";
+import { Badge } from "../../Custom/ui/badge";
 import { ProjectModal } from "./ProjectModal";
 import {
   Edit,
@@ -44,168 +36,75 @@ import {
   User,
   Paperclip,
 } from "lucide-react";
-import apiService from "../../services/api";
-import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
+import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
+import { useAdminId, useAdminName, usePagination, usePlankey,useProjects } from "../hooks/projectshooks";
+
+import { ProjectFormData } from "../types/projetctTypes";
+import { setPage } from "../../Redux/feature/project/projectSlice";
+
 
 export function ProjectsPage() {
-   const [projects,setProject]=useState()
-const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [totalItems, setTotalItems] = useState(0)
-const [refreshKey, setRefreshKey] = useState(0);
-   useEffect(() => {
-    fetchItems();
-  }, [page, rowsPerPage,refreshKey]);
-     
-const fetchItems = async () => {
-    try {
-      const response = await apiService.get(`project/myprojects?page=${page + 1}&limit=${rowsPerPage}`);
-      setProject(response.data.items);
-      setTotalItems(response.data.totalItems);
-    } catch (error) {
-      console.error('Error fetching items:', error);
-    }
-  };
-  console.log(totalItems,"totalItems",page,"pages")
+const [loader, setLoader] = useState("");
+const plankey= usePlankey()
+  const adminId = useAdminId()
+  const adminName = useAdminName()
+  const projects=useProjects()
+ const {page,rowPerPage,totalItems} = usePagination()
+
+
+
  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+   dispatch(setPage(newPage + 1));
+  dispatch(fetchProjectData({ page: newPage + 1, limit: rowPerPage }));
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+ 
 
   const dispatch: AppDispatch = useDispatch();
   let [suscription, setSuscription] = useState(false);
 
-  // Select Redux state directly
-  
-  const [loader, setLoader] = useState("");
-  const plankey= useSelector((state:any)=>state.suscription.subscription.planKey)
-  const adminId = useSelector((state: any) => state?.user?.user?._id);
-  const adminName = useSelector((state: any) => state?.user?.user?.name);
-//  const projects = useSelector((state: any) => state.projects.list);
-
-
-
-
-  console.log(plankey)
 const logId=useSelector((state)=>{
   return state.workspace.workspace.logId
 })
-console.log(logId,"ad++++")
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
+  const [deleteProjectId, setDeleteProjectId] = useState<string>("");
   // Fetch projects when adminId available
  
 const mylimit = findLimit(plankey)
    
-  useEffect(() => {
-    if (adminId) {
-      dispatch(fetchProjectData(adminId));
-    }
-  }, [dispatch, adminId, refreshKey]);
-
-  const handleAddProject = async (projectData: Omit<Project, "id">) => {
-    try {
-      setLoader("Creating project ...");
-      let attachedUrl = [];
-     
-      if (projectData.attachment) {
-        for (const files of projectData.attachment) {
-          let result = await uploadAttachment(files.file);
-       
-          attachedUrl.push(result);
-        }
-      }
-
-      delete projectData.attachment;
-      delete projectData._id;
-      projectData = {
-        ...projectData,
-        projectAdminId: adminId,
-        attachedUrl,
-      };
-      toast.success("Created project successfully");
-
-      const response: AxiosResponse<any, any> = await api.post(
-        `project/create/${adminName}?activityId=${logId}`,
-        
-        { newProject: projectData, },
-        {
-
-    // withCredentials: true // Uncomment if needed
+useEffect(() => {
+  if (adminId) {
+    dispatch(fetchProjectData({ page, limit: rowPerPage }));
   }
-        // { withCredentials: true }
-      );
-      setLoader("");
-      setRefreshKey((prev) => prev + 1);
-    
+}, [dispatch, adminId, page, rowPerPage]);
 
+  const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
+       setLoader("Creating project ...");
     
-    } catch (error) {
-      console.error("Error creating project:", error);
-    }
+    await dispatch(createProject({adminName,logId,projectData,adminId})).unwrap()
+      dispatch(fetchProjectData({ page, limit: rowPerPage }));
+    setLoader("");
+       setTimeout(() => {
+      toast.success("Created project successfully 🎉");
+    }, 100);
+     
+    
   };
 
   const handleEditProject = async (projectData: any) => {
    setLoader("Updating project ...");
 
-   let attachedUrl=[];
-   if(projectData.attachment){
-    for (const files of projectData.attachment) {
-            let result=  await uploadAttachment(files.file);
-     
-      attachedUrl.push(result)
-   }}
-   delete projectData.attachment;
+ 
    let id=projectData._id;
-    projectData={
-       ...projectData,
-       projectAdminId:adminId,
-       attachedUrl};
-       let response = await apiService.patch(
-       `project/update/${id}`,
-       { editingProject: projectData }
-     );
-     console.log(response,"from axios")
+  
+await dispatch(updateProjectApi({projectId:id , projectData})).unwrap()
+
 setLoader("")
 toast.success("Project updated successfully");
-setRefreshKey((prev) => prev + 1);
-    // try {
-    // setLoader("Updating project ...")
-    //  let attachedUrl=[]
 
-    //        if(projectData.attachment){
-    //    for (const files of projectData.attachment) {
-    //        let result=  await uploadAttachment(files.file);
-    //        console.log(result,"$$$$$$$results")
-    //  attachedUrl.push(result)
-    //        }
-    //        }
-
-    //  delete projectData.attachment
-    // let id=projectData._id
-    //  projectData={
-    //   ...projectData,
-    //   projectAdminId:adminId,
-    //   attachedUrl}
-    // let response = await apiService.put(
-    //   `/api/project/update/${id}`,
-    //   { editingProject: projectData }
-    // );
-    // setLoader("")
-    // console.log(response, "Project updated successfully");
-    // toast.success("Project updated successfully");
-    // setRefreshKey((prev) => prev + 1);
-    // console.log(refreshKey, "Refresh key after upd00000000000ate:", refreshKey);
-    // } catch (error) {
-    //   console.error("Error updating project:", error);
-    // }
-    // }
   };
   const handleDeleteProject = async (id: string) => {
     setIsDialogOpen(true);
@@ -214,16 +113,10 @@ setRefreshKey((prev) => prev + 1);
     // You can implement delete API logic here
   };
   const handleConfirmDelete = async () => {
-    try {
-      let response = await apiService.delete(
-        `project/delete/${deleteProjectId}`
-      );
-      setRefreshKey((prev) => prev + 1);
-      toast.success("Project deleted successfully");
-    } catch (error) {
-      console.log("Error deleting project:", error);
-    }
-    // call your delete function here
+ await dispatch(deleteProject(deleteProjectId)).unwrap()
+ 
+ toast.success("Project deleted successfully");
+dispatch(fetchProjectData({ page, limit: rowPerPage }));
   };
   const openAddModal = () => {
     if (projects.length >= mylimit.maxProjects) {
@@ -262,6 +155,8 @@ setRefreshKey((prev) => prev + 1);
   if (loader) {
     return <ProjectLoader title={loader} />;
   }
+
+
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
       <div className='flex items-center justify-between'>
@@ -405,13 +300,15 @@ setRefreshKey((prev) => prev + 1);
         description='This project will be permanently deleted.'
       />
   <TablePagination
-        rowsPerPageOptions={[3, 7, 25]}
+       
         component="div"
         count={totalItems}
-        rowsPerPage={rowsPerPage}
-        page={page}
+        rowsPerPage={rowPerPage||0}
+        page={page-1}
         onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        
+         rowsPerPageOptions={[]}
+         
       />
     </div>
   );

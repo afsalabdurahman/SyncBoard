@@ -1,27 +1,27 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
 import { useSearchParams } from "react-router-dom";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Badge } from "../../components/ui/badge";
-import { Separator } from "../../components/ui/separator";
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
+import { Badge } from "../../Custom/ui/badge";
+import { Separator } from "../../Custom/ui/separator";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "../../Custom/ui/select";
 import { CreditCard, Lock, CheckCircle, Shield, ArrowLeft } from "lucide-react";
-import apiService from "../../services/api";
+import apiService from "../../Services/api";
 import { useSelector } from "react-redux";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 type Plan = "Free" | "Pro" | "Enterprise";

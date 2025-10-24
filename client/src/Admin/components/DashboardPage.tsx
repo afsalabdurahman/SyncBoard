@@ -4,13 +4,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
 import { AppDispatch } from "../../Redux/store";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "../../components/ui/chart";
+} from "../../Custom/ui/chart";
 import {
   PieChart,
   Pie,
@@ -41,8 +41,8 @@ const projectProgressData = [
   { name: "Jun", completed: 7, total: 9 },
 ];
 import { useSelector, useDispatch } from "react-redux";
-import apiService from "../../services/api";
-import { setUsers } from "../../Redux/features/AlluserSlice";
+import apiService from "../../Services/api";
+import { setUsers } from "../../Redux/feature/AlluserSlice";
 export function DashboardPage() {
   let initialState = useSelector((state: any) => {
     console.log(state, "state");

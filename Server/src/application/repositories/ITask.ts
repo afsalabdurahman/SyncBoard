@@ -3,7 +3,7 @@ import { TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 export interface ITaskUseCase {
     execute(taskEntiry:TaskRequestDTO):Promise<TaskResponseDTO>
     getAllTasks():Promise<Task>
-    update(taskId:string,...args: any[]): Promise<boolean>;
+    update(taskId:string,...args: any[]): Promise<TaskResponseDTO>;
     deleteTask(taskId:string):Promise<void>
     myTask(userName:string,query?:string):Promise<Task|any>
     updateTaskStatus(taskId:string,status:string):Promise<void>

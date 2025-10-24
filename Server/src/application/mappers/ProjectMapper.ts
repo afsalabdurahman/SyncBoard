@@ -27,9 +27,11 @@ export class ProjectMapper {
         : undefined,
     });
   }
-  static mapEntityToProject(msg: string): ProjectResponseDTO {
+  static mapEntityToProject(msg: string, savedProject: Project): ProjectResponseDTO {
+    let project = new Project(savedProject)
     return {
-      message: msg
+      message: msg,
+      project
     }
   }
   static ValidateProjectData(input: ProjectRequstDTO) {

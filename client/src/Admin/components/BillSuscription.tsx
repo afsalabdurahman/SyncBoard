@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
-import { Badge } from "../../components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../Custom/ui/card"
+import { Badge } from "../../Custom/ui/badge"
 import { Calendar } from "lucide-react"
 import type { BillingRecord } from "../Pages/SuscriptionPages"
 

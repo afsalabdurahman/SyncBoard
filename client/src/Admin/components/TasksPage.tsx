@@ -1,16 +1,16 @@
-
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Button } from "../../components/ui/button";
-import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
+import { Button } from "../../Custom/ui/button";
+import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 import {TablePagination} from"@mui/material"
+import { AppDispatch } from "../../Redux/store";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
 import {
   Table,
   TableBody,
@@ -18,8 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/table";
+import { Badge } from "../../Custom/ui/badge";
 import { TaskModal } from "./TaskModal";
 import {
   Select,
@@ -27,10 +27,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "../../Custom/ui/select";
 import { Edit, Trash2, Plus, Calendar } from "lucide-react";
-import apiService from "../../services/api";
-import { updateTask } from "../../Redux/workspace/admin/TaskSlice";
+import { updateTask,setTaskPage } from "../../Redux/feature/task/taskSlice";
+import { useDispatch } from "react-redux";
+  import { addTaskApi, deleteTaskApi, fetchTaskData, updateTaskApi } from "../../Redux/feature/task/taskThunks";
+import { usePaginationTask, useTasks } from "../hooks/taskhooks";
+import { useProjects } from "../hooks/projectshooks";
 interface Task {
   _id: string;
   name: string;
@@ -42,51 +45,34 @@ interface Task {
   priority: "Low" | "Medium" | "High";
 }
 
-const initialTasks: Task[] = [
-  // {
-  //   id: 1,
-  //   name: "Design Homepage",
-  //   project: "Website Redesign",
-  //   assignedUser: "Jane Smith",
-  //   status: "In Progress",
-  //   deadline: "2024-01-25",
-  //   priority: "High",
-  // },
-];
+
 
 export function TasksPage() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [totalItems, setTotalItems] = useState(0)
+   const {page,rowPerPage,totalItems,totalPage} = usePaginationTask()
+   
+ 
   let AdminId = useSelector((state: any) => {
     return state?.user?.user?.id;
   });
   const [refreshKey, setRefreshKey] = useState(0);
-  const [tasks, setTasks] = useState<any>(initialTasks);
+  // const [tasks, setTasks] = useState<any>(initialTasks);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
-  useEffect(() => {
-    fetchTasks();
-  }, [refreshKey,page,rowsPerPage]);
-   const fetchTasks = async () => {
-      try {
-        const response = await apiService.get(`task/mytask?page=${page + 1}&limit=${rowsPerPage}`);
-        setTasks(response.data.items);
-          console.log(response,"resp++")
-      setTotalItems(response.data.totalItems);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      }
-    };
- const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const [deleteTaskId, setDeleteTaskId] = useState<string>("");
+const dispatch: AppDispatch = useDispatch();
+
+const tasks = useTasks()
+useEffect(()=>{
+dispatch(fetchTaskData({page,limit:rowPerPage}))
+},[dispatch,rowPerPage,page])
+
+
+const handleChangePage = (event, newPage) => {
+   dispatch(setTaskPage(newPage + 1));
+  dispatch(fetchTaskData({ page: newPage + 1, limit: rowPerPage }));
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-  let projects = useSelector((state) => state.projects.list);
+ 
+  let projects = useProjects()
   let users = new Set(
     projects
       .map((user: { id: number; name: string; assignedUsers: string[] }) => {
@@ -97,7 +83,7 @@ export function TasksPage() {
       .flat()
   );
 
-  console.log(tasks, "taskk");
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -108,28 +94,23 @@ export function TasksPage() {
       : tasks.filter((task) => task.status === statusFilter);
 
   const handleAddTask = async (taskData: Omit<Task, "id">) => {
-    console.log(taskData, "data submitteddd");
+   
     const newTask = {
       ...taskData,
-      // id: Math.max(...tasks.map((t) => t.id)) + 1,
+      id: Math.max(...tasks.map((t) => t.id)) + 1,
     };
-    setTasks([...tasks, newTask]);
-    try {
-      let response = await apiService.post("task/create", { newTask });
-      console.log(response, "from dba");
-      setRefreshKey((prev) => prev + 1);
-    } catch (error) {
-      console.log(error, "errirorr");
-    }
+    
+   await dispatch(addTaskApi(newTask)).unwap()
+ dispatch(fetchTaskData({page,limit:rowPerPage}))
+
   };
   const handleEditTask = async (taskData) => {
-    console.log(taskData, "editedTakedd");
+   
     const id = taskData.id;
-    const response = await apiService.patch(`task/update/${id}`, {
-      taskData,
-    });
-    console.log(response, "from edit task ");
-    setRefreshKey((prev) => prev + 1);
+  
+  
+   await  dispatch(updateTaskApi(taskData))
+ dispatch(fetchTaskData({page,limit:rowPerPage}))
   };
 
   const handleDeleteTask = (id: string) => {
@@ -137,9 +118,9 @@ export function TasksPage() {
     setDeleteTaskId(id);
   };
   const handleConfirmDelete = async () => {
-    const response = await apiService.delete(`task/delete/${deleteTaskId}`);
-    console.log(response, "responseSXIOD");
-    setRefreshKey((prev) => prev + 1);
+  
+    await dispatch(deleteTaskApi(deleteTaskId)).unwrap()
+    await dispatch(fetchTaskData({page,limit:rowPerPage}))
   };
 
   const openAddModal = () => {
@@ -305,15 +286,17 @@ export function TasksPage() {
         onSubmit={editingTask ? handleEditTask : handleAddTask}
         task={editingTask}
       />
-        <TablePagination
-        rowsPerPageOptions={[3, 7, 25]}
-        component="div"
-        count={totalItems}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+     <TablePagination
+            
+             component="div"
+             count={totalItems}
+             rowsPerPage={rowPerPage||0}
+             page={page-1}
+             onPageChange={handleChangePage}
+             
+              rowsPerPageOptions={[]}
+              
+           />
     </div>
   );
 }

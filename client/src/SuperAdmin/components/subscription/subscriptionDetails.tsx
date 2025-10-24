@@ -1,9 +1,9 @@
 
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog"
-import { Badge } from "../../../components/ui/badge"
-import { Card, CardContent } from "../../../components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../Custom/ui/dialog"
+import { Badge } from "../../../Custom/ui/badge"
+import { Card, CardContent } from "../../../Custom/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Calendar, CreditCard, DollarSign, Mail, User } from "lucide-react"
 import type { Subscription } from "./subscriptionTable"
 

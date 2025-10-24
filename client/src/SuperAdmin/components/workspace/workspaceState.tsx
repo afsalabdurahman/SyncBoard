@@ -1,5 +1,5 @@
 import { Building2, Users, DollarSign, TrendingUp } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "../../../Custom/ui/card"
 
 interface WorkspaceStatsProps {
   totalWorkspaces: number

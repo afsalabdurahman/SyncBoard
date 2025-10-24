@@ -37,6 +37,7 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
+      console.log("allprojects....")
       const projects = await this._projectUsecase.getAllProjects();
       res.status(HttpStatusCode.OK).json(projects);
     } catch (error) {
@@ -72,14 +73,20 @@ export class ProjectController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-   
+   try {
+    console.log(req.body,"update project......")
     const projectId = req.params.id;
-    const responseFromUsecas = await this._projectUsecase.update(
+    const responseDTO = await this._projectUsecase.update(
       projectId,
       req.body.editingProject
     );
-    console.log(responseFromUsecas);
-    res.send(200);
+    res.status(HttpStatusCode.OK).json(responseDTO)
+   } catch (error) {
+    next(error)
+   }
+    
+    
+    
   }
 
   async deleteProject(
@@ -106,7 +113,7 @@ try {
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
 
-    console.log(page,limit,skip)
+    console.log(page,limit,skip,"paese:::::::::::")
 const {items,totalItems} =await this._projectUsecase.paginationProjecust(page,limit,skip)
 res.status(200).json({
   items,

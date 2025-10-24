@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
 import { Calendar, UserPlus, Mail, Settings, MessageSquare, ShieldCheck, CreditCard } from "lucide-react"
 
 export interface ActivityItem {

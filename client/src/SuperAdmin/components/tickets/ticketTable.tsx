@@ -1,10 +1,10 @@
 "use client"
 
-import { Card, CardContent } from "../../../components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table"
-import { Badge } from "../../../components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Button } from "../../../components/ui/button"
+import { Card, CardContent } from "../../../Custom/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
+import { Badge } from "../../../Custom/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Button } from "../../../Custom/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu"
+} from "../../../Custom/ui/dropdown-menu"
 import { Calendar, MessageSquare, MoreHorizontal, UserRound } from "lucide-react"
 
 export type TicketStatus = "open" | "pending" | "resolved" | "closed"

@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import rootReducer from './rootReducer';
+import { errorMiddleware } from '../Custom/middleware/errorMiddleware';
 
 const persistConfig = {
   key: 'root',
@@ -20,7 +21,8 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(errorMiddleware)
+    
 });
 
 export const persistor = persistStore(store);

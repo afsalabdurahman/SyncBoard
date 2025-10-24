@@ -22,9 +22,11 @@ static mapTaskToEntity(input:TaskRequestDTO):Task{
         projectId:input.projectId
     })
 }
-static mapEntityToTask(msg:string):TaskResponseDTO{
+static mapEntityToTask(msg:string,taskData:Task):TaskResponseDTO{
+    const task=new Task(taskData)
     return{
-        message:msg
+        message:msg,
+        task
     }
 }
 static validateTask(input:TaskRequestDTO){

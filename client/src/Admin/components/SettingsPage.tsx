@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Switch } from "../../components/ui/switch";
-import { Separator } from "../../components/ui/separator";
+} from "../../Custom/ui/card";
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
+import { Switch } from "../../Custom/ui/switch";
+import { Separator } from "../../Custom/ui/separator";
 // import { useTheme } from "next-themes"
 import { Save, User, Bell, Shield, Palette } from "lucide-react";
 

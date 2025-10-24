@@ -1,8 +1,8 @@
 import type React from "react";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
-import { deadlineCovert } from "../../components/page-components/utility/date/dateConverter";
+import { Button } from "../../Custom/ui/button";
+import { deadlineCovert } from "../../Utility/dateConverter";
 import {
   Dialog,
   DialogContent,
@@ -10,22 +10,24 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
+} from "../../Custom/ui/dialog";
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
+import { Textarea } from "../../Custom/ui/textarea";
+import {  ToastContainer } from "react-toastify";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Checkbox } from "../../components/ui/checkbox";
+} from "../../Custom/ui/select";
+import { Checkbox } from "../../Custom/ui/checkbox";
 import { Upload } from "./Upload";
-import { FileText, Image, Paperclip, X } from "lucide-react";
-import { Popup } from "../../components/ui/Popup";
-import { data } from "react-router";
+import { FileText, Image,  } from "lucide-react";
+import { Popup } from "../../Custom/ui/Popup";
+import { deleteImage } from "../../Redux/feature/project/projectSlice";
+import { useDispatch } from "react-redux";
 interface Project {
   _id: string;
   name: string;
@@ -71,13 +73,15 @@ export function ProjectModal({
     return state.alluser.users.filter((user: any) => user.role !== "Owner");
   });
 
+   const dispatch= useDispatch()
   const [showUploadPage, setUploadPage] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   let uploadFiles = () => {
     setUploadPage(true);
   };
-  let [isPopup, setPopup] = useState(false);
+ const [pdfPopup, setPdfPopup] = useState(false);
+const [imagePopup, setImagePopup] = useState(false);
   let onSubmitFiles = (data: any) => {
     setUploads(data);
   };
@@ -119,12 +123,12 @@ export function ProjectModal({
       });
     }
   }, [project, isOpen, refreshKey]);
-  console.log(project?.attachedUrl, "URLLLLLLe^^^");
+ 
 
   let imageArry = formData.attachment?.filter(
     (url: string) => url.includes(".jpg") || url.includes(".png")
   );
-  let pdfArry = formData.attachment?.map((url: string) => {
+  let pdfArry = formData.attachment?.filter((url: string) => {
     if (url.includes(".pdf")) return url;
   });
 
@@ -132,6 +136,8 @@ export function ProjectModal({
     e.preventDefault();
 
     // Prepare data to match Omit<Project, "id">
+   
+
     const updatedData = {
       _id: formData.id ?? "", // fallback to empty string if undefined
       clientName: formData.clientName,
@@ -144,6 +150,7 @@ export function ProjectModal({
       status: formData.status,
       priority: formData.priority,
       attachment: uploads,
+      url:formData.attachment
     };
     onSubmit(updatedData);
     onClose();
@@ -164,19 +171,22 @@ export function ProjectModal({
   };
 
   const deletedSingleUrl = (deleteUrl: string) => {
+      
     formData.attachment =
       formData.attachment?.filter((url) => url !== deleteUrl) ?? null;
 
-    // setRefreshKey((prev) => prev + 1);
+dispatch(deleteImage(deleteUrl))
+ 
   };
-  console.log(formData, "formdata after delete$$$");
 
-  console.log(project, "relaproject");
+
+  
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='sm:max-w-[525px]'>
         <DialogHeader>
+           <ToastContainer position='top-center' autoClose={5000} />
           <DialogTitle>
             {project ? "Edit Project" : "Add New Project"}
           </DialogTitle>
@@ -323,15 +333,26 @@ export function ProjectModal({
                 <div className='flex items-start gap-4 text-sm text-red-500'>
                   {hasPdf && (
                     <div className='relative'>
-                      <FileText className='w-6 h-6 text-red-500' />
+                     <Popup
+                        isOpen={pdfPopup}
+                        onClose={() => setPdfPopup(false)}
+                        Url={pdfArry}
+                        type='pdf'
+                        projectId={formData.id}
+                        deletdAUrl={deletedSingleUrl}
+                      />
+                      <FileText className='w-6 h-6 text-red-500'
+                       onClick={() => setPdfPopup(true)}
+                        />
+                     
                     </div>
                   )}
 
                   {hasImage && (
                     <div className='relative'>
                       <Popup
-                        isOpen={isPopup}
-                        onClose={() => setPopup(false)}
+                        isOpen={imagePopup}
+                        onClose={() => setImagePopup(false)}
                         Url={imageArry}
                         type='image'
                         projectId={formData.id}
@@ -339,7 +360,7 @@ export function ProjectModal({
                       />
 
                       <Image
-                        onClick={() => setPopup(true)}
+                        onClick={() => setImagePopup(true)}
                         className='w-6 h-6 text-gray-500'
                       />
                     </div>

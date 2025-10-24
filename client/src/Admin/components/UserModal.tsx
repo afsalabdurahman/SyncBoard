@@ -1,11 +1,11 @@
 import type React from "react";
-import apiService from "../../services/api";
+import apiService from "../../Services/api";
 import { AxiosResponse } from "axios";
 import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import { toast, ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { setUsers, clearUsers } from "../../Redux/features/AlluserSlice";
+import { setUsers, clearUsers } from "../../Redux/feature/AlluserSlice";
 import {
   Dialog,
   DialogContent,
@@ -13,16 +13,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+} from "../../Custom/ui/dialog";
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "../../Custom/ui/select";
 
 interface User {
   _id?: number;

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import { Textarea } from "../../components/ui/textarea";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
-import { Label } from "../../components/ui/label";
+import { Button } from "../../Custom/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../Custom/ui/card";
+import { Badge } from "../../Custom/ui/badge";
+import { Textarea } from "../../Custom/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../Custom/ui/dialog";
+import { Label } from "../../Custom/ui/label";
 import { Check, X, Clock, CheckCircle } from 'lucide-react';
-import {  fetchTasks,updateTaskStatus } from "../../services/apiService";
-import { Task } from "../../services/TaskTypes";
+import {  fetchTasks,updateTaskStatus } from "../apiservice/taskApi";
+import { Task } from "../types/taskTypes";
 
 interface TaskApprovalProps {}
 

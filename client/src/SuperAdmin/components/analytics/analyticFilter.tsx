@@ -1,8 +1,8 @@
 "use client"
 
 import { Search, Filter } from "lucide-react"
-import { Input } from "../../../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
+import { Input } from "../../../Custom/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
 
 export function AnalyticsFilters({
   search,

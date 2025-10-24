@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from "react"
 
-import { Card, CardContent } from "../../../components/ui/card"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
+import { Card, CardContent } from "../../../Custom/ui/card"
+import { Badge } from "../../../Custom/ui/badge"
+import { Button } from "../../../Custom/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Building2, Users, MessageSquare, HardDrive, Calendar, Edit, PauseCircle, PlayCircle, Mail } from "lucide-react"
 import { WorkspaceMembersTable, type WorkspaceMember } from "./workspaceMembers"
 import { WorkspaceActivityTimeline, type ActivityItem } from "./workspaceActivity"

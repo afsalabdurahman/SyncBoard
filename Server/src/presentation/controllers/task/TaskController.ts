@@ -18,7 +18,8 @@ export class TaskController {
     try {
       const input: TaskRequestDTO = req.body.newTask as TaskRequestDTO
 
-      const resposeDTO = this._taskUsecase.execute(input);
+      const resposeDTO = await this._taskUsecase.execute(input);
+      console.log(resposeDTO,"resposse DTO Task")
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
       
     } catch (error) {
@@ -45,11 +46,14 @@ export class TaskController {
   ): Promise<void> {
     const taskId = req.params.id;
     try {
-      const response = await this._taskUsecase.update(
+
+      console.log(req.body,"BODY PART", req.params.id,"PRSMD SID")
+      const responseDTO = await this._taskUsecase.update(
         taskId,
-        req.body.taskData
+        req.body.updatedTask
       );
-      res.send(200);
+      
+      res.status(HttpStatusCode.OK).json(responseDTO);
     } catch (error) {
       console.log(error);
       next(error);
@@ -63,6 +67,7 @@ export class TaskController {
 
     try {
       const taskId = req.params.id;
+      console.log(taskId,"taskId")
       await this._taskUsecase.deleteTask(taskId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
     } catch (error) {
