@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import apiService from "../../Services/api";
-import { Subscription, PartialSubscriptionUpdate } from "../feature/SuscriptionSlice"
+import apiService from "../../../Services/apiServices/apiService";
+
+import { Subscription, PartialSubscriptionUpdate } from "./subscriptionSlice"
 export const fetchSubscription = createAsyncThunk<
   Subscription,
   string,

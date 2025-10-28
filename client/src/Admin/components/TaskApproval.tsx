@@ -6,7 +6,7 @@ import { Textarea } from "../../Custom/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../Custom/ui/dialog";
 import { Label } from "../../Custom/ui/label";
 import { Check, X, Clock, CheckCircle } from 'lucide-react';
-import {  fetchTasks,updateTaskStatus } from "../apiservice/taskApi";
+import {  fetchTasks,updateTaskStatus } from "../apis/taskApi";
 import { Task } from "../types/taskTypes";
 
 interface TaskApprovalProps {}

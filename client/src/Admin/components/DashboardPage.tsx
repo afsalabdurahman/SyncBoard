@@ -41,8 +41,8 @@ const projectProgressData = [
   { name: "Jun", completed: 7, total: 9 },
 ];
 import { useSelector, useDispatch } from "react-redux";
-import apiService from "../../Services/api";
-import { setUsers } from "../../Redux/feature/AlluserSlice";
+import apiService from "../../Services/apiServices/apiService";
+import { setUsers } from "../../Redux/feature/users/AlluserSlice";
 export function DashboardPage() {
   let initialState = useSelector((state: any) => {
     console.log(state, "state");
@@ -63,24 +63,21 @@ export function DashboardPage() {
   const workspaceslug = useSelector(
     (state: any) => state.workspace.workspace.slug
   );
-  console.log(workspaceslug,"Slug value")
-  useSelector((state) => {
-    console.log(state, "++++++++");
-  });
+ 
 
-  useEffect(() => {
-    if (!workspaceslug) return; // prevent empty request
+  // useEffect(() => {
+  //   if (!workspaceslug) return; // prevent empty request
 
-    apiService
-      .get(`workspace/member/data/${workspaceslug}`)
-      .then((response) => {
-        console.log(response.data, "data fetch from api+++");
-         dispacth(setUsers(response.data));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [workspaceslug]);
+  //   apiService
+  //     .get(`workspace/member/data/${workspaceslug}`)
+  //     .then((response) => {
+  //       console.log(response.data, "data fetch from api+++");
+  //        dispacth(setUsers(response.data));
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, [workspaceslug]);
 
   //
 

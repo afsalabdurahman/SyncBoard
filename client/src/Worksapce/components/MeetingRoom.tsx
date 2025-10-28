@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Search, UserPlus, Link, User, Users } from "lucide-react";
 import { socket } from "../../Services/socket";
 import { useSelector } from "react-redux";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import axios, { AxiosResponse } from "axios";
 import { stat } from "fs";
 export default function MeetingRoom() {

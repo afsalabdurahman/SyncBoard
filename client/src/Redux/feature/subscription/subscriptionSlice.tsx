@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { fetchSubscription,updateSubscription } from "../thunks/suscriptionTunks";
+import { fetchSubscription,updateSubscription } from "./subscriptionTunks";
 
 export type SubscriptionStatus =
   | "trialing"

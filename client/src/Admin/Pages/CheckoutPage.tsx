@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "../../Custom/ui/select";
 import { CreditCard, Lock, CheckCircle, Shield, ArrowLeft } from "lucide-react";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import { useSelector } from "react-redux";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 type Plan = "Free" | "Pro" | "Enterprise";

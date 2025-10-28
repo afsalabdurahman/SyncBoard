@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import api from "../../Services/api";
+import api from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { setUserData } from "../../Redux/feature/UserDataSlice";
+import { setUserData } from "../../Redux/feature/user/userSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
-import { setLog } from "../../Redux/feature/LogSlice";
+import { setLog } from "../../Redux/feature/logs/LogSlice";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
-import {setSubscription} from "../../Redux/feature/SuscriptionSlice";
+import {setSubscription} from "../../Redux/feature/subscription/subscriptionSlice";
 const AdminLogin = () => {
 
 

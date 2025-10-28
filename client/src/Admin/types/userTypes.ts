@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   role: string;
@@ -11,5 +11,7 @@ export interface User {
   about?: string | null;
   address?: string | null;
   departmant?: string | null;
-  workspaces?: any[]; 
+  workspaces?: any[];
+  isDelete?:boolean;
+  isBlock?:boolean; 
 }

@@ -28,4 +28,10 @@ export class ActivityController {
 
     res.json({ workspaceLogs, projectActivtyLogs,userActivityLogs });
   }
+  async findCount(req:Request,res:Response,next:NextFunction):Promise<void>{
+    console.log("calling...")
+    const userId = req.params.id
+    console.log(userId)
+await this._activityUsecase.findCountofWorkspace(userId)
+  }
 }

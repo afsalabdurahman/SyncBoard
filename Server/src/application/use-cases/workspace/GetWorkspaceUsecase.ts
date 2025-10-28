@@ -22,4 +22,9 @@ console.log(users,"usecases")
     return users
     
 }
+async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<any> {
+   const workspceData = await this.workspaceRepository.findbySlug(slug)
+   const {items,totalItems} = await this.userRepository.paginationUser(workspceData.id,page,limit,skip)
+   return {items:items,totalItems}
+}
 }

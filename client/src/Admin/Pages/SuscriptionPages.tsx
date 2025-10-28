@@ -7,7 +7,7 @@ import BillingHistory from "../components/BillSuscription"
 import ButtonSus from "./ButtonSus"
 import { useSearchParams, useNavigate } from "react-router-dom";
 // import CheckoutPage from "./CheckoutPage"
-import apiService from "../../Services/api"
+import apiService from "../../Services/apiServices/apiService";
 import { useSelector } from "react-redux"
 import { stat } from "fs"
 export type Plan = "Free" | "Pro" | "Enterprise"

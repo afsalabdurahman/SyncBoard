@@ -39,7 +39,7 @@ import {
 import { Button } from "../../Custom/ui/button";
 import { title } from "process";
 
-import { fetchSubscription } from "../../Redux/thunks/suscriptionTunks";
+import { fetchSubscription } from "../../Redux/feature/subscription/subscriptionTunks";
 
 const menuItems = [
   {

@@ -3,13 +3,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 import registerReducer from "./feature/RegisterSlice"
 import StatusSliceReducer from './feature/StatusSlice';
 import workspaceReducer from './feature/WorkspaceSlice';
-import usersliceReducer from "./feature/UserDataSlice";
-import logsliceReducer from "./feature/LogSlice"
+import usersliceReducer from "./feature/user/userSlice";
+import logsliceReducer from "./feature/logs/LogSlice"
 import projectReducer from './feature/project/projectSlice';
-import alluserReducer from "./feature/AlluserSlice";
-import subscriptionReducer from "./feature/SuscriptionSlice";
+import alluserReducer from "./feature/users/AlluserSlice";
+import subscriptionReducer from "./feature/subscription/subscriptionSlice";
 import forwardReducer from "./feature/ForwardSlice"
-import countReducer from "./feature/countSlice"
+import countReducer from "./feature/count/countSlice"
 import taskReducer from "./feature/task/taskSlice";
 const rootReducer = combineReducers({
   register: registerReducer,

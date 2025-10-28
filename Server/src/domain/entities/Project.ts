@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId,Schema,Types } from "mongoose";
 
 export type PriorityTypes = "Low" | "Medium" | "High";
 export type StatusTypes = "Planning" | "In Progress" | "Completed" | "On Hold";
@@ -12,10 +12,12 @@ export class Project {
   status?: StatusTypes;
   priority?: PriorityTypes;
   clientName?: string;
-  projectAdminId?: string;
+  projectAdminId?: Types.ObjectId | string;
+  workspaceId?:Types.ObjectId | string;
   attachedUrl?: string[];
   createdAt?: Date;
-  updatedAt?: Date; // Corrected typo from `updateAt` to `updatedAt`
+  updatedAt?: Date;
+   // Corrected typo from `updateAt` to `updatedAt`
 
   constructor({
     _id,
@@ -27,6 +29,7 @@ export class Project {
     priority,
     clientName,
     projectAdminId,
+    workspaceId,
     attachedUrl,
     createdAt,
     updatedAt,
@@ -39,7 +42,8 @@ export class Project {
     status?: StatusTypes;
     priority?: PriorityTypes;
     clientName?: string;
-    projectAdminId?: string;
+    projectAdminId?: string|Types.ObjectId;
+    workspaceId: string|Types.ObjectId;
     attachedUrl?: string[];
     createdAt?: Date;
     updatedAt?: Date;
@@ -53,6 +57,7 @@ export class Project {
     this.priority = priority;
     this.clientName = clientName;
     this.projectAdminId = projectAdminId;
+    this.workspaceId =workspaceId;
     this.attachedUrl = attachedUrl;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

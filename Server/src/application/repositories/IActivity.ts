@@ -5,4 +5,5 @@ export interface IActivity{
     getAllActivities(workspaceId:string):Promise<Workspace>
     projctActivity(projectName:string,createdBy:string,ActivityId:string,):Promise<any>
     userActivity(userName:string,ActivityId:string):Promise<any>
+    findCountofWorkspace(userId:string):Promise<any>
 }

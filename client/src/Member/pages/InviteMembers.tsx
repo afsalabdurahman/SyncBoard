@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Copy, ChevronDown, Plus, X } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import { RootState } from "../../Redux/store";
 import { AxiosResponse } from "axios";
 import { Navigate, useNavigate } from "react-router";

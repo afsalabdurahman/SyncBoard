@@ -4,6 +4,11 @@ import { IActivityRepository } from "../../domain/interfaces/repositories/IActiv
 import { ActivityModel } from "../database/models/ActivityModel";
 import mongoose from "mongoose";
 import { resourceLimits } from "worker_threads";
+import { UserModel } from "../database/models/UserModel";
+import { WorkspaceModel } from "../database/models/WorkspaceModel";
+import { TaskModel } from "../database/models/TaskModel";
+import { ProjectModel } from "../database/models/ProjectModel";
+
 export class ActivityRepository implements IActivityRepository {
   async createActivity(data: any): Promise<any | null> {
     console.log(data);
@@ -12,6 +17,70 @@ export class ActivityRepository implements IActivityRepository {
     return savedData;
   }
   async findActivities(logId: Types.ObjectId): Promise<any> {
+    const userObjectId = new mongoose.Types.ObjectId("68f1157623d1967940381b72");
+     const results  = await UserModel.aggregate([{
+    $match:{_id:userObjectId}
+  },{
+    $project:{
+      workspaceId:{
+        $arrayElemAt:["$workspace",0]
+      }
+    },
+  },
+  {
+    $lookup:{
+      from:"workspaces",
+      localField: "workspaceId",
+       foreignField: "_id",
+        as: "workspace",
+
+    }
+  },
+  { $unwind: "$workspace" },
+  {
+      $addFields: {
+        totalMembers: { $size: "$workspace.members" },
+      },
+    },
+     {
+      $lookup: {
+        from: "projects",
+        localField: "workspaceId",
+        foreignField: "workspaceId",
+        as: "projects",
+      },
+    },
+    {
+      $addFields: {
+        totalProjects: { $size: "$projects" },
+      },
+    },
+     {
+      $lookup: {
+        from: "tasks",
+        let: { projectIds: "$projects._id" },
+        pipeline: [
+          { $match: { $expr: { $in: ["$projectId", "$$projectIds"] } } },
+          {
+            $group: {
+              _id: "$status",
+              count: { $sum: 1 },
+            },
+          },
+        ],
+        as: "taskStats",
+      },
+    },
+{
+      $project: {
+        _id: 0,
+        totalMembers: 1,
+        totalProjects: 1,
+        taskStats: 1,
+      },
+    },
+])
+console.log(results,"resultsss")
     //   const result = await ActivityModel.aggregate([
     //   {
     //     $match: { _id: logId }
@@ -70,4 +139,72 @@ export class ActivityRepository implements IActivityRepository {
       { $push: { userActivities: activityItem } }
     );
   }
+async workspceDataCount(userId: string): Promise<any> {
+     const userObjectId = new mongoose.Types.ObjectId(userId);
+ const result  = await UserModel.aggregate([{
+    $match:{_id:userObjectId}
+  },{
+    $project:{
+      workspaceId:{
+        $arrayElemAt:["$workspace",0]
+      }
+    },
+  },
+  {
+    $lookup:{
+      from:"workspaces",
+      localField: "workspaceId",
+       foreignField: "_id",
+        as: "workspace",
+
+    }
+  },
+  { $unwind: "$workspace" },
+  {
+      $addFields: {
+        totalMembers: { $size: "$workspace.members" },
+      },
+    },
+     {
+      $lookup: {
+        from: "projects",
+        localField: "workspaceId",
+        foreignField: "workspaceId",
+        as: "projects",
+      },
+    },
+    {
+      $addFields: {
+        totalProjects: { $size: "$projects" },
+      },
+    },
+     {
+      $lookup: {
+        from: "tasks",
+        let: { projectIds: "$projects._id" },
+        pipeline: [
+          { $match: { $expr: { $in: ["$projectId", "$$projectIds"] } } },
+          {
+            $group: {
+              _id: "$status",
+              count: { $sum: 1 },
+            },
+          },
+        ],
+        as: "taskStats",
+      },
+    },
+{
+      $project: {
+        _id: 0,
+        totalMembers: 1,
+        totalProjects: 1,
+        taskStats: 1,
+      },
+    },
+])
+console.log(result)
+ return result[0] || null;
 }
+}
+

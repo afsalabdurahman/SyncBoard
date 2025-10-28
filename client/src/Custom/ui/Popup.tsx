@@ -11,7 +11,8 @@ import { X ,Trash2,XCircle } from "lucide-react"
 import { ConfirmDialog } from "./DeleteAlertButton"
 import { useEffect, useState } from "react"
 import MinimalConfirmDialog from "./Minimaldelete"
-import apiService from "../../Services/api"
+import apiService from "../../Services/apiServices/apiService";
+
 // import {type} from "../../Redux/workspace/admin/ProjectSlice"
 
 export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:any) {

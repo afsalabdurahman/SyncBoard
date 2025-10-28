@@ -41,6 +41,7 @@ import { useAdminId, useAdminName, usePagination, usePlankey,useProjects } from 
 
 import { ProjectFormData } from "../types/projetctTypes";
 import { setPage } from "../../Redux/feature/project/projectSlice";
+import { useWorkspace, useWorkspaceid, useWorkspaceSlug } from "../../Worksapce/hooks/workspacehooks";
 
 
 export function ProjectsPage() {
@@ -49,6 +50,8 @@ const plankey= usePlankey()
   const adminId = useAdminId()
   const adminName = useAdminName()
   const projects=useProjects()
+  const workspaceid = useWorkspaceid()
+
  const {page,rowPerPage,totalItems} = usePagination()
 
 
@@ -67,6 +70,7 @@ const logId=useSelector((state)=>{
   return state.workspace.workspace.logId
 })
 
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -84,7 +88,7 @@ useEffect(() => {
   const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
        setLoader("Creating project ...");
     
-    await dispatch(createProject({adminName,logId,projectData,adminId})).unwrap()
+    await dispatch(createProject({workspaceid,logId,projectData,adminId})).unwrap()
       dispatch(fetchProjectData({ page, limit: rowPerPage }));
     setLoader("");
        setTimeout(() => {

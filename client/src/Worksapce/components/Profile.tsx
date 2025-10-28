@@ -1,5 +1,6 @@
 import { useState, useRef, use, useEffect } from "react";
-import api from "../../Services/api";
+import api from "../../Services/apiServices/apiService";
+
 import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import axios from "axios";
@@ -7,7 +8,7 @@ import axios from "axios";
 import {
   setUserData,
   updateUserPartial,
-} from "../../Redux/feature/UserDataSlice";
+} from "../../Redux/feature/user/userSlice";
 import {
   setUserEmail,
   setUserName,
@@ -46,8 +47,10 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import apiService from "../../Services/api";
+const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
+import apiService from "../../Services/apiServices/apiService";
 export default function Profile() {
+  console.log(CLOUDINARY_URL,"URL")
   //image
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -115,7 +118,8 @@ export default function Profile() {
 
       try {
         const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/ddoxcgkv2/image/upload",
+          CLOUDINARY_URL,
+          
           formData
         );
 
@@ -257,14 +261,14 @@ export default function Profile() {
     );
   };
 
-  useEffect(() => {
-    apiService
-      .get("/user-data", { email: Userdata?.userData?.user?.email })
-      .then((response) => {
-        console.log(response.data.userData, "user data from profile0000");
-        dispatch(setUserData(response.data.userData));
-      });
-  }, []);
+  // useEffect(() => {
+  //   apiService
+  //     .get("/user-data", { email: Userdata?.userData?.user?.email })
+  //     .then((response) => {
+  //       console.log(response.data.userData, "user data from profile0000");
+  //       dispatch(setUserData(response.data.userData));
+  //     });
+  // }, []);
 
   return (
     <div className=' mt-[em] overflow-x-auto overflow-y-auto  '>

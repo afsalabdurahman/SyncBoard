@@ -6,7 +6,8 @@ import {
   setUserEmail,
  
 } from "../../Redux/feature/RegisterSlice";
-import api from "../../Services/api";
+// import api from "../../Services/apiServices/apiService";
+import apiService from "../../Services/apiServices/apiService";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../Redux/store";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
@@ -22,13 +23,13 @@ export default function PasswordResetPage() {
     setLoading(true)
     console.log("Password reset requested for:", email);
     try {
-      const response: AxiosResponse<any, any> = await api.post("/user-exist", {
+      const response: AxiosResponse<any, any> = await apiService.post("/user-exist", {
         email,
       });
     
     } catch (error: any) {
       if (error.status == 409) {
-        const response: AxiosResponse<any, any> = await api.post(
+        const response: AxiosResponse<any, any> = await apiService.post(
           "/newotp-send",
           {
             email,

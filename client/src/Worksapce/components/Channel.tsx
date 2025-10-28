@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { socket } from "../../Services/socket";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 
 export default function Channel() {
   const [messages, setMessages] = useState(["You"]);

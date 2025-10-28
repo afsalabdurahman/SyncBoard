@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-
+import {signupApi} from "../apiservice/authApi"
 import { RootState, AppDispatch } from "../../Redux/store";
 import {
   setUserName,
@@ -9,11 +9,12 @@ import {
   setUserPassword,
   
 } from "../../Redux/feature/RegisterSlice";
-import { setUserData } from "../../Redux/feature/UserDataSlice";
-import api from "../../Services/api";
+import { setUserData } from "../../Redux/feature/user/userSlice";
+import api from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
+import { adminSignupSchema, validateSignup } from "../../Utility/formValidator";
 
 const SignupPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +35,8 @@ const SignupPage = () => {
   };
 
   const handleSubmit = async (e: any) => {
+
+
     e.preventDefault();
   
     if (name.trim() == "") {
@@ -67,11 +70,12 @@ const SignupPage = () => {
     console.log("Signup with:", { email, password });
 
     try {
-      const response: AxiosResponse<any, any> = await api.post("auth/user/sendotp", {
-        email,
-      });
+      // const response: AxiosResponse<any, any> = await api.post("auth/user/sendotp", {
+      //   email,
+      // });
+      const response= await signupApi(email)
 console.log(response,"sent otp")
-      if (response.status === 200) {
+      if (response) {
         setLoading(false);
         
      

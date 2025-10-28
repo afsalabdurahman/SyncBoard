@@ -88,18 +88,19 @@ export class UserMongooseRepository  extends BaseRepository <User> implements IU
   async updateProfile(userId: string, merge: any): Promise<User | any> {
     const objectId: any = new mongoose.Types.ObjectId(userId.toString());
    
-    let updated = await this.model.updateOne(
-      { _id: objectId },
-      { $set: merge.profileData },
-      {
-        upsert: true,
-        new: true, // Return the new document
-        runValidators: true, // Apply schema validation
-      }
-    );
+  const updated = await this.model.findOneAndUpdate(
+  { _id: objectId },
+  { $set: merge.profileData },
+  {
+    new: true,            
+    upsert: true,         
+    runValidators: true,  
+  }
+);
+
 
     if (!updated) throw new ConflictError("Database error");
- 
+ console.log(updated,"reponse Updated filess")
     return updated;
   }
   async changePassword(userId: string, newPassword: string): Promise<boolean> {
@@ -139,4 +140,16 @@ export class UserMongooseRepository  extends BaseRepository <User> implements IU
     const countUser = await this.model.countDocuments()
     return countUser;
   }
-}
+  async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<any> {
+      const totalItems = await UserModel.countDocuments();
+             const items = await UserModel.find({
+               "workspace.workspaceId": workspaceId,
+             })
+              .skip(skip)
+              .limit(limit)
+              .sort({ createdAt: -1 });
+              return {items,totalItems}
+        
+      }
+  }
+

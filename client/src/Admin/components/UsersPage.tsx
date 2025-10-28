@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "../../Custom/ui/button";
-import { useDispatch } from "react-redux";
-import apiService from "../../Services/api";
-
+import apiService from "../../Services/apiServices/apiService";
+import {TablePagination} from"@mui/material"
 import {
   Card,
   CardContent,
@@ -18,13 +17,17 @@ import {
   TableHeader,
   TableRow,
 } from "../../Custom/ui/table";
+import { RootState } from "../../Redux/store";
+import { AppDispatch } from "../../Redux/store";
 import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 import { Badge } from "../../Custom/ui/badge";
 import { UserModal } from "./UserModal";
 import { Edit, Trash2, Plus, RotateCcw } from "lucide-react";
 import { useSelector } from "react-redux";
-import { setUsers, addUser } from "../../Redux/feature/AlluserSlice";
-import { describe } from "node:test";
+import { setUsers, addUser, setUserPage } from "../../Redux/feature/users/AlluserSlice";
+import { fetchAllUsers, removeUser } from "../../Redux/feature/users/AlluserThunks";
+import { useDispatch } from "react-redux";
+import { usePaginationUser, useUsers } from "../hooks/userhooks";
 interface User {
   id: number;
   name: string;
@@ -35,41 +38,55 @@ interface User {
 
 export function UsersPage() {
   //axios
-  let users = useSelector((state: any) => {
-    console.log(state, "stetete");
-    return state.alluser.users;
-  });
+  let users = useUsers()
+
   const [refreshKey, setRefreshKey] = useState(0);
   const [userss, setUserss] = useState<User[]>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogMessage,setDialoqMessage]=useState({title:null,description:null})
-  let dispacth = useDispatch();
+  const dispatch:AppDispatch =  useDispatch();
+   const {page,rowPerPage,totalItems,totalPage} = usePaginationUser()
   const workspaceslug = useSelector(
-    (state: any) => state.workspace.workspace.slug
+    (state: RootState) => state.workspace.workspace.slug
   );
   console.log(workspaceslug, "slugg");
   useSelector((state) => {
     console.log(state, "++++++++");
   });
 
-  useEffect(() => {
-    if (!workspaceslug) return; // prevent empty request
+//   useEffect(()=>{
+// console.log(users)
+//   },[users.length])
 
-    apiService
-      .get(`workspace/member/data/${workspaceslug}`)
-      .then((response) => {
-        console.log(response.data, "data fetch from api+++");
-        dispacth(setUsers(response.data));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [userss,refreshKey]);
+useEffect(()=>{
+ dispatch(fetchAllUsers({page,limit:rowPerPage,workspaceslug}))
+},[dispatch,refreshKey])
+
+const handleChangePage = (event, newPage) => {
+  
+    dispatch(setUserPage(newPage + 1));
+   dispatch(fetchAllUsers({ page: newPage + 1, limit: rowPerPage ,workspaceslug}));
+  };
+
+
+  // useEffect(() => {
+  //   if (!workspaceslug) return; // prevent empty request
+
+  //   apiService
+  //     .get(`workspace/member/data/${workspaceslug}`)
+  //     .then((response) => {
+  //       console.log(response.data, "data fetch from api+++");
+  //       dispatch(setUsers(response.data));
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, [userss,refreshKey]);
 
   console.log(users, "usersssss");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [deleteUser, setDeleteUser] = useState("");
+  const [deleteUser, setDeleteUser] = useState<string>("");
   const [restoreUser,setRestoreUser]=useState("")
   console.log(editingUser, "edit userFuncion return");
   console.log(users, "users");
@@ -113,35 +130,29 @@ export function UsersPage() {
     // setUserss(users.filter((user) => user.id !== id));
   };
   const handleConfirm = async (confirm) => {
+
+
+
+
     console.log(confirm,"confir")
     if(confirm.includes("remove")){
-  let updatedProfile= { isDelete: true };
-   try {
-      const response= await apiService.patch(
-        `member/profile/update/${deleteUser}`,
-        {
-          profileData: updatedProfile, // Use the up-to-date object
-        },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.log(error)
-    }
+ 
+
+
+   
+    // let updatedProfile= { isDelete: true };
+    await dispatch(removeUser({deleteUser,updatedProfile:{isDelete:true} })).unwrap()
+    //  dispatch(fetchAllUsers(workspaceslug))
+    setRefreshKey(5)
+   
     }else{
-        let updatedProfile= { isDelete: false };
-       try {
-      const response= await apiService.patch(
-        `member/profile/update/${deleteUser}`,
-        {
-          profileData: updatedProfile, // Use the up-to-date object
-        },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.log(error)
+   
+      
+         await dispatch(removeUser({deleteUser,updatedProfile:{isDelete:false} })).unwrap()
+    
+  
     }
-    }
-  setRefreshKey((prev) => prev + 1);
+  // setRefreshKey((prev) => prev + 1);
    
   };
 
@@ -298,6 +309,17 @@ const closeDialog = () =>{
         title={dialogMessage.title}
         description={dialogMessage.description}
       />
+       <TablePagination
+                  
+                   component="div"
+                   count={totalItems||0}
+                   rowsPerPage={rowPerPage||0}
+                   page={page-1}
+                   onPageChange={handleChangePage||0}
+                   
+                    rowsPerPageOptions={[]}
+                    
+                 />
     </div>
   );
 }

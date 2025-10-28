@@ -34,7 +34,7 @@ export class ChangePasswordUsecase implements IChangePasword {
       hashedPassword
     );
     console.log(checkPassword, "@passUsecse");
-    if (!checkPassword) throw new ValidationError("Password not match");
+    if (checkPassword==false) throw new ValidationError("Password not match");
     let hashedNewPassword = await this.userService.hashPassword(newPassword)
    let result=await this.userRepository.changePassword(userId,hashedNewPassword)
    if(!result) throw new ValidationError("Validation filed")

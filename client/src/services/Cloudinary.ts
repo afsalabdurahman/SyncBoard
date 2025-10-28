@@ -1,14 +1,15 @@
 import axios from "axios";
-
+const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 export const uploadAttachment = async (file: File): Promise<string> => {
-    console.log(file, "from clod111");
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "My_frist_cloud");
 
     try {
         const response = await axios.post(
-            "https://api.cloudinary.com/v1_1/ddoxcgkv2/image/upload",
+            CLOUDINARY_URL,
+            // "https://api.cloudinary.com/v1_1/ddoxcgkv2/image/upload",
             formData
         );
 
