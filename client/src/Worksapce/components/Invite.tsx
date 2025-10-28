@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X, Link, Settings } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { useSelector } from "react-redux";

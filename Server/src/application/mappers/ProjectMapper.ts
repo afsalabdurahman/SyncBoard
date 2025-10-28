@@ -2,6 +2,9 @@ import { Project } from "../../domain/entities/Project";
 import { ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 import { z } from "zod";
 
+import mongoose, { Schema,ObjectId } from "mongoose";
+
+
 export const StatusTypesSchema = z.enum(["Pending", "In Progress", "Completed", "On Hold", "Planning"]);
 export type StatusTypes = z.infer<typeof StatusTypesSchema>;
 
@@ -10,7 +13,7 @@ export type PriorityTypes = z.infer<typeof PriorityTypesSchema>;
 
 
 export class ProjectMapper {
-  static mapProjectToEntity(input: ProjectRequstDTO): Project {
+  static mapProjectToEntity(input: ProjectRequstDTO,workspaceId:string): Project {
     return new Project({
       name: input.name,
       description: input.description,
@@ -19,7 +22,9 @@ export class ProjectMapper {
       status: input.status,
       priority: input.priority,
       clientName: input.clientName,
-      projectAdminId: input.projectAdminId,
+      
+      projectAdminId: new mongoose.Types.ObjectId (input.projectAdminId),
+      workspaceId: new  mongoose.Types.ObjectId (workspaceId),
       attachedUrl: input.attachedUrl
         ? Array.isArray(input.attachedUrl)
           ? input.attachedUrl
@@ -27,7 +32,7 @@ export class ProjectMapper {
         : undefined,
     });
   }
-  static mapEntityToProject(msg: string, savedProject: Project): ProjectResponseDTO {
+  static mapEntityToProject(msg: string, savedProject: any): ProjectResponseDTO {
     let project = new Project(savedProject)
     return {
       message: msg,

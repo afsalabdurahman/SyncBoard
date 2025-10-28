@@ -1,6 +1,6 @@
 import { Action } from "@radix-ui/react-alert-dialog";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchCountData } from "../thunks/countThunks";
+import { fetchCountData } from "./countThunks";
 export interface SubscriptionChange {
   nameOfWorkspace: string;
   subscriptionPlan: string;
@@ -45,28 +45,28 @@ const countSlice = createSlice({
 
     }
   },
-extraReducers: (builder) => {
-  builder
-    .addCase(fetchCountData.pending, (state) => {
-      state.status = "loading";
-      state.error = null;
-    })
-    .addCase(fetchCountData.fulfilled, (state, action: PayloadAction<Count>) => {
-      console.log("Fetched payload:", action.payload);
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCountData.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchCountData.fulfilled, (state, action: PayloadAction<Count>) => {
+        console.log("Fetched payload:", action.payload);
 
-      const data = action.payload || {};
+        const data = action.payload || {};
 
-      state.userCount = data.userCount ?? 0;
-      state.workspaceCount = data.workspaceCount ?? 0;
-      state.subscriptionCount = data.subscriptionCount ?? 0;
-      state.subscriptionChanges = data.subscriptionChanges ?? [];
-      state.status = "succeeded";
-    })
-    .addCase(fetchCountData.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.error?.message || "Failed to fetch count data";
-    });
-}
+        state.userCount = data.userCount ?? 0;
+        state.workspaceCount = data.workspaceCount ?? 0;
+        state.subscriptionCount = data.subscriptionCount ?? 0;
+        state.subscriptionChanges = data.subscriptionChanges ?? [];
+        state.status = "succeeded";
+      })
+      .addCase(fetchCountData.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error?.message || "Failed to fetch count data";
+      });
+  }
 
 })
 

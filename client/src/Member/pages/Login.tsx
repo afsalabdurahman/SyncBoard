@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { use, useEffect, useState } from "react";
-import api from "../../Services/api";
-import { AxiosResponse } from "axios";
+import api from "../../Services/apiServices/apiService";
+import { AxiosError, AxiosResponse } from "axios";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../Redux/store";
@@ -12,18 +12,19 @@ import {
   setUserEmail,
   setUserRole,
 } from "../../Redux/feature/RegisterSlice";
-import { setUserData } from "../../Redux/feature/UserDataSlice";
+import { setUserData } from "../../Redux/feature/user/userSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
-import { setLog } from "../../Redux/feature/LogSlice";
+import { setLog } from "../../Redux/feature/logs/LogSlice";
+import { loginApi } from "../apiservice/authApi";
 function Login() {
-  let [load, setLoad] = useState(false);
-  let dispatch = useDispatch();
-  let navigate = useNavigate();
-  let [email, setEmail] = useState("");
-  let [password, setPassword] = useState("");
-  let [error, setError] = useState("");
+  const [load, setLoad] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  let handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!email) {
       setError("please enter valid email");
@@ -38,28 +39,25 @@ function Login() {
     setError("");
     setLoad(true);
     try {
-      const response: AxiosResponse<any, any> = await api.post(
-        "auth/user/login",
-        {
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
+      const {workspace,user} = await loginApi(email,password)
+     
 
-      if (response.status == 200) {
-        console.log("response from login:", response);
-
-        dispatch(setWorkspace(response.data.workspace));
+        dispatch(setWorkspace(workspace));
         //  dispatch(setLog(response.data.logs))
-        dispatch(setUserData(response.data.user));
+        dispatch(setUserData(user));
         
         navigate("/work-space");
-      }
-    } catch (error: any) {
+      
+    } catch (error) {
+      console.log(error,"err<<<<")
+      let message = "Login failed"
+       if (error instanceof Error) {
+      message = error.message;
+    }
+       setError(message);
       console.log(error,"error")
       setLoad(false);
-      setError(error.response.data.message);
+    
     }
   };
 

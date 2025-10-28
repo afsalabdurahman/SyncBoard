@@ -26,5 +26,8 @@ router.get(
   memberAuth,
   workspaceController.getAllMembersData.bind(workspaceController)
 );
-
+router.get(
+  "/member/pagination/data/:workspaceslug",
+  workspaceController.pagination.bind(workspaceController)
+)
 export default router;

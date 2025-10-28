@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Check, X } from "lucide-react";
 import { useSelector,useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
-import {setUserData} from "../../Redux/feature/UserDataSlice"
-import api from "../../Services/api";
+import {setUserData} from "../../Redux/feature/user/userSlice"
+import api from "../../Services/apiServices/apiService";
+
 import { useNavigate } from "react-router";
 import axios, { AxiosResponse } from "axios";
 const OtpVerification = () => {

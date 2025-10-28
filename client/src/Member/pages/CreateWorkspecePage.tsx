@@ -4,14 +4,14 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { RootState } from "../../Redux/store";
 import { useSelector } from "react-redux";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import {setWorkspace} from "../../Redux/feature/WorkspaceSlice"
 import { setUserRole } from "../../Redux/feature/RegisterSlice";
-import{updateUserPartial} from "../../Redux/feature/UserDataSlice"
-import { setUserData } from "../../Redux/feature/UserDataSlice";
+import{updateUserPartial} from "../../Redux/feature/user/userSlice"
+import { setUserData } from "../../Redux/feature/user/userSlice";
 
 interface FormField {
   projectName: string;

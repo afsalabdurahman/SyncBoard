@@ -10,6 +10,8 @@ export interface IProject extends Document {
   deadline?: Date;
   priority?: PriorityTypes;
   status?: StatusTypes;
+  projectAdminId:Schema.Types.ObjectId;
+  workspaceId:Schema.Types.ObjectId;
 
 }
 
@@ -22,7 +24,9 @@ description:{type:String,required:true},
 attachedUrl:{type:[String]},
 deadline:{type:Date},
 priority:{type:String,enum:["Low","Medium","High"]},
-status:{type:String,enum:["Planning" , "In Progress" , "Completed" , "On Hold"]}
+status:{type:String,enum:["Planning" , "In Progress" , "Completed" , "On Hold"]},
+projectAdminId:{ type: Schema.Types.ObjectId, ref: "User"},
+workspaceId:{ type: Schema.Types.ObjectId, ref: 'Workspace' }
 
 },{timestamps:true})
 

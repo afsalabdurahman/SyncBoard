@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from "../../Redux/store";
 import axios, { AxiosResponse } from "axios";
 import LoadingSpinner from '../../Custom/reusecomponents/LoadingSpinner';
-import api from "../../Services/api";
+import api from "../../Services/apiServices/apiService";
 import { useParams,useLocation } from 'react-router';
 import { current } from '@reduxjs/toolkit';
 import { useNavigate } from 'react-router';
@@ -161,8 +161,9 @@ if(response.status){
     }, 500);
 }}
     } catch (error) {
-      console.error('Error changing password:', error);
-      // setErrors({ api: 'Failed to change password. Please try again.' });
+      console.log('Error changing password:', error);
+       setErrors({ api: 'Failed to change password. Please try again.' });
+      
       setLoading(false)
     }
 

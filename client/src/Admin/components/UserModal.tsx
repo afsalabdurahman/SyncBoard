@@ -1,11 +1,13 @@
 import type React from "react";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import { useState, useEffect } from "react";
 import { Button } from "../../Custom/ui/button";
 import { toast, ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { setUsers, clearUsers } from "../../Redux/feature/AlluserSlice";
+import { setUsers, clearUsers } from "../../Redux/feature/users/AlluserSlice";
+import { AppDispatch } from "../../Redux/store";
+
 import {
   Dialog,
   DialogContent,
@@ -23,9 +25,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../Custom/ui/select";
+import { updateUser } from "../../Redux/feature/users/AlluserThunks";
 
 interface User {
-  _id?: number;
+  _id?: number|string;
   name: string;
   email: string;
   role: string;
@@ -42,7 +45,7 @@ interface UserModalProps {
 }
 
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
-  let dispatch = useDispatch();
+  const dispacth:AppDispatch =  useDispatch();
   const userId = user?._id;
   console.log(user, "before editing...");
   const [formData, setFormData] = useState({
@@ -85,21 +88,13 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
     };
 
     try {
-      const axiosResponse: AxiosResponse<any> = await apiService.patch(
-        `member/profile/update/${userId}`,
-        {
-          profileData: updatedData,
-        },
-        { withCredentials: true }
-      );
-      console.log(axiosResponse, "response axioss");
-   
+    if (!userId) return; // stop if it's undefined
+       await dispacth(updateUser({userId,updatedData}))
 
-      console.log(axiosResponse, "axios resposne");
       setTimeout(() => {
         toast.success("updated");
       }, 0);
-      dispatch(clearUsers());
+      // dispatch(clearUsers());
       onSubmit(formData);
     } catch (error) {
       console.log(error, "from axioss");

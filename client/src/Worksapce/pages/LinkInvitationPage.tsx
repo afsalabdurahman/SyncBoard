@@ -11,8 +11,8 @@ import {
   setUserEmail,
   setUserPassword,
 } from "../../Redux/feature/RegisterSlice";
-import { setUserData } from "../../Redux/feature/UserDataSlice";
-import api from "../../Services/api";
+import { setUserData } from "../../Redux/feature/user/userSlice";
+import api from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";

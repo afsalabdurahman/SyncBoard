@@ -41,6 +41,7 @@ export class ActivityUsecase implements IActivity {
     return message;
   }
   async getAllActivities(workspaceId: string): Promise<any> {
+    console.log(workspaceId,"+++")
     const objectId: any = new mongoose.Types.ObjectId(workspaceId.toString());
     let workspaceData = await this.workspaceUsecase.findWorkspace(objectId);
     if (!workspaceData) throw new NotFoundError("Activities not found");
@@ -84,5 +85,8 @@ export class ActivityUsecase implements IActivity {
   }
   async userActivity(userName: string, ActivityId: string): Promise<any> {
     await this.activityRepository.inviteMember(userName, ActivityId);
+  }
+  async findCountofWorkspace(userId: string): Promise<any> {
+    await this.activityRepository.workspceDataCount(userId)
   }
 }

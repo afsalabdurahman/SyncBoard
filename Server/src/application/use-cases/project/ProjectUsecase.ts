@@ -12,12 +12,12 @@ export class ProjectUsecase implements IProjectUsecase {
     @inject("ProjectRepository") private _projectRepository: IProjectRepository
   ) { }
 
-  async excute(dto: ProjectRequstDTO): Promise<ProjectResponseDTO> {
+  async excute(dto: ProjectRequstDTO,workspaceId:string): Promise<ProjectResponseDTO> {
 
     const isValid = ProjectMapper.ValidateProjectData(dto);
     if (!isValid.success) throw new ValidationError("Validation failed");
 
-    const projectEntity = ProjectMapper.mapProjectToEntity(dto);
+    const projectEntity = ProjectMapper.mapProjectToEntity(dto,workspaceId);
 
     console.log(projectEntity, "entity is creted....")
 

@@ -19,16 +19,12 @@ export class VerifyOtp implements IOTP {
       throw new InternalServerError("OTP repository is not initialized");
     }
     const isOtp = await this.otpRespository.findByEmail(email);
-    try {
+    
       if (isOtp && isOtp.otp === otp) {
         return true;
       } else {
         throw new NotFoundError(" Otp is not found");
       }
-    } catch (error) {
-      console.log(error);
-      return false;
-      throw new InternalServerError("Some thing went to wrong");
-    }
+    
   }
 }

@@ -23,4 +23,5 @@ export interface IUserRepository extends IBaseRepository<User>  {
   findUsersInsameWorkspace(worspaceId: any): Promise<any>;
   updateOnlineStatus(userId: string): Promise<void>;
   countUser():Promise<any>
+  paginationUser(workspaceId:string|ObjectId,page:number,limit:number,skip:number):Promise<any>
 }

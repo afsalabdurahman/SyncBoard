@@ -18,8 +18,8 @@ const superController = container.resolve(SuperadminAuthController)
 router.post("/user/register", (req, res, next) =>
   authController.register(req, res, next)
 );
-router.post("/user/sendotp", (req, res) => otpController.sendOTP(req, res));
-router.post("/user/verifyotp", (req, res) => otpController.verifyOtp(req, res));
+router.post("/user/sendotp", (req, res,next) => otpController.sendOTP(req, res,next));
+router.post("/user/verifyotp", (req, res,next) => otpController.verifyOtp(req, res,next));
 router.post("/user/login", (req, res, next) =>
   authController.login(req, res, next)
 );

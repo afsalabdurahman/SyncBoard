@@ -10,6 +10,7 @@ import {
   ForbiddenError,
   NotFoundError,
   ValidationError,
+  AuthenticationError
 } from "../../../../utils/errors";
 
 import { ILogin } from "../../../repositories/iauth/ILogin";
@@ -31,8 +32,11 @@ export class LoginUsecase implements ILogin {
     if(!input.email||!input.password) throw new NotFoundError("Email or Password not found")
     let user = await this._userRepository.findByEmail(input.email);
   this._logger.info(`Login attempt for email: ${input.email}`);
-    if (!user || !user.workspace) {
-      throw new NotFoundError("User or Workspace not found");
+    if (!user) {
+      throw new NotFoundError("User is not found");
+    }
+    if (!user.workspace) {
+      throw new NotFoundError("Workspace is not found");
     }
     if (user.isBlock) throw new ForbiddenError("User is blocked");
     if (user.isDelete) throw new ForbiddenError("User is not found");
@@ -42,7 +46,7 @@ export class LoginUsecase implements ILogin {
     );
   
     if (!isTrue) {
-      throw new ValidationError("Password not match");
+      throw new CustomError("Password not match",422);
     }
 
     let token = await this._authService.generateToken({

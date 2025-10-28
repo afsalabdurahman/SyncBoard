@@ -9,7 +9,7 @@ import {
 import { Badge } from "../../Custom/ui/badge";
 import { Calendar, Flag, Lock, MessageCircleMoreIcon, MessageSquareMoreIcon } from "lucide-react";
 import { useSelector } from "react-redux";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import SimpleAlert from "../../Custom/ui/alertBox";
 interface Task {
   id: string;

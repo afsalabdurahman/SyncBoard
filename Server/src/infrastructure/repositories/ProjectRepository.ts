@@ -27,7 +27,7 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
 
    }
 
-  async updateProject(projectId: string, merged: any): Promise<Project | null> {
+  async updateProject(projectId: string, merged: any): Promise<any | null> {
   const objectId = new mongoose.Types.ObjectId(projectId);
   const updatedProject = await ProjectModel.findByIdAndUpdate(
     objectId,
@@ -35,7 +35,7 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
     { new: true, upsert: true, runValidators: true }
   )
 
-  return updatedProject as Project;
+  return updatedProject ;
 }
 
    async deleteProject(projectId: string): Promise<void> {

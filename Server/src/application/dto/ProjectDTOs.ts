@@ -14,7 +14,8 @@ export interface ProjectRequstDTO{
       priority : PriorityTypes;
       clientName : string;
       projectAdminId : string;
-      attachedUrl?: string
+      attachedUrl?: string;
+      
 }
 
 export interface ProjectResponseDTO{

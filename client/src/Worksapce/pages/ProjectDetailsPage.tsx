@@ -20,8 +20,8 @@ import {
   X,
   GitBranch,
 } from "lucide-react";
-import apiService from "../../Services/api";
-import { setUserData } from "../../Redux/feature/UserDataSlice";
+import apiService from "../../Services/apiServices/apiService";
+import { setUserData } from "../../Redux/feature/user/userSlice";
 import { useSelector } from "react-redux";
 
 const ProjectDetailsPage = (props: any) => {

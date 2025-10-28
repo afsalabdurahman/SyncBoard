@@ -10,7 +10,7 @@ import { Building2, Users, MessageSquare, HardDrive, Calendar, Edit, PauseCircle
 import { WorkspaceMembersTable, type WorkspaceMember } from "./workspaceMembers"
 import { WorkspaceActivityTimeline, type ActivityItem } from "./workspaceActivity"
 import { WorkspaceBillingCard } from "./workspaceBilling"
-import { cn } from "../../../lib/utils"
+import { cn } from "../../../Utility/utils"
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, AreaChart, Area } from "recharts"
 
 type Plan = "basic" | "pro" | "enterprise"

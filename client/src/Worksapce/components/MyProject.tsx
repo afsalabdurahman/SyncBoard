@@ -9,7 +9,7 @@ import {
   Clock,
   User,
 } from "lucide-react";
-import apiService from "../../Services/api";
+import apiService from "../../Services/apiServices/apiService";
 import { useSelector, useDispatch } from "react-redux";
 import ProjectDetailsPage from "../pages/ProjectDetailsPage";
 import {
@@ -17,11 +17,12 @@ import {
   updateProject,
   removeProject,
   
-} from "../../Redux/workspace/admin/ProjectSlice";
+} from "../../Redux/feature/project/projectSlice";
 
 import { socket } from "../../Services/socket";
 import {setTasks} from "../../Redux/feature/task/taskSlice"
 import { fetchProjectData } from "../../Redux/feature/project/projectThunks";
+import { myProjects } from "../apis/workspaceapis";
 
 const MyProject = () => {
   const dispatch = useDispatch();
@@ -31,26 +32,35 @@ const MyProject = () => {
   const [showProjectDetails, setShowProjectDetails] = useState(false);
   const [projectDetails, setProjectDetails] = useState(null);
   
-const initialProjects=useSelector((state)=>{
-  return state.projects.list
-})
+// const initialProjects=useSelector((state)=>{
+//   return state.projects.list
+// })
   let userName = useSelector((state: any) => {
+    console.log(state,"Obejc+++")
     return state.user.user.name;
   });
-  const [projects, setProjects] = useState(initialProjects);
+  const [projects, setProjects] = useState([]);
   console.log(projects, "newProjects");
   
 
   useEffect(() => {
+    
      if (!userName) return;
-    dispatch(fetchProjectData());
+    
+    
 //  apiService.get(`/task/mytask/${userName}?count=all`).then((response)=>{
 //   console.log( response, "re000000")
 //  dispatch(setTasks(response.data))
 //       })
   }, [dispatch,userName]);
  
-  
+ useEffect(()=>{
+ const list= myProjects().then((res)=>{
+console.log(res.data,"loistsssssss")
+setProjects(res.data)
+  })
+ },[])
+
   console.log(projects, "usestateproje");
 
   const filteredProjects = (projects ?? []).filter(

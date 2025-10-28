@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Separator } from "../../../Custom/ui/separator"
 // import { useToast } from ""
 import {toast} from "react-toastify"
-import { cn } from "../../../lib/utils"
+import { cn } from "../../../Utility/utils"
 import {
   UserIcon,
   Mail,

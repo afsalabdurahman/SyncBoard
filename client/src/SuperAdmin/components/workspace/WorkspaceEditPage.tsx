@@ -16,7 +16,7 @@ import { Badge } from "../../../Custom/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 //import { useToast } from "../../../hooks/use-toast"
 
-import { cn } from "../../../lib/utils"
+import { cn } from "../../../Utility/utils"
 import {
   Building2,
   Mail,

@@ -22,7 +22,7 @@ export class AdminAuthController {
       );
 
       if (!user) {
-        throw new NotFoundError("user not found");
+        throw new NotFoundError("User is found");
       }
       res.status(HttpStatusCode.OK).json({ user, workspace,suscribe });
     } catch (error) {
