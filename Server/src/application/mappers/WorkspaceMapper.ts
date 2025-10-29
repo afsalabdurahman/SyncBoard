@@ -1,4 +1,4 @@
-import { Workspace } from "../../domain/entities/Workspace";
+import { Workspace, workspaceStatus } from "../../domain/entities/Workspace";
 import { WorkspaceRequestDTO, WorkspaceResponseDTO } from "../dto/WorkspaceDTOs";
 import { User } from "../../domain/entities/User";
 import { z } from "zod";
@@ -7,14 +7,16 @@ interface Member {
   title: string;
 }
 export class WorkspaceMapper{
-    static mapWorkspaceToEntity(dto:WorkspaceRequestDTO,userID:string,title:string):Workspace{
-        
+    static mapWorkspaceToEntity(dto:WorkspaceRequestDTO,userID:string,title:string,):Workspace{
+      
         return new Workspace ({
          name:dto.WorkspaceName,
          role:dto.role,
          slug:dto.slug,
          ownerId:dto.ownerId,
-         members:[{userId:userID,title}]
+         members:[{userId:userID,title}],
+         status:"Active",
+         storage:1,
         })
     }
     static mapEntityToWorkspace(user:User,workspace:Workspace):WorkspaceResponseDTO{

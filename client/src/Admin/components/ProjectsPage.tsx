@@ -87,6 +87,7 @@ useEffect(() => {
 
   const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
       try {
+        console.log(projectData,"data++++++")
            setLoader("Creating project ...");
     await dispatch(createProject({workspaceid,logId,projectData,adminId})).unwrap()
       dispatch(fetchProjectData({ page, limit: rowPerPage }));

@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
+import { workspaceStatus, workspaceStorage } from '../../../domain/entities/Workspace';
+import { string } from 'zod';
 export interface IMember {
   userId: string;
   title: string;
@@ -12,6 +14,8 @@ export interface IWorkspace extends Document {
   ownerId: string;
   createdAt: Date;
   members: IMember[];
+  status:workspaceStatus;
+  storage:workspaceStorage;
   logId:Schema.Types.ObjectId
 }
 const MemberSchema: Schema = new Schema({
@@ -61,6 +65,14 @@ type:String
   members: {
     type: [MemberSchema],
     default: [],
+  },
+  status:{
+    type:String,
+    default:"Active"
+  },
+  storage:{
+    type:Number,
+    default:1
   },
   logId:{type:Schema.Types.ObjectId}
 
