@@ -229,7 +229,7 @@ const ProjectDetailsPage = (props: any) => {
               <div className='ml-4'>
                 <p className='text-sm font-medium text-gray-600'>Progress</p>
                 <p className='text-lg font-semibold text-gray-900'>
-                  {props.projectDetails.status == "Planning"
+                  {props.projectDetails.status == "Completed"
                     ? "0%"
                     : totalProgress + "%"}
                 </p>

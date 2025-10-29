@@ -100,8 +100,9 @@ const handleChangePage = (event, newPage) => {
       id: Math.max(...tasks.map((t) => t.id)) + 1,
     };
     
-   await dispatch(addTaskApi(newTask)).unwap()
- dispatch(fetchTaskData({page,limit:rowPerPage}))
+   await dispatch(addTaskApi(newTask)).unwrap()
+//  dispatch(fetchTaskData({page,limit:rowPerPage}))
+ await dispatch(fetchTaskData({page,limit:rowPerPage}))
 
   };
   const handleEditTask = async (taskData) => {
@@ -109,8 +110,8 @@ const handleChangePage = (event, newPage) => {
     const id = taskData.id;
   
   
-   await  dispatch(updateTaskApi(taskData))
- dispatch(fetchTaskData({page,limit:rowPerPage}))
+   await  dispatch(updateTaskApi(taskData)).unwrap()
+ await dispatch(fetchTaskData({page,limit:rowPerPage}))
   };
 
   const handleDeleteTask = (id: string) => {

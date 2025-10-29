@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../../Custom/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
 import { Badge } from "../../Custom/ui/badge"
+import { DateInHours, formatDate } from "../../Utility/dateformate"
 
 const recentSignups = [
   {
@@ -62,8 +63,50 @@ const subscriptionChanges = [
     time: "3 hours ago",
   },
 ]
+interface SubscriptionItem {
+  status: string;
+  workspaceName: string;
+  subscriptionPlan: string;
+  updated: string;
+}
+interface Props {
+ subscription : SubscriptionItem[];
+}
 
-export function RecentActivity() {
+const plan = (key: string): string => {
+  switch (key.toLowerCase()) { 
+    case "free":
+      return "0";
+    case "basic":
+      return "+$10";
+    case "pro":
+      return "+$20";
+    case "enterprise":
+      return "+$50";
+    default:
+      return "-0"; 
+  }
+};
+const upgradeStatus = (plan:string) =>{
+  switch (plan) {
+    case "free":
+      return "It is a Free Version"
+    case "basic":
+      return "Upgrade to Basic"
+    case "pro":
+      return "Upgarde to Pro"
+    case "enterprise":
+      return "Upgrade to Enterprise"  
+    default:
+      return "It is a Free Version"
+      
+  }
+}
+
+
+export function RecentActivity({subscription}:Props) {
+  console.log(subscription,"propbs")
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Recent Signups */}
@@ -127,22 +170,22 @@ export function RecentActivity() {
           <CardTitle className="text-lg font-semibold">Subscription Changes</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {subscriptionChanges.map((change) => (
-            <div key={change.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          {subscription?subscription.map((change,index) => (
+            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div>
-                <p className="text-sm font-medium text-gray-900">{change.workspace}</p>
-                <p className="text-sm text-gray-600">{change.change}</p>
+                <p className="text-sm font-medium text-gray-900">{change.workspaceName}</p>
+                <p className="text-sm text-gray-600">{upgradeStatus(change.subscriptionPlan)}</p>
               </div>
               <div className="text-right">
                 <p
-                  className={`text-sm font-medium ${change.amount.startsWith("+") ? "text-green-600" : "text-red-600"}`}
+                  className={`text-sm font-medium ${change.subscriptionPlan.startsWith("+") ? "text-green-600" : "text-red-600"}`}
                 >
-                  {change.amount}
+                  {plan(change.subscriptionPlan)}
                 </p>
-                <p className="text-xs text-gray-500">{change.time}</p>
+                <p className="text-xs text-gray-500">{ DateInHours( change.updated)}</p>
               </div>
             </div>
-          ))}
+          )):"loading..."}
         </CardContent>
       </Card>
     </div>

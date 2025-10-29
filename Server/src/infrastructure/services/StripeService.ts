@@ -29,7 +29,7 @@ export class StripeService implements IStripeService {
         },
       ],
       mode: "subscription", // or "payment" if one-time
-      success_url: "http://localhost:5173/admin-dashboard",
+      success_url: "http://localhost:5173/payment/success",
       cancel_url: "http://localhost:5173/",
       metadata: {
         userName: name,

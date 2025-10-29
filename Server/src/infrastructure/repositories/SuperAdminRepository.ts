@@ -5,7 +5,8 @@ import { SubscriptionModel } from "../database/models/SuscriptionModel";
 export class SuperAdminRepository implements ISuperAdminRepository {
 
     async getAllCount(): Promise<any> {
-        let userCount = await UserModel.countDocuments();
+      const userCount = await UserModel.countDocuments({ role: { $ne: "SuperAdmin" } });
+
         let workspaceCount = await WorkspaceModel.countDocuments();
 const data =await SubscriptionModel.aggregate([
   {

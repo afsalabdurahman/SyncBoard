@@ -1,4 +1,4 @@
-"use client"
+
 
 import type React from "react"
 
@@ -19,46 +19,83 @@ export  function Upload({isOpen,onClose,onSubmit}:any) {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const acceptedTypes = {
-    "image/*": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"],
-    "application/pdf": [".pdf"],
-    "application/msword": [".doc"],
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-  }
+  const acceptedTypes =[
+  ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+  ".pdf",
+    ".doc",
+    ".docx"]
+  
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || [])
+//   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const files = Array.from(event.target.files || [])
 
-    files.forEach((file) => {
-      const id = Math.random().toString(36).substr(2, 9)
-      const uploadedFile: UploadedFile = {
-        file,
-        id,
-      }
+//     files.forEach((file) => {
+//       const id = Math.random().toString(36).substr(2, 9)
+//       const uploadedFile: UploadedFile = {
+//         file,
+//         id,
+//       }
+// console.log(file.type,"files0000")
+//       // Create preview for images
+//       if (file.type.startsWith("image/")) {
+//         const reader = new FileReader()
+//         reader.onload = (e) => {
+//           setUploadedFiles((prev) => prev.map((f) => (f.id === id ? { ...f, preview: e.target?.result as string } : f)))
+//         }
+//         reader.readAsDataURL(file)
+//       }
 
-      // Create preview for images
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          setUploadedFiles((prev) => prev.map((f) => (f.id === id ? { ...f, preview: e.target?.result as string } : f)))
-        }
-        reader.readAsDataURL(file)
-      }
+//       setUploadedFiles((prev) => [...prev, uploadedFile])
+//     })
 
-      setUploadedFiles((prev) => [...prev, uploadedFile])
-    })
+//     // Reset input
+//     if (fileInputRef.current) {
+//       fileInputRef.current.value = ""
+//     }
+//   }
+const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const files = Array.from(event.target.files || []);
 
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
+  files.forEach((file) => {
+    const id = Math.random().toString(36).substr(2, 9);
+
+    const uploadedFile: UploadedFile = {
+      file,
+      id,
+    };
+    console.log(file,"file",file.type,file.name)
+   const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+if(!acceptedTypes.includes(ext)) {
+  toast.error(`${ext} Not Support`)
+  return false
+}
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedFiles((prev) => [
+          ...prev,
+          { ...uploadedFile, preview: e.target?.result as string },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Non-image files
+      setUploadedFiles((prev) => [...prev, uploadedFile]);
     }
+  });
+
+  // Reset input
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
   }
+};
 
   const removeFile = (id: string) => {
     setUploadedFiles((prev) => prev.filter((file) => file.id !== id))
   }
 
   const getFileIcon = (fileType: string) => {
+
     if (fileType.startsWith("image/")) {
       return <ImageIcon className="h-8 w-8 text-blue-500" />
     } else if (fileType === "application/pdf") {
@@ -82,6 +119,7 @@ const handleSubmit = () =>{
          toast.error("Limit exceed");
         return false
     }
+    console.log(uploadedFiles,"filess")
     onSubmit(uploadedFiles)
     onClose()
 }
@@ -97,7 +135,7 @@ onClose()
 <div className="w-full max-w-2xl mx-auto p-6 space-y-6 sc overflow-y-auto max-h-[70vh]">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">File Upload</h2>
-        <p className="text-gray-600 mb-4">Upload images, PDF, and DOC files</p>
+        <p className="text-gray-600 mb-4">Upload images, PDF,  files</p>
 
         <input
           ref={fileInputRef}

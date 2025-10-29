@@ -23,7 +23,7 @@ export class OTPService implements IOTP{
     const user=await this._userRepository.findByEmail(email)
     if(user) throw new ValidationError("User is already registerd")
     const otp = this.otpRepository.generateOTP();
-    await this.emailService.sendOtp(email, otp);
+     await this.emailService.sendOtp(email, otp);
    
       let SaveOtp = new OTP(email, otp);
       await this.otpRepository.save(SaveOtp);

@@ -86,15 +86,20 @@ useEffect(() => {
 }, [dispatch, adminId, page, rowPerPage]);
 
   const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
-       setLoader("Creating project ...");
-    
+      try {
+           setLoader("Creating project ...");
     await dispatch(createProject({workspaceid,logId,projectData,adminId})).unwrap()
       dispatch(fetchProjectData({ page, limit: rowPerPage }));
-    setLoader("");
+   
        setTimeout(() => {
       toast.success("Created project successfully 🎉");
     }, 100);
-     
+      setLoader("");
+      } catch (error) {
+         setLoader("");
+         toast.error("Unable to create Project")
+      }
+ 
     
   };
 

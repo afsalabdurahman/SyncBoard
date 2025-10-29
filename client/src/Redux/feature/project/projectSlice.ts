@@ -118,6 +118,9 @@ const projectsSlice = createSlice({
       state.list.push(action.payload)
       state.status = 'succeeded';
      })
+     .addCase(createProject.rejected,(state)=>{
+       state.status = "failed";
+     })
     .addCase(updateProjectApi.fulfilled, (state, action) => {
   const updatedProject = action.payload;
   state.list = state.list.map((project) =>

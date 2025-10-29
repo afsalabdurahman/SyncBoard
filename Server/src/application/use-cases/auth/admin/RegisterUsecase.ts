@@ -23,7 +23,9 @@ export class RegisterUseCase implements IAuth {
   async execute(
     input: AdminSignupRequestDTO
   ): Promise<AdminSignupResponseDTO> {
+   
     const isValid = AuthMapper.registerValidation(input);
+   
     if (!isValid.success) throw new ValidationError("Validation failed");
     const existingUser = await this._userRepository.findByEmail(input.email);
     if (existingUser) throw new NotFoundError("user already have an account");

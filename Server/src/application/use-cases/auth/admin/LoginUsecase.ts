@@ -50,7 +50,7 @@ const entity = new Subscription({
   }
  async superAdmin(input: LoginRequestDTO): Promise<any | null> {
       let superAdmin: User = await this._userRepository.findByEmail(input.email)
-      if(!superAdmin) throw new NotFoundError("User not found");
+      if(!superAdmin.isSuperAdmin) throw new NotFoundError("User not found");
       // const {data,userCount,workspaceCount}= await this._superAdminRepository.getAllCount();
       let token = this._authService.generateToken({
         id:superAdmin._id ?? "",
@@ -67,6 +67,6 @@ const entity = new Subscription({
    
       // const responseDTO=AuthMapper.mapSuperEntityToResponse(token,refreshToken,userCount,workspaceCount,data)
       // console.log(responseDTO,"responseDTO")
-      return {token,refreshToken}
+      return {token,refreshToken,superAdmin}
   }
 }

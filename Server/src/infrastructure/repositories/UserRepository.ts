@@ -141,9 +141,10 @@ export class UserMongooseRepository  extends BaseRepository <User> implements IU
     return countUser;
   }
   async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<any> {
-      const totalItems = await UserModel.countDocuments();
+      const totalItems = await UserModel.countDocuments()-1;
              const items = await UserModel.find({
                "workspace.workspaceId": workspaceId,
+                isSuperAdmin: { $ne: true }, 
              })
               .skip(skip)
               .limit(limit)
