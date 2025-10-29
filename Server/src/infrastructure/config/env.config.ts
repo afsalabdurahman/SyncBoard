@@ -14,5 +14,8 @@ export const envConfig = {
   EMAIL_USER: process.env.EMAIL_USER || 'your_email_user',
   EMAIL_PASS: process.env.EMAIL_PASS || 'your_email_password',
   STRIP_KEY:process.env.STRIPE_KEY || "",
-  STRIPE_WEBHOOK_SECRET:process.env.STRIPE_WEBHOOK_SECRET
+  STRIPE_WEBHOOK_SECRET:process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_VERSION:process.env.STRIPE_VERSION,
+  STRIPE_PAYMENT_CANCEL:process.env.STRIPE_CANCEL_URL,
+  STRIPE_PAYMENT_SUCCESS:process.env.PAYMENT_SUCCESS_URL
 };

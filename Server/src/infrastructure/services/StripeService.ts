@@ -29,8 +29,8 @@ export class StripeService implements IStripeService {
         },
       ],
       mode: "subscription", // or "payment" if one-time
-      success_url: "http://localhost:5173/payment/success",
-      cancel_url: "http://localhost:5173/",
+      success_url: envConfig.STRIPE_PAYMENT_SUCCESS,
+      cancel_url: envConfig.STRIPE_PAYMENT_CANCEL,
       metadata: {
         userName: name,
         userId:id,
