@@ -18,7 +18,7 @@ export class ChatRepository implements IChatRepository {
     return chats;
   }
   async Onlinestatus(): Promise<any> {
-    const users = await UserModel.find({ isOnline: true }, { name: 1, _id: 0 });
+    const users = await UserModel.find({ isOnline: true, isSuperAdmin: { $ne: true } }, { name: 1, _id: 0 });
     return users
   }
 }

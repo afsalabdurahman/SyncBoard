@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, response } from "express";
 import { LoginRequestDTO, SuperadminResponseDTO } from "../../../application/dto/AuthDTOs";
 import { inject,injectable } from "tsyringe";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
@@ -14,12 +14,15 @@ export class SuperadminAuthController{
     next: NextFunction
   ): Promise<void> {
    try {
+    console.log("calling...")
        let input:LoginRequestDTO = req.body as LoginRequestDTO;
-       res.send("ok")
-    // const reponseDTO=await this._loginUseCase.superAdmin(input);
-    // if(!reponseDTO?.token || !reponseDTO.refreshToken) throw new ValidationError("Validation failed")
-    //  setTokensInCookies(res,reponseDTO?.token,reponseDTO?.refreshToken)
-    //  res.status(200).json({message:"Login success",data:reponseDTO})
+
+
+    const reponseDTO=await this._loginUseCase.superAdmin(input);
+console.log(reponseDTO,"controller")
+     if(!reponseDTO?.token || !reponseDTO.refreshToken) throw new ValidationError("Validation failed")
+       setTokensInCookies(res,reponseDTO?.token,reponseDTO?.refreshToken)
+      res.status(200).json({message:"Login success",data:reponseDTO})
    } catch (error) {
     next (error)
    }

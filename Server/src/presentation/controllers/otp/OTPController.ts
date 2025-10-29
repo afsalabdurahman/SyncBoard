@@ -16,6 +16,7 @@ export class OTPController {
 
   async sendOTP(req: Request, res: Response,next:NextFunction): Promise<void> {
     try {
+      console.log(req.body,"body")
       const input :MailRequestDTO = req.body as MailRequestDTO;
       if (!input.email) {
         res

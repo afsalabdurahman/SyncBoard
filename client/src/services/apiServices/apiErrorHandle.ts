@@ -20,8 +20,11 @@ export const handleApiError = (error: AxiosError): void => {
         break;
       case 403:
         message = data?.message || "Access denied.";
-       
-        window.location.href = "/login";
+        const url: string = error.response?.config?.url || "";
+    if (url !== "auth/user/login") {
+    window.location.href = "/login";
+  }
+     
         break;
       case 404:
         console.log(error,"data reved otp")

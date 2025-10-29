@@ -269,7 +269,7 @@ export default function Channel() {
                   Project Team Chat
                 </h1>
                 <p className='text-sm text-gray-500'>
-                  Last seen today at 10:37 AM
+                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                 </p>
               </div>
             </div>

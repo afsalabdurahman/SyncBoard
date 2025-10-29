@@ -3,10 +3,14 @@ import apiService from "../../Services/apiServices/apiService";
 import { useNavigate } from "react-router";
 import { fetchCountData } from "../../Redux/feature/count/countThunks";
 import { useDispatch } from "react-redux";
+import { superLogin, superLoginApi } from "../apis/fetchApi";
+import { setUserData } from "../../Redux/feature/user/userSlice";
 export const Login = () => {
   let dispacth=useDispatch()
 let navigate=useNavigate()
-
+useState((state)=>{
+  console.log(state,"State+++")
+})
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -14,8 +18,10 @@ let navigate=useNavigate()
   const handleLogin = async (e) => {
     e.preventDefault();
     console.log("Logging in with:", { email, password });
-dispacth(fetchCountData(email,password))
-
+// dispacth(fetchCountData(email,password))
+const response=await superLoginApi(email,password)
+dispacth(setUserData(response.data.superAdmin))
+navigate("/platform/admin");
 
    
   };

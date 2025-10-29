@@ -7,7 +7,6 @@ import {
 } from "../../../application/dto/AuthDTOs";
 import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { ValidationError } from "../../../utils/errors";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";

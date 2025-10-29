@@ -1,33 +1,53 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Building2, Users, CreditCard, MessageSquare } from "lucide-react"
 import { Sidebar } from "../components/Sidebar"
 import { Header } from "../components/Header"
 import { MetricCard } from "../components/MetricCard"
 import { RecentActivity } from "../components/RecentActivity"
+import { useSelector } from "react-redux"
+import { dashBordDataApi } from "../apis/fetchApi"
 
 export default function SuperDashboard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [data,setData] = useState()
+useSelector((state)=>{
+  console.log(state)
+})
+
+useEffect(() => {
+    const fetchDashboardData = async () => {
+      
+        const response = await dashBordDataApi(); // wait for the data
+        console.log(response, "final response");
+        setData(response); // now response contains actual data
+     
+    };
+
+    fetchDashboardData();
+  }, []);
+console.log(data,"data")
+
 
   const metrics = [
     {
       title: "Total Workspaces",
-      value: "2,847",
+      value: data?.workspaceCount??"loading...",
       change: "+12% from last month",
       changeType: "positive" as const,
       icon: Building2,
     },
     {
       title: "Active Users",
-      value: "45,231",
+      value: data?.userCount ?? "loading ...",
       change: "+8% from last month",
       changeType: "positive" as const,
       icon: Users,
     },
     {
       title: "Subscribed Plans",
-      value: "1,923",
+      value: data?.subscriptionCount ??"loading ...",
       change: "+15% from last month",
       changeType: "positive" as const,
       icon: CreditCard,
@@ -60,7 +80,7 @@ export default function SuperDashboard() {
           </div>
 
           {/* Recent Activity */}
-          <RecentActivity />
+          <RecentActivity subscription={data?.subscriptionChanges} />
         </div>
       </main>
     </div>

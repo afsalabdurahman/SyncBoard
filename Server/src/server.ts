@@ -25,9 +25,9 @@ import superRoutes from "./presentation/routes/superRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
 import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
 const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
-console.log("start...")
+
 dotenv.config();
-console.log("Enddstart...")
+
 const strip = new Stripe(envConfig.STRIP_KEY, {
   apiVersion: "2025-08-27.basil"
 })
@@ -48,7 +48,7 @@ const io = new Server(httpServer, {
   },
 });
 // For Stripe webhook
-console.log("wonokk22222")
+
 
 app.post(
   "/api/checkout/pay/webhook",
@@ -80,7 +80,7 @@ app.post(
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-
+console.log(event,"event @")
     // Handle events
     switch (event.type) {
       case "checkout.session.completed":
@@ -151,6 +151,6 @@ app.use("/api/checkout", checkoutRoutes);
 app.use("/api/subscription", suscriptionRoutes)
 app.use("/api/workspace", workspaceRoutes)
 // app.use("/admin", adminRouter);
-// app.use("/api/super", superRoutes);
+ app.use("/api/super", superRoutes);
 app.use(errorMiddleware);
 export { io };
