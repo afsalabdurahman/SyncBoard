@@ -66,4 +66,26 @@ export class NodemailerService implements IEmailService {
     };
     await this.transporter.sendMail(mailOptions);
   }
+  async sentRecipt(customerEmail:string,pdfPath:any):Promise<void>{
+ const mailOptions = {
+      from: process.env.EMAIL_USER || "your-email@gmail.com",
+      to: customerEmail,
+      subject: "Your Payment Receipt",
+     html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Payment Successful</h2>
+        <p>Thank you for your payment. Please find your receipt attached.</p>
+        <p>If you have any questions, contact us at support@ygridesync.com.</p>
+      </div>
+    `,
+    attachments: [
+      {
+        filename: "receipt.pdf",
+        path: pdfPath,
+      },
+    ],  
+    
+    };
+      await this.transporter.sendMail(mailOptions);
+  }
 }

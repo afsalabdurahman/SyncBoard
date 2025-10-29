@@ -26,8 +26,7 @@ export class WorkspaceController {
     const input: WorkspaceRequestDTO = req.body 
    
     try {
-   
-console.log(input,"from controler workspace")
+  
       const workspaceResponseDTO = await this._createWorkspceUsecases.createWorkspace(input);
 
       res

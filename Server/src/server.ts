@@ -24,8 +24,11 @@ import Stripe from "stripe";
 import superRoutes from "./presentation/routes/superRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
 import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
-const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
+import { generatePDFReceipt } from "./infrastructure/services/GeneratePdf";
+import { NodemailerService } from "./infrastructure/services/NodeMailerService";
 
+const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
+const sentMail = container.resolve(NodemailerService)
 dotenv.config();
 
 const strip = new Stripe(envConfig.STRIP_KEY, {
@@ -90,6 +93,13 @@ console.log(event,"event @")
         if (session.metadata) {
           console.log(session.metadata)
           await suscriptionRepo.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
+      if(session.customer_email){
+       const email=session.customer_email
+       const path= await generatePDFReceipt(session)
+      
+          await sentMail.sentRecipt(email,path)
+      }
+          
         }
 
         // Save subscription to DB

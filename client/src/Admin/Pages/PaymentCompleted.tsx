@@ -11,7 +11,8 @@ const PaymentCompleted: React.FC = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to homepage
-          navigate("/admin-dashboard")
+         window.location.href = "http://localhost:5173/admin-dashboard";
+
           //window.location.href = '/';
           return 0;
         }
