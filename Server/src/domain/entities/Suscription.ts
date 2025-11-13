@@ -1,13 +1,12 @@
 import mongoose, { Types } from "mongoose";
+import {IPaymentMethod} from"../../types/subscriptionTypes"
+
 
 export class Subscription {
-  // 🔹 Required fields
   user: string | Types.ObjectId;
-  workspace:string|Types.ObjectId;
+  workspace: string | Types.ObjectId;
   planKey: string;
   status: string;
-
-  // 🔹 Optional fields
   startedAt?: Date;
   currentPeriodStart?: Date;
   currentPeriodEnd?: Date;
@@ -16,14 +15,12 @@ export class Subscription {
   stripePriceId?: string;
   quantity?: number;
   metadata?: string;
-
-  // 🔹 Timestamps
   createdAt?: Date;
   updatedAt?: Date;
-
+  paymentMethode?: IPaymentMethod;
   constructor(params: {
     user: string | Types.ObjectId;
-    workspace:string | Types.ObjectId;
+    workspace: string | Types.ObjectId;
     planKey: string;
     status: string;
     startedAt?: Date;
@@ -36,9 +33,10 @@ export class Subscription {
     metadata?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    paymentMethode?: IPaymentMethod
   }) {
     this.user = params.user;
-    this.workspace=params.workspace;
+    this.workspace = params.workspace;
     this.planKey = params.planKey;
     this.status = params.status;
 
@@ -56,5 +54,6 @@ export class Subscription {
 
     this.createdAt = params.createdAt ?? new Date();
     this.updatedAt = params.updatedAt ?? new Date();
+    this.paymentMethode = params.paymentMethode
   }
 }

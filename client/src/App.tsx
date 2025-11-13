@@ -20,6 +20,7 @@ import Invite from "./Worksapce/components/Invite";
 import { Layout } from "./SuperAdmin/layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
+import PaymentRejected from "./Admin/Pages/PaymentRejected";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
           <Route path='/admin-dashboard' element={<AdminDashboard />}></Route>
           <Route path='/test' element={<Invite />}></Route>
           <Route path='/payment/success' element={<PaymentCompleted/>}></Route>
+          <Route path='/payment/cancel' element={<PaymentRejected/>}></Route>
          {/* // <Route path='/checkout' element={<CheckoutPage />}></Route> */}
 
           {/* SuperAdmin */}

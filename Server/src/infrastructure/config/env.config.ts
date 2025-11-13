@@ -5,7 +5,7 @@ export const envConfig = {
   ORIGIN:process.env.CLIENT_URL,    
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT || '5000', 10),
-  MONGODB_URI: process.env.MONGO_URI||"udgskfs",
+  MONGODB_URI: process.env.MONGO_URI||"Your mongodb URI",
   DB_NAME: process.env.DB_NAME || 'CloudGride',
   JWT_SECRET: process.env.JWT_SECRET || 'your_jwt_secret_key_here',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '1d',

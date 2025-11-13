@@ -7,5 +7,5 @@ export interface IProjectRepository extends IBaseRepository <Project> {
     updateProject(projectId:string,merged:any):Promise<Project|null>
     deleteProject(projectId:string):Promise<void>;
     countProject():Promise<any>;
-    getPagenationProjects(page:number,limit:number,skip:number):Promise<any>
+    getPagenationProjects(workspaceId:string,page:number,limit:number,skip:number):Promise<any>
 }

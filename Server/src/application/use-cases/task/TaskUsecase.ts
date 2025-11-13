@@ -1,13 +1,12 @@
 import { inject, injectable } from "tsyringe";
 import { Task } from "../../../domain/entities/Task";
-
-//import { ITaskRepository } from "../../repositories/ITask";
 import { NotFoundError, ValidationError } from "../../../utils/errors";
 import { ITaskRepository } from "../../../domain/interfaces/repositories/ITaskRepository";
 import { ITaskUseCase } from "../../repositories/ITask";
 import { io } from "../../../server";
 import { TaskRequestDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
 import { TaskMapper } from "../../mappers/TaskMapper";
+import { ResponseMessages } from "../../../common/erroResponse";
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
   constructor(
@@ -17,11 +16,10 @@ export class TaskUsecase implements ITaskUseCase {
   async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
     const isValid = TaskMapper.validateTask(input);
     console.log(input)
-    if (!isValid.success) throw new ValidationError("Validation failed");
+    if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
 
     const taskEntity = TaskMapper.mapTaskToEntity(input);
     const taskData = await this._taskRepository.create(taskEntity);
-    console.log(taskData,"task data")
     if (!taskData) throw new NotFoundError("Task not created");
 
     const responseDTO = await TaskMapper.mapEntityToTask("Task is created",taskData);
@@ -35,14 +33,12 @@ export class TaskUsecase implements ITaskUseCase {
 
   async getAllTasks(): Promise<Task> {
     let allTasks = await this._taskRepository.getAlltask();
-    console.log("@usecase", allTasks);
     if (!allTasks) throw new NotFoundError("Task is not found");
     return allTasks;
   }
   async update(taskId: string, ...args: any[]): Promise<TaskResponseDTO> {
   
     const merged = Object.assign({}, ...args);
-    console.log(merged, "@merge usecase");
     let updatetask = await this._taskRepository.updatetask(taskId, merged);
     const responseDTO=TaskMapper.mapEntityToTask("Task is updated",updatetask)
     return responseDTO;
@@ -51,10 +47,8 @@ export class TaskUsecase implements ITaskUseCase {
     await this._taskRepository.deleteTask(taskId);
   }
   async myTask(userName: string, query: any): Promise<Task> {
-    console.log(userName, "@task use,", query, "@task use");
 
     const myTask = await this._taskRepository.myTask(userName, query);
-    console.log(myTask, "from usecase##");
     return myTask;
   }
   async updateTaskStatus(taskId: string, status: string): Promise<void> {
@@ -84,7 +78,6 @@ export class TaskUsecase implements ITaskUseCase {
       };
     });
 
-    console.log(mappedData, "mapped");
     return mappedData;
   }
   async updateApprovalStatus(
@@ -99,11 +92,9 @@ export class TaskUsecase implements ITaskUseCase {
     const projectTask =
       await this._taskRepository.findTaskByProjectId(projectId);
 
-    console.log(projectTask, "from useCse@projec++");
     return projectTask;
   }
  async paginationTask(page: number, limit: number, skip: number): Promise<any> {
-  console.log(page,limit, skip ,"TAsK  PAGINATION" )
     const {items,totalItems} = await this._taskRepository.getPagenationaTask(page,limit,skip)
    return {items:items,totalItems}
  }

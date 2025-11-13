@@ -21,6 +21,7 @@ import { OTPController } from "../../../presentation/controllers/otp/OTPControll
 import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
 import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IWorkspaceRepository";
 import { WorkspaceModel } from "../../database/models/WorkspaceModel";
+//import {LogRepository} from "../../repositories/LogRepository"
 import { WorkspaceRepository } from "../../repositories/WorkspaceRepository";
 import { ChangePasswordUsecase } from "../../../application/use-cases/auth/member/ChangePasswordUsecase";
 import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUsecase";
@@ -47,6 +48,9 @@ import {StripeService} from "../../services/StripeService"
 import {PlanRepository} from "../../repositories/PlanRepository";
 import { SuperAdminRepository } from "../../repositories/SuperAdminRepository";
 import { DatahandleUsecase } from "../../../application/use-cases/super/DatahandleUsecase";
+//import { LogUseCases } from "../../../application/use-cases/activity/LogUsecases";
+// container.register("LogRepository",{useClass:LogRepository})
+// container.register("LogUsecases",{useClass:LogUseCases})
 container.register("SuperAdminRepository",{useClass:SuperAdminRepository})
 container.register("DatahandleUsecase",{useClass:DatahandleUsecase})
 container.registerSingleton<ILogger>('ILogger', WinstonLoggerImpl);
@@ -88,7 +92,7 @@ container.register("Workspaceuse", { useClass: CreateWorkspaceUsecases });
 container.register(EmailConfig, { useClass: EmailConfig });
 container.register("IEmailService", { useClass: NodemailerService });
 container.register("OTPRepository", { useClass: OTPRepository });
-container.register(OTPService, { useClass: OTPService });
+container.register("OTPService", { useClass: OTPService });
 
 container.register(OTPController, { useClass: OTPController });
 // container.registerSingleton<DatabaseConfig>('DatabaseConfig', DatabaseConfig);

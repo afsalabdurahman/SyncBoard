@@ -70,10 +70,8 @@ const SignupPage = () => {
     console.log("Signup with:", { email, password });
 
     try {
-      // const response: AxiosResponse<any, any> = await api.post("auth/user/sendotp", {
-      //   email,
-      // });
-      const response= await signupApi(email)
+     
+      const response= await signupApi(email,name,password)
 console.log(response,"sent otp")
       if (response) {
         setLoading(false);
@@ -84,11 +82,9 @@ console.log(response,"sent otp")
         navigate("/verify-otp");
       }
     } catch (error) {
+      console.log(error,"errorsComponnets")
       setLoading(false);
-      setError((prv) => ({
-        ...prv,
-        api: "Email already in use",
-      }));
+     
       console.log(error, "error try block");
     }
   };

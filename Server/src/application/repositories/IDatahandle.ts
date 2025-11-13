@@ -1,5 +1,8 @@
-import { AdminSignupResponseDTO ,AdminSignupRequestDTO,SuperadminResponseDTO } from "../dto/AuthDTOs"
-import { CountResponseDTO } from "../dto/DatahandleDTO"
+import { CountResponseDTO, CountWorkspaceReponseDTO } from "../dto/DatahandleDTO"
 export interface IDatahandleUsecase {
 fetchDataCounts():Promise<CountResponseDTO|null>
+fetchDataworkspace():Promise<CountWorkspaceReponseDTO[]>
+fetchAllUsers():Promise<any>
+fetchAUser(userId:string):Promise<any>
+fetchSubscriptions():Promise<any>
 }

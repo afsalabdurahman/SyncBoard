@@ -1,6 +1,5 @@
-"use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Sidebar } from "../components/Sidebar"
 import { Header } from "../components/Header"
 import  {WorkspaceFilters}  from "../components/workspace/workspaceFilter"
@@ -8,24 +7,10 @@ import {WorkspaceStats} from "../components/workspace/workspaceState"
 import { WorkspaceTable, type Workspace } from "../components/workspace/workspaceTable"
 import WorkSapceDetails from "../components/workspace/WorkspaceDetailsPage"
 import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
+import { useGetWorkspaceCountQuery } from "../apis/fetchApi"
 // Mock data
 const mockWorkspaces: Workspace[] = [
-  {
-    id: "ws_1234567890",
-    name: "Acme Corporation",
-    owner: {
-      name: "John Smith",
-      email: "john@acme.com",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    plan: "enterprise",
-    status: "active",
-    members: 245,
-    createdAt: "2023-01-15",
-    lastActivity: "2024-01-02",
-    monthlyRevenue: 2499,
-    storage: { used: 85, limit: 100 },
-  },
+ 
   {
     id: "ws_2345678901",
     name: "TechStart Inc",
@@ -93,12 +78,32 @@ const mockWorkspaces: Workspace[] = [
 ]
 
 export  const  Workspaces =(props)=> {
+  const {data,isLoading,refetch} = useGetWorkspaceCountQuery("fsf")
+  console.log(data,"data frQQQQQ")
+  
+    console.log(isLoading,"LODING?????")
   const [details,setDetails] =useState(false)
+  const [viewDetails,setViewDetails] = useState(true)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [planFilter, setPlanFilter] = useState("all")
   const [page,setPage]=useState("")
+  const [mockWorkspaces,setWorkspace]=useState([])
+  console.log(data,"data frche home")
+  useEffect(() => {
+    if (data?.responseDTO) {
+      setWorkspace(data.responseDTO)
+    }
+  }, [data,page])
+   if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500 text-lg font-medium">Loading workspaces...</p>
+      </div>
+    )
+  }
+
 
   // Filter workspaces based on search and filters
   const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
@@ -125,12 +130,14 @@ export  const  Workspaces =(props)=> {
   const handleViewWorkspace = (workspace: Workspace) => {
     console.log("View workspace:", workspace)
     // Implement view workspace logic
+    setViewDetails(workspace)
     setDetails(true);
     setPage("details")
   }
 
   const handleEditWorkspace = (workspace: Workspace) => {
     console.log("Edit workspace:", workspace)
+        setViewDetails(workspace)
       setDetails(true);
       setPage("edit")
     // Implement edit workspace logic
@@ -158,10 +165,10 @@ export  const  Workspaces =(props)=> {
 if(details){
   switch (page) {
     case "details":
-      return<WorkSapceDetails/>
+      return<WorkSapceDetails viewDetails = {viewDetails} setViewDetails={setViewDetails} refetch={refetch} setPage={setPage} setDetails={setDetails}/>
   
       case "edit":
-        return <WorkSpaceEdit/>
+        return <WorkSpaceEdit viewDetails = {viewDetails}  setDetails={setDetails} refetch={refetch} setViewDetails={setViewDetails}/>
 
     default:
        return  <WorkSapceDetails/>

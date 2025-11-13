@@ -115,16 +115,13 @@ const LinkInvitaionPage = () => {
           workspaceSlug,
         }
       );
-      console.log(response, "apiRespovnse");
       if (response.status === 201) {
         setLoading(false);
-        console.log(response, "this repose from new meber");
         dispatch(setWorkspace(response.data.workspace));
 
      
         
         dispatch(setUserData(response.data.user));
-        //  console.log(response.data.userData,"user data from new member")
         navigate("/work-space");
       }
     } catch (error) {
@@ -132,7 +129,7 @@ const LinkInvitaionPage = () => {
       setLoading(false);
       setError((prv) => ({
         ...prv,
-        api: "Email already in use",
+        api: "",
       }));
       console.log(error, "error try block");
     }

@@ -1,12 +1,9 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
-import { workspaceStatus, workspaceStorage } from '../../../domain/entities/Workspace';
-import { string } from 'zod';
-export interface IMember {
-  userId: string;
-  title: string;
-  name:string;
-}
-export interface IWorkspace extends Document {
+import {  workspaceStorage } from '../../../domain/entities/Workspace';
+import { workspaceStatus,IMember } from '../../../types/workpaceTypes';
+
+
+export interface WorkspaceDoument extends Document {
   _id: ObjectId; 
   name: string;
   slug: string;
@@ -16,11 +13,12 @@ export interface IWorkspace extends Document {
   members: IMember[];
   status:workspaceStatus;
   storage:workspaceStorage;
-  logId:Schema.Types.ObjectId
+  logId:Schema.Types.ObjectId;
+  
 }
 const MemberSchema: Schema = new Schema({
   userId: {
-    type: String, // or Schema.Types.ObjectId if referencing User
+    type: String, 
     required: true,
   },
   title: {
@@ -36,7 +34,7 @@ const MemberSchema: Schema = new Schema({
       type: String,
     }
 }, )
-const WorkspaceSchema: Schema<IWorkspace> = new Schema<IWorkspace>({
+const WorkspaceSchema: Schema<WorkspaceDoument> = new Schema<WorkspaceDoument>({
 
   name: {
     type: String,
@@ -78,4 +76,4 @@ type:String
 
 });
 
-export const WorkspaceModel = mongoose.model<IWorkspace>('Workspace', WorkspaceSchema);
+export const WorkspaceModel = mongoose.model<WorkspaceDoument>('Workspace', WorkspaceSchema);

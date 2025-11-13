@@ -5,14 +5,15 @@ import { IActivityRepository } from "../../../domain/interfaces/repositories/IAc
 import { NotFoundError } from "../../../utils/errors";
 import { IWorkspace } from "../../repositories/iworkspace/IWorkspace";
 import mongoose from "mongoose";
-import { Workspace } from "../../../domain/entities/Workspace";
+import { ResponseMessages } from "../../../common/erroResponse";
+
 
 @injectable()
 export class ActivityUsecase implements IActivity {
   constructor(
     @inject("ActivityRepository")
-    private activityRepository: IActivityRepository,
-    @inject("WorkspaceuseCases") private workspaceUsecase: IWorkspace
+    private _activityRepository: IActivityRepository,
+    @inject("WorkspaceuseCases") private _workspaceUsecase: IWorkspace
   ) {}
   async execute(
     workspaceId: string,
@@ -20,7 +21,7 @@ export class ActivityUsecase implements IActivity {
     createdBy: string
   ): Promise<any> {
     const data = { id: workspaceId, name: workspaceName, createdBy: createdBy };
-    console.log(data, "@usecaseData");
+ 
 
     let createActivity = new Activities({
       workspaceActivities: {
@@ -29,27 +30,27 @@ export class ActivityUsecase implements IActivity {
         name: workspaceName,
       },
     });
-    console.log(createActivity, "ACtictyEntity");
+   
     const result: any =
-      await this.activityRepository.createActivity(createActivity);
+      await this._activityRepository.createActivity(createActivity);
 
-    if (!result) throw new NotFoundError("Result not found");
+    if (!result) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     const objectId: any = new mongoose.Types.ObjectId(workspaceId.toString());
     const message = `${workspaceName} Created By ${createdBy}`;
-    this.workspaceUsecase.updateWorkspace(objectId, result._id);
+    this._workspaceUsecase.updateWorkspace(objectId, result._id);
 
     return message;
   }
   async getAllActivities(workspaceId: string): Promise<any> {
-    console.log(workspaceId,"+++")
+   
     const objectId: any = new mongoose.Types.ObjectId(workspaceId.toString());
-    let workspaceData = await this.workspaceUsecase.findWorkspace(objectId);
-    if (!workspaceData) throw new NotFoundError("Activities not found");
+    let workspaceData = await this._workspaceUsecase.findWorkspace(objectId);
+    if (!workspaceData) throw new NotFoundError(ResponseMessages.NOT_FOUND);
 
     const activityId = workspaceData.logId;
     const result: any =
-      await this.activityRepository.findActivities(activityId);
-    console.log(result[0], "resl@ActivityUsecase");
+      await this._activityRepository.findActivities(activityId);
+   
 
     //const name = result[0].workspaceActivities.name;
     //const createdby = result[0].workspaceActivities.map((data)).createdby;
@@ -67,7 +68,6 @@ export class ActivityUsecase implements IActivity {
     const userActivityLogs = result[0].userActivities.map((data: any) => ({
       messages: data.message,
     }));
-    // console.log(projectActivtyLogs, "activities######","workspceName:",workspaceMessageLogs);
 
     return { workspaceLogs, projectActivtyLogs, userActivityLogs };
   }
@@ -76,17 +76,15 @@ export class ActivityUsecase implements IActivity {
     createdBy: string,
     ActivityId: string
   ) {
-    console.log(projectName, createdBy, ActivityId, "@ActivUsecase");
-    await this.activityRepository.addNewProject(
+    await this._activityRepository.addNewProject(
       projectName,
       createdBy,
       ActivityId
     );
   }
   async userActivity(userName: string, ActivityId: string): Promise<any> {
-    await this.activityRepository.inviteMember(userName, ActivityId);
+    await this._activityRepository.inviteMember(userName, ActivityId);
   }
   async findCountofWorkspace(userId: string): Promise<any> {
-    await this.activityRepository.workspceDataCount(userId)
   }
 }

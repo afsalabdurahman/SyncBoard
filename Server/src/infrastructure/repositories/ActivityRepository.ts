@@ -8,6 +8,8 @@ import { UserModel } from "../database/models/UserModel";
 import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { TaskModel } from "../database/models/TaskModel";
 import { ProjectModel } from "../database/models/ProjectModel";
+import { SubscriptionModel } from "../database/models/SuscriptionModel";
+
 
 export class ActivityRepository implements IActivityRepository {
   async createActivity(data: any): Promise<any | null> {
@@ -206,5 +208,8 @@ async workspceDataCount(userId: string): Promise<any> {
 console.log(result)
  return result[0] || null;
 }
+
+
+
 }
 

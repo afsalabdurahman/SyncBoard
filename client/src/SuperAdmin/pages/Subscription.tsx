@@ -1,13 +1,13 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 // import { Sidebar } from "./components/sidebar"
 // import { Header } from "./components/header"
 import { SubscriptionStats } from "../components/subscription/suscriptionStatus"
 import { SubscriptionFilters } from "../components/subscription/subscriptionFilter"
 import { SubscriptionTable, type Subscription } from "../components/subscription/subscriptionTable"
 import { SubscriptionDetails } from "../components/subscription/subscriptionDetails"
-
+import { useFetchSubscriptionPageQuery } from "../apis/fetchApi"
 // Mock subscription dataset
 const mockSubs: Subscription[] = [
   {
@@ -26,7 +26,7 @@ const mockSubs: Subscription[] = [
     startedAt: "2023-01-15",
     currentPeriodEnd: "2025-11-10",
     cancelAtPeriodEnd: false,
-    paymentMethod: { brand: "visa", last4: "4242", expMonth: 4, expYear: 2027 },
+     paymentMethod: { brand: "visa", last4: "4242", expMonth: 4, expYear: 2027 },
     lastInvoiceStatus: "paid",
   },
   {
@@ -109,7 +109,8 @@ const mockSubs: Subscription[] = [
 
 export const SubscriptionsPage = () =>{
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-
+const{data,isLoading}=useFetchSubscriptionPageQuery()
+console.log(data,"$$$$$$ss$$")
   // Filters state
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
@@ -119,20 +120,34 @@ export const SubscriptionsPage = () =>{
   // Details modal
   const [selected, setSelected] = useState<Subscription | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
+const [mockSubs,setMock]=useState([])
+useEffect(()=>{
+  if(data){
+setMock(data.data)
+  }
+},[])
 
-  const filtered = useMemo(() => {
-    return mockSubs.filter((s) => {
-      const matchesSearch =
-        s.workspace.name.toLowerCase().includes(search.toLowerCase()) ||
-        s.workspace.ownerEmail.toLowerCase().includes(search.toLowerCase()) ||
-        s.id.toLowerCase().includes(search.toLowerCase())
-      const matchesStatus = status === "all" || s.status === (status as any)
-      const matchesPlan = plan === "all" || s.plan === (plan as any)
-      const matchesPeriod = period === "all" || s.interval === (period as any)
-      return matchesSearch && matchesStatus && matchesPlan && matchesPeriod
-    })
-  }, [search, status, plan, period])
 
+const filtered = useMemo(() => {
+  return mockSubs.filter((s) => {
+    console.log(s,"sssss")
+    const matchesSearch =
+      s.workspace?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      s.workspace?.ownerEmail?.toLowerCase().includes(search.toLowerCase()) ||
+      s.id?.toLowerCase().includes(search.toLowerCase())
+
+    const matchesStatus = status === "all" || s.status === status
+    const matchesPlan = plan === "all" || s.plan === plan
+    const matchesPeriod = period === "all" || s.interval === period
+
+    return matchesSearch && matchesStatus && matchesPlan && matchesPeriod
+  })
+}, [mockSubs, search, status, plan, period])
+if(isLoading){
+  return(
+    <>loading.....</>
+  )
+}
   // Stats derived from dataset
   const stats = {
     mrr: mockSubs

@@ -30,4 +30,6 @@ router.get(
   "/member/pagination/data/:workspaceslug",
   workspaceController.pagination.bind(workspaceController)
 )
+router.patch("/update/:id", workspaceController.updateWorkspace.bind(workspaceController))
+
 export default router;

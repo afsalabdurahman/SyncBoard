@@ -1,4 +1,3 @@
-"use client"
 
 import { useMemo, useState } from "react"
 
@@ -28,10 +27,10 @@ import {
   RefreshCw,
 } from "lucide-react"
 import type { User } from "./userTable"
-
+import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon"
 type MemberRole = "owner" | "admin" | "member" | "guest"
 type MemberStatus = "active" | "inactive" | "suspended" | "pending"
-type Plan = "basic" | "pro" | "enterprise"
+type Plan = "basic" | "pro" | "enterprise"|"free"
 
 const roleColors: Record<MemberRole, string> = {
   owner: "bg-purple-100 text-purple-800",
@@ -48,6 +47,7 @@ const statusColors: Record<User["status"], string> = {
 }
 
 const planColors: Record<Plan, string> = {
+  free: "bg-gray-100 text-gray-800",
   basic: "bg-gray-100 text-gray-800",
   pro: "bg-purple-100 text-purple-800",
   enterprise: "bg-orange-100 text-orange-800",
@@ -66,33 +66,35 @@ function fmtDateTime(d: string) {
   })
 }
 
-export default function UserProfilePage() {
+export default function UserProfilePage({setPage,user}) {
+  console.log(setPage,"Pages")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 //   const { toast } = useToast()
 
   // Mock profile - based on your existing dataset structure
-  const userDefault: User = useMemo(
-    () => ({
-      id: "usr_2345678901",
-      name: "Sarah Johnson",
-      email: "sarah@techstart.io",
-      avatar: "/user-avatar.jpg",
-      role: "admin",
-      status: "active",
-      workspace: { name: "TechStart Inc", plan: "pro" },
-      joinedAt: "2023-03-22",
-      lastActivity: new Date().toISOString(),
-      loginCount: 156,
-      isEmailVerified: true,
-      twoFactorEnabled: false,
-    }),
-    [],
-  )
+  // const userDefault: User = useMemo(
+  //   () => ({
+  //     id: "usr_2345678901",
+  //     name: "Sarah Johnson",
+  //     email: "sarah@techstart.io",
+  //     avatar: "/user-avatar.jpg",
+  //     role: "admin",
+  //     status: "active",
+  //     workspace: { name: "TechStart Inc", plan: "pro" },
+  //     joinedAt: "2023-03-22",
+  //     lastActivity: new Date().toISOString(),
+  //     loginCount: 156,
+  //     isEmailVerified: true,
+  //     twoFactorEnabled: false,
+  //   }),
+  //   [],
+  // )
 
+  const userDefault = user
   const [status, setStatus] = useState<User["status"]>(userDefault.status)
   const [twoFA, setTwoFA] = useState<boolean>(userDefault.twoFactorEnabled)
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(userDefault.isEmailVerified)
-
+console.log(user,"User documentssssss")
   // Memberships across workspaces
   const memberships: {
     id: string
@@ -129,47 +131,47 @@ export default function UserProfilePage() {
   ]
 
   // Activity timeline
-  const activity = [
-    { id: "a1", icon: LogIn, title: "Signed in", detail: "Web", time: new Date().toISOString() },
-    {
-      id: "a2",
-      icon: UserCog,
-      title: "Role updated",
-      detail: "Member ➝ Admin (TechStart Inc)",
-      time: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
-    },
-    {
-      id: "a3",
-      icon: MessageSquare,
-      title: "Created ticket",
-      detail: "Billing charged twice",
-      time: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
-    },
-  ]
+  // const activity = [
+  //   { id: "a1", icon: LogIn, title: "Signed in", detail: "Web", time: new Date().toISOString() },
+  //   {
+  //     id: "a2",
+  //     icon: UserCog,
+  //     title: "Role updated",
+  //     detail: "Member ➝ Admin (TechStart Inc)",
+  //     time: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
+  //   },
+  //   {
+  //     id: "a3",
+  //     icon: MessageSquare,
+  //     title: "Created ticket",
+  //     detail: "Billing charged twice",
+  //     time: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
+  //   },
+  // ]
 
   // Recent sessions
-  const sessions = [
-    {
-      id: "sess_1",
-      device: "MacBook Pro",
-      os: "macOS",
-      browser: "Chrome",
-      ip: "104.26.1.45",
-      location: "San Francisco, US",
-      lastSeen: new Date().toISOString(),
-      current: true,
-    },
-    {
-      id: "sess_2",
-      device: "iPhone 15",
-      os: "iOS",
-      browser: "Safari",
-      ip: "185.199.110.153",
-      location: "San Jose, US",
-      lastSeen: new Date(Date.now() - 1000 * 60 * 60 * 28).toISOString(),
-      current: false,
-    },
-  ]
+  // const sessions = [
+  //   {
+  //     id: "sess_1",
+  //     device: "MacBook Pro",
+  //     os: "macOS",
+  //     browser: "Chrome",
+  //     ip: "104.26.1.45",
+  //     location: "San Francisco, US",
+  //     lastSeen: new Date().toISOString(),
+  //     current: true,
+  //   },
+  //   {
+  //     id: "sess_2",
+  //     device: "iPhone 15",
+  //     os: "iOS",
+  //     browser: "Safari",
+  //     ip: "185.199.110.153",
+  //     location: "San Jose, US",
+  //     lastSeen: new Date(Date.now() - 1000 * 60 * 60 * 28).toISOString(),
+  //     current: false,
+  //   },
+  // ]
 
   const suspend = () => {
     setStatus("suspended")
@@ -208,6 +210,10 @@ export default function UserProfilePage() {
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <div className="p-6 space-y-8">
           {/* Header */}
+     <div className="flex justify-end">
+        
+        <CloseIcon onClose={() => setPage(null)} />
+      </div>
           <div className="rounded-xl bg-white border p-5 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-4 min-w-0">
@@ -261,10 +267,10 @@ export default function UserProfilePage() {
                     Resend Verification
                   </Button>
                 )}
-                <Button variant="outline" onClick={messageUser} className="gap-2 bg-transparent">
+                {/* <Button variant="outline" onClick={messageUser} className="gap-2 bg-transparent">
                   <MessageSquare className="h-4 w-4" />
                   Message
-                </Button>
+                </Button> */}
                 <Button variant="outline" onClick={editUser} className="gap-2 bg-transparent">
                   <UserCog className="h-4 w-4" />
                   Edit User
@@ -280,7 +286,7 @@ export default function UserProfilePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">Workspaces</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{memberships.length}</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">1</p>
                   </div>
                   <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
                     <UserIcon className="h-6 w-6 text-blue-600" />
@@ -289,7 +295,7 @@ export default function UserProfilePage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -301,7 +307,7 @@ export default function UserProfilePage() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
@@ -317,7 +323,7 @@ export default function UserProfilePage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -333,7 +339,7 @@ export default function UserProfilePage() {
                   <div className="h-2 rounded-full bg-blue-500" style={{ width: `${storagePct}%` }} />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Content Grid */}
@@ -390,10 +396,10 @@ export default function UserProfilePage() {
                       <KeyRound className="h-4 w-4" />
                       Send Password Reset
                     </Button>
-                    <Button variant="outline" className="gap-2 bg-transparent" onClick={toggle2FA}>
+                    {/* <Button variant="outline" className="gap-2 bg-transparent" onClick={toggle2FA}>
                       <Shield className="h-4 w-4" />
                       {twoFA ? "Disable 2FA" : "Enable 2FA"}
-                    </Button>
+                    </Button> */}
                     {!isEmailVerified && (
                       <Button variant="outline" className="gap-2 bg-transparent" onClick={resendVerification}>
                         <RefreshCw className="h-4 w-4" />
@@ -410,7 +416,7 @@ export default function UserProfilePage() {
                   <CardTitle>Memberships</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {memberships.map((m) => (
+                  {/* {memberships.map((m) => (
                     <div
                       key={m.id}
                       className="flex items-center justify-between rounded-lg border bg-white p-3 hover:shadow-sm transition-shadow"
@@ -434,7 +440,31 @@ export default function UserProfilePage() {
                       </div>
                       <div className="text-xs text-gray-600">Joined {fmtDate(m.joinedAt)}</div>
                     </div>
-                  ))}
+                  ))} */}
+                  <div
+                      key={user.id}
+                      className="flex items-center justify-between rounded-lg border bg-white p-3 hover:shadow-sm transition-shadow"
+                    ></div>
+                     <div className="min-w-0">
+                        <p className="font-medium text-gray-900 truncate">{user.workspace.name}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="secondary" className={planColors[user.workspace.plan]}>
+                            {user.workspace.plan.charAt(0).toUpperCase() + user.workspace.plan.slice(1)}
+                          </Badge>
+                          <Badge variant="secondary" className={roleColors[user.role]}>
+                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                          </Badge>
+                          <Badge
+                            variant="secondary"
+                            className={statusColors[user.status as User["status"]] ?? "bg-gray-100"}
+                          >
+                            {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-600">Joined {fmtDate(user.joinedAt)}</div>
+                 
+                    
                 </CardContent>
               </Card>
             </div>
@@ -442,7 +472,7 @@ export default function UserProfilePage() {
             {/* Right (Activity + Sessions) */}
             <div className="space-y-6">
               {/* Recent Activity */}
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle>Recent Activity</CardTitle>
                 </CardHeader>
@@ -462,10 +492,10 @@ export default function UserProfilePage() {
                     </div>
                   ))}
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Sessions */}
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle>Sessions</CardTitle>
                 </CardHeader>
@@ -498,7 +528,7 @@ export default function UserProfilePage() {
                     </div>
                   ))}
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </div>

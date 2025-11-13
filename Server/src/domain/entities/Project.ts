@@ -17,7 +17,7 @@ export class Project {
   attachedUrl?: string[];
   createdAt?: Date;
   updatedAt?: Date;
-   // Corrected typo from `updateAt` to `updatedAt`
+  
 
   constructor({
     _id,

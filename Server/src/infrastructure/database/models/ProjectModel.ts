@@ -1,7 +1,7 @@
 import mongoose,{ model, Schema,Document } from "mongoose";
-import {PriorityTypes,StatusTypes,Project} from "../../../domain/entities/Project"
+import {PriorityTypes,StatusTypes} from "../../../domain/entities/Project"
 
-export interface IProject extends Document {
+export interface ProjectDocument extends Document {
   name: string;
   assignedUsers: string[];
   clientName: string;
@@ -16,7 +16,7 @@ export interface IProject extends Document {
 }
 
 
-const ProjectSchema=new Schema<IProject>({
+const ProjectSchema=new Schema<ProjectDocument>({
 name:{type:String,required:true},
 assignedUsers:{type:[String],required:true},
 clientName:{type:String,required:true},
@@ -30,4 +30,4 @@ workspaceId:{ type: Schema.Types.ObjectId, ref: 'Workspace' }
 
 },{timestamps:true})
 
-export const ProjectModel = model<IProject>("Project", ProjectSchema);
+export const ProjectModel = model<ProjectDocument>("Project", ProjectSchema);

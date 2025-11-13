@@ -3,21 +3,17 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import {
   ValidationError,
   NotFoundError,
-  CustomError,
+  
 } from "../../../../utils/errors";
-import { HttpStatusCode } from "../../../../common/errorCodes";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
-import { IEmailService } from "../../../../domain/interfaces/services/IEmailServices";
-import { OTPService } from "../../../use-cases/otp/SentOtpUsecases";
 import { IChangePasword } from "../../../repositories/IChangePassword";
-// import {VerifyOtp} from"../../otp/VerifyOtpUsecases"
 
 @injectable()
 export class ChangePasswordUsecase implements IChangePasword {
   constructor(
-    @inject("UserRepository") private userRepository: IUserRepository,
-    @inject("AuthService") private userService: IAuthService,
+    @inject("UserRepository") private _userRepository: IUserRepository,
+    @inject("AuthService") private _userService: IAuthService,
    
   ) {}
   async execute(
@@ -25,19 +21,17 @@ export class ChangePasswordUsecase implements IChangePasword {
     currentPassword: string,
     newPassword: string
   ): Promise<boolean> {
-    let user = await this.userRepository.findById(userId);
-    console.log(user, "@usecase");
-    if (!user) throw new NotFoundError("User not Found");
+    let user = await this._userRepository.findById(userId);
+    if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     let hashedPassword = user.password;
-    let checkPassword = await this.userService.comparePassword(
+    let checkPassword = await this._userService.comparePassword(
       currentPassword,
       hashedPassword
     );
-    console.log(checkPassword, "@passUsecse");
-    if (checkPassword==false) throw new ValidationError("Password not match");
-    let hashedNewPassword = await this.userService.hashPassword(newPassword)
-   let result=await this.userRepository.changePassword(userId,hashedNewPassword)
-   if(!result) throw new ValidationError("Validation filed")
+    if (checkPassword==false) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
+    let hashedNewPassword = await this._userService.hashPassword(newPassword)
+   let result=await this._userRepository.changePassword(userId,hashedNewPassword)
+   if(!result) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     return result
 }
 }

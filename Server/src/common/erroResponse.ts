@@ -1,12 +1,16 @@
 export const ResponseMessages = {
   DELETE:'Deletion completed',
   INVITAION_SEND : 'Send invitaion',
+  Fetch_SUCCESS:"Data Fetched",
   SUCCESS: 'Successfully Updated',
   CREATED: 'Resource created successfully',
   NO_CONTENT: 'No content to return',
   BAD_REQUEST: 'Invalid request data',
   UNAUTHORIZED: 'Unauthorized access',
+  USER_EXIST:'User is Exist',
   FORBIDDEN: 'Forbidden',
+  USER_STATUS_BLOCK:"User is blocked",
+ USER_STATUS_DELETE:"User is not exist",
   TOKEN_EXPIRED: 'Access token has expired',
   INVALID_TOKEN: 'Invalid token',
   NOT_FOUND: 'Resource not found',
@@ -21,5 +25,6 @@ export const ResponseMessages = {
   LOGGED_IN: 'Logged in successfully',
   LOGGED_OUT: 'Logged out successfully',
   PASSWORD_RESET: 'Password reset successfully',
+  PASSWORD_FAILED:"Username or Password mismatch",
   ATTACHEMNT_REMOVE:"Attachment remove successfully "
 };

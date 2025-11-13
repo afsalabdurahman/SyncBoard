@@ -1,5 +1,5 @@
 import { Subscription } from "../../domain/entities/Suscription";
-import { User, WorkspaceMembership } from "../../domain/entities/User";
+import { User } from "../../domain/entities/User";
 import { Workspace } from "../../domain/entities/Workspace";
 
 export interface LoginRequestDTO {
@@ -19,7 +19,6 @@ export interface AdminSignupRequestDTO {
   email: string;
   password: string;
   name: string;
-  
   role: 'Admin';
 
 }

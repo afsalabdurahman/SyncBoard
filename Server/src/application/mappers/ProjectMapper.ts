@@ -28,7 +28,7 @@ export class ProjectMapper {
       attachedUrl: input.attachedUrl
         ? Array.isArray(input.attachedUrl)
           ? input.attachedUrl
-          : [input.attachedUrl] // wrap string into array
+          : [input.attachedUrl] 
         : undefined,
     });
   }

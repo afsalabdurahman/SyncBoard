@@ -1,9 +1,9 @@
-import { User } from "../../../../domain/entities/User";
 import { IMemberRegister } from "../../../repositories/IMemberRegister";
 import {
   NotFoundError,
   CustomError,
-  InternalServerError,
+   ValidationError,
+  ConflictError,
 } from "../../../../utils/errors";
 import { IUserRepository } from "../../../../domain/interfaces/repositories/IUserRepository";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
@@ -15,6 +15,7 @@ import {
   MemeberRegisterRequestDTO,
 } from "../../../dto/AuthDTOs";
 import { AuthMapper } from "../../../mappers/AuthMapper";
+import { ResponseMessages } from "../../../../common/erroResponse";
 @injectable()
 export class MemberRegisterUsecase implements IMemberRegister {
   constructor(
@@ -27,9 +28,11 @@ export class MemberRegisterUsecase implements IMemberRegister {
   async execute(
     dto: MemeberRegisterRequestDTO
   ): Promise<MemberRegisterResposeDTO> {
+    const isValid= AuthMapper.memberRegisterValidation(dto)
+    if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
     let isFound = await this._userRepository.findByEmail(dto.email);
     if (isFound)
-      throw new CustomError("User is exists", HttpStatusCode.CONFLICT);
+      throw new ConflictError(ResponseMessages.USER_EXIST);
     let hashedPassword = await this._authService.hashPassword(dto.password);
     dto.password = hashedPassword;
     if (!hashedPassword)
@@ -41,7 +44,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
 
     let createMember = await this._userRepository.create(newMember);
     if (!createMember || !createMember._id)
-      throw new InternalServerError("Member creation Failed");
+      throw new ValidationError(ResponseMessages.CONFLICT);
     const token = this._authService.generateToken({
       id: createMember._id ?? "",
       email: createMember.email!,
@@ -53,15 +56,13 @@ export class MemberRegisterUsecase implements IMemberRegister {
       role: createMember.role!,
     });
 
-    if (!this.workspaceRepository.findbySlug) {
-      throw new NotFoundError("not found rep0o");
-    }
+
 
     let workspace: any = await this.workspaceRepository.findbySlug(
       dto.slug ?? ""
     );
     if (!workspace || !workspace.slug)
-      throw new NotFoundError("Workspace not found ");
+      throw new NotFoundError(ResponseMessages.NOT_FOUND + "Workspace");
 
     const addToWorkspace = await this._userRepository.addToWorkspace(
       createMember._id,
@@ -70,7 +71,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
     );
 
     if (!this.workspaceRepository.addMemberToWorkspace)
-      throw new NotFoundError("member not found ");
+      throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
 
     const insertToWorkspce =
       await this.workspaceRepository.addMemberToWorkspace(

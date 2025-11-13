@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Task } from "../../domain/entities/Task";
 import { ITaskRepository } from "../../domain/interfaces/repositories/ITaskRepository";
 import { InternalServerError, NotFoundError } from "../../utils/errors";
-import { ITask, TaskModel } from "../database/models/TaskModel";
+import { TaskModel } from "../database/models/TaskModel";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {

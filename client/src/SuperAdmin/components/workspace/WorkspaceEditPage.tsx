@@ -1,10 +1,11 @@
-"use client"
 
+ import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton"
+import { useUpdateWorkspaceMutation } from "../../apis/fetchApi"
 import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
 import { Input } from "../../../Custom/ui/input"
 import { Label } from "../../../Custom/ui/label"
@@ -62,7 +63,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-type Plan = "basic" | "pro" | "enterprise"
+type Plan = "basic" | "pro" | "enterprise" | "free"
 type Status = "active" | "trial" | "suspended"
 
 const mock = {
@@ -84,19 +85,23 @@ const mock = {
   lastActive: "2025-10-12",
 }
 
-export default function WorkspaceEditPage() {
+export default function WorkspaceEditPage({viewDetails,setDetails,refetch,setViewDetails}) {
+  console.log(viewDetails,"view data efo edit")
+  const [updateWorkspace,   { isLoading: isUpdating } ] = useUpdateWorkspaceMutation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
  // const { toast } = useToast()
   const [logoPreview, setLogoPreview] = useState<string | null>(mock.avatar)
-
+  const [suspendId,setSuspendId]=useState("")
+  const [IsDialogOpen,setIsDialogOpen]=useState(false)
+const [dialogTitle,setDialogTitle]=useState("")
   const defaultValues: FormValues = useMemo(
     () => ({
-      name: mock.name,
-      slug: mock.slug,
+      name: viewDetails.name,
+      slug: viewDetails.slug,
       description: mock.description,
       tags: mock.tags,
-      ownerName: mock.owner.name,
-      ownerEmail: mock.owner.email,
+      ownerName: viewDetails.owner.name,
+      ownerEmail: viewDetails.owner.email,
       plan: mock.plan,
       interval: mock.interval,
       status: mock.status,
@@ -134,8 +139,28 @@ export default function WorkspaceEditPage() {
     reader.readAsDataURL(file)
   }
 
+const handleConfirm = async()=>{
+  console.log("Confirmed....")
+  console.log(suspendId,)
+  console.log(viewDetails,"viewDAtas")
+   await updateWorkspace({
+        id: viewDetails.id,
+        merge: suspendId,
+      }).unwrap();
+              refetch()
+           toast.success("Updated...")
+          setViewDetails((prev) => ({
+        ...prev,
+        status: dialogTitle,
+      }));
+}
+
   const onSubmit = async (data: FormValues) => {
     // Simulate API delay
+    console.log(data,"dataa")
+    // let merge={
+  
+    // }
     await new Promise((r) => setTimeout(r, 700))
     console.log("Saving workspace:", { id: mock.id, logoPreview, ...data })
     toast({ title: "Workspace saved", description: `${data.name} updated successfully.` })
@@ -148,16 +173,30 @@ export default function WorkspaceEditPage() {
   }
 
   const suspend = () => {
-    toast({ title: "Workspace suspended", description: `${mock.name} has been suspended.`, variant: "default" })
-    setValue("status", "suspended")
+    const merge = {
+    status:"Suspended"
+  }
+console.log("suspenf cliked")
+setSuspendId(merge)
+setIsDialogOpen(true);
+setDialogTitle("suspended")
+
+   
   }
 
   const reactivate = () => {
-    toast({ title: "Workspace reactivated", description: `${mock.name} has been reactivated.`, variant: "default" })
-    setValue("status", "active")
+  
+    const merge = {
+    status:"Active"
   }
+  setSuspendId(merge)
+  setDialogTitle("active")
+ setIsDialogOpen(true);
+  }
+ 
 
   const planColor = {
+    free:"bg-gray-100 text-gray-800",
     basic: "bg-gray-100 text-gray-800",
     pro: "bg-purple-100 text-purple-800",
     enterprise: "bg-orange-100 text-orange-800",
@@ -170,14 +209,18 @@ export default function WorkspaceEditPage() {
   } as const
 
   const storagePct = Math.min(100, Math.round((mock.metrics.storageUsedGB / defaultValues.storageLimitGB) * 100))
-
+console.log(defaultValues,"defaultss")
   return (
     <div className="min-h-screen bg-gray-50">
-      
+       
 
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-8">
           {/* Page Header */}
+           <div className="flex justify-end">
+              
+              <CloseIcon onClose={() => setDetails(null)} />
+            </div>
           <div className="rounded-xl bg-white border p-5 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-4 min-w-0">
@@ -187,7 +230,7 @@ export default function WorkspaceEditPage() {
                     alt="Workspace logo"
                   />
                   <AvatarFallback>
-                    {mock.name
+                    {viewDetails.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
@@ -197,18 +240,18 @@ export default function WorkspaceEditPage() {
                 </Avatar>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-xl font-semibold text-gray-900 truncate">Edit Workspace</h1>
-                    <Badge variant="secondary" className={planColor[defaultValues.plan]}>
-                      {defaultValues.plan.charAt(0).toUpperCase() + defaultValues.plan.slice(1)}
+                    <h1 className="text-xl font-semibold text-gray-900 truncate">Edit {viewDetails.name}</h1>
+                    <Badge variant="secondary" className={planColor[viewDetails.plan]}>
+                      {viewDetails.plan.charAt(0).toUpperCase() + viewDetails.plan.slice(1)}
                     </Badge>
                     <Badge variant="secondary" className={statusColor[defaultValues.status]}>
-                      {defaultValues.status.charAt(0).toUpperCase() + defaultValues.status.slice(1)}
+                      {viewDetails.status.charAt(0).toUpperCase() + viewDetails.status.slice(1)}
                     </Badge>
                     <span className="text-xs rounded bg-gray-100 px-2 py-0.5">ID: {mock.id}</span>
                   </div>
                   <p className="text-sm text-gray-600 mt-1">
-                    Created {new Date(mock.createdAt).toLocaleDateString("en-US")} · Last active{" "}
-                    {new Date(mock.lastActive).toLocaleDateString("en-US")}
+                    Created {new Date(viewDetails.createdAt).toLocaleDateString("en-US")} · Last active{" "}
+                    {new Date(viewDetails.lastActivity).toLocaleDateString("en-US")}
                   </p>
                 </div>
               </div>
@@ -233,7 +276,7 @@ export default function WorkspaceEditPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">Members</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{mock.metrics.members.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">{viewDetails.members}</p>
                   </div>
                   <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
                     <Users className="h-6 w-6 text-blue-600" />
@@ -242,7 +285,7 @@ export default function WorkspaceEditPage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -256,9 +299,9 @@ export default function WorkspaceEditPage() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -274,15 +317,15 @@ export default function WorkspaceEditPage() {
                   <div className="h-2 rounded-full bg-blue-500" style={{ width: `${storagePct}%` }} />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">Owner</p>
-                    <p className="text-lg font-bold text-gray-900 mt-1">{mock.owner.name}</p>
-                    <p className="text-xs text-gray-600">{mock.owner.email}</p>
+                    <p className="text-lg font-bold text-gray-900 mt-1">{viewDetails.owner.name}</p>
+                    <p className="text-xs text-gray-600">{viewDetails.owner.email}</p>
                   </div>
                   <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
                     <User className="h-6 w-6 text-blue-600" />
@@ -330,7 +373,7 @@ export default function WorkspaceEditPage() {
                       <Input id="tags" {...register("tags")} placeholder="b2b, enterprise, messaging" />
                     </div>
 
-                    <div className="grid gap-2">
+                    {/* <div className="grid gap-2">
                       <Label>Logo</Label>
                       <div className="flex items-center gap-4">
                         <div className="h-14 w-14 rounded-lg border bg-white overflow-hidden flex items-center justify-center">
@@ -351,7 +394,7 @@ export default function WorkspaceEditPage() {
                           className="cursor-pointer"
                         />
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </CardContent>
               </Card>
@@ -403,11 +446,11 @@ export default function WorkspaceEditPage() {
                       <Input id="memberLimit" type="number" min={0} {...register("memberLimit")} />
                       {errors.memberLimit && <p className="text-xs text-red-600">{errors.memberLimit.message}</p>}
                     </div>
-                    <div className="grid gap-2">
+                    {/* <div className="grid gap-2">
                       <Label htmlFor="storageLimitGB">Storage Limit (GB)</Label>
                       <Input id="storageLimitGB" type="number" min={1} {...register("storageLimitGB")} />
                       {errors.storageLimitGB && <p className="text-xs text-red-600">{errors.storageLimitGB.message}</p>}
-                    </div>
+                    </div> */}
                     <div className="grid gap-2">
                       <Label htmlFor="monthlyMessageLimit">Monthly Message Limit</Label>
                       <Input id="monthlyMessageLimit" type="number" min={0} {...register("monthlyMessageLimit")} />
@@ -495,7 +538,7 @@ export default function WorkspaceEditPage() {
               </Card>
 
               {/* Preferences & Security */}
-              <Card>
+              {/* <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="h-5 w-5 text-gray-500" />
@@ -547,7 +590,7 @@ export default function WorkspaceEditPage() {
                     />
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Danger Zone */}
               <Card>
@@ -562,7 +605,7 @@ export default function WorkspaceEditPage() {
                     Suspend prevents all users in this workspace from signing in. You can reactivate anytime.
                   </p>
                   <div className="flex gap-2">
-                    {defaultValues.status === "suspended" ? (
+                    {viewDetails.status === "suspended" ? (
                       <Button type="button" variant="outline" onClick={reactivate}>
                         Reactivate Workspace
                       </Button>
@@ -574,6 +617,12 @@ export default function WorkspaceEditPage() {
                   </div>
                 </CardContent>
               </Card>
+               <ConfirmDialog
+                                open={IsDialogOpen}
+                                onClose={() => setIsDialogOpen(false)}
+                                onConfirm={handleConfirm}
+                                description='This  will be  Confirm Action.'
+                              />
             </div>
           </div>
         </form>

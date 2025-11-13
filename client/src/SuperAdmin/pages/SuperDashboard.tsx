@@ -33,21 +33,21 @@ console.log(data,"data")
   const metrics = [
     {
       title: "Total Workspaces",
-      value: data?.workspaceCount??"loading...",
+      value: data?.workspaceCount??"0",
       change: "+12% from last month",
       changeType: "positive" as const,
       icon: Building2,
     },
     {
       title: "Active Users",
-      value: data?.userCount ?? "loading ...",
+      value: data?.userCount ?? "0",
       change: "+8% from last month",
       changeType: "positive" as const,
       icon: Users,
     },
     {
       title: "Subscribed Plans",
-      value: data?.subscriptionCount ??"loading ...",
+      value: data?.subscriptionCount ??"0",
       change: "+15% from last month",
       changeType: "positive" as const,
       icon: CreditCard,

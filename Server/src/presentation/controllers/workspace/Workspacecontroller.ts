@@ -85,6 +85,17 @@ res.status(200).json({
       totalItems,
 })
 }
-
+async updateWorkspace(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    console.log(req.body,"body",req.params.id)
+    const workspaceId = req.params.id
+    const merge = req.body
+    console.log(workspaceId,"body",merge)
+   await this._createWorkspceUsecases.updateWorkspaceData(workspaceId,merge)
+   res.status(HttpStatusCode.OK).json({message:"Updated"})
+  } catch (error) {
+    next(error)
+  }
+}
 
 }

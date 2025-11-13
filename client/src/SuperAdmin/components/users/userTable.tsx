@@ -1,4 +1,4 @@
-"use client"
+
 
 import { MoreHorizontal, Mail, Calendar, Shield, AlertTriangle, CheckCircle, Clock, XCircle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
@@ -45,8 +45,8 @@ interface UserTableProps {
 const statusConfig = {
   active: { color: "bg-green-100 text-green-800", icon: CheckCircle },
   inactive: { color: "bg-gray-100 text-gray-800", icon: XCircle },
-  suspended: { color: "bg-red-100 text-red-800", icon: AlertTriangle },
-  pending: { color: "bg-yellow-100 text-yellow-800", icon: Clock },
+  // suspended: { color: "bg-red-100 text-red-800", icon: AlertTriangle },
+  // pending: { color: "bg-yellow-100 text-yellow-800", icon: Clock },
 }
 
 const roleColors = {
@@ -134,9 +134,9 @@ export const UserTable =({
                   <TableCell>
                     <div>
                       <div className="font-medium text-gray-900">{user.workspace.name}</div>
-                      <Badge className={planColors[user.workspace.plan]} variant="secondary">
+                      {/* <Badge className={planColors[user.workspace.plan]} variant="secondary">
                         {user.workspace.plan.charAt(0).toUpperCase() + user.workspace.plan.slice(1)}
-                      </Badge>
+                      </Badge> */}
                     </div>
                   </TableCell>
                   <TableCell>

@@ -4,7 +4,7 @@ import fs from "fs"
 // import {} from "url"
 
 export const generatePDFReceipt = async (session: any): Promise<string> => {
-    console.log(session,"786sessiom")
+  
   const pdfPath = path.join(
     __dirname,
     `../../../receipts/receipt-${session.id}.pdf`

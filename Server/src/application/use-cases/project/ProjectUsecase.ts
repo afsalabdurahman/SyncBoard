@@ -2,10 +2,11 @@ import { IProjectUsecase } from "../../repositories/IProject";
 import { inject, injectable } from "tsyringe";
 import { IProjectRepository } from "../../../domain/interfaces/repositories/IProjectRepository";
 import { Project } from "../../../domain/entities/Project";
-import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../utils/errors";
 import { io } from "../../../server";
 import { ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
 import { ProjectMapper } from "../../mappers/ProjectMapper";
+import { ResponseMessages } from "../../../common/erroResponse";
 @injectable()
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
@@ -15,19 +16,11 @@ export class ProjectUsecase implements IProjectUsecase {
   async excute(dto: ProjectRequstDTO,workspaceId:string): Promise<ProjectResponseDTO> {
 
     const isValid = ProjectMapper.ValidateProjectData(dto);
-    if (!isValid.success) throw new ValidationError("Validation failed");
+    if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
 
     const projectEntity = ProjectMapper.mapProjectToEntity(dto,workspaceId);
-
-    console.log(projectEntity, "entity is creted....")
-
-    // const projects= await this._projectRepository.getAllProjects();
-    // console.log(projects[0],"frist projectss")
-
-
     const projectData = await this._projectRepository.create(projectEntity);
-console.log(projectData,"new project>>>>>")
-    if (!projectData) throw new NotFoundError("Project not created");
+    if (!projectData) throw new ConflictError("Project not created");
 
     io.emit("new-project", {
       name: "New Project is Added",
@@ -42,8 +35,7 @@ console.log(projectData,"new project>>>>>")
 
 
     let allProjects = await this._projectRepository.getAllProjects();
-    console.log(allProjects,"allprojects")
-    if (!allProjects) throw new NotFoundError("Project is not found");
+    if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND +' Projects');
     return allProjects;
   }
   async removeAttachment(
@@ -62,16 +54,16 @@ console.log(projectData,"new project>>>>>")
       projectId,
       merged
     );
-    console.log(updateProject, "@updatedProject");
-    if(!updateProject) throw new ValidationError ("Project is not updated")
+ 
+    if(!updateProject) throw new ValidationError (ResponseMessages.INVALID_INPUT)
     const responseDTO =ProjectMapper.mapEntityToProject("Project is updated",updateProject)
     return responseDTO;
   }
   async deleteProject(projectId: string): Promise<void> {
     await this._projectRepository.deleteProject(projectId);
   }
-  async paginationProjecust(page: number, limit: number, skip: number): Promise<any> {
-    const { items, totalItems } = await this._projectRepository.getPagenationProjects(page, limit, skip)
+  async paginationProjecust(workspaceId:string,page: number, limit: number, skip: number): Promise<any> {
+    const { items, totalItems } = await this._projectRepository.getPagenationProjects(workspaceId,page, limit, skip)
     return { items: items, totalItems }
   }
 }
