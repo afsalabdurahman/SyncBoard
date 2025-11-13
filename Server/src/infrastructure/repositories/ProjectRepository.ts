@@ -17,7 +17,7 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
    // }
    async getAllProjects(): Promise<any | null> {
       const projects = await ProjectModel.find().sort({ createdAt: -1 });
-      console.log(projects, "projects")
+     
       return projects
    }
    async removeAttachment(projectId: string, attachedUrl: string): Promise<void> {
@@ -48,9 +48,10 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
       return count
    }
 
-   async getPagenationProjects(page: number, limit: number, skip: number): Promise<any> {
-      const totalItems = await ProjectModel.countDocuments();
-      const items = await ProjectModel.find()
+   async getPagenationProjects(workspaceId:string,page: number, limit: number, skip: number): Promise<any> {
+     const totalItems = await ProjectModel.countDocuments({ workspaceId });
+
+      const items = await ProjectModel.find({workspaceId:workspaceId})
          .skip(skip)
          .limit(limit)
          .sort({ createdAt: -1 });

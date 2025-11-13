@@ -1,7 +1,7 @@
 // models/Invoice.ts
 import { Schema, model, Document, Types } from 'mongoose';
 
-export interface IInvoice extends Document {
+export interface InvoiceDocument extends Document {
   user: Types.ObjectId;
   subscription?: Types.ObjectId;
   stripeInvoiceId?: string;
@@ -14,7 +14,7 @@ export interface IInvoice extends Document {
   createdAt: Date;
 }
 
-const InvoiceSchema = new Schema<IInvoice>({
+const InvoiceSchema = new Schema<InvoiceDocument>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   subscription: { type: Schema.Types.ObjectId, ref: 'Subscription' },
   stripeInvoiceId: String,
@@ -26,4 +26,4 @@ const InvoiceSchema = new Schema<IInvoice>({
   raw: Schema.Types.Mixed,
 }, { timestamps: true });
 
-export const Invoice = model<IInvoice>('Invoice', InvoiceSchema);
+export const Invoice = model<InvoiceDocument>('Invoice', InvoiceSchema);

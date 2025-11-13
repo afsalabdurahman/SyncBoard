@@ -1,7 +1,7 @@
 
 import { Schema, model, Document } from 'mongoose';
 
-export interface IPlan extends Document {
+export interface PlanDocument extends Document {
   key: 'free' | 'pro' | 'enterprise';
   name: string;
   priceCents: number; 
@@ -11,7 +11,7 @@ export interface IPlan extends Document {
   description?: string;
 }
 
-const PlanSchema = new Schema<IPlan>({
+const PlanSchema = new Schema<PlanDocument>({
   key: { type: String, required: true, unique: true },
   name: String,
   priceCents: Number,
@@ -21,4 +21,4 @@ const PlanSchema = new Schema<IPlan>({
   description: String,
 });
 
-export const PlanModel = model<IPlan>('Plan', PlanSchema);
+export const PlanModel = model<PlanDocument>('Plan', PlanSchema);

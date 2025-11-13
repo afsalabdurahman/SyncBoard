@@ -25,6 +25,7 @@ export class MemberController {
     next: NextFunction
   ): Promise<void> {
     try {
+      console.log(req.body,"BODYY",req.params,"666")
       let userId = req.params.id;
 
       if (!userId || !req.body) {

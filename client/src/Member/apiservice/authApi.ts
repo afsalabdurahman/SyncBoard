@@ -4,15 +4,20 @@ import apiService from "../../Services/apiServices/apiService";
 import { SignupResponse } from "../types/authType"
 import { ToastContainer, toast } from "react-toastify";
 
-export const signupApi = async (email: string): Promise<SignupResponse | null> => {
+export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null> => {
   try {
     const response: AxiosResponse<SignupResponse | null> = await apiService.post(
       "auth/user/sendotp",
-      { email }
+      { email, name, password }
     );
     console.log(response, "response222222")
-    if (response.status !== 200) throw new Error("Otp is not send")
-    return response.data
+    if (response.status !== 200) {
+      throw new Error(response)
+    }
+    else {
+      return response.data
+    }
+
 
 
   } catch (error) {

@@ -44,7 +44,7 @@ import { setPage } from "../../Redux/feature/project/projectSlice";
 import { useWorkspace, useWorkspaceid, useWorkspaceSlug } from "../../Worksapce/hooks/workspacehooks";
 
 
-export function ProjectsPage() {
+export default function ProjectsPage() {
 const [loader, setLoader] = useState("");
 const plankey= usePlankey()
   const adminId = useAdminId()
@@ -58,7 +58,7 @@ const plankey= usePlankey()
 
  const handleChangePage = (event, newPage) => {
    dispatch(setPage(newPage + 1));
-  dispatch(fetchProjectData({ page: newPage + 1, limit: rowPerPage }));
+  dispatch(fetchProjectData({workspaceId:workspaceid, page: newPage + 1, limit: rowPerPage }));
   };
 
  
@@ -81,7 +81,7 @@ const mylimit = findLimit(plankey)
    
 useEffect(() => {
   if (adminId) {
-    dispatch(fetchProjectData({ page, limit: rowPerPage }));
+    dispatch(fetchProjectData({ workspaceId:workspaceid, page, limit: rowPerPage }));
   }
 }, [dispatch, adminId, page, rowPerPage]);
 
@@ -90,7 +90,7 @@ useEffect(() => {
         console.log(projectData,"data++++++")
            setLoader("Creating project ...");
     await dispatch(createProject({workspaceid,logId,projectData,adminId})).unwrap()
-      dispatch(fetchProjectData({ page, limit: rowPerPage }));
+      dispatch(fetchProjectData({workspaceId:workspaceid, page, limit: rowPerPage }));
    
        setTimeout(() => {
       toast.success("Created project successfully 🎉");
@@ -126,7 +126,7 @@ toast.success("Project updated successfully");
  await dispatch(deleteProject(deleteProjectId)).unwrap()
  
  toast.success("Project deleted successfully");
-dispatch(fetchProjectData({ page, limit: rowPerPage }));
+dispatch(fetchProjectData({workspaceId:workspaceid, page, limit: rowPerPage }));
   };
   const openAddModal = () => {
     if (projects.length >= mylimit.maxProjects) {

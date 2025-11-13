@@ -23,7 +23,7 @@ export function SubscriptionDetails({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+<DialogContent className="w-[500px] h-[600px] max-w-none overflow-y-auto overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>Subscription Details</DialogTitle>
         </DialogHeader>

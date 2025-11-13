@@ -35,7 +35,7 @@ const strip = new Stripe(envConfig.STRIP_KEY, {
   apiVersion: "2025-08-27.basil"
 })
 const suscriptionRepo = container.resolve(SuscriptionRepository)
-console.log(STRIPE_WEBHOOK_SECRET, "hookStripe verigyf")
+
 const app = express();
 
 const CLIENT_URL = envConfig.MONGODB_URI;
@@ -58,9 +58,6 @@ app.post(
   bodyParser.raw({ type: "application/json" }), // Ensure raw body for Stripe
   async (req: Request, res: Response): Promise<void> => {
     const sig = req.headers["stripe-signature"] as string;
-    console.log("Raw body type:", Buffer.isBuffer(req.body) ? "Buffer" : typeof req.body);
-    console.log("Raw body:", req.body);
-
     if (!sig) {
       res.status(400).send("Missing Stripe signature");
       return;
@@ -70,46 +67,55 @@ app.post(
 
     try {
       event = strip.webhooks.constructEvent(
-        req.body, // Must be a Buffer or string
+        req.body,
         sig,
         STRIPE_WEBHOOK_SECRET
       );
-
-      // suscriptionRepo.updateSuscriptionPlan()
-      console.log("✅ Webhook received:", event.type);
 
     } catch (err: any) {
       console.error("❌ Webhook signature verification failed:", err.message);
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
-console.log(event,"event @")
-    // Handle events
+
+
+
     switch (event.type) {
+      // case "invoice.payment_succeeded":
+      //   const recipt = event.data.object as Stripe.Invoice
+      //   const pdf=recipt.invoice_pdf;
+      //   const email=recipt.customer_email
+      //   if(email)await sentMail.sentRecipt(email,pdf)
+
+      // break;
       case "checkout.session.completed":
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log("🎉 Checkout completed:", session);
+        console.log("🎉 Checkout completed:5550", session);
 
         if (session.metadata) {
           console.log(session.metadata)
           await suscriptionRepo.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
-      if(session.customer_email){
-       const email=session.customer_email
-       const path= await generatePDFReceipt(session)
-      
-          await sentMail.sentRecipt(email,path)
-      }
-          
+        }
+        if (session.invoice) {
+          const invoice = await strip.invoices.retrieve(session.invoice as string);
+          const pdf = invoice.invoice_pdf;
+          const email = invoice.customer_email;
+
+          if (email && pdf) {
+            console.log("📧 Sending receipt email after checkout:", email);
+            await sentMail.sentRecipt(email, pdf);
+          }
         }
 
-        // Save subscription to DB
+
+
         break;
       case "invoice.payment_failed":
         const invoice = event.data.object as Stripe.Invoice;
-        console.log("❌ Payment failed:", invoice);
+        console.log("❌ Payment failed:00000", invoice);
         break;
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log(`Unhandled event type00000 ${event.type}`);
     }
 
     res.sendStatus(200); // Always acknowledge receipt to Stripe
@@ -137,7 +143,7 @@ app.use(
 );
 
 
-console.log("wonokk")
+
 
 initSocketServer(io);
 
@@ -161,6 +167,6 @@ app.use("/api/checkout", checkoutRoutes);
 app.use("/api/subscription", suscriptionRoutes)
 app.use("/api/workspace", workspaceRoutes)
 // app.use("/admin", adminRouter);
- app.use("/api/super", superRoutes);
+app.use("/api/super", superRoutes);
 app.use(errorMiddleware);
 export { io };

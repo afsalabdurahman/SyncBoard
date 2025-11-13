@@ -1,22 +1,12 @@
-import { Types } from "mongoose";
 import { ObjectId } from "mongoose";
+import { WorkspaceProps } from "../../types/workpaceTypes";
 interface Member {
   userId: string;
   title: string;
 }
-export type workspaceStatus = "Active"|"InActive"|"Suspented"
+import { workspaceStatus } from "../../types/workpaceTypes";
 export type workspaceStorage = 1|5|10|100
-interface WorkspaceProps {
-  name: string;
-  slug: string;
-  role: string;
-  ownerId: string;
-  members?: Member[];
-  status:workspaceStatus;
-  storage:workspaceStorage;
-  createdAt?: Date;
-  _id?: string|ObjectId;
-}
+
 
 export class Workspace {
   public name: string;

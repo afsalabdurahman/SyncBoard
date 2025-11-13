@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 // import { Sidebar } from "../components/sidebar"
 // import { Header } from "./components/header"
+
 import { UserStats } from "../components/users/userState"
 import { UserFilters } from "../components/users/userFilter"
 import ProfieViewPage from"../components/users/UserProfilePage";
 import ProfileEditPage from "../components/users/UserProfileEditPage"
 import { UserTable, type User } from "../components/users/userTable"
-
+import {useFetchUserPageQuery} from"../apis/fetchApi"
 // Mock data
 const mockUsers: User[] = [
   {
@@ -112,12 +113,34 @@ const mockUsers: User[] = [
 ]
 
 export const  UsersPage = () => {
+  const {data,isLoading,refetch} = useFetchUserPageQuery()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [roleFilter, setRoleFilter] = useState("all")
   const [planFilter, setPlanFilter] = useState("all");
   const [page,setPage] = useState("")
+  const [user,setUser]=useState()
+  const [mockUsers,setMockusers]=useState([])
+
+console.log(data,"Data Users009")
+
+
+
+  useEffect(() => {
+    if (data?.data) {
+   // refetch()
+      setMockusers(data.data)
+    }
+  }, [data,page])
+   if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500 text-lg font-medium">Loading workspaces...</p>
+      </div>
+    )
+  }
+
 
   // Filter users based on search and filters
   const filteredUsers = mockUsers.filter((user) => {
@@ -137,18 +160,20 @@ export const  UsersPage = () => {
   const stats = {
     totalUsers: mockUsers.length,
     activeUsers: mockUsers.filter((u) => u.status === "active").length,
-    suspendedUsers: mockUsers.filter((u) => u.status === "suspended").length,
-    pendingUsers: mockUsers.filter((u) => u.status === "pending").length,
+    suspendedUsers: mockUsers.filter((u) => u.status === "inactive").length,
+    // pendingUsers: mockUsers.filter((u) => u.status === "pending").length,
   }
 
   const handleViewUser = (user: User) => {
     console.log("View user:", user)
+    setUser(user)
     setPage("view")
     // Implement view user logic
   }
 
   const handleEditUser = (user: User) => {
     console.log("Edit user:", user)
+      setUser(user)
     setPage("edit")
     // Implement edit user logic
   }
@@ -181,9 +206,9 @@ export const  UsersPage = () => {
 if(page){
   switch (page) {
     case "view":
-      return <ProfieViewPage/>
+      return <ProfieViewPage setPage={setPage} user={user} />
       case "edit":
-        return <ProfileEditPage/>
+        return <ProfileEditPage  setPage={setPage} user={user}/>
   
     default:
       break;

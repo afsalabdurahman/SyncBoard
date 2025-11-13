@@ -1,6 +1,6 @@
 import mongoose,{ model, Schema,Document } from "mongoose";
-import { Task,priorityType,statusType,approvalType } from "../../../domain/entities/Task";
-export interface ITask extends Document {
+import {approvalType,priorityType,statusType} from "../../../types/taskTypes"
+export interface TaskDocument extends Document {
   name: string;
   assignedUser: string;
   description: string;
@@ -14,7 +14,7 @@ export interface ITask extends Document {
 
 }
 
-const TaskSchema = new Schema<ITask>({
+const TaskSchema = new Schema<TaskDocument>({
 name:{type:String,required:true},
 assignedUser:{type:String,required:true},
 description:{type:String,required:true},
@@ -27,4 +27,4 @@ approvalStatus:{type:String,enum:["Approved","Rejected","Waiting"]},
 rejectionMsg:{type:String}
 },{timestamps:true})
 
-export const TaskModel = model<ITask>("Task", TaskSchema);
+export const TaskModel = model<TaskDocument>("Task", TaskSchema);

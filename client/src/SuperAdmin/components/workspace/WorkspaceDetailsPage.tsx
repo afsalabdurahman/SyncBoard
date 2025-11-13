@@ -1,17 +1,18 @@
-"use client"
-
+import { toast,ToastContainer } from "react-toastify"
 import { useMemo, useState } from "react"
-
+import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton"
 import { Card, CardContent } from "../../../Custom/ui/card"
 import { Badge } from "../../../Custom/ui/badge"
 import { Button } from "../../../Custom/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
-import { Building2, Users, MessageSquare, HardDrive, Calendar, Edit, PauseCircle, PlayCircle, Mail } from "lucide-react"
+import { Building2, Users, MessageSquare, HardDrive, Calendar, Edit, PauseCircle, PlayCircle, Mail, X } from "lucide-react"
 import { WorkspaceMembersTable, type WorkspaceMember } from "./workspaceMembers"
 import { WorkspaceActivityTimeline, type ActivityItem } from "./workspaceActivity"
 import { WorkspaceBillingCard } from "./workspaceBilling"
 import { cn } from "../../../Utility/utils"
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, AreaChart, Area } from "recharts"
+import { useGetAlluserListQuery,useUpdateWorkspaceMutation } from "../../apis/fetchApi"
+import {CloseIcon} from "../../../Custom/reusecomponents/CloseIcon"
 
 type Plan = "basic" | "pro" | "enterprise"
 type Status = "active" | "suspended" | "trial"
@@ -173,11 +174,19 @@ function generateSeries(days = 30) {
   return out
 }
 
-export default function WorkspaceDetailsPage() {
+export default function WorkspaceDetailsPage(props) {
+  console.log(props,"props",)
+const [dialogTitle,setDialogTitle]=useState("")
+const [updateWorkspace,   { isLoading: isUpdating } ] = useUpdateWorkspaceMutation();
+const {data,isLoading}=useGetAlluserListQuery(props.viewDetails?.slug,1,5)
+const [suspented,setSuspendId] =useState("")
+const [IsDialogOpen,setIsDialogOpen]=useState(false)
+console.log(data,"data from fetch qury0000")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const series = useMemo(() => generateSeries(30), [])
 
   const planColors = {
+    free:"bg-gray-100 text-gray-800",
     basic: "bg-gray-100 text-gray-800",
     pro: "bg-purple-100 text-purple-800",
     enterprise: "bg-orange-100 text-orange-800",
@@ -191,22 +200,72 @@ export default function WorkspaceDetailsPage() {
 
   const storagePct = Math.min(100, Math.round((workspace.storage.usedGB / workspace.storage.limitGB) * 100))
 
-  const suspend = () => console.log("Suspend workspace:", workspace.id)
-  const reactivate = () => console.log("Reactivate workspace:", workspace.id)
-  const edit = () => console.log("Edit workspace:", workspace.id)
-  const messageOwner = () => console.log("Message owner:", workspace.owner.email)
+  const suspend = () =>{
+  const merge = {
+    status:"suspend"
+  }
+    setSuspendId(merge)
+    setDialogTitle("suspend")
+    setIsDialogOpen(true)
+     console.log("Suspend workspace:", props.viewDetails.id)
+  }
+  const handleConfirm = async () => {
+
+try {
+   await updateWorkspace({
+        id: props.viewDetails.id,
+        merge: suspented,
+      }).unwrap();
+          props.refetch()
+     toast.success("Updated...")
+    props.setViewDetails((prev) => ({
+  ...prev,
+  status: dialogTitle,
+}));
+  console.log("deleteconformed",suspented)
+} catch (error) {
+  console.log(error,"eee")
+}
+    
+ 
+ 
+  }
+  const reactivate = async() => {
+const merge = {
+    status:"Active"
+  }
+    setSuspendId(merge)
+       setDialogTitle("Active")
+    setIsDialogOpen(true)
+     console.log("Suspend workspace:", props.viewDetails.id)
+    console.log(props.viewDetails,"rectactive")
+  }
+  const edit = () =>{
+    props.setPage("edit")
+  }
+  //const messageOwner = () => console.log("Message owner:", workspace.owner.email)
 
   const onViewMember = (m: WorkspaceMember) => console.log("View member", m.id)
   const onChangeRole = (m: WorkspaceMember) => console.log("Change role", m.id)
   const onSuspendMember = (m: WorkspaceMember) => console.log("Suspend member", m.id)
   const onRemoveMember = (m: WorkspaceMember) => console.log("Remove member", m.id)
+if(isLoading){
+  return(<>loading....</>)
+}
 
   return (
     <div className="min-h-screen bg-gray-50">
-   
-
+  
+ <ToastContainer position='top-center' autoClose={5000} />
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
-        <div className="p-6 space-y-8">
+        <div className="p-6 space-y-3">
+        <div className="flex justify-end">
+     
+   <div className="flex justify-end">
+        
+        <CloseIcon onClose={() => props.setDetails(null)} />
+      </div>
+    </div>
           {/* Header section */}
           <div className="rounded-xl bg-white border p-5 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -217,7 +276,7 @@ export default function WorkspaceDetailsPage() {
                     alt={workspace.name}
                   />
                   <AvatarFallback>
-                    {workspace.name
+                    {props.viewDetails.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
@@ -227,30 +286,30 @@ export default function WorkspaceDetailsPage() {
                 </Avatar>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-xl font-semibold text-gray-900 truncate">{workspace.name}</h1>
-                    <Badge variant="secondary" className={planColors[workspace.plan]}>
-                      {workspace.plan.charAt(0).toUpperCase() + workspace.plan.slice(1)}
+                    <h1 className="text-xl font-semibold text-gray-900 truncate">{props.viewDetails.name}</h1>
+                    <Badge variant="secondary" className={planColors[props.viewDetails.plan]}>
+                      {props.viewDetails.plan.charAt(0).toUpperCase() + props.viewDetails.plan.slice(1)}
                     </Badge>
-                    <Badge variant="secondary" className={statusColors[workspace.status]}>
-                      {workspace.status.charAt(0).toUpperCase() + workspace.status.slice(1)}
+                    <Badge variant="secondary" className={statusColors[props.viewDetails.status]}>
+                      {props.viewDetails.status.charAt(0).toUpperCase() + props.viewDetails.status.slice(1)}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600 mt-1 flex-wrap">
-                    <span className="text-xs rounded bg-gray-100 px-2 py-0.5">ID: {workspace.id}</span>
+                    <span className="text-xs rounded bg-gray-100 px-2 py-0.5">ID: {props.viewDetails.id}</span>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3.5 w-3.5" />
-                      Created {new Date(workspace.createdAt).toLocaleDateString("en-US")}
+                      Created {new Date(props.viewDetails.createdAt).toLocaleDateString("en-US")}
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3.5 w-3.5" />
-                      Last active {new Date(workspace.lastActive).toLocaleDateString("en-US")}
+                      Last active {new Date(props.viewDetails.lastActivity).toLocaleDateString("en-US")}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                {workspace.status === "suspended" ? (
+                {props.viewDetails.status === "suspend" ? (
                   <Button variant="outline" onClick={reactivate} className="gap-2 bg-transparent">
                     <PlayCircle className="h-4 w-4" />
                     Reactivate
@@ -261,10 +320,10 @@ export default function WorkspaceDetailsPage() {
                     Suspend
                   </Button>
                 )}
-                <Button variant="outline" onClick={messageOwner} className="gap-2 bg-transparent">
+                {/* <Button variant="outline" onClick={messageOwner} className="gap-2 bg-transparent">
                   <Mail className="h-4 w-4" />
                   Message Owner
-                </Button>
+                </Button> */}
                 <Button onClick={edit} className="gap-2">
                   <Edit className="h-4 w-4" />
                   Edit Workspace
@@ -280,7 +339,7 @@ export default function WorkspaceDetailsPage() {
                   alt={workspace.owner.name}
                 />
                 <AvatarFallback>
-                  {workspace.owner.name
+                  {props.viewDetails.owner.name
                     .split(" ")
                     .map((n) => n[0])
                     .join("")
@@ -289,8 +348,8 @@ export default function WorkspaceDetailsPage() {
                 </AvatarFallback>
               </Avatar>
               <div className="text-sm">
-                <div className="font-medium text-gray-900">{workspace.owner.name}</div>
-                <div className="text-gray-600">{workspace.owner.email}</div>
+                <div className="font-medium text-gray-900">{props.viewDetails.owner.name}</div>
+                <div className="text-gray-600">{props.viewDetails.owner.email}</div>
               </div>
             </div>
           </div>
@@ -302,7 +361,7 @@ export default function WorkspaceDetailsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">Members</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{workspace.membersCount.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">{props.viewDetails.members}</p>
                   </div>
                   <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
                     <Users className="h-6 w-6 text-blue-600" />
@@ -311,7 +370,7 @@ export default function WorkspaceDetailsPage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -325,9 +384,9 @@ export default function WorkspaceDetailsPage() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -343,7 +402,7 @@ export default function WorkspaceDetailsPage() {
                   <div className="h-2 rounded-full bg-blue-500" style={{ width: `${storagePct}%` }} />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
@@ -351,7 +410,7 @@ export default function WorkspaceDetailsPage() {
                   <div>
                     <p className="text-sm text-gray-600">Last Active</p>
                     <p className="text-2xl font-bold text-gray-900 mt-1">
-                      {new Date(workspace.lastActive).toLocaleDateString("en-US")}
+                      {new Date(props.viewDetails.lastActivity).toLocaleDateString("en-US")}
                     </p>
                   </div>
                   <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
@@ -363,7 +422,7 @@ export default function WorkspaceDetailsPage() {
           </div>
 
           {/* Charts + Billing */}
-          <div className="grid grid-cols-1 2xl:grid-cols-3 gap-6">
+          {/* <div className="grid grid-cols-1 2xl:grid-cols-3 gap-6">
             <div className="space-y-6 2xl:col-span-2">
               <Card>
                 <CardContent className="p-5">
@@ -420,25 +479,31 @@ export default function WorkspaceDetailsPage() {
 
               <WorkspaceActivityTimeline items={activity} />
             </div>
-          </div>
+          </div> */}
 
           {/* Members */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">Members</h2>
               <div className="flex gap-2">
-                <Button variant="outline">Invite Member</Button>
-                <Button>Manage Roles</Button>
+                {/* <Button variant="outline">Invite Member</Button> */}
+                {/* <Button>Manage Roles</Button> */}
               </div>
             </div>
             <WorkspaceMembersTable
-              members={mockMembers}
+              members={data.items??mockMembers}
               onView={onViewMember}
               onChangeRole={onChangeRole}
               onSuspend={onSuspendMember}
               onRemove={onRemoveMember}
             />
           </div>
+           <ConfirmDialog
+                  open={IsDialogOpen}
+                  onClose={() => setIsDialogOpen(false)}
+                  onConfirm={handleConfirm}
+                  description='This  will be  Confirm Action.'
+                />
         </div>
       </main>
     </div>

@@ -14,7 +14,7 @@ export class sharedController{
     next: NextFunction):Promise<void>{
         try {
              const token  = req.cookies.refreshToken;
-             console.log(token,req.cookies,"refresh token")
+             
                 if (!token) throw new NotFoundError("Token not found")
      let {accessToken,refreshToken}  = await this._refreshTokenUsecase.exceute(token)
      if(!accessToken||!refreshToken) throw new NotFoundError("Tokens are not generated")

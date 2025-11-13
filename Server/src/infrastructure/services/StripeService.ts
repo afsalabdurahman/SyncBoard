@@ -28,7 +28,8 @@ export class StripeService implements IStripeService {
           quantity: 1,
         },
       ],
-      mode: "subscription", // or "payment" if one-time
+      mode: "subscription", // or "payment" if one-time,
+     
       success_url: envConfig.STRIPE_PAYMENT_SUCCESS,
       cancel_url: envConfig.STRIPE_PAYMENT_CANCEL,
       metadata: {
@@ -36,6 +37,7 @@ export class StripeService implements IStripeService {
         userId:id,
         planName:key
       },
+      
     });
 
 

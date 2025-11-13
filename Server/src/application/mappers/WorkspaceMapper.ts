@@ -1,4 +1,5 @@
-import { Workspace, workspaceStatus } from "../../domain/entities/Workspace";
+import { Workspace, } from "../../domain/entities/Workspace";
+import { workspaceStatus } from "../../types/workpaceTypes";
 import { WorkspaceRequestDTO, WorkspaceResponseDTO } from "../dto/WorkspaceDTOs";
 import { User } from "../../domain/entities/User";
 import { z } from "zod";

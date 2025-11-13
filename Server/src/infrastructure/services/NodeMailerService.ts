@@ -76,14 +76,15 @@ export class NodemailerService implements IEmailService {
         <h2>Payment Successful</h2>
         <p>Thank you for your payment. Please find your receipt attached.</p>
         <p>If you have any questions, contact us at support@ygridesync.com.</p>
+        ${pdfPath}
       </div>
     `,
-    attachments: [
-      {
-        filename: "receipt.pdf",
-        path: pdfPath,
-      },
-    ],  
+    // attachments: [
+    //   {
+    //     filename: "receipt.pdf",
+    //     path: pdfPath,
+    //   },
+    // ],  
     
     };
       await this.transporter.sendMail(mailOptions);

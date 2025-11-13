@@ -1,4 +1,4 @@
-"use client";
+
 
 import { useState } from "react";
 import { Button } from "../../Custom/ui/button";
@@ -16,7 +16,7 @@ import { Separator } from "../../Custom/ui/separator";
 // import { useTheme } from "next-themes"
 import { Save, User, Bell, Shield, Palette } from "lucide-react";
 
-export function SettingsPage() {
+export default function SettingsPage() {
   // const { theme, setTheme } = useTheme()
   const [settings, setSettings] = useState({
     name: "Admin User",

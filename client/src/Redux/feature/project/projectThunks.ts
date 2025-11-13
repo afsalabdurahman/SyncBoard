@@ -8,11 +8,11 @@ import { ProjectsState } from "./projectSlice";
 import { ProjectFormData } from "../../../Admin/types/projetctTypes"
 import { uploadAttachment } from '../../../Services/Cloudinary';
 
-export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async ({ page, limit }: { page: number, limit: number }) => {
+export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async ({ workspaceId, page, limit }: {workspaceId:string, page: number, limit: number }) => {
   try {
 
 
-    const response = await apiService.get(`project/myprojects?page=${page}&limit=${limit}`);
+    const response = await apiService.get(`project/myprojects/${workspaceId}?page=${page}&limit=${limit}`);
 
     return {
       list: response.data.items,

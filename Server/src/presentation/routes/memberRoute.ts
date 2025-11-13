@@ -4,7 +4,7 @@ import { MemberController } from "../controllers/member/MemberController";
 import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";
 const router = express.Router();
-let memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin"])];
+let memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin","SuperAdmin"])];
 let memberController = container.resolve(MemberController);
 
 router.patch("/profile/update/:id", memberAuth, memberController.updateUserProfile.bind(memberController))

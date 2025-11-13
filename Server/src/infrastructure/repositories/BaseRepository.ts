@@ -5,11 +5,12 @@ export class BaseRepository<T> {
     this.model = model;
   }
 
-  async create(item: T): Promise<T> {
-    console.log(item, "items in Baerepos")
+  async create(item: T): Promise<T|null> {
+   
     const document = new this.model(item);
     const saved = await document.save();
-    return saved.toObject();
+      return saved ? saved.toObject() : null;
+
   }
 
   async findById(id: string): Promise<T | null> {

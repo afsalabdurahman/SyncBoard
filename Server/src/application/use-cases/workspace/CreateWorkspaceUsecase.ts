@@ -20,13 +20,17 @@ import {
 import { WorkspaceRepository } from "../../../infrastructure/repositories/WorkspaceRepository";
 import { slugify } from "../../../utils/slug";
 import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
-import { IActivityRepository } from "../../../domain/interfaces/repositories/IActivityRepository";
+import {IActivityRepository} from "../../../domain/interfaces/repositories/ILogRepository"
+import {Activity} from "../../../domain/entities/Logs"
+import { ActivityType } from "../../../types/activityTypes";
+
 @injectable()
 export class CreateWorkspaceUsecases implements IWorkspace {
   constructor(
     @inject("WorkspaceRepository")
     private _workspaceRepository: IWorkspaceRepository,
     @inject("IUserRepository") private _userRepository: IUserRepository,
+  //  @inject("LogRepository") private _useLogrepository:IActivityRepository 
     // @inject("ActivityUsecase") private _activityUsecase: IActivity
   ) {}
 
@@ -35,10 +39,10 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   ): Promise<WorkspaceResponseDTO> {
  console.log(input)
   const isValid =  WorkspaceMapper.validateWorkspace(input);
-     if (!isValid.success) throw new ValidationError("Validation failed");
+     if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
     const user = await this._userRepository.findByEmail(input.email);
 
-    if (!user) throw new NotFoundError("User not found");
+    if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const slugfyied = slugify(input.slug);
     input.slug = slugfyied;
 
@@ -50,21 +54,15 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   
     const isCreateWorkspace =await this._workspaceRepository.create(workspaceEntity);
     if (!isCreateWorkspace || !isCreateWorkspace._id)
-      throw new ValidationError("Not matched with schema");
+      throw new ValidationError(ResponseMessages.NOT_FOUND + ' Workspace');
 
     const updatedUser = await this._userRepository.addToWorkspace(
       user._id,
       isCreateWorkspace._id,
       input.title
     );
-    if (!updatedUser) throw new NotFoundError("User is not found");
-  //  const msg =await  this._activityUsecase.execute(
-  //     isCreateWorkspace._id.toString(),
-  //     isCreateWorkspace.name,
-  //     user.name
-  //   );
-    // console.log(msg,"from activity")
-
+    if (!updatedUser) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+ 
     return WorkspaceMapper.mapEntityToWorkspace(updatedUser, isCreateWorkspace);
   }
 
@@ -82,4 +80,10 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     if (!result) throw new InternalServerError("Something went to wrong");
     return true;
   }
+
+async updateWorkspaceData(id: string, merge: any): Promise<void> {
+  const data=await this._workspaceRepository.updateWorkspaceDate(id,merge)
+
+}
+
 }

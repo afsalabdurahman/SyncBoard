@@ -1,35 +1,13 @@
 import mongoose, { Schema, model, Document,Types } from "mongoose";
-export interface WorkspaceMembership {
-  workspaceId: mongoose.Types.ObjectId|string;
-  role: "Member" | "Admin" | "SuperAdmin";
-  joinedAt?: Date;
-}
-// workspace Schema.....
-export const workspaceMembershipSchema = new Schema<WorkspaceMembership>(
-  {
-    workspaceId: {
-      type: Schema.Types.ObjectId,
-      ref: "Workspace",
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: ["Member", "Admin", "SuperAdmin"],
-      default: "Member",
-    },
-    joinedAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  
-);
+import { WorkspaceMembership } from "../../../types/workpaceTypes";
+import { UserRole } from "../../../types/userTypes";
+import { workspaceMembershipSchema } from "./WorkspaceMemberModel";
 
-////
-export interface IUser extends Document {
-  // id: string;
+
+export interface UserDoument extends Document {
+ 
    name: string;
-     role: "Member" | "Admin" | "SuperAdmin";
+   role: UserRole
   email: string;
   password: string;
   profileImage?: string;
@@ -52,7 +30,7 @@ export interface IUser extends Document {
   
 }
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<UserDoument>(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -81,4 +59,4 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-export const UserModel = model<IUser>("User", userSchema);
+export const UserModel = model<UserDoument>("User", userSchema);

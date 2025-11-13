@@ -1,47 +1,36 @@
 import { IUserRepository } from "../../../../domain/interfaces/repositories/IUserRepository";
-import { User } from "../../../../domain/entities/User";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { injectable, inject } from "tsyringe";
-import { NotFoundError, InternalServerError, ValidationError } from "../../../../utils/errors";
+import { NotFoundError, ValidationError,ConflictError } from "../../../../utils/errors";
 import { IAuth } from "../../../repositories/iauth/IAuth";
 import { AdminSignupRequestDTO, AdminSignupResponseDTO } from "../../../dto/AuthDTOs";
 import { AuthMapper } from "../../../mappers/AuthMapper";
-export interface RegisterInput {
-  email: string;
-  password: string;
-  name: string;
-  role?: "Member" | "Admin" | "SuperAdmin";
-}
+import { ResponseMessages } from "../../../../common/erroResponse";
+
 
 @injectable()
 export class RegisterUseCase implements IAuth {
   constructor(
     @inject("AuthService") private _authService: IAuthService,
     @inject("UserRepository") private _userRepository: IUserRepository
-  ) { }
+  ) {}
 
   async execute(
     input: AdminSignupRequestDTO
   ): Promise<AdminSignupResponseDTO> {
-   
     const isValid = AuthMapper.registerValidation(input);
-   
-    if (!isValid.success) throw new ValidationError("Validation failed");
+    if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
     const existingUser = await this._userRepository.findByEmail(input.email);
-    if (existingUser) throw new NotFoundError("user already have an account");
-    const validRoles = ["Member", "Admin", "SuperAdmin"];
-    const role = input.role && validRoles.includes(input.role) ? input.role : "Admin";
-
-    // Hash password
+    if (existingUser) throw new ConflictError  (ResponseMessages.USER_EXIST);
+  
     const hashedPassword = await this._authService.hashPassword(input.password);
     input.password = hashedPassword;
-    const newAdmin = AuthMapper.mapUserToEntity(input)
+    const AdminEntity = AuthMapper.mapUserToEntity(input)
 
-    // Save user to database
 
-    const savedUser = await this._userRepository.create(newAdmin);
+    const savedUser = await this._userRepository.create(AdminEntity);
    
-    if (!savedUser) throw new InternalServerError("Failed mongodb");
+    if (!savedUser) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     const token = this._authService.generateToken({
       id: savedUser._id ?? "",
       email: savedUser.email!,

@@ -126,9 +126,12 @@ export const WorkspaceTable = ({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={planColors[workspace.plan]} variant="secondary">
+                    {workspace.plan?
+   <Badge className={planColors[workspace.plan]} variant="secondary">
                       {workspace.plan.charAt(0).toUpperCase() + workspace.plan.slice(1)}
                     </Badge>
+                    :"free"}
+                 
                   </TableCell>
                   <TableCell>
                     <Badge className={statusColors[workspace.status]} variant="secondary">

@@ -1,6 +1,9 @@
 export interface  MailRequestDTO {
 email:string,
-otp?:string
+name?:string,
+password?:string,
+otp?:string,
+role?:"Admin"
 }
 export interface MailResponseDTO{
 

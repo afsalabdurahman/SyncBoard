@@ -8,7 +8,8 @@ interface UserStatsProps {
   pendingUsers: number
 }
 
-export const UserStats = ({ totalUsers, activeUsers, suspendedUsers, pendingUsers }: UserStatsProps) =>{
+export const UserStats = ({ totalUsers, activeUsers, suspendedUsers }: UserStatsProps) =>{
+  
   const stats = [
     {
       title: "Total Users",
@@ -25,19 +26,13 @@ export const UserStats = ({ totalUsers, activeUsers, suspendedUsers, pendingUser
       icon: UserCheck,
     },
     {
-      title: "Suspended Users",
+      title: "InActive Users",
       value: suspendedUsers.toLocaleString(),
       change: suspendedUsers > 0 ? `${suspendedUsers} need attention` : "All clear",
       changeType: suspendedUsers > 0 ? "negative" : "positive",
       icon: UserX,
     },
-    {
-      title: "Pending Invites",
-      value: pendingUsers.toLocaleString(),
-      change: pendingUsers > 0 ? `${pendingUsers} awaiting response` : "All accepted",
-      changeType: "neutral",
-      icon: Shield,
-    },
+   
   ]
 
   const changeColors = {

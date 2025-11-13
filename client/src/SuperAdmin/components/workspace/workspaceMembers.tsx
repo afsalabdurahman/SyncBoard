@@ -16,19 +16,21 @@ import {
 } from "../../../Custom/ui/dropdown-menu"
 
 export type MemberRole = "owner" | "admin" | "member" | "guest"
-export type MemberStatus = "active" | "inactive" | "suspended" | "pending"
+export type MemberStatus = "active" | "block" | "suspended" | "deleted"
 
 export interface WorkspaceMember {
-  id: string
+  _id: string
   name: string
   email: string
   avatar?: string
-  role: MemberRole
-  status: MemberStatus
-  joinedAt: string
-  lastActive: string
-  twoFactorEnabled: boolean
-  isEmailVerified: boolean
+  role?: MemberRole
+  status?: MemberStatus
+  createdAt?: string
+  updatedAt?: string
+  isBlock?:boolean
+  isDeleted?:boolean
+  twoFactorEnabled?: boolean
+  isEmailVerified?: boolean
 }
 
 const roleColors: Record<MemberRole, string> = {
@@ -78,7 +80,7 @@ export function WorkspaceMembersTable({
           </TableHeader>
           <TableBody>
             {members.map((m) => (
-              <TableRow key={m.id} className="hover:bg-gray-50">
+              <TableRow key={m._id} className="hover:bg-gray-50">
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
@@ -110,9 +112,11 @@ export function WorkspaceMembersTable({
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary" className={statusColors[m.status]}>
-                    {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
-                  </Badge>
+                {m.isBlock ||m.isDeleted ?   <Badge variant="secondary" className={statusColors["active"]}>
+                    Blocked
+                  </Badge>:  <Badge variant="secondary" className={statusColors["block"]}>
+                    Active
+                  </Badge> }
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3 text-xs">
@@ -129,11 +133,11 @@ export function WorkspaceMembersTable({
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm">{fmtDate(m.joinedAt)}</span>
+                   // <span className="text-sm">{fmtDate(m.createdAt)}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="text-sm">{fmtDate(m.lastActive)}</div>
+                  <div className="text-sm">{fmtDate(m.updatedAt)}</div>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -148,7 +152,7 @@ export function WorkspaceMembersTable({
                       <DropdownMenuItem onClick={() => onView(m)}>View Profile</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onChangeRole(m)}>Change Role</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onSuspend(m)}>
-                        {m.status === "suspended" ? "Unsuspend" : "Suspend"}
+                        {/* {m.status === "suspended" ? "Unsuspend" : "Suspend"} */}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onRemove(m)} className="text-red-600">

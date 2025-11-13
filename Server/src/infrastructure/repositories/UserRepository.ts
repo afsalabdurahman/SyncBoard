@@ -1,4 +1,4 @@
-import { UserModel, IUser } from "../database/models/UserModel";
+import { UserModel } from "../database/models/UserModel";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
 import { BaseRepository } from "./BaseRepository";
@@ -7,9 +7,9 @@ import { Types, ObjectId, Date } from "mongoose";
 import { ConflictError, ValidationError } from "../../utils/errors";
 import { HttpStatusCode } from "../../common/errorCodes";
 import mongoose from "mongoose";
-import { WorkspaceMembership } from "../../domain/entities/User";
+import { WorkspaceMembership } from "../../types/workpaceTypes";
 @injectable()
-export class UserMongooseRepository  extends BaseRepository <User> implements IUserRepository {
+export class UserMongooseRepository  extends BaseRepository <User|null> implements IUserRepository {
     constructor() {
     super(UserModel);
   }
@@ -149,6 +149,7 @@ export class UserMongooseRepository  extends BaseRepository <User> implements IU
               .skip(skip)
               .limit(limit)
               .sort({ createdAt: -1 });
+              console.log(items)
               return {items,totalItems}
         
       }

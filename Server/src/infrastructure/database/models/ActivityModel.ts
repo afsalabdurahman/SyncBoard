@@ -12,6 +12,6 @@ const ActivitySchema = new Schema(
     projectActivities: { type: [activityItemSchema], default: [] },
     userActivities: { type: [activityItemSchema], default: [] },
   },
-  { timestamps: true } // optional: adds createdAt and updatedAt
+  { timestamps: true } 
 );
 export const ActivityModel = mongoose.model("Activity", ActivitySchema);

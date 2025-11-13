@@ -1,21 +1,14 @@
 import { Types } from "mongoose";
-import mongoose from "mongoose";
+import { WorkspaceMembership } from "../../types/workpaceTypes";
 
-export interface WorkspaceMembership {
-  workspaceId: mongoose.Types.ObjectId;
-  role: "Member" | "Admin" | "SuperAdmin";
-  joinedAt?: Date;
-}
 
 export class User {
-  // 🔹 Required fields
   email: string;
   password: string;
   name: string;
   role: "Member" | "Admin" | "SuperAdmin";
-stripeCustomerId?: string;
+  stripeCustomerId?: string;
   currentSubscription?: Types.ObjectId;
-  // 🔹 Optional fields
   _id?: string;
   title?: string;
   profileImage?: string;
@@ -24,15 +17,11 @@ stripeCustomerId?: string;
   imageUrl?: string;
   about?: string;
   phone?: string;
-
-  // 🔹 System flags
   isAdmin?: boolean;
   isSuperAdmin?: boolean;
   isBlocked?: boolean;
   isDeleted?: boolean;
   isOnline?: boolean;
-
-  // 🔹 Timestamps
   createdAt?: Date;
   updatedAt?: Date;
 
@@ -56,8 +45,8 @@ stripeCustomerId?: string;
     isOnline?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
-    stripeCustomerId?:string;
-    currentSubscription?:Types.ObjectId
+    stripeCustomerId?: string;
+    currentSubscription?: Types.ObjectId
 
   }) {
     this.email = params.email;
@@ -82,7 +71,7 @@ stripeCustomerId?: string;
 
     this.createdAt = params.createdAt ?? new Date();
     this.updatedAt = params.updatedAt ?? new Date();
-    this.stripeCustomerId=params.stripeCustomerId;
-    this.currentSubscription=params.currentSubscription
+    this.stripeCustomerId = params.stripeCustomerId;
+    this.currentSubscription = params.currentSubscription
   }
 }

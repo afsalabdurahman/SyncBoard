@@ -1,4 +1,6 @@
+import { MailRequestDTO } from "../dto/MailDTO"
+
 export interface IOTP {
-    sendOTP?(email:string):Promise<string>
-    verifyOTP?(email:string,otp:string):Promise<boolean>
+    sendOTP(input:MailRequestDTO):Promise<string>
+    verifyOTP(input:MailRequestDTO):Promise<boolean>
 }
