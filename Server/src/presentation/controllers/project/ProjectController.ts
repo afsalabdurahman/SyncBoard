@@ -10,9 +10,7 @@ import { ResponseMessages } from "../../../common/erroResponse";
 @injectable()
 export class ProjectController {
   constructor(
-    @inject("ProjectUsecase") private _projectUsecase: IProjectUsecase,
-
-  ) {}
+    @inject("ProjectUsecase") private _projectUsecase: IProjectUsecase) {}
 
   async createProject(
     req: Request,
@@ -20,12 +18,9 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body,"project")
       const input: ProjectRequstDTO = req.body.newProject as ProjectRequstDTO;
       const workspaceId = req.params.workspaceid;
-   
       const ResponseDTO = await this._projectUsecase.excute(input,workspaceId);
-
       res.status(HttpStatusCode.CREATED).json({ message: ResponseDTO });
     } catch (error) {
       next(error);

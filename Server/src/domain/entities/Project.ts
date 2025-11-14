@@ -1,7 +1,6 @@
 import mongoose, { ObjectId,Schema,Types } from "mongoose";
+import {PriorityTypes,StatusTypes} from "../../types/projectTypes"
 
-export type PriorityTypes = "Low" | "Medium" | "High";
-export type StatusTypes = "Planning" | "In Progress" | "Completed" | "On Hold";
 
 export class Project {
   _id?: ObjectId | string;

@@ -1,8 +1,14 @@
 import mongoose from "mongoose";
+import { ObjectId } from "mongoose";
+import { workspaceStorage } from "../domain/entities/Workspace";
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
   role: "Member" | "Admin" | "SuperAdmin";
   joinedAt?: Date;
+}
+interface Member {
+  userId: string;
+  title: string;
 }
 export interface IMember {
   userId: string;

@@ -1,9 +1,8 @@
 import {
   Project,
-  PriorityTypes,
-  StatusTypes,
+  
 } from "../../domain/entities/Project"
-
+import {PriorityTypes,StatusTypes} from "../../types/projectTypes"
 
 export interface ProjectRequstDTO{
       name: string;

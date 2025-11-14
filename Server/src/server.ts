@@ -166,7 +166,6 @@ app.use("/api/activities", activityRoutes)
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/subscription", suscriptionRoutes)
 app.use("/api/workspace", workspaceRoutes)
-// app.use("/admin", adminRouter);
 app.use("/api/super", superRoutes);
 app.use(errorMiddleware);
 export { io };
