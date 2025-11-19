@@ -51,6 +51,16 @@ import { DatahandleUsecase } from "../../../application/use-cases/super/Datahand
 //import { LogUseCases } from "../../../application/use-cases/activity/LogUsecases";
 // container.register("LogRepository",{useClass:LogRepository})
 // container.register("LogUsecases",{useClass:LogUseCases})
+import {RagOrchestrator} from "../../orchestrator/RagOrchestrator";
+// import {XenovaEmbeddingProvider} from "../../services/ragPipeline/EmbbedPipeline";
+ import {MongoVectorStore} from "../../services/ragPipeline/VectorSerach";
+import {GroqLLMProvider} from "../../services/ragPipeline/LLMrapper";
+import {RagUseCase} from "../../../application/use-cases/rag/RagUsecase"
+container.register("RagUsecase",{useClass:RagUseCase})
+container.register("MongoVectorStore",{useClass:MongoVectorStore}) 
+container.register("GroqLLMProvider",{useClass:GroqLLMProvider}) 
+// container.register("XenovaEmbeddingProvider",{useClass:XenovaEmbeddingProvider}) 
+container.register("RagOrchestrator",{useClass:RagOrchestrator}) 
 container.register("SuperAdminRepository",{useClass:SuperAdminRepository})
 container.register("DatahandleUsecase",{useClass:DatahandleUsecase})
 container.registerSingleton<ILogger>('ILogger', WinstonLoggerImpl);

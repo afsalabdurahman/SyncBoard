@@ -5,3 +5,10 @@ export const myProjects = async() =>{
     console.log(response)
     return response
 }
+export const sendQuery = async(userName:string,query:string)=>{
+    const response = await apiService.post("rag/search",{
+        user:userName,
+        query:query
+    })
+    return response
+}

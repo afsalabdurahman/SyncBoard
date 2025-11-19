@@ -29,18 +29,23 @@
     "typescript-eslint": "^8.35.1"
   },
   "dependencies": {
+    "@langchain/groq": "^1.0.1",
+    "@langchain/mongodb": "^1.0.0",
     "@types/pdfkit": "^0.17.3",
+    "@xenova/transformers": "^2.17.2",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cores": "^0.8.5",
     "cors": "^2.8.5",
-    "dotenv": "^17.0.1",
+    "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.0.0",
     "mongoose": "^8.13.2",
     "multer": "^2.0.1",
     "nodemailer": "^6.10.1",
     "nodemon": "^3.1.10",
+    "openai": "^6.9.1",
     "pdfkit": "^0.17.2",
     "redis": "^5.6.0",
     "reflect-metadata": "^0.2.2",
@@ -48,6 +53,6 @@
     "stripe": "^18.5.0",
     "tsyringe": "^4.10.0",
     "winston": "^3.18.3",
-    "zod": "^4.1.11"
+    "zod": "^3.23.8"
   }
 }

@@ -27,4 +27,38 @@ export const getNextMonthEnd=(dateString: string): string => {
 
   return lastDay.toISOString();
 }
+export const LLmFormateDate=(dateInput?: string | null): string=>{
+
+  if (!dateInput) return "No due date";
+
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return "Invalid date";
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+
+  if (target.getTime() === today.getTime()) return "Today";
+  if (target.getTime() === tomorrow.getTime()) return "Tomorrow";
+  if (target.getTime() === yesterday.getTime()) return "Yesterday";
+
+  const options: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+  };
+
+  const thisYear = new Date().getFullYear();
+  if (target.getFullYear() !== thisYear) options.year = "numeric";
+
+  return target.toLocaleDateString("en-US", options);
+
+}
 
