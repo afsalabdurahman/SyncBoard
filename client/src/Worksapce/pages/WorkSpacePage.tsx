@@ -12,6 +12,7 @@ import Invite from "../components/Invite";
 import MyProject from "../components/MyProject";
 import Profile from "../components/Profile";
 import RAG from "../pages/RagChatPage";
+import Abuse from "../pages/AbuseReport"
 import { useDispatch } from "react-redux";
 import {Sparkles } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../Custom/ui/tooltip"; // Add this import
@@ -38,6 +39,7 @@ function WorkSpacePage() {
     Mytodo,
     MyProject,
     Invite,
+    Abuse
   };
 
   const Status = componentMap[currentStatusKey];

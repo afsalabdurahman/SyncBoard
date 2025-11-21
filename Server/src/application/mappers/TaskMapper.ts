@@ -10,7 +10,7 @@ export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 
 
 export class TaskMapper{
-static mapTaskToEntity(input:TaskRequestDTO):Task{
+static mapTaskToEntity(input:TaskRequestDTO,vector:number[]):Task{
     return new Task({
         name:input.name,
         description:input.description,
@@ -19,7 +19,8 @@ static mapTaskToEntity(input:TaskRequestDTO):Task{
         status:input.status,
         deadline:input.deadline,
         priority:input.priority,
-        projectId:input.projectId
+        projectId:input.projectId,
+        embedding:vector
     })
 }
 static mapEntityToTask(msg:string,taskData:Task):TaskResponseDTO{

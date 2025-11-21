@@ -31,5 +31,5 @@ router.get(
   workspaceController.pagination.bind(workspaceController)
 )
 router.patch("/update/:id", workspaceController.updateWorkspace.bind(workspaceController))
-
+router.post("/abuse/:id",workspaceController.abuseReport.bind(workspaceController))
 export default router;

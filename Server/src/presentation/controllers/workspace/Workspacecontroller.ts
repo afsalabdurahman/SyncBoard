@@ -11,6 +11,8 @@ import { ISentInvitaion } from "../../../application/repositories/imail/ISentInv
 import { IWokspaceMember } from "../../../application/repositories/IWorkspaceMembers";
 import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";
 import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
+import { IAbuseUsecase } from "../../../application/repositories/IAbuse";
+import { AbuseRequestDTO } from "../../../application/dto/AbuseDTO";
 @injectable()
 export class WorkspaceController {
   constructor(
@@ -19,6 +21,7 @@ export class WorkspaceController {
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("SentInvitaion") private _sentInvitaionUsecase: ISentInvitaion,
     @inject("IWokspaceMember") private _workspaceUsecase: IWokspaceMember,
+    @inject("AbuseUsecase") private _abuseUsecase:IAbuseUsecase
     
   ) {}
 
@@ -96,6 +99,18 @@ async updateWorkspace(req:Request,res:Response,next:NextFunction):Promise<void>{
   } catch (error) {
     next(error)
   }
+}
+async abuseReport(req:Request,res:Response,next:NextFunction):Promise<void>{
+try {
+  const input:AbuseRequestDTO=req.body
+  const userId=req.params.id
+  console.log(userId,"req")
+ await this._abuseUsecase.execute(input,userId)
+res.status(HttpStatusCode.CREATED).json(ResponseMessages.CREATED)
+} catch (error) {
+  console.log(error)
+  next(error)
+}
 }
 
 }

@@ -14,3 +14,4 @@ export interface WorkspaceResponseDTO{
 workspace:Workspace;
 user:User
 }
+

@@ -28,7 +28,7 @@ export class RagOrchestrator implements IRagOrchestartorService {
 
       return response
     } else {
-      return "cant find out"
+      return "Sorry, I did not find any relevant content."
     }
 
 

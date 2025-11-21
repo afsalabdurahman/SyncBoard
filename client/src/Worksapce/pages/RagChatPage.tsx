@@ -199,8 +199,11 @@ export default function RAG() {
         content: rspMessage,
         timestamp: new Date(),
       }
-      setMessages((prev) => [...prev, messageAssistant])
+      setTimeout(()=>{
+setMessages((prev) => [...prev, messageAssistant])
       setIsLoading(false)
+      },1000)
+      
     })
   }
 

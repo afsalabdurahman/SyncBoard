@@ -210,12 +210,12 @@ export default function Channel() {
                           user
                         )} rounded-full flex items-center justify-center`}
                       >
-                        <span className='text-xs font-medium text-white'>
+                        {user?<span className='text-xs font-medium text-white'>
                           {user
                             .split(" ")
                             .map((n) => n[0])
                             .join("")}
-                        </span>
+                        </span>:""}
                       </div>
                       <div className='absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 border-2 border-white rounded-full'></div>
                     </div>

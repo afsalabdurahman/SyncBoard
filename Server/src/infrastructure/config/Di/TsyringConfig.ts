@@ -28,6 +28,7 @@ import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUs
 import { AuthController } from "../../../presentation/controllers/auth/UserAuthController";
 import { UpdateUserProfileUsecase } from "../../../application/use-cases/profiles/UpdateUserProfile";
 // Register dependencies
+import { AbuseRepository } from "../../repositories/AbuseRepository";
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
 import { RefreshTokenUsecase } from "../../../application/use-cases/auth/shared/RefreshTokenUsecase";
 import { AdminLoginUseCase } from "../../../application/use-cases/auth/admin/LoginUsecase";
@@ -56,6 +57,9 @@ import {RagOrchestrator} from "../../orchestrator/RagOrchestrator";
  import {MongoVectorStore} from "../../services/ragPipeline/VectorSerach";
 import {GroqLLMProvider} from "../../services/ragPipeline/LLMrapper";
 import {RagUseCase} from "../../../application/use-cases/rag/RagUsecase"
+import { AbuseUsecase } from "../../../application/use-cases/workspace/AbuseUsecase";
+container.register("AbuseRepository",{useClass:AbuseRepository})
+container.register("AbuseUsecase",{useClass:AbuseUsecase})
 container.register("RagUsecase",{useClass:RagUseCase})
 container.register("MongoVectorStore",{useClass:MongoVectorStore}) 
 container.register("GroqLLMProvider",{useClass:GroqLLMProvider}) 
