@@ -3,8 +3,12 @@ Server/dist/
 Server/build/
 .env
 .vscode/
+Server/node_modules/
+Server/test
+Server/.vscode
 Server/.env
-Server/uploads/
+Server/uploads
+Server/logs
 client/.env
 client/.env.local
 client/.env.development
