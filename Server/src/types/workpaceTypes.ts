@@ -1,9 +1,21 @@
 import mongoose from "mongoose";
+<<<<<<< HEAD
+=======
+import { ObjectId } from "mongoose";
+import { workspaceStorage } from "../domain/entities/Workspace";
+>>>>>>> rag
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
   role: "Member" | "Admin" | "SuperAdmin";
   joinedAt?: Date;
 }
+<<<<<<< HEAD
+=======
+interface Member {
+  userId: string;
+  title: string;
+}
+>>>>>>> rag
 export interface IMember {
   userId: string;
   title: string;

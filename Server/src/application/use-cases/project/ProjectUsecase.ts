@@ -10,14 +10,21 @@ import { ResponseMessages } from "../../../common/erroResponse";
 @injectable()
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
+<<<<<<< HEAD
     @inject("ProjectRepository") private _projectRepository: IProjectRepository
   ) { }
+=======
+    @inject("ProjectRepository") private _projectRepository: IProjectRepository) {}
+>>>>>>> rag
 
   async excute(dto: ProjectRequstDTO,workspaceId:string): Promise<ProjectResponseDTO> {
 
     const isValid = ProjectMapper.ValidateProjectData(dto);
     if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
+<<<<<<< HEAD
 
+=======
+>>>>>>> rag
     const projectEntity = ProjectMapper.mapProjectToEntity(dto,workspaceId);
     const projectData = await this._projectRepository.create(projectEntity);
     if (!projectData) throw new ConflictError("Project not created");

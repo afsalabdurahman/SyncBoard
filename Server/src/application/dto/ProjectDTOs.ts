@@ -1,9 +1,15 @@
 import {
   Project,
+<<<<<<< HEAD
   PriorityTypes,
   StatusTypes,
 } from "../../domain/entities/Project"
 
+=======
+  
+} from "../../domain/entities/Project"
+import {PriorityTypes,StatusTypes} from "../../types/projectTypes"
+>>>>>>> rag
 
 export interface ProjectRequstDTO{
       name: string;

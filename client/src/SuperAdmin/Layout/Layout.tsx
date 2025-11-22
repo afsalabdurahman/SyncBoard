@@ -10,6 +10,7 @@ import {Workspaces} from "../pages/Workspace"
 import {AnalyticsPage} from "../pages/Analytic"
 import {SubscriptionsPage} from "../pages/Subscription"
 import { SupportTicketsPage } from "../pages/SupportTickets"
+import {AbuseReportsPage} from "../pages/AbuseReport"
 export const Layout = () =>{
  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
  const [currentPage, setCurrentPage] = useState("dashboard");
@@ -27,7 +28,13 @@ const renderPage = () => {
       case "Analytics":
         return <AnalyticsPage />;
         case "Support Tickets":
+<<<<<<< HEAD
           return <SupportTicketsPage/>
+=======
+          return <SupportTicketsPage/>;
+          case "Abuse Reports":
+            return<AbuseReportsPage/>;
+>>>>>>> rag
       default:
         return <Dashboard />;
     }

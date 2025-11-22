@@ -15,6 +15,10 @@ export class Task {
   project?:string;
   approvalStatus?:approvalType;
   rejectionMsg?:string;
+<<<<<<< HEAD
+=======
+  embedding?:any;
+>>>>>>> rag
 
 
   constructor({
@@ -29,6 +33,10 @@ export class Task {
     project,
     approvalStatus,
     rejectionMsg,
+<<<<<<< HEAD
+=======
+    embedding
+>>>>>>> rag
   }: {
     id?: ObjectId | string;
     description?: string;
@@ -40,7 +48,12 @@ export class Task {
     status?: statusType;
     project?:string;
     approvalStatus?:approvalType;
+<<<<<<< HEAD
     rejectionMsg?:string
+=======
+    rejectionMsg?:string;
+    embedding?:any;
+>>>>>>> rag
   }) {
     this.id = id;
     this.assignedUser = assignedUser;
@@ -53,5 +66,9 @@ export class Task {
     this.project=project;
     this.approvalStatus=approvalStatus;
     this.rejectionMsg=rejectionMsg;
+<<<<<<< HEAD
+=======
+    this.embedding=embedding;
+>>>>>>> rag
   }
 }

@@ -8,6 +8,7 @@ import { createServer } from "http";
 import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
+import ragRoutes from "./presentation/routes/ragRoutes"
 import memberRoutes from "./presentation/routes/memberRoute"
 import chatRoutes from "./presentation/routes/chatRoutes";
 import activityRoutes from "./presentation/routes/activityRoutes"
@@ -26,6 +27,9 @@ import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
 import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
 import { generatePDFReceipt } from "./infrastructure/services/GeneratePdf";
 import { NodemailerService } from "./infrastructure/services/NodeMailerService";
+
+
+
 
 const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
 const sentMail = container.resolve(NodemailerService)
@@ -166,7 +170,7 @@ app.use("/api/activities", activityRoutes)
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/subscription", suscriptionRoutes)
 app.use("/api/workspace", workspaceRoutes)
-// app.use("/admin", adminRouter);
 app.use("/api/super", superRoutes);
+app.use("/api/rag", ragRoutes)
 app.use(errorMiddleware);
 export { io };

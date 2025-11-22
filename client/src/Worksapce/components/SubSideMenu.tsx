@@ -1,9 +1,17 @@
 import { useState } from 'react';
+
 import { FiUser, FiHeadphones, FiChevronDown, FiPlus,FiCalendar,FiTv,FiFolder } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
+<<<<<<< HEAD
 import {meeting,deactive, activity,channel,invite,mytodo,myproject  } from '../../Redux/feature/StatusSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
+=======
+import {meeting,deactive, activity,channel,invite,mytodo,myproject,abuse  } from '../../Redux/feature/StatusSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../Redux/store';
+import { FlagIcon,Flag } from 'lucide-react';
+>>>>>>> rag
 const SubSideMenu = () => {
   let WorkspaceData = useSelector((state: RootState) =>{
     let user=state.register;
@@ -15,6 +23,7 @@ return{user,workspaces}
   const [showChannels, setShowChannels] = useState(false);
   const [showDMs, setShowDMs] = useState(true);
   const [bgColor, setBgColor] = useState("activitys");
+  
 const meetings = () =>{
   setBgColor("")
   dispatch(deactive())
@@ -51,6 +60,13 @@ const invites= () => {
   dispatch(deactive())
 dispatch(invite())
   setBgColor("invites")
+}
+
+const abuses= ()=>{
+   setBgColor("")
+  dispatch(deactive())
+dispatch(abuse())
+  setBgColor("abuses")
 }
 console.log(bgColor,"bgColor")
   return (
@@ -94,6 +110,10 @@ console.log(bgColor,"bgColor")
         <button onClick={invites} className={`flex items-center space-x-2 px-3 py-2 text-purple-300 hover:text-white rounded cursor-pointer ${bgColor === "invites" ? "bg-purple-700" : ""}`}>
           <FiPlus />
           <span>Invite people</span>
+        </button>
+         <button onClick={abuses} className={`flex items-center space-x-2 px-3 py-2 text-purple-300 hover:text-white rounded cursor-pointer ${bgColor === "abuses" ? "bg-purple-700" : ""}`}>
+          <Flag size={15}/>
+          <span>Abuse Report</span>
         </button>
       </div>
     </div>

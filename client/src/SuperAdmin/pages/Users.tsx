@@ -1,5 +1,8 @@
-"use client"
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> rag
 import { useEffect, useState } from "react"
 // import { Sidebar } from "../components/sidebar"
 // import { Header } from "./components/header"

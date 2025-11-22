@@ -10,6 +10,7 @@ const initialState = {
     Invite:false,
     Profile:false,
     MyProject:false,
+    Abuse:false
 };
 
 const StatusSlice = createSlice({
@@ -36,6 +37,10 @@ const StatusSlice = createSlice({
 
             state.Invite = true;
         },
+         abuse: (state,  ) => {
+
+            state.Abuse = true;
+        },
         profile:(state, )=>{
             state.Profile=true
         },
@@ -55,5 +60,5 @@ const StatusSlice = createSlice({
     },
 });
 
-export const { activity,channel,invite,meeting,mytodo,profile,myproject, deactive } = StatusSlice.actions;
+export const { activity,channel,invite,meeting,mytodo,profile,myproject, deactive,abuse } = StatusSlice.actions;
 export default StatusSlice.reducer;
