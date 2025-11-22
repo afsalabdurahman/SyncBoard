@@ -1,19 +1,37 @@
+# Node modules (both root + inside folders)
 node_modules/
+Server/node_modules/
+client/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+Server/.env
+client/.env*
+.vscode/
+
+# Builds & dist
+dist/
+build/
 Server/dist/
 Server/build/
-.env
-.vscode/
-Server/node_modules/
-Server/test
-Server/.vscode
-Server/.env
-Server/uploads
-Server/logs
-client/.env
-client/.env.local
-client/.env.development
-client/.env.production
 client/build/
 client/dist/
+
+# Server specific
+Server/uploads/
+Server/logs/
+Server/test/
+Server/prisma/dev.db
+Server/prisma/*.journal
+
+# Client specific (you probably DON'T want these tracked)
 client/public/
 client/src/assets/
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+*.log
