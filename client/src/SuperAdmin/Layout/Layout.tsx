@@ -28,13 +28,9 @@ const renderPage = () => {
       case "Analytics":
         return <AnalyticsPage />;
         case "Support Tickets":
-<<<<<<< HEAD
-          return <SupportTicketsPage/>
-=======
           return <SupportTicketsPage/>;
           case "Abuse Reports":
             return<AbuseReportsPage/>;
->>>>>>> rag
       default:
         return <Dashboard />;
     }

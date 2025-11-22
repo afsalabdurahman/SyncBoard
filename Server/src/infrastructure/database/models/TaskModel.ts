@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-import mongoose,{ model, Schema,Document } from "mongoose";
-import {approvalType,priorityType,statusType} from "../../../types/taskTypes"
-=======
 // src/infra/db/models/Task.ts
 import mongoose, { model, Schema, Document } from "mongoose";
 import { approvalType, priorityType, statusType } from "../../../types/taskTypes";
 
->>>>>>> rag
 export interface TaskDocument extends Document {
   name: string;
   assignedUser: string;
@@ -14,27 +9,6 @@ export interface TaskDocument extends Document {
   deadline?: string;
   priority?: priorityType;
   status?: statusType;
-<<<<<<< HEAD
-  projectId?:string;
-  project?:string;
-  approvalStatus?:approvalType;
-  rejectionMsg?:string;
-
-}
-
-const TaskSchema = new Schema<TaskDocument>({
-name:{type:String,required:true},
-assignedUser:{type:String,required:true},
-description:{type:String,required:true},
-deadline:{type:String},
-priority:{type:String,enum:["Low","Medium","High"]},
-status:{type:String,enum:["To Do" , "In Progress" , "Completed" , ]},
-projectId:{type:String},
-project:{type:String},
-approvalStatus:{type:String,enum:["Approved","Rejected","Waiting"]},
-rejectionMsg:{type:String}
-},{timestamps:true})
-=======
   projectId?: string;
   project?: string;
   approvalStatus?: approvalType;
@@ -58,6 +32,5 @@ const TaskSchema = new Schema<TaskDocument>(
   },
   { timestamps: true, collection: "Task" }
 );
->>>>>>> rag
 
 export const TaskModel = model<TaskDocument>("Task", TaskSchema);

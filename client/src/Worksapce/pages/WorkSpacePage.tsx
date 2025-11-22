@@ -11,15 +11,6 @@ import TopBar from "../components/TopBar";
 import Invite from "../components/Invite";
 import MyProject from "../components/MyProject";
 import Profile from "../components/Profile";
-<<<<<<< HEAD
-import { useDispatch } from "react-redux";
-
-function WorkSpacePage() {
-  const [profileStatus, setProfileStatus] = useState(false);
-  
-
-  // Extract active component key from Redux state
-=======
 import RAG from "../pages/RagChatPage";
 import Abuse from "../pages/AbuseReport"
 import { useDispatch } from "react-redux";
@@ -30,7 +21,6 @@ function WorkSpacePage() {
   const [profileStatus, setProfileStatus] = useState(false);
   const [isRagOpen, setIsRagOpen] = useState(false);
 
->>>>>>> rag
   const currentStatusKey = useSelector((state: any) => {
     const trueKeys = Object.keys(state.status).filter(
       (key) => state.status[key]
@@ -38,17 +28,9 @@ function WorkSpacePage() {
     return trueKeys[0] || "";
   });
 
-<<<<<<< HEAD
-  // Sync profileStatus when status changes
   useEffect(() => {
     setProfileStatus(currentStatusKey === "Profile");
   }, [currentStatusKey]);
-  
-=======
-  useEffect(() => {
-    setProfileStatus(currentStatusKey === "Profile");
-  }, [currentStatusKey]);
->>>>>>> rag
 
   const componentMap: Record<string, React.ComponentType> = {
     ActivityFeed,
@@ -57,64 +39,39 @@ function WorkSpacePage() {
     Mytodo,
     MyProject,
     Invite,
-<<<<<<< HEAD
-=======
     Abuse
->>>>>>> rag
   };
 
   const Status = componentMap[currentStatusKey];
 
   return (
-<<<<<<< HEAD
-    <div>
-=======
     <div className="relative h-screen overflow-hidden">
       {/* Fixed TopBar */}
->>>>>>> rag
       <header className='fixed top-0 left-0 w-full bg-white shadow z-50'>
         <TopBar />
       </header>
 
-<<<<<<< HEAD
-      <div className='flex h-screen pt-[3.3rem] mt-[-3rem]'>
-        <div className='w-20 bg-gray-800 text-white'>
-=======
       {/* Main Content Area */}
       <div className='flex h-screen pt-[2.5rem]'>
         <div className='w-20 bg-gray-800 text-white flex-shrink-0'>
->>>>>>> rag
           <SideMenu />
         </div>
 
         {profileStatus ? (
-<<<<<<< HEAD
-          <div className='flex-1 bg-white '>
-=======
           <div className='flex-1 bg-white overflow-y-auto'>
->>>>>>> rag
             <Profile />
           </div>
         ) : (
           <>
-<<<<<<< HEAD
-            <div className='w-1/5 bg-gray-100 border-l border-gray-300'>
-              <SubSideMenu />
-            </div>
-            <div className='flex-1 bg-white overflow-y-auto '>
-=======
             <div className='w-1/5 bg-gray-100 border-l border-gray-300 flex-shrink-0'>
               <SubSideMenu />
             </div>
             <div className='flex-1 bg-white overflow-y-auto'>
->>>>>>> rag
               {Status ? <Status /> : null}
             </div>
           </>
         )}
       </div>
-<<<<<<< HEAD
-=======
 
       {/* RAG Sidebar - Fixed on right side, 1/4 screen width */}
       <div
@@ -169,13 +126,8 @@ function WorkSpacePage() {
           onClick={() => setIsRagOpen(false)}
         />
       )}
->>>>>>> rag
     </div>
   );
 }
 
-<<<<<<< HEAD
 export default WorkSpacePage;
-=======
-export default WorkSpacePage;
->>>>>>> rag

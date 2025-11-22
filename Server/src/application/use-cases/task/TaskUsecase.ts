@@ -7,10 +7,7 @@ import { io } from "../../../server";
 import { TaskRequestDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
 import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
-<<<<<<< HEAD
-=======
 import { addToVectors } from "../../../infrastructure/services/ragPipeline/ConvertToVector";
->>>>>>> rag
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
   constructor(
@@ -21,20 +18,12 @@ export class TaskUsecase implements ITaskUseCase {
     const isValid = TaskMapper.validateTask(input);
     console.log(input)
     if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
-<<<<<<< HEAD
-
-    const taskEntity = TaskMapper.mapTaskToEntity(input);
-    const taskData = await this._taskRepository.create(taskEntity);
-    if (!taskData) throw new NotFoundError("Task not created");
-
-=======
    //const vectors= await addToVectors(input)
   const vectors=[1]
     const taskEntity = TaskMapper.mapTaskToEntity(input,vectors);
     const taskData = await this._taskRepository.create(taskEntity);
     if (!taskData) throw new NotFoundError("Task not created");
 
->>>>>>> rag
     const responseDTO = await TaskMapper.mapEntityToTask("Task is created",taskData);
     io.emit("new-task", {
       name: taskData.name,

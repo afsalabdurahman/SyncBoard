@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-"use client"
-=======
-
->>>>>>> rag
 
 import { useEffect, useMemo, useState } from "react"
 // import { Sidebar } from "./components/sidebar"

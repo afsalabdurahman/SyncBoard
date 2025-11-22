@@ -1,8 +1,5 @@
 import mongoose, { ObjectId,Schema,Types } from "mongoose";
-<<<<<<< HEAD
-=======
 import {PriorityTypes,StatusTypes} from "../../types/projectTypes"
->>>>>>> rag
 
 
 export class Project {

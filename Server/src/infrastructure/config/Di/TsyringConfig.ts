@@ -28,10 +28,7 @@ import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUs
 import { AuthController } from "../../../presentation/controllers/auth/UserAuthController";
 import { UpdateUserProfileUsecase } from "../../../application/use-cases/profiles/UpdateUserProfile";
 // Register dependencies
-<<<<<<< HEAD
-=======
 import { AbuseRepository } from "../../repositories/AbuseRepository";
->>>>>>> rag
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
 import { RefreshTokenUsecase } from "../../../application/use-cases/auth/shared/RefreshTokenUsecase";
 import { AdminLoginUseCase } from "../../../application/use-cases/auth/admin/LoginUsecase";
@@ -55,8 +52,6 @@ import { DatahandleUsecase } from "../../../application/use-cases/super/Datahand
 //import { LogUseCases } from "../../../application/use-cases/activity/LogUsecases";
 // container.register("LogRepository",{useClass:LogRepository})
 // container.register("LogUsecases",{useClass:LogUseCases})
-<<<<<<< HEAD
-=======
 import {RagOrchestrator} from "../../orchestrator/RagOrchestrator";
 // import {XenovaEmbeddingProvider} from "../../services/ragPipeline/EmbbedPipeline";
  import {MongoVectorStore} from "../../services/ragPipeline/VectorSerach";
@@ -70,7 +65,6 @@ container.register("MongoVectorStore",{useClass:MongoVectorStore})
 container.register("GroqLLMProvider",{useClass:GroqLLMProvider}) 
 // container.register("XenovaEmbeddingProvider",{useClass:XenovaEmbeddingProvider}) 
 container.register("RagOrchestrator",{useClass:RagOrchestrator}) 
->>>>>>> rag
 container.register("SuperAdminRepository",{useClass:SuperAdminRepository})
 container.register("DatahandleUsecase",{useClass:DatahandleUsecase})
 container.registerSingleton<ILogger>('ILogger', WinstonLoggerImpl);

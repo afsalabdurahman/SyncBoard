@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-"use client"
-=======
-
->>>>>>> rag
 
 import { useMemo, useState } from "react"
 
