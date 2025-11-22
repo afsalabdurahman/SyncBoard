@@ -26,6 +26,7 @@ Server/logs/
 Server/test/
 Server/prisma/dev.db
 Server/prisma/*.journal
+Server/receipts/
 
 # Client specific (you probably DON'T want these tracked)
 client/public/
