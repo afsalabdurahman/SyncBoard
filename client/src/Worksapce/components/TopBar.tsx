@@ -1,6 +1,13 @@
-import { FiArrowLeft, FiArrowRight, FiClock, FiSearch, FiHelpCircle } from 'react-icons/fi';
-
+import { FiArrowLeft, FiArrowRight, FiClock, FiSearch, FiHelpCircle,FiLogOut } from 'react-icons/fi';
+import { Tooltip, TooltipTrigger, TooltipContent } from "../../Custom/ui/tooltip"; // Add this import
+import { useState } from 'react';
+import { useUser } from '../hooks/workspacehooks';
+import {logout} from "../apis/workspaceapis"
+import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 const TopBar = () => {
+  const user = useUser()
+  console.log(user,"userrrrr")
+    const [isLogout, setIsSetLogut] = useState(false);
   return (
     <div className="bg-purple-900 h-10 flex items-center px-4 justify-between text-white text-sm">
       {/* Left side navigation icons */}
@@ -30,9 +37,16 @@ const TopBar = () => {
 
       {/* Right help icon */}
       <div>
+         <Tooltip>
+      <TooltipTrigger asChild>
         <button className="hover:text-gray-300">
-          <FiHelpCircle />
+          <FiLogOut onClick={()=>logout(user._id)} />
         </button>
+          </TooltipTrigger>
+            <TooltipContent>
+              Logout
+            </TooltipContent>
+            </Tooltip>
       </div>
     </div>
   );

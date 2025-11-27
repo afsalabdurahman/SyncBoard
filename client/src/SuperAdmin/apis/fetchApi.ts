@@ -1,3 +1,4 @@
+import { IdCardIcon } from "lucide-react";
 import apiService from "../../Services/apiServices/apiService";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -48,6 +49,17 @@ export const workspaceDataApi = createApi({
     }),
     fetchSubscriptionPage:builder.query({
       query:()=>`super/count/subscription`
+    }),
+    fetchAbuseReportPage:builder.query({
+      query:({page,limit})=>`workspace/abuse/reports?page=${page}&limit=${limit}`
+    }),
+    updateAbuseReportStatus:builder.mutation({
+      query:({reportId,report}) =>({
+        
+        url:`workspace/abuse/report/status/${reportId}`,
+        method:'POST',
+        body:report
+      }),  invalidatesTags: ['Workspace'],
     })
 
 
@@ -55,6 +67,8 @@ export const workspaceDataApi = createApi({
 });
 
 
-export const { useGetWorkspaceCountQuery, useGetAlluserListQuery, useUpdateWorkspaceMutation, useFetchUserPageQuery,useFetchSubscriptionPageQuery } = workspaceDataApi;
+export const { useGetWorkspaceCountQuery, useGetAlluserListQuery, useUpdateWorkspaceMutation, useFetchUserPageQuery,useFetchSubscriptionPageQuery,useFetchAbuseReportPageQuery,
+  useUpdateAbuseReportStatusMutation
+ } = workspaceDataApi;
 
 

@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, ObjectId, Types,model } from 'mongoose';
+import { approvalType } from '../../../types/taskTypes';
 export interface AbuseDocument extends Document {
   description: string;
   type: string;
@@ -6,6 +7,7 @@ export interface AbuseDocument extends Document {
   userId: Types.ObjectId;
   workspaceId:Types.ObjectId;
   severity: string;
+  status:approvalType;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +41,11 @@ const AbuseSchema = new Schema<AbuseDocument>(
       ref:'Workspace',
       // required:true 
       
+    },
+    status:{
+      type:String,
+      enum:["Approved" , "Rejected" ,"Waiting","Under Review"],
+      default:"Waiting"
     },
 
     severity: {

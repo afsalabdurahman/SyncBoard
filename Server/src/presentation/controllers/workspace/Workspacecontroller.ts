@@ -12,7 +12,7 @@ import { IWokspaceMember } from "../../../application/repositories/IWorkspaceMem
 import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";
 import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
 import { IAbuseUsecase } from "../../../application/repositories/IAbuse";
-import { AbuseRequestDTO } from "../../../application/dto/AbuseDTO";
+import { AbuseRequestDTO, UpdateAbuseStatusDTO } from "../../../application/dto/AbuseDTO";
 @injectable()
 export class WorkspaceController {
   constructor(
@@ -104,13 +104,39 @@ async abuseReport(req:Request,res:Response,next:NextFunction):Promise<void>{
 try {
   const input:AbuseRequestDTO=req.body
   const userId=req.params.id
-  console.log(userId,"req")
- await this._abuseUsecase.execute(input,userId)
+  const workspaceId=req.params.workspaceid
+ await this._abuseUsecase.execute(input,userId,workspaceId)
 res.status(HttpStatusCode.CREATED).json(ResponseMessages.CREATED)
 } catch (error) {
   console.log(error)
   next(error)
 }
+}
+async finAbuseReports(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    console.log(req.query,"paraams")
+     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+    const responseDTO=await this._abuseUsecase.findAbuseReports(page,limit,skip)
+    res.status(HttpStatusCode.OK).json({Data:responseDTO})
+  } catch (error) {
+    next(error)
+  }
+}
+async updateStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    console.log(req.body,req.params.id,"+++++++")
+    const reportId = req.params.id;
+    const input = req.body as UpdateAbuseStatusDTO;
+    
+    await this._abuseUsecase.updateStatus(input,reportId)
+    res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.SUCCESS})
+  } catch (error) {
+    next(error)
+  }
+  
+
 }
 
 }

@@ -12,11 +12,15 @@ export const sendQuery = async (userName: string, query: string) => {
     })
     return response
 }
-export const sendAbuse = async (formData:any,userId)=>{
-    const response = await apiService.post(`workspace/abuse/${userId}`,{
+export const sendAbuse = async (formData:any,userId,workspaceId)=>{
+    const response = await apiService.post(`workspace/abuse/${userId}/${workspaceId}`,{
         description:formData.description,
         type:formData.type,
         severity:formData.severity
     })
+    console.log(response,"api")
     return response.status
+}
+export const logout = async (userId:string) =>{
+    console.log("logout...",userId)
 }

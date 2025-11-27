@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 
 export type statusType = "To Do" | "In Progress" | "Completed";
 export type priorityType = "Low" | "Medium" | "High";
-export type approvalType= "Approved"|"Rejected"|"Waiting"
+export type approvalType= "Approved"|"Rejected"|"Waiting"|"Under Review"
 export class Task {
   id?: string | ObjectId;
   assignedUser?: string;

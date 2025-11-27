@@ -19,7 +19,7 @@ export default function ActivityFeed() {
   const user =state.logs.userActivityLogs.map((msg)=>msg.messages)
    return([...workspace,...project,...user])
 }) ||[]
-console.log(logs,"+++++")
+
   const isBlock = useSelector((state) => {
     console.log(state?.user?.user?.isBlock, "block state");
     return state?.user?.user.isBlock;

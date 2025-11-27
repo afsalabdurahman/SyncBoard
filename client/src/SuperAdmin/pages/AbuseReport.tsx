@@ -1,533 +1,399 @@
-
-import { useState, useMemo } from "react"
-
-//import { Header } from "../../../Custom/ui/headr"
-import { Card, CardContent } from "../../Custom/ui/card"
-import { Input } from "../../Custom/ui/input"
-import { Button } from "../../Custom/ui/button"
-import { Badge } from "../../Custom/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../Custom/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../Custom/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../Custom/ui/dropdown-menu"
-// import {
-//   Pagination,
-//   PaginationContent,
-//   PaginationItem,
-//   PaginationLink,
-//   PaginationNext,
-//   PaginationPrevious,
-// } from "../../../Custom/ui/p"
-
-import { Search, Shield, MoreVertical, Eye, Ban, CheckCircle, AlertTriangle, Filter, Download } from "lucide-react"
-
-type ReportStatus = "pending" | "investigating" | "resolved" | "dismissed"
-type ReportSeverity = "low" | "medium" | "high" | "critical"
-type ReportType = "spam" | "harassment" | "inappropriate" | "copyright" | "fraud" | "other"
-
-interface AbuseReport {
-  id: string
-  reportedBy: string
-  reportedAt: string
-  targetType: "user" | "content" | "workspace"
-  targetId: string
-  targetName: string
-  type: ReportType
-  severity: ReportSeverity
-  status: ReportStatus
-  description: string
-  evidence?: string
-  assignedTo?: string
-}
-
-// Mock abuse reports data
-const mockReports: AbuseReport[] = [
-  {
-    id: "report_001",
-    reportedBy: "user_sarah_j",
-    reportedAt: "2025-11-20T10:30:00Z",
-    targetType: "user",
-    targetId: "user_789",
-    targetName: "spam_account_42",
-    type: "spam",
-    severity: "high",
-    status: "pending",
-    description: "User is sending unsolicited promotional messages to multiple users",
-    evidence: "Screenshot of spam messages",
-    assignedTo: "Admin User",
-  },
-  {
-    id: "report_002",
-    reportedBy: "user_michael_w",
-    reportedAt: "2025-11-20T09:15:00Z",
-    targetType: "content",
-    targetId: "post_456",
-    targetName: "Blog Post: Fake Product Review",
-    type: "fraud",
-    severity: "critical",
-    status: "investigating",
-    description: "Fraudulent product review with fake testimonials and manipulated ratings",
-    evidence: "Multiple screenshots",
-    assignedTo: "Security Team",
-  },
-  {
-    id: "report_003",
-    reportedBy: "user_lisa_k",
-    reportedAt: "2025-11-20T08:45:00Z",
-    targetType: "user",
-    targetId: "user_234",
-    targetName: "aggressive_user_88",
-    type: "harassment",
-    severity: "high",
-    status: "investigating",
-    description: "User is harassing others with threatening language and personal attacks",
-    evidence: "Chat logs attached",
-  },
-  {
-    id: "report_004",
-    reportedBy: "user_james_p",
-    reportedAt: "2025-11-19T16:20:00Z",
-    targetType: "content",
-    targetId: "video_123",
-    targetName: "Video: Copyright Material",
-    type: "copyright",
-    severity: "medium",
-    status: "resolved",
-    description: "Video contains copyrighted music without proper licensing",
-    evidence: "DMCA notice",
-    assignedTo: "Legal Team",
-  },
-  {
-    id: "report_005",
-    reportedBy: "user_emma_r",
-    reportedAt: "2025-11-19T14:10:00Z",
-    targetType: "workspace",
-    targetId: "workspace_567",
-    targetName: "Fake Business LLC",
-    type: "fraud",
-    severity: "critical",
-    status: "investigating",
-    description: "Workspace appears to be a front for a phishing operation",
-    evidence: "Multiple user complaints",
-    assignedTo: "Security Team",
-  },
-  {
-    id: "report_006",
-    reportedBy: "user_david_m",
-    reportedAt: "2025-11-19T11:30:00Z",
-    targetType: "content",
-    targetId: "post_789",
-    targetName: "Comment: Offensive Language",
-    type: "inappropriate",
-    severity: "medium",
-    status: "resolved",
-    description: "Comment contains offensive language and hate speech",
-    evidence: "Screenshot",
-  },
-  {
-    id: "report_007",
-    reportedBy: "user_sophia_t",
-    reportedAt: "2025-11-19T09:00:00Z",
-    targetType: "user",
-    targetId: "user_901",
-    targetName: "bot_account_55",
-    type: "spam",
-    severity: "low",
-    status: "dismissed",
-    description: "Suspected bot account posting repetitive content",
-    evidence: "Activity logs",
-  },
-  {
-    id: "report_008",
-    reportedBy: "user_alex_b",
-    reportedAt: "2025-11-18T15:45:00Z",
-    targetType: "content",
-    targetId: "image_345",
-    targetName: "Image: Inappropriate Content",
-    type: "inappropriate",
-    severity: "high",
-    status: "resolved",
-    description: "Image contains inappropriate content that violates community guidelines",
-    evidence: "Flagged image",
-    assignedTo: "Moderation Team",
-  },
-]
-
-const statusColors: Record<ReportStatus, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  investigating: "bg-blue-100 text-blue-800",
-  resolved: "bg-green-100 text-green-800",
-  dismissed: "bg-gray-100 text-gray-800",
-}
-
-const severityColors: Record<ReportSeverity, string> = {
-  low: "bg-gray-100 text-gray-800",
-  medium: "bg-yellow-100 text-yellow-800",
-  high: "bg-orange-100 text-orange-800",
-  critical: "bg-red-100 text-red-800",
-}
-
-const typeColors: Record<ReportType, string> = {
-  spam: "bg-purple-100 text-purple-800",
-  harassment: "bg-red-100 text-red-800",
-  inappropriate: "bg-orange-100 text-orange-800",
-  copyright: "bg-blue-100 text-blue-800",
-  fraud: "bg-pink-100 text-pink-800",
-  other: "bg-gray-100 text-gray-800",
-}
-
+import React, { useEffect, useState } from 'react';
+import { AlertTriangle, CheckCircle, XCircle, Eye, Search, Clock, User, FileText } from 'lucide-react';
+import { useFetchAbuseReportPageQuery, useUpdateAbuseReportStatusMutation } from '../apis/fetchApi';
+import {Pagination} from "../../Custom/reusecomponents/Pagination"
+import { toast } from 'react-toastify';
 export  const AbuseReportsPage =()=> {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<ReportStatus | "all">("all")
-  const [severityFilter, setSeverityFilter] = useState<ReportSeverity | "all">("all")
-  const [typeFilter, setTypeFilter] = useState<ReportType | "all">("all")
-  const [currentPage, setCurrentPage] = useState(1)
+  const [page,setPage] = useState(1);
+  const {data,refetch,isLoading}=useFetchAbuseReportPageQuery({ page, limit: 5 })
+  const  [updateReportStatus,   { isLoading: isUpdating } ] = useUpdateAbuseReportStatusMutation()
+  
+  // Mock data based on your structure
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+   const [reports,setReports]=useState([]);
+   const [change,Setchange]=useState(1)
 
-  const itemsPerPage = 10
-
-  // Filter and search reports
-  const filteredReports = useMemo(() => {
-    return mockReports.filter((report) => {
-      const matchesSearch =
-        searchTerm === "" ||
-        report.targetName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        report.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        report.reportedBy.toLowerCase().includes(searchTerm.toLowerCase())
-
-      const matchesStatus = statusFilter === "all" || report.status === statusFilter
-      const matchesSeverity = severityFilter === "all" || report.severity === severityFilter
-      const matchesType = typeFilter === "all" || report.type === typeFilter
-
-      return matchesSearch && matchesStatus && matchesSeverity && matchesType
-    })
-  }, [searchTerm, statusFilter, severityFilter, typeFilter])
-
-  // Pagination
-  const totalPages = Math.ceil(filteredReports.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedReports = filteredReports.slice(startIndex, startIndex + itemsPerPage)
-
-  const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp)
-    return date.toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
-
-  // Statistics
-  const stats = {
-    total: mockReports.length,
-    pending: mockReports.filter((r) => r.status === "pending").length,
-    investigating: mockReports.filter((r) => r.status === "investigating").length,
-    critical: mockReports.filter((r) => r.severity === "critical").length,
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+   const count = Math.ceil((data?.Data?.count ?? 0) / 5);
  
+  // const [reports, setReports] = useState([
+  //   {
+  //     _id: '6924560d09e9a459517858a1',
+  //     description: 'gdrdrgdr',
+  //     type: 'Spam',
+  //     userId: '692037f73049499ebf75a1b0',
+  //     workspaceId: '692038083049499ebf75a1b4',
+  //     severity: 'Critical',
+  //     status: 'Waiting',
+  //     createdAt: '2025-11-24T12:56:45.970+00:00',
+  //     reportedBy: 'John Doe',
+  //     reportedUserName: 'user_abc123'
+  //   },
+   
+  // ]);
+useEffect(() => {
+  if (data?.Data) {
+    setReports(data.Data.reports);
+  }
+}, [data])
 
-     <main className={`transition-all duration-300 pt-16 ${sidebarCollapsed ? "ml-16" : "ml-64"}`}>
-        <div className="p-6 space-y-6">
-          {/* Page header */}
-          <div className="rounded-xl bg-white border p-5 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-lg bg-red-100 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-red-600" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-semibold text-gray-900">Abuse Reports</h1>
-                  <p className="text-sm text-gray-600 mt-1">Review and manage reported content and users</p>
-                </div>
+  
+
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [filterType, setFilterType] = useState('All');
+  const [filterSeverity, setFilterSeverity] = useState('All');
+  const [filterStatus, setFilterStatus] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const types = ['All', 'Spam', 'Harassment', 'Inappropriate Content', 'Other'];
+  const severities = ['All', 'Low', 'Medium', 'High', 'Critical'];
+  const statuses = ['All', 'Pending', 'Under Review', 'Approved', 'Dismissed','Rejected'];
+
+  const getSeverityColor = (severity) => {
+    const colors = {
+      Low: 'bg-blue-50 text-blue-700 border-blue-200',
+      Medium: 'bg-amber-50 text-amber-700 border-amber-200',
+      High: 'bg-orange-50 text-orange-700 border-orange-200',
+      Critical: 'bg-red-50 text-red-700 border-red-200'
+    };
+    return colors[severity] || 'bg-slate-50 text-slate-700';
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      Waiting: 'bg-amber-50 text-amber-700 border-amber-200',
+      UnderReview: 'bg-blue-50 text-blue-700 border-blue-200',
+      Approved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      Rejected: 'bg-slate-50 text-slate-700 border-slate-200'
+    };
+    return colors[status] || 'bg-slate-50 text-slate-700';
+  };
+
+  const filteredReports = reports.filter(report => {
+    const matchesType = filterType === 'All' || report.type === filterType;
+    const matchesSeverity = filterSeverity === 'All' || report.severity === filterSeverity;
+    const matchesStatus = filterStatus === 'All' || report.status === filterStatus;
+    const matchesSearch = report.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         report.reportedBy.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesType && matchesSeverity && matchesStatus && matchesSearch;
+  });
+
+  const handleStatusChange = async(reportId, report) => {
+    console.log(reportId,report,"22222222222")
+    try {
+      await  updateReportStatus({reportId,report}).unwrap()
+      toast.success("Report Updated")
+      setSelectedReport(null)
+      refetch()
+    } catch (error) {
+      console.log(error,"errr+++")
+      toast.error(error.data.message)
+    }
+
+    setReports(reports.map(report => 
+      report._id === reportId ? { ...report, status: newStatus } : report
+    ));
+    if (selectedReport && selectedReport._id === reportId) {
+      setSelectedReport({ ...selectedReport, status: newStatus });
+    }
+    
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+if(isLoading){
+  return(<div>
+    <p>loading...</p>
+  </div>)
+}
+console.log(reports,"sfusefk")
+  return (
+  <div className="min-h-screen bg-gray-50">
+     
+ <main className={`transition-all duration-300 pt-16 ${sidebarCollapsed ? "ml-16" : "ml-64"}`}>
+      <div className="px-8 py-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-4 gap-6 mb-6">
+          <div className="bg-white rounded-lg border border-slate-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Pending Review</p>
+                <p className="text-3xl font-semibold text-slate-900 mt-2">
+                  {reports.filter(r => r.status === 'Waiting').length}
+                </p>
               </div>
-
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                  <Filter className="h-4 w-4" />
-                  Advanced Filters
-                </Button>
-                <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                  <Download className="h-4 w-4" />
-                  Export
-                </Button>
+              <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
+                <Clock className="w-6 h-6 text-amber-600" />
               </div>
             </div>
           </div>
 
-          {/* Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Total Reports</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                    <Shield className="h-5 w-5 text-gray-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Pending</p>
-                    <p className="text-2xl font-bold text-yellow-600 mt-1">{stats.pending}</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                    <AlertTriangle className="h-5 w-5 text-yellow-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Investigating</p>
-                    <p className="text-2xl font-bold text-blue-600 mt-1">{stats.investigating}</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Eye className="h-5 w-5 text-blue-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Critical</p>
-                    <p className="text-2xl font-bold text-red-600 mt-1">{stats.critical}</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center">
-                    <AlertTriangle className="h-5 w-5 text-red-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="bg-white rounded-lg border border-slate-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Under Review</p>
+                <p className="text-3xl font-semibold text-slate-900 mt-2">
+                  {reports.filter(r => r.status === 'Under Review').length}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                <Eye className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
           </div>
 
-          {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-1">
+          <div className="bg-white rounded-lg border border-slate-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Resolved</p>
+                <p className="text-3xl font-semibold text-slate-900 mt-2">
+                  {reports.filter(r => r.status === 'Approved').length}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-slate-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Critical Cases</p>
+                <p className="text-3xl font-semibold text-slate-900 mt-2">
+                  {reports.filter(r => r.severity === 'Critical').length}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="bg-white rounded-lg border border-slate-200 p-6 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <Input
-                  placeholder="Search reports..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  className="pl-10"
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search reports by description or reporter..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
               </div>
             </div>
-
-            <Select
-              value={statusFilter}
-              onValueChange={(v: any) => {
-                setStatusFilter(v)
-                setCurrentPage(1)
-              }}
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="investigating">Investigating</SelectItem>
-                <SelectItem value="resolved">Resolved</SelectItem>
-                <SelectItem value="dismissed">Dismissed</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={severityFilter}
-              onValueChange={(v: any) => {
-                setSeverityFilter(v)
-                setCurrentPage(1)
-              }}
+              {types.map(type => <option key={type} value={type}>{type === 'All' ? 'All Types' : type}</option>)}
+            </select>
+            <select
+              value={filterSeverity}
+              onChange={(e) => setFilterSeverity(e.target.value)}
+              className="px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Severity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All severities</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={typeFilter}
-              onValueChange={(v: any) => {
-                setTypeFilter(v)
-                setCurrentPage(1)
-              }}
+              {severities.map(severity => <option key={severity} value={severity}>{severity === 'All' ? 'All Severities' : severity}</option>)}
+            </select>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All types</SelectItem>
-                <SelectItem value="spam">Spam</SelectItem>
-                <SelectItem value="harassment">Harassment</SelectItem>
-                <SelectItem value="inappropriate">Inappropriate</SelectItem>
-                <SelectItem value="copyright">Copyright</SelectItem>
-                <SelectItem value="fraud">Fraud</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+              {statuses.map(status => <option key={status} value={status}>{status === 'All' ? 'All Statuses' : status}</option>)}
+            </select>
           </div>
+        </div>
 
-          {/* Results info */}
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">
-              Showing <span className="font-medium">{paginatedReports.length}</span> of{" "}
-              <span className="font-medium">{filteredReports.length}</span> reports
-            </p>
-          </div>
+        {/* Reports List - Horizontal Cards */}
+        <div className="space-y-4">
+          {filteredReports.map((report) => (
+            <div key={report._id} className="bg-white rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
+              <div className="p-6">
+                <div className="flex items-start justify-between gap-6">
+                  {/* Left Section - Report Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start gap-4">
+                      {/* Icon */}
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        report.severity === 'Critical' ? 'bg-red-50' :
+                        report.severity === 'High' ? 'bg-orange-50' :
+                        report.severity === 'Medium' ? 'bg-amber-50' : 'bg-blue-50'
+                      }`}>
+                        <AlertTriangle className={`w-5 h-5 ${
+                          report.severity === 'Critical' ? 'text-red-600' :
+                          report.severity === 'High' ? 'text-orange-600' :
+                          report.severity === 'Medium' ? 'text-amber-600' : 'text-blue-600'
+                        }`} />
+                      </div>
 
-          {/* Reports table */}
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Report ID</TableHead>
-                    <TableHead>Target</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Severity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Reported By</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedReports.length > 0 ? (
-                    paginatedReports.map((report) => (
-                      <TableRow key={report.id} className="hover:bg-gray-50">
-                        <TableCell className="font-mono text-xs text-gray-600">{report.id}</TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium text-gray-900">{report.targetName}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              {report.targetType.charAt(0).toUpperCase() + report.targetType.slice(1)} •{" "}
-                              {report.targetId}
-                            </p>
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className={`px-2.5 py-1 text-xs font-medium rounded border ${getSeverityColor(report.severity)}`}>
+                            {report.severity}
+                          </span>
+                          <span className="px-2.5 py-1 text-xs font-medium rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                            {report.type}
+                          </span>
+                          <span className={`px-2.5 py-1 text-xs font-medium rounded border ${getStatusColor(report.status)}`}>
+                            {report.status}
+                          </span>
+                          <span className="text-xs text-slate-500">ID: {report._id.slice(-8)}</span>
+                        </div>
+
+                        <p className="text-slate-900 font-medium mb-2">{report.description}</p>
+
+                        <div className="flex items-center gap-6 text-sm text-slate-600">
+                         
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4" />
+                            <span>User: <span className="font-mono text-xs">{report.userName}</span></span>
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className={typeColors[report.type]}>
-                            {report.type.charAt(0).toUpperCase() + report.type.slice(1)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className={severityColors[report.severity]}>
-                            {report.severity.charAt(0).toUpperCase() + report.severity.slice(1)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className={statusColors[report.status]}>
-                            {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-gray-700">{report.reportedBy}</TableCell>
-                        <TableCell className="text-sm text-gray-600">{formatTime(report.reportedAt)}</TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem className="gap-2">
-                                <Eye className="h-4 w-4" />
-                                View Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="gap-2">
-                                <CheckCircle className="h-4 w-4" />
-                                Mark as Resolved
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="gap-2 text-red-600">
-                                <Ban className="h-4 w-4" />
-                                Take Action
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                        No abuse reports found
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            <span>{formatDate(report.createdAt)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                      className={cn(currentPage === 1 && "pointer-events-none opacity-50")}
-                    />
-                  </PaginationItem>
+                  {/* Right Section - Actions */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => setSelectedReport(report)}
+                      className="px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        isActive={page === currentPage}
-                        className="cursor-pointer"
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                      className={cn(currentPage === totalPages && "pointer-events-none opacity-50")}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+          {filteredReports.length === 0 && (
+            <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-slate-400" />
+              </div>
+              <p className="text-slate-600 font-medium">No reports found</p>
+              <p className="text-sm text-slate-500 mt-1">Try adjusting your filters</p>
             </div>
           )}
         </div>
+
+        {/* Detail Modal */}
+        {selectedReport && (
+          <div className="fixed inset-0 bg-slate-900 bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold text-slate-900">Report Details</h2>
+                  <button
+                    onClick={() => setSelectedReport(null)}
+                    className="text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <XCircle className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="space-y-6">
+                  {/* Status Badges */}
+                  <div className="flex items-center gap-3">
+                    <span className={`px-3 py-1.5 text-sm font-medium rounded border ${getSeverityColor(selectedReport.severity)}`}>
+                      {selectedReport.severity} Severity
+                    </span>
+                    <span className="px-3 py-1.5 text-sm font-medium rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      {selectedReport.type}
+                    </span>
+                    <span className={`px-3 py-1.5 text-sm font-medium rounded border ${getStatusColor(selectedReport.status)}`}>
+                      {selectedReport.status}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Report Description</label>
+                    <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                      <p className="text-slate-900">{selectedReport.description}</p>
+                    </div>
+                  </div>
+
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Report ID</label>
+                      <p className="text-sm font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">{selectedReport._id}</p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Reported User</label>
+                      <p className="text-sm font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">{selectedReport.userName}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">User ID</label>
+                      <p className="text-sm font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">{selectedReport.userId}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Workspace ID</label>
+                      <p className="text-sm font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">{selectedReport.workspaceId}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Created At</label>
+                      <p className="text-sm bg-slate-50 px-3 py-2 rounded border border-slate-200">{formatDate(selectedReport.createdAt)}</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-3">Change Status</label>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleStatusChange(selectedReport._id, {status:'Under Review',userId:selectedReport.userId,workspaceId:selectedReport.workspaceId,description:selectedReport.description})}
+                        className="flex-1 px-4 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        Mark Under Review
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(selectedReport._id, {status:'Resolved',userId:selectedReport.userId,workspaceId:selectedReport.workspaceId,description:selectedReport.description})}
+                        className="flex-1 px-4 py-3 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                      >
+                        Mark as Resolved
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(selectedReport._id,{status:'Dismissed',userId:selectedReport.userId,workspaceId:selectedReport.workspaceId,description:selectedReport.description})}
+                        className="flex-1 px-4 py-3 bg-slate-600 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors"
+                      >
+                        Dismiss Report
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <Pagination currentPage={page} totalPages={count}onPageChange={setPage} maxVisible={count}/>
       </main>
+      
     </div>
-  )
-}
+  );
+};
+

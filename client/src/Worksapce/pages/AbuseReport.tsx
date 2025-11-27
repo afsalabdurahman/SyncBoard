@@ -22,7 +22,8 @@ export default function AbuseReportForm() {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-  const status= await  sendAbuse(formData,memeber._id)
+  const status= await  sendAbuse(formData,memeber._id,memeber.workspace[0].workspaceId)
+  console.log(status,"statta")
   if(status==201) {
     toast.success("Report send")
   }else{
