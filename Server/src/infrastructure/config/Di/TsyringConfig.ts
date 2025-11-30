@@ -58,6 +58,10 @@ import {RagOrchestrator} from "../../orchestrator/RagOrchestrator";
 import {GroqLLMProvider} from "../../services/ragPipeline/LLMrapper";
 import {RagUseCase} from "../../../application/use-cases/rag/RagUsecase"
 import { AbuseUsecase } from "../../../application/use-cases/workspace/AbuseUsecase";
+import { TicketRepository } from "../../repositories/TicketRepository";
+import { TicketUsecase } from "../../../application/use-cases/ticket/TicketUsecase";
+container.register("TicketUsecase",{useClass:TicketUsecase})
+container.register("TicketRepository",{useClass:TicketRepository})
 container.register("AbuseRepository",{useClass:AbuseRepository})
 container.register("AbuseUsecase",{useClass:AbuseUsecase})
 container.register("RagUsecase",{useClass:RagUseCase})

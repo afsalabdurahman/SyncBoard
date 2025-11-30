@@ -11,10 +11,7 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
       super(ProjectModel)
    }
 
-   // async create(dto: Project): Promise<Project | null> {
-   //    const projectData=await ProjectModel.create(dto)
-   //    return projectData
-   // }
+
    async getAllProjects(): Promise<any | null> {
       const projects = await ProjectModel.find().sort({ createdAt: -1 });
      

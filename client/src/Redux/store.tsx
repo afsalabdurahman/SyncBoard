@@ -6,6 +6,13 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist
 import rootReducer from './rootReducer';
 import { errorMiddleware } from '../Custom/middleware/errorMiddleware';
 import {workspaceDataApi} from "../SuperAdmin/apis/fetchApi"
+import {adminDataHandleApi} from "../Admin/apis/rtqApi"
+
+const apiMiddlewares = [
+  workspaceDataApi.middleware,
+  adminDataHandleApi.middleware,
+];
+
 const persistConfig = {
   key: 'root',
   storage,
@@ -22,7 +29,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(workspaceDataApi.middleware).concat(errorMiddleware)
+    }).concat(apiMiddlewares).concat(errorMiddleware)
     
 });
 

@@ -1,6 +1,6 @@
 import { Ticket } from "../types/TiketTypes";
 import { Badge } from "../../Custom/ui/badge";
-import { Building2, Users, Clock, MessageSquare } from "lucide-react";
+import { Building2, Users, Clock, MessageSquare,Rotate3DIcon,Grid } from "lucide-react";
 import { cn } from "../../Utility/cn";
 import {formatDate} from "../../Utility/dateConverter"
 interface TicketCardProps {
@@ -53,7 +53,7 @@ const TicketCard = ({ ticket, onClick, isSelected }: TicketCardProps) => {
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-mono text-muted-foreground">{ticket.id}</span>
+            <span className="text-sm font-mono text-muted-foreground">{ticket.SLno}</span>
             <Badge variant={getStatusVariant(ticket.status)} className="capitalize">
               {ticket.status.replace("_", " ")}
             </Badge>
@@ -69,13 +69,10 @@ const TicketCard = ({ ticket, onClick, isSelected }: TicketCardProps) => {
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
-            <Users className="w-3.5 h-3.5" />
-            <span>{ticket.workspace}</span>
+            <Grid className="w-3.5 h-3.5" />
+            <span>{ticket.category}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Building2 className="w-3.5 h-3.5" />
-            <span>{ticket.company}</span>
-          </div>
+          
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">

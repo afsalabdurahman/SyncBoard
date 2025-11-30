@@ -9,7 +9,7 @@ export const uploadAttachment = async (file: File): Promise<string> => {
     try {
         const response = await axios.post(
             CLOUDINARY_URL,
-            // "https://api.cloudinary.com/v1_1/ddoxcgkv2/image/upload",
+           
             formData
         );
 

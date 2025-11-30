@@ -1,4 +1,4 @@
-import { IdCardIcon } from "lucide-react";
+
 import apiService from "../../Services/apiServices/apiService";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 

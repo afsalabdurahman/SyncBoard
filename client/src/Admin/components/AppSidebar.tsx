@@ -18,7 +18,8 @@ import {
   Gift,
   Crown,
   Building2,
-  ArrowUpCircle 
+  ArrowUpCircle,
+  TicketCheck 
   
 } from "lucide-react";
 //import { useTheme } from "next-themes"
@@ -70,6 +71,11 @@ const menuItems = [
     title:"Suscription",
     icon:CreditCard,
     id:"suscription"
+  },
+  {
+title:"Tikets",
+icon:TicketCheck,
+id:"tikets"
   },
   {
     title: "Settings",

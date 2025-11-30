@@ -98,10 +98,10 @@ const TicketDashboard = ({ tickets, onSelectTicket, selectedTicketId, onCreateTi
           ) : (
             filteredTickets.map((ticket) => (
               <TicketCard
-                key={ticket.id}
+                key={ticket.SLno}
                 ticket={ticket}
                 onClick={() => onSelectTicket(ticket)}
-                isSelected={selectedTicketId === ticket.id}
+                isSelected={selectedTicketId === ticket.SLno}
               />
             ))
           )}

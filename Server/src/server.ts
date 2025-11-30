@@ -22,7 +22,8 @@ import { errorMiddleware } from "./presentation/middleware/errorMiddleware";
 import { initSocketServer } from "./infrastructure/services/SocketService"
 import bodyParser from "body-parser"
 import Stripe from "stripe";
-import superRoutes from "./presentation/routes/superRoutes"
+import superRoutes from "./presentation/routes/superRoutes";
+import ticketRoutes from "./presentation/routes/TicketRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
 import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
 import { generatePDFReceipt } from "./infrastructure/services/GeneratePdf";
@@ -172,5 +173,6 @@ app.use("/api/subscription", suscriptionRoutes)
 app.use("/api/workspace", workspaceRoutes)
 app.use("/api/super", superRoutes);
 app.use("/api/rag", ragRoutes)
+app.use("/api/ticket",ticketRoutes)
 app.use(errorMiddleware);
 export { io };

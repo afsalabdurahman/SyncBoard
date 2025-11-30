@@ -34,6 +34,7 @@ import { useDispatch } from "react-redux";
   import { addTaskApi, deleteTaskApi, fetchTaskData, updateTaskApi } from "../../Redux/feature/task/taskThunks";
 import { usePaginationTask, useTasks } from "../hooks/taskhooks";
 import { useProjects } from "../hooks/projectshooks";
+import { useMember } from "../../Member/hooks/memeberhooks";
 interface Task {
   _id: string;
   name: string;
@@ -48,6 +49,7 @@ interface Task {
 
 
 export function TasksPage() {
+
    const {page,rowPerPage,totalItems,totalPage} = usePaginationTask()
    
  

@@ -33,32 +33,29 @@ const CreateTicketDialog = ({ open, onOpenChange, onCreateTicket }: CreateTicket
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<Ticket["priority"]>("medium");
-  const [workspace, setWorkspace] = useState("");
-  const [company, setCompany] = useState("");
-
+   const [category,setCategoty]=useState("technical")
+ console.log(category,"categoryyy")
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim() || !description.trim() || !workspace.trim() || !company.trim()) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+   
 
     onCreateTicket({
       title: title.trim(),
       description: description.trim(),
       status: "open",
       priority,
-      workspace: workspace.trim(),
-      company: company.trim(),
+      category,
+      workspaceId: "",
+      userId: ""
     });
 
     // Reset form
     setTitle("");
     setDescription("");
     setPriority("medium");
-    setWorkspace("");
-    setCompany("");
+    setCategoty("")
+
 
     toast.success("Support ticket created successfully");
 
@@ -100,27 +97,28 @@ const CreateTicketDialog = ({ open, onOpenChange, onCreateTicket }: CreateTicket
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="workspace">Workspace *</Label>
-              <Input
-                id="workspace"
-                placeholder="e.g., Engineering Team"
-                value={workspace}
-                onChange={(e) => setWorkspace(e.target.value)}
-                required
-              />
-            </div>
+               <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Category <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={category}
+                        onChange={(e) => setCategoty( e.target.value )}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      >
+                        
+                        <option value="technical">Technical Issue</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="access">Access / Permissions</option>
+                        <option value="performance">Performance Issue</option>
+                        <option value="integration">Integration Problem</option>
+                        <option value="billing">Billing / Account</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="company">Company *</Label>
-              <Input
-                id="company"
-                placeholder="e.g., TechCorp Inc."
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                required
-              />
-            </div>
+           
           </div>
 
           <div className="space-y-2">

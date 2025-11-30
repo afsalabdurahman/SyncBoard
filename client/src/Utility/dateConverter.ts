@@ -6,14 +6,29 @@ const year = date.getFullYear();
 const formattedDate = `${year}-${month}-${day}`;
 return formattedDate
 }
-export const formatDate = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+export const formatDate = (date: Date | string = new Date()) => {
+  const d = date instanceof Date ? date : new Date(date);
+  const now = new Date();
+  const diff = now.getTime() - d.getTime();
 
-    if (hours < 1) return "Just now";
-    if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    return date.toLocaleDateString();
-  };
+  // Convert differences
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (hours < 1) return "Just now";
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7) return `${days}d ago`;
+
+  return d.toLocaleDateString(); 
+};
+
+ export const formatTimestamp = (date: string | Date) => {
+  const d = new Date(date); // convert string → Date
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(d);
+};
+;

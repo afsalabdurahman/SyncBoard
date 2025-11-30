@@ -12,6 +12,7 @@ import forwardReducer from "./feature/ForwardSlice"
 import countReducer from "./feature/count/countSlice"
 import taskReducer from "./feature/task/taskSlice";
 import {workspaceDataApi} from "../SuperAdmin/apis/fetchApi"
+import {adminDataHandleApi} from "../Admin/apis/rtqApi"
 const rootReducer = combineReducers({
   register: registerReducer,
   status: StatusSliceReducer,
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
   suscription: subscriptionReducer,
   forward: forwardReducer,
   Supercount: countReducer,
-    [workspaceDataApi.reducerPath]: workspaceDataApi.reducer
+    [workspaceDataApi.reducerPath]: workspaceDataApi.reducer,
+    [adminDataHandleApi.reducerPath]:adminDataHandleApi.reducer
 });
 
 export default rootReducer;

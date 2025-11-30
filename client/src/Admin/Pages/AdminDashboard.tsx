@@ -7,6 +7,7 @@ import { UsersPage } from "../components/UsersPage";
 import { TasksPage } from "../components/TasksPage";
 import { TaskApproval } from "../components/TaskApproval";
 import SubscriptionPage from "../Pages/SuscriptionPages";
+import Tikets from "../Pages/Tikets"
 import { useSelector } from "react-redux";
 
 
@@ -14,6 +15,7 @@ const SettingsPage = lazy(() => import("../components/SettingsPage"));
 const ProjectsPage = lazy(()=>import("../components/ProjectsPage"));
 export default function AdminDashboard() {
   const isForward = useSelector((state) => state.forward);
+  console.log(isForward,"formwsdd")
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   useEffect(() => {
@@ -49,6 +51,8 @@ export default function AdminDashboard() {
         return <TaskApproval />;
       case "suscription":
         return <SubscriptionPage />;
+        case "tikets":
+          return <Tikets/>
       default:
         return <DashboardPage />;
     }
