@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { Ticket, TicketStatus } from "../types/TiketTypes";
-import { Button } from "../../Custom/ui/button";
-import { Textarea } from "../../Custom/ui/textarea";
-import { Badge } from "../../Custom/ui/badge";
-import { X, Send, Building2, Users, Clock, AlertCircle, RotateCcw,Rotate3DIcon } from "lucide-react";
-import { cn } from "../../Utility/cn";
-import {formatTimestamp} from "../../Utility/dateConverter"
+import { Ticket } from "../../pages/TicketIndex";
+import { Button } from "../../../Custom/ui/button";
+import { Textarea } from "../../../Custom/ui/textarea";
+import { Badge } from "../../../Custom/ui/badge";
+import { X, Send, Building2, Users, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { cn } from "../../../Utility/cn";
+
 interface TicketDetailProps {
   ticket: Ticket;
   onClose: () => void;
@@ -16,7 +16,7 @@ interface TicketDetailProps {
 const TicketDetail = ({ ticket, onClose, onSendMessage, onReopenTicket }: TicketDetailProps) => {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-const [locatStatus,setLocalstatus]=useState<TicketStatus>(ticket.status)
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -27,7 +27,7 @@ const [locatStatus,setLocalstatus]=useState<TicketStatus>(ticket.status)
 
   const handleSend = () => {
     if (message.trim()) {
-      onSendMessage(ticket._id, message);
+      onSendMessage(ticket.id, message);
       setMessage("");
     }
   };
@@ -69,10 +69,14 @@ const [locatStatus,setLocalstatus]=useState<TicketStatus>(ticket.status)
     }
   };
 
- const callRepon =(id)=>{
-  setLocalstatus("in_progress")
-  onReopenTicket(id)
- }
+  const formatTimestamp = (date: Date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      month: "short",
+      day: "numeric",
+    }).format(date);
+  };
 
   return (
     <div className="flex flex-col h-full bg-card">
@@ -81,7 +85,7 @@ const [locatStatus,setLocalstatus]=useState<TicketStatus>(ticket.status)
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm font-mono text-muted-foreground">{ticket.SLno}</span>
+              <span className="text-sm font-mono text-muted-foreground">{ticket.id}</span>
               <Badge variant={getStatusVariant(ticket.status)} className="capitalize">
                 {ticket.status.replace("_", " ")}
               </Badge>
@@ -99,10 +103,13 @@ const [locatStatus,setLocalstatus]=useState<TicketStatus>(ticket.status)
 
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
-            <Rotate3DIcon className="w-4 h-4" />
-            <span>{ticket.category}</span>
+            <Users className="w-4 h-4" />
+            <span>{ticket.workspace}</span>
           </div>
-         
+          <div className="flex items-center gap-1.5">
+            <Building2 className="w-4 h-4" />
+            <span>{ticket.company}</span>
+          </div>
           <div className="flex items-center gap-1.5">
             <Clock className="w-4 h-4" />
             <span>Created {formatTimestamp(ticket.createdAt)}</span>
@@ -160,14 +167,14 @@ const [locatStatus,setLocalstatus]=useState<TicketStatus>(ticket.status)
 
       {/* Message Input / Reopen Section */}
       <div className="border-t border-border p-4">
-        {locatStatus === "resolved" ? (
+        {ticket.status === "resolved" ? (
           <div className="space-y-3">
             <div className="bg-muted/50 rounded-lg p-4 text-center">
               <p className="text-sm text-muted-foreground mb-3">
                 This ticket has been resolved. If you're still experiencing the issue, you can reopen the ticket to continue the conversation.
               </p>
               <Button 
-                onClick={() => callRepon(ticket._id)} 
+                onClick={() => onReopenTicket(ticket.id)} 
                 className="gap-2"
                 variant="outline"
               >

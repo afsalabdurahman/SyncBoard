@@ -153,5 +153,11 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
               return {items,totalItems}
         
       }
+      async changeOnlineStatus(userId: Types.ObjectId): Promise<boolean> {
+        console.log(userId,"in DBBD")
+       const rest= await UserModel.findByIdAndUpdate(userId,{isOnline:false},{new:true})
+       console.log(rest,"fom")
+        return true
+      }
   }
 

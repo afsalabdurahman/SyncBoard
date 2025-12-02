@@ -1,4 +1,4 @@
-import express from "express";
+
 import { Router } from "express";
 import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";

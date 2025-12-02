@@ -3,11 +3,8 @@ const router = express.Router();
 import { AuthController } from "../controllers/auth/UserAuthController";
 import { container } from "../../infrastructure/config/Di/TsyringConfig";
 import { OTPController } from "../controllers/otp/OTPController";
-//import { NodemailerService } from "../../infrastructure/services/NodeMailerService";
 import { AdminAuthController } from "../controllers/auth/AdminAuthController";
 import { sharedController } from "../controllers/auth/SharedController";
-//import { authMiddelware } from "../middleware/authMiddleware";
-//import { roleMiddleware } from "../middleware/roleMiddleware";
 import { SuperadminAuthController } from "../controllers/auth/SuperadminAuthController"
 const authController = container.resolve(AuthController);
 const otpController = container.resolve(OTPController);
@@ -34,5 +31,8 @@ router.post("/super/login", (req, res, next) => {
 router.post("/refresh-token", (req, res, next) =>
   sharedAuthController.generateNewToken(req, res, next)
 );
+router.patch("/logout/:id",(req,res,next)=>{
+  authController.logout(req,res,next)
+})
 
 export default router;

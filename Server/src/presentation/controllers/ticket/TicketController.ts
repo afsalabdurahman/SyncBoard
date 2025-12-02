@@ -4,6 +4,7 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 import { Request,Response,NextFunction } from "express";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { ticketRequestDTO } from "../../../application/dto/TiketDTO";
+import { TicketStatus } from "../../../types/tiketTypes";
 
 @injectable()
 export class TicketController {
@@ -44,6 +45,18 @@ async updateTicketMsg(req:Request,res:Response,next:NextFunction):Promise<void>{
     } catch (error) {
         console.log(error)
         next(error)
+    }
+}
+async updateTicketStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
+    try {
+        console.log(req.query,req.params,"%%%%%%6666")
+        const status=req.query.status as TicketStatus
+        console.log(status,"stfdj")
+        const ticketId=req.params.id
+        await this._ticketUsecases.updateTicketStatus(ticketId,status)
+        res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
+    } catch (error) {
+        console.log(error,"WERERERRR")
     }
 }
 

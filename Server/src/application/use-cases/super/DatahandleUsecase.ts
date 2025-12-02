@@ -35,5 +35,9 @@ export class DatahandleUsecase implements IDatahandleUsecase {
        const responseDTO = DatahandleMapper.mapSubscriptionToResponse(result)
         return responseDTO
     }
+    async fetchTickets(): Promise<any> {
+        const  result = await this._superAdminRepository.getAllTickets()
+        return result
+    }
 
 }

@@ -13,4 +13,5 @@ router.get("/counts",memberAuth,superController.totalCount.bind(superController)
 router.get("/count/users",superController.totalUsersCount.bind(superController))
 router.get("/user/details/:id",superController.fetchAUser.bind(superController)) 
 router.get("/count/subscription",superController.fetchSubscription.bind(superController))
+router.get("/tickets",superController.fetchTickets.bind(superController))
 export default router;

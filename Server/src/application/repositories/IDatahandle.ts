@@ -5,4 +5,5 @@ fetchDataworkspace():Promise<CountWorkspaceReponseDTO[]>
 fetchAllUsers():Promise<any>
 fetchAUser(userId:string):Promise<any>
 fetchSubscriptions():Promise<any>
+fetchTickets():Promise<any>
 }

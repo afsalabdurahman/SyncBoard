@@ -10,6 +10,7 @@ import {Workspaces} from "../pages/Workspace"
 import {AnalyticsPage} from "../pages/Analytic"
 import {SubscriptionsPage} from "../pages/Subscription"
 import { SupportTicketsPage } from "../pages/SupportTickets"
+import {TicketPage} from"../pages/Ticket.Page"
 import {AbuseReportsPage} from "../pages/AbuseReport"
 export const Layout = () =>{
  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -28,7 +29,7 @@ const renderPage = () => {
       case "Analytics":
         return <AnalyticsPage />;
         case "Support Tickets":
-          return <SupportTicketsPage/>;
+          return <TicketPage/>;
           case "Abuse Reports":
             return<AbuseReportsPage/>;
       default:

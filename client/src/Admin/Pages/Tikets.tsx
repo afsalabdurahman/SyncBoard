@@ -6,11 +6,13 @@ import { useCreateTicketsMutation, useGetTicketsQuery,useUpdateMsgMutation } fro
 import { toast } from "react-toastify";
 import { useMember } from "../../Member/hooks/memeberhooks";
 import { skipToken } from "@reduxjs/toolkit/query/react";
+import { useUpdateTicketStatusMutation } from "../../SuperAdmin/apis/fetchApi";
 
 
 
 
 const Tikets = () => {
+  const [updateTicketStatus]=useUpdateTicketStatusMutation()
     const user=useMember()
    const userId=user._id
    const workspaceId=user.workspace[0].workspaceId
@@ -26,89 +28,8 @@ const Tikets = () => {
   } = useGetTicketsQuery(workspaceId ?? skipToken);
 
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-console.log(tickets,"tiketsss")
-  // Mock data
-  // const [tickets, setTickets] = useState<Ticket[]>([
-  //   {
-  //     id: "TKT-001",
-  //     title: "Unable to access workspace settings",
-  //     description: "When I try to access the workspace settings page, I get a 403 error. This is blocking our team from updating permissions.",
-  //     status: "open",
-  //     category: "sample",
-  //     priority: "high",
-  //     createdAt: new Date("2024-01-15T10:30:00"),
-  //     updatedAt: new Date("2024-01-15T10:30:00"),
-  //     messages: [
-  //       {
-  //         id: "msg-1",
-  //         sender: "admin",
-  //         content: "Unable to access workspace settings. Getting 403 error.",
-  //         timestamp: new Date("2024-01-15T10:30:00"),
-  //       },
-  //     ],
-  //     workspaceId: "",
-  //     userId: ""
-  //   },
-  //   {
-  //     id: "TKT-002",
-  //     title: "Billing invoice not generated",
-  //     description: "The monthly billing invoice for December hasn't been generated yet. Need this urgently for accounting.",
-  //     status: "in_progress",
-  //     priority: "medium",
-  //     category: "sapm1",
-  //     createdAt: new Date("2024-01-14T14:20:00"),
-  //     updatedAt: new Date("2024-01-15T09:15:00"),
-  //     messages: [
-  //       {
-  //         id: "msg-2",
-  //         sender: "admin",
-  //         content: "December invoice is missing. Need it ASAP for accounting.",
-  //         timestamp: new Date("2024-01-14T14:20:00"),
-  //       },
-  //       {
-  //         id: "msg-3",
-  //         sender: "super_admin",
-  //         content: "Looking into this. Checking the billing system logs now.",
-  //         timestamp: new Date("2024-01-15T09:15:00"),
-  //       },
-  //     ],
-  //     workspaceId: "",
-  //     userId: ""
-  //   },
-  //   {
-  //     id: "TKT-003",
-  //     title: "API rate limit issues",
-  //     description: "We're experiencing frequent rate limit errors on the API endpoint /api/v1/users even though we're within our plan limits.",
-  //     status: "resolved",
-  //     priority: "critical",
-  //     category: "mmmm",
-  //     createdAt: new Date("2024-01-13T08:00:00"),
-  //     updatedAt: new Date("2024-01-14T16:30:00"),
-  //     messages: [
-  //       {
-  //         id: "msg-4",
-  //         sender: "admin",
-  //         content: "Getting rate limited on /api/v1/users endpoint. We're within our limits.",
-  //         timestamp: new Date("2024-01-13T08:00:00"),
-  //       },
-  //       {
-  //         id: "msg-5",
-  //         sender: "super_admin",
-  //         content: "Found the issue - there was a misconfiguration in the rate limiter. Fixed now.",
-  //         timestamp: new Date("2024-01-14T15:00:00"),
-  //       },
-  //       {
-  //         id: "msg-6",
-  //         sender: "super_admin",
-  //         content: "Your issue has been resolved. Can you please verify that everything is working correctly now?",
-  //         timestamp: new Date("2024-01-14T16:30:00"),
-  //       },
-  //     ],
-  //     workspaceId: "",
-  //     userId: ""
-  //   },
 
-  // ]);
+
 
   const handleSendMessage = async (ticketId: string, message: string) => {
     console.log(ticketId,message)
@@ -134,34 +55,15 @@ try {
   console.log(error)
 }
 
-    // setTickets((prevTickets) =>
-    //   prevTickets.map((ticket) => {
-    //     if (ticket.id === ticketId) {
-    //       const newMessage: Message = {
-    //         id: `msg-${Date.now()}`,
-    //         sender: "admin",
-    //         content: message,
-    //         timestamp: new Date(),
-    //       };
-          
-    //       const updatedTicket = {
-    //         ...ticket,
-    //         messages: [...ticket.messages, newMessage],
-    //         updatedAt: new Date(),
-    //       };
-
-    //       if (selectedTicket?.id === ticketId) {
-    //         setSelectedTicket(updatedTicket);
-    //       }
-
-    //       return updatedTicket;
-    //     }
-    //     return ticket;
-    //   })
-    // );
   };
 
-  const handleReopenTicket = (ticketId: string) => {
+  const handleReopenTicket = async(ticketId: string) => {
+    try {
+       await updateTicketStatus({ticketId,newStatus:"in_progress"})
+    } catch (error) {
+      console.log(error)
+    }
+   
     // setTickets((prevTickets) =>
     //   prevTickets.map((ticket) => {
     //     if (ticket.id === ticketId) {

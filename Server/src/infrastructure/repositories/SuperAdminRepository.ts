@@ -3,7 +3,8 @@ import { UserModel } from "../database/models/UserModel";
 import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose from "mongoose";
-import { Types } from "mongoose";
+import { TicketModel } from "../database/models/TicketModel";
+
 export class SuperAdminRepository implements ISuperAdminRepository {
 
   async getAllCount(): Promise<any> {
@@ -404,5 +405,9 @@ export class SuperAdminRepository implements ISuperAdminRepository {
   return result
   }
   
+async getAllTickets(): Promise<any> {
+  const result= await TicketModel.find()
+  return result
+}
 
 }

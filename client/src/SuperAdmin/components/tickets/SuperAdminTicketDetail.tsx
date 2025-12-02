@@ -1,22 +1,28 @@
 import { useState, useRef, useEffect } from "react";
-import { Ticket, TicketStatus } from "../../../Admin/types/TiketTypes";
+import {  TicketStatus } from "../../pages/TicketIndex";
+import {Ticket} from "../../../Admin/types/TiketTypes"
 import { Button } from "../../../Custom/ui/button";
 import { Textarea } from "../../../Custom/ui/textarea";
 import { Badge } from "../../../Custom/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select";
-import { ScrollArea } from "../../../Custom/ui/s";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../../Custom/ui/dialog";
+import { ScrollArea } from "../../../Custom/ui/scrollArea";
 import { Send, Building2, Users, Clock, AlertCircle, CheckCircle2, PlayCircle, RotateCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { toast } from "@/components/ui/use-toast";
-
+import { cn } from "../../../Utility/cn";
+import { toast } from "react-toastify";
+import {formatDate} from"../../../Utility/dateConverter"
+import Tikets from "../../../Admin/Pages/Tikets";
 interface SuperAdminTicketDetailProps {
   ticket: Ticket;
   onSendMessage: (ticketId: string, message: string) => void;
   onStatusChange: (ticketId: string, status: TicketStatus) => void;
+  onClose?: () => void;
 }
 
-const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: SuperAdminTicketDetailProps) => {
+const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange, onClose }: SuperAdminTicketDetailProps) => {
   const [message, setMessage] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loacState,setLocalstate]=useState<TicketStatus>(ticket.status)
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -29,12 +35,10 @@ const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: Super
 
   const handleSend = () => {
     if (message.trim()) {
-      onSendMessage(ticket.id, message);
+      
+      onSendMessage(ticket._id, message);
       setMessage("");
-      // Scroll to bottom after sending message
-      setTimeout(() => {
-        scrollToBottom();
-      }, 100);
+      setIsDialogOpen(false);
     }
   };
 
@@ -45,12 +49,11 @@ const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: Super
     }
   };
 
-  const handleStatusChange = (newStatus: string) => {
-    onStatusChange(ticket.id, newStatus as TicketStatus);
-    toast({
-      title: "Status Updated",
-      description: `Ticket status changed to ${newStatus.replace("_", " ")}`,
-    });
+  const handleStatusChange = (newStatus: TicketStatus) => {
+   
+     setLocalstate(newStatus)
+    onStatusChange(ticket._id, newStatus as TicketStatus);
+   
   };
 
   const getStatusVariant = (status: TicketStatus) => {
@@ -72,16 +75,7 @@ const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: Super
     return colors[priority as keyof typeof colors];
   };
 
-  const formatDate = (date: Date) => {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return "Just now";
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
-    return date.toLocaleDateString();
-  };
+ 
 
   const getStatusIcon = (status: TicketStatus) => {
     switch (status) {
@@ -99,73 +93,27 @@ const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: Super
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="border-b border-border/50 px-8 py-6 flex-shrink-0 animate-fade-in">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Title & Status */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-mono text-muted-foreground/70 tracking-wider">
-                {ticket.id}
-              </span>
-              <Badge 
-                variant={getStatusVariant(ticket.status)} 
-                className="gap-1.5 px-3 py-1 rounded-full"
-              >
-                {getStatusIcon(ticket.status)}
-                <span className="text-xs font-medium">
-                  {ticket.status.replace("_", " ")}
-                </span>
-              </Badge>
-            </div>
-            <h2 className="text-3xl font-semibold text-foreground tracking-tight">
-              {ticket.title}
-            </h2>
-            <p className="text-base text-muted-foreground/80 leading-relaxed">
-              {ticket.description}
-            </p>
-          </div>
-
-          {/* Ticket Metadata Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-muted-foreground/60">
-                <Building2 className="w-3.5 h-3.5" />
-                <p className="text-xs font-medium uppercase tracking-wide">Company</p>
+      <div className="border-b border-border p-4 sm:p-6 flex-shrink-0">
+        <div className="space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="text-xs sm:text-sm font-mono text-muted-foreground">{ticket.id}</span>
+                <Badge variant={getStatusVariant(ticket.status)} className="gap-1">
+                  {getStatusIcon(ticket.status)}
+                  <span className="text-xs">{ticket.status.replace("_", " ")}</span>
+                </Badge>
               </div>
-              <p className="text-sm font-medium text-foreground pl-5">{ticket.company}</p>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-muted-foreground/60">
-                <Users className="w-3.5 h-3.5" />
-                <p className="text-xs font-medium uppercase tracking-wide">Workspace</p>
-              </div>
-              <p className="text-sm font-medium text-foreground pl-5">{ticket.workspace}</p>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <AlertCircle className={cn("w-3.5 h-3.5", getPriorityColor(ticket.priority))} />
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60">Priority</p>
-              </div>
-              <p className={cn("text-sm font-medium capitalize pl-5", getPriorityColor(ticket.priority))}>
-                {ticket.priority}
-              </p>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-muted-foreground/60">
-                <Clock className="w-3.5 h-3.5" />
-                <p className="text-xs font-medium uppercase tracking-wide">Updated</p>
-              </div>
-              <p className="text-sm font-medium text-foreground pl-5">{formatDate(ticket.updatedAt)}</p>
+              <h2 className="text-lg sm:text-2xl font-bold text-foreground mb-2 break-words">{ticket.title}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground break-words">{ticket.description}</p>
             </div>
           </div>
 
           {/* Status Control */}
-          <div className="pt-2">
-            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60 mb-3 block">
-              Change Status
-            </label>
-            <Select value={ticket.status} onValueChange={handleStatusChange}>
-              <SelectTrigger className="w-full md:w-64 h-11 rounded-lg border-border/50">
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-foreground mb-2 block">Change Status</label>
+            <Select value={loacState} onValueChange={handleStatusChange}>
+              <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -176,52 +124,71 @@ const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: Super
               </SelectContent>
             </Select>
           </div>
+
+          {/* Ticket Context */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Company</p>
+                <p className="text-xs sm:text-sm font-medium truncate">{ticket.company}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Workspace</p>
+                <p className="text-xs sm:text-sm font-medium truncate">{ticket.workspace}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <AlertCircle className={cn("w-4 h-4 flex-shrink-0", getPriorityColor(ticket.priority))} />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Priority</p>
+                <p className={cn("text-xs sm:text-sm font-medium capitalize", getPriorityColor(ticket.priority))}>
+                  {ticket.priority}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Updated</p>
+                <p className="text-xs sm:text-sm font-medium">{formatDate(ticket.updatedAt)}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 px-8 py-8 [&>[data-radix-scroll-area-viewport]]:scroll-smooth">
-        <div className="max-w-4xl mx-auto space-y-6 pb-4">
-          {ticket.messages.map((msg, index) => (
+      <ScrollArea className="flex-1 min-h-0">
+        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+          {ticket.messages.map((msg) => (
             <div
               key={msg.id}
               className={cn(
-                "flex animate-fade-in",
+                "flex",
                 msg.sender === "admin" ? "justify-start" : "justify-end"
               )}
-              style={{ animationDelay: `${index * 50}ms` }}
             >
               <div
                 className={cn(
-                  "max-w-[75%] rounded-2xl px-5 py-4 shadow-sm",
+                  "max-w-[85%] sm:max-w-[70%] rounded-lg p-3 sm:p-4",
                   msg.sender === "admin"
-                    ? "bg-muted/50 text-foreground border border-border/30"
-                    : "bg-primary/95 text-primary-foreground"
+                    ? "bg-muted text-foreground"
+                    : "bg-primary text-primary-foreground"
                 )}
               >
-                <p className="text-[15px] leading-relaxed mb-2">{msg.content}</p>
-                <div className="flex items-center gap-2">
-                  <p
-                    className={cn(
-                      "text-[11px] font-medium uppercase tracking-wider",
-                      msg.sender === "admin" ? "text-muted-foreground/60" : "text-primary-foreground/60"
-                    )}
-                  >
-                    {msg.sender === "admin" ? "Admin" : "Super Admin"}
-                  </p>
-                  <span className={cn(
-                    "text-[11px]",
-                    msg.sender === "admin" ? "text-muted-foreground/50" : "text-primary-foreground/50"
-                  )}>•</span>
-                  <p
-                    className={cn(
-                      "text-[11px]",
-                      msg.sender === "admin" ? "text-muted-foreground/50" : "text-primary-foreground/50"
-                    )}
-                  >
-                    {formatDate(msg.timestamp)}
-                  </p>
-                </div>
+                <p className="text-xs sm:text-sm mb-1 break-words">{msg.content}</p>
+                <p
+                  className={cn(
+                    "text-xs",
+                    msg.sender === "admin" ? "text-muted-foreground" : "text-primary-foreground/70"
+                  )}
+                >
+                  {formatDate(msg.timestamp)} • {msg.sender === "admin" ? "Admin" : "Super Admin"}
+                </p>
               </div>
             </div>
           ))}
@@ -229,31 +196,40 @@ const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange }: Super
         </div>
       </ScrollArea>
 
-      {/* Message Input */}
-      <div className="border-t border-border/50 px-8 py-6 flex-shrink-0 bg-muted/20">
-        <div className="max-w-4xl mx-auto space-y-4">
-          <Textarea
-            placeholder="Type your message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="min-h-[120px] resize-none rounded-xl border-border/50 bg-background focus-visible:ring-1 focus-visible:ring-primary/20 text-[15px] leading-relaxed"
-          />
-          <div className="flex justify-between items-center">
-            <p className="text-xs text-muted-foreground/60 tracking-wide">
-              Press <kbd className="px-1.5 py-0.5 text-[10px] bg-muted rounded">Enter</kbd> to send, 
-              <kbd className="px-1.5 py-0.5 text-[10px] bg-muted rounded ml-1">Shift + Enter</kbd> for new line
-            </p>
-            <Button 
-              onClick={handleSend} 
-              disabled={!message.trim()} 
-              className="gap-2 h-11 px-6 rounded-lg shadow-sm hover:shadow-md transition-all"
-            >
+      {/* Send Message Button */}
+      <div className="border-t border-border p-3 sm:p-4 flex-shrink-0">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-full gap-2" size="lg">
               <Send className="w-4 h-4" />
               Send Message
             </Button>
-          </div>
-        </div>
+          </DialogTrigger>
+          <DialogContent className="w-[95vw] max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="text-sm sm:text-base">Send Message to {ticket.company} - {ticket.workspace}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <Textarea
+                placeholder="Type your response..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="min-h-[150px] sm:min-h-[200px] resize-none"
+                autoFocus
+              />
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <p className="text-xs text-muted-foreground">
+                  Press Enter to send, Shift + Enter for new line
+                </p>
+                <Button onClick={handleSend} disabled={!message.trim()} className="gap-2 w-full sm:w-auto">
+                  <Send className="w-4 h-4" />
+                  Send
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

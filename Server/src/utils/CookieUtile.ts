@@ -20,3 +20,15 @@ export const setTokensInCookies = (res: Response, accessToken: string, refreshTo
     maxAge: REFRESH_TOKEN_MAX_AGE,
   });
 };
+export const removeTokensInCookies = (res:Response):void=>{
+     res.clearCookie('accessToken', {
+        httpOnly: true,
+      secure: false,
+        sameSite: 'lax',
+      });
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+      });
+}

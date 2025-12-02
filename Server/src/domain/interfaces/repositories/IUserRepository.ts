@@ -1,4 +1,4 @@
-import { Date } from "mongoose";
+import mongoose, { Date, Types } from "mongoose";
 import { User } from "../../entities/User";
 import { ObjectId } from "mongoose";
 import {IBaseRepository} from "./IBaseReposiory"
@@ -24,4 +24,5 @@ export interface IUserRepository extends IBaseRepository<User|null>  {
   updateOnlineStatus(userId: string): Promise<void>;
   countUser():Promise<any>
   paginationUser(workspaceId:string|ObjectId,page:number,limit:number,skip:number):Promise<any>
+  changeOnlineStatus(userId:Types.ObjectId):Promise<boolean>
 }

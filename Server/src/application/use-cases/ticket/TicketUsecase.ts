@@ -30,5 +30,10 @@ export class TicketUsecase implements ITicketUsecase{
         await this._ticketRepository.updateMsg(stringToMongoObj(ticketId),msg)
         
     }
-   
+   async updateTicketStatus(ticketId: string, status: "open" | "in_progress" | "resolved" | "reopened"): Promise<boolean> {
+    console.log(ticketId,status,"usecadewda")   
+    await this._ticketRepository.updateTicketStatus(stringToMongoObj( ticketId),status)
+       
+       return true
+   }
 }

@@ -52,5 +52,13 @@ export class SuperController {
       console.log(error)
     }
   }
-
+async fetchTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    const tickets=await this._dataHandleUsecase.fetchTickets();
+res.status(HttpStatusCode.OK).json(tickets)
+  } catch (error) {
+    console.log(error)
+    next(error)
+  }
+}
 }

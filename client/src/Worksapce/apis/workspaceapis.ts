@@ -23,4 +23,8 @@ export const sendAbuse = async (formData:any,userId,workspaceId)=>{
 }
 export const logout = async (userId:string) =>{
     console.log("logout...",userId)
+     const response=await apiService.patch(`/auth/logout/${userId}`)
+console.log(response,"reponse")
+return response.status
+   
 }

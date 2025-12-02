@@ -14,4 +14,5 @@ let ticketController = container.resolve(TicketController);
 router.post("/create",ticketController.createTicket.bind(ticketController));
 router.get("/mytickets/:workspaceid",ticketController.findMyTickets.bind(ticketController))
 router.post("/update/message/:id",ticketController.updateTicketMsg.bind(ticketController))
+router.patch("/update/status/:id",ticketController.updateTicketStatus.bind(ticketController))
 export default router;

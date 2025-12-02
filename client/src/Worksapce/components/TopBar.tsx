@@ -4,9 +4,17 @@ import { useState } from 'react';
 import { useUser } from '../hooks/workspacehooks';
 import {logout} from "../apis/workspaceapis"
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
+import { useNavigate } from "react-router";
 const TopBar = () => {
+  const navigate = useNavigate()
   const user = useUser()
   console.log(user,"userrrrr")
+  const handleLogout =  async()=>{
+   logout(user._id).then((res)=>{
+    if(res==204) navigate("/login")
+   })
+   
+  }
     const [isLogout, setIsSetLogut] = useState(false);
   return (
     <div className="bg-purple-900 h-10 flex items-center px-4 justify-between text-white text-sm">
@@ -40,7 +48,7 @@ const TopBar = () => {
          <Tooltip>
       <TooltipTrigger asChild>
         <button className="hover:text-gray-300">
-          <FiLogOut onClick={()=>logout(user._id)} />
+          <FiLogOut onClick={()=>handleLogout()} />
         </button>
           </TooltipTrigger>
             <TooltipContent>

@@ -123,3 +123,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* custom */
+/* ----------------------------------------------------
+   FORCE SHOW SCROLLBAR for .custom-scrollbar
+   Overrides all Tailwind base resets + global hides
+---------------------------------------------------- */
+.custom-scrollbar {
+  overflow-y: auto !important;
+  scrollbar-width: auto !important;
+  -ms-overflow-style: auto !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #a1a1aa;
+  border-radius: 4px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #888;
+}

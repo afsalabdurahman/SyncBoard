@@ -2,4 +2,5 @@ import { adminResponseDTO, LoginRequestDTO ,SuperadminResponseDTO} from "../../d
 export interface ILoginUseCase {
 execute(input:LoginRequestDTO):Promise<adminResponseDTO|null>
 superAdmin(input:LoginRequestDTO):Promise<SuperadminResponseDTO|null>
+
 }

@@ -6,9 +6,10 @@ import {
 } from "../../../application/dto/AuthDTOs";
 import { injectable, inject } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { setTokensInCookies } from "../../../utils/CookieUtile";
+import { removeTokensInCookies, setTokensInCookies } from "../../../utils/CookieUtile";
 import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";
+import { ResponseMessages } from "../../../common/erroResponse";
 
 @injectable()
 export class AuthController {
@@ -45,5 +46,16 @@ export class AuthController {
       next(error)
     }
    
+    }
+     async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+   try {
+       const userId=req.params.id
+       console.log(userId,"userId")
+         await this._loginUsecase.logoutUser(userId)
+          removeTokensInCookies(res)
+          res.status(HttpStatusCode.NO_CONTENT).json({message:ResponseMessages.LOGGED_OUT})
+   } catch (error) {
+    next(error)
+   }
     }
 }

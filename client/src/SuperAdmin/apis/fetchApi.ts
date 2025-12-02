@@ -26,11 +26,11 @@ export const workspaceDataApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000/api/'
   }),
-  tagTypes: ['Workspace', 'Members'],
+  tagTypes: ['Workspace', 'Members','Tickets'],
   endpoints: (builder) => ({
     getWorkspaceCount: builder.query({
       query: () => `super/count/workspace`,
-      invalidatesTags: ['Workspace']
+      invalidatesTags: ['Workspace',]
     }),
     getAlluserList: builder.query({
       query: (workspaceslug, page, limit) => `workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}`
@@ -60,15 +60,26 @@ export const workspaceDataApi = createApi({
         method:'POST',
         body:report
       }),  invalidatesTags: ['Workspace'],
-    })
-
-
+    }),fetchAllTicketsPage: builder.query({
+      query: () => `super/tickets`,
+    providesTags: ['Tickets'],
+    }),
+    updateTicketStatus: builder.mutation({
+  query: ({ ticketId, newStatus }) => ({
+    url: `ticket/update/status/${ticketId}?status=${newStatus}`,
+    method: 'PATCH',
   }),
+  invalidatesTags: ["Tickets"],
+})
+
+
+
+  }),  
 });
 
 
 export const { useGetWorkspaceCountQuery, useGetAlluserListQuery, useUpdateWorkspaceMutation, useFetchUserPageQuery,useFetchSubscriptionPageQuery,useFetchAbuseReportPageQuery,
-  useUpdateAbuseReportStatusMutation
+  useUpdateAbuseReportStatusMutation,useFetchAllTicketsPageQuery,useUpdateTicketStatusMutation
  } = workspaceDataApi;
 
 

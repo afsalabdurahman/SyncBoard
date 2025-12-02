@@ -4,6 +4,7 @@ export interface ISuperAdminRepository {
     getAllUsers(): Promise<any>
     getUserDetails(userId: string): Promise<any>
     getSubscription(): Promise<any>
+    getAllTickets():Promise<any>
 }
 
 

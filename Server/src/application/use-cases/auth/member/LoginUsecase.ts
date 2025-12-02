@@ -13,7 +13,7 @@ import { ILogin } from "../../../repositories/iauth/ILogin";
 import { LoginRequestDTO,LoginResponseDTO } from "../../../dto/AuthDTOs";
 import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository";
 import { AuthMapper } from "../../../mappers/AuthMapper";
-
+import {stringToMongoObj} from "../../../../utils/convertMongoObject"
 @injectable()
 export class LoginUsecase implements ILogin {
   constructor(
@@ -61,5 +61,11 @@ export class LoginUsecase implements ILogin {
    const workspaceData=await this._workspaceRepository.findByObjectId(user.workspace[0].workspaceId)
 return AuthMapper.mapEntityToMember(user,workspaceData,token,refreshToken)
    
+  }
+  async logoutUser(userId: string): Promise<void> {
+    console.log(userId,"from usecase")
+   const  isResult=await this._userRepository.changeOnlineStatus(stringToMongoObj(userId));
+   if(!isResult) throw new ValidationError("failed to logout")
+
   }
 }

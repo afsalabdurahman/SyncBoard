@@ -26,4 +26,9 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   async updateOnlineStatus(userId: string): Promise<void> {
     await this._userRepository.updateOnlineStatus(userId)
   }
+  async logoutUser(userId: string): Promise<boolean> {
+    await this._userRepository.updateOnlineStatus(userId)
+    return true
+    
+  }
 }
