@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import TicketDashboard from "../components/TicketDashboard";
 import TicketDetail from "../components/TicketDetail";
 import {Ticket,Message,TicketStatus} from "../types/TiketTypes"
@@ -27,8 +27,11 @@ const Tikets = () => {
     refetch,
   } = useGetTicketsQuery(workspaceId ?? skipToken);
 
+  console.log(tickets,"data","66666")
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-
+// useEffect(()=>{
+// refetch()
+// },[])
 
 
   const handleSendMessage = async (ticketId: string, message: string) => {
@@ -109,10 +112,11 @@ try {
       console.log(ticket,"my tiketssss")
       
       const data=await createTickets(ticket).unwrap()
-      console.log(data,"api666+++")
+      
 
     } catch (error) {
       console.log(error,"errorr")
+
       toast.error("Unble to Raise tickets")
     }
     console.log(ticket,"tiket new ")

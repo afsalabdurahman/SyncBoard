@@ -6,7 +6,7 @@ export interface WorkspaceMembership {
   role: "Member" | "Admin" | "SuperAdmin";
   joinedAt?: Date;
 }
-interface Member {
+export interface Member {
   userId: string;
   title: string;
 }
@@ -27,3 +27,4 @@ export interface WorkspaceProps {
   createdAt?: Date;
   _id?: string|ObjectId;
 }
+export type workspaceStorage = 1|5|10|100

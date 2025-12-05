@@ -26,5 +26,7 @@ export const ResponseMessages = {
   LOGGED_OUT: 'Logged out successfully',
   PASSWORD_RESET: 'Password reset successfully',
   PASSWORD_FAILED:"Username or Password mismatch",
-  ATTACHEMNT_REMOVE:"Attachment remove successfully "
+  ATTACHEMNT_REMOVE:"Attachment remove successfully ",
+  NEW_PROJECT_ADDED:"New Project is Added",
+  CREATEION_FAILED: "Creation Failed"
 };

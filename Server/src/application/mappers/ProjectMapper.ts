@@ -42,8 +42,8 @@ export class ProjectMapper {
   static ValidateProjectData(input: ProjectRequstDTO) {
 
     const isValid = z.object({
-      name: z.string().min(1, "Project name is required"),
-      description: z.string().min(1, "Description is required"),
+      name: z.string().min(1, "Project name is required").max(100,"word count is exceed"),
+      description: z.string().min(1, "Description is required").max(1000,"word count is exceed"),
       assignedUsers: z.array(z.string().min(1)).min(1, "At least one user must be assigned"),
       status: StatusTypesSchema,
       priority: PriorityTypesSchema,

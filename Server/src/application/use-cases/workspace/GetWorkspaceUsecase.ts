@@ -9,7 +9,7 @@ import { ResponseMessages } from "../../../common/erroResponse"
 export class GetWorkspaceUsecase implements IWokspaceMember {
    constructor(@inject("WorkspaceRepository") private workspaceRepository: IWorkspaceRepository,
       @inject("UserRepository") private userRepository: IUserRepository
-   ) { }
+   ) {}
 
    async getWorkspceDate(slug: string): Promise<Workspace> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)

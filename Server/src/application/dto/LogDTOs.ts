@@ -1,4 +1,4 @@
-import { ActivityType } from "../../types/activityTypes";
+import { ActivityTypes } from "../../types/activityTypes";
 import { Types } from "mongoose";
 
 export interface CreateActivityDTO {
@@ -7,14 +7,14 @@ export interface CreateActivityDTO {
   taskId?: string;
   performedBy?: string;
   affectedUser?: string;
-  type: ActivityType;
+  type: ActivityTypes;
   message: string;
   metadata?: Record<string, any>;
 }
 
 export interface ActivityFilter {
   workspaceId?: string;
-  type?: ActivityType | ActivityType[];
+  type?: ActivityTypes | ActivityTypes[];
   performedBy?: string;
   affectedUser?: string;
   search?: string; 

@@ -19,9 +19,10 @@ import {
   Crown,
   Building2,
   ArrowUpCircle,
-  TicketCheck 
-  
+  TicketCheck,
+  LogOut
 } from "lucide-react";
+import { FiLogOut } from "react-icons/fi";
 //import { useTheme } from "next-themes"
 
 import {
@@ -78,14 +79,15 @@ icon:TicketCheck,
 id:"tikets"
   },
   {
-    title: "Settings",
-    icon: Settings,
-    id: "settings",
+    title: "Logout",
+    icon: LogOut,
+    id: "logout",
   },
 ];
 
 interface AppSidebarProps {
   currentPage: string;
+
   setCurrentPage: (page: string) => void;
 }
 

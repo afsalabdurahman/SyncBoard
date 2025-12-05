@@ -1,9 +1,8 @@
 import { ObjectId } from "mongoose";
+import {approvalType,priorityType,statusType} from "../../types/taskTypes"
 
-export type statusType = "To Do" | "In Progress" | "Completed";
-export type priorityType = "Low" | "Medium" | "High";
-export type approvalType= "Approved"|"Rejected"|"Waiting"|"Under Review"
 export class Task {
+  [x: string]: any;
   id?: string | ObjectId;
   assignedUser?: string;
   deadline?: string;

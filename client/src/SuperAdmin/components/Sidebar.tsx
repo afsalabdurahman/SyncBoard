@@ -34,12 +34,12 @@ export function Sidebar({
     { name: "Workspaces", icon: Building2, active: false },
     { name: "Users", icon: Users, active: false },
     { name: "Subscriptions", icon: CreditCard, active: false },
-    { name: "Analytics", icon: BarChart3, active: false },
+  
     { name: "Abuse Reports", icon: Shield, active: false },
     { name: "Support Tickets", icon: Headphones, active: false },
-    { name: "System Settings", icon: Settings, active: false },
-    { name: "Feature Toggles", icon: ToggleLeft, active: false },
-    { name: "Logs", icon: FileText, active: false },
+ 
+ 
+
   ]);
   const handleClick = (clickedName: any) => {
     const updatedItems = navigationItems.map((item) => ({
@@ -89,7 +89,7 @@ export function Sidebar({
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ",
+                "flex items-center px-3 py-5 text-sm font-medium rounded-lg transition-colors ",
                 item.active
                   ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                   : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"

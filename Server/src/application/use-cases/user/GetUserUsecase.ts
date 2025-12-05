@@ -1,5 +1,4 @@
 import { User } from "../../../domain/entities/User";
-import { UserMongooseRepository } from "../../../infrastructure/repositories/UserRepository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { injectable, inject } from "tsyringe";
 @injectable()

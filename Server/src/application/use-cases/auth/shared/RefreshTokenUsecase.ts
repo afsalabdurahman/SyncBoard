@@ -21,9 +21,10 @@ export class RefreshTokenUsecase implements IRefreshtoken {
         RefreshToken: string
     ): Promise<{ accessToken: string; refreshToken: string }> {
         let decoded;
+      
         try {
             if (!this._authService.verifyRefreshToken)
-                throw new NotFoundError("Verifcation not found");
+                throw new NotFoundError(ResponseMessages.NOT_FOUND);
             let decoded = await this._authService.verifyRefreshToken(RefreshToken);
           
             if (!decoded) throw new AuthenticationError(ResponseMessages.INVALID_TOKEN);
@@ -48,7 +49,7 @@ export class RefreshTokenUsecase implements IRefreshtoken {
             });
             return { accessToken: newAccessToken, refreshToken: newRefreshToken };
         } catch (error) {
-            throw new InternalServerError("Something went to wrong");
+            throw new InternalServerError(ResponseMessages.INTERNAL_SERVER_ERROR);
         }
     }
 }

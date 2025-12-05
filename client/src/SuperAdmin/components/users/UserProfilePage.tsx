@@ -6,6 +6,8 @@ import { Badge } from "../../../Custom/ui/badge"
 import { Button } from "../../../Custom/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Separator } from "../../../Custom/ui/separator"
+import { useDispatch } from "react-redux"
+import { removeUser } from "../../../Redux/feature/users/AlluserThunks"
 // import { useToast } from ""
 import {toast} from "react-toastify"
 import { cn } from "../../../Utility/utils"
@@ -172,14 +174,18 @@ console.log(user,"User documentssssss")
   //     current: false,
   //   },
   // ]
-
-  const suspend = () => {
+const dispatch = useDispatch()
+  const suspend = async() => {
     setStatus("suspended")
-    toast({ title: "User suspended", description: `${userDefault.name} is now suspended.` })
+        await dispatch(removeUser({deleteUser:user.id,updatedProfile:{isDelete:true} })).unwrap()
+    
+    toast("Suspended")
   }
-  const reactivate = () => {
+  const reactivate = async() => {
     setStatus("active")
-    toast({ title: "User reactivated", description: `${userDefault.name} is now active.` })
+            await dispatch(removeUser({deleteUser:user.id,updatedProfile:{isDelete:false} })).unwrap()
+
+    toast.success("Activated")
   }
   const toggle2FA = () => {
     setTwoFA((v) => !v)

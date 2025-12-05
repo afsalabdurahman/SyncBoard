@@ -6,11 +6,13 @@ export const adminDataHandleApi = createApi({
   reducerPath: 'adminDataHandleApi',
   baseQuery:fetchBaseQuery({
     baseUrl:BASE_URL,
+    credentials:"include"
   }),
   tagTypes:["Tickets"],
   endpoints:(builder)=>({
     getTickets: builder.query({
       query: (workspaceId) => `ticket/mytickets/${workspaceId}`,
+      
       providesTags: ['Tickets'],
   }),
   createTickets:builder.mutation({

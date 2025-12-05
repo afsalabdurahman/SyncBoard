@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Ticket, TicketStatus, Message } from "./TicketIndex";
 import { Button } from "../../Custom/ui/button";
@@ -92,6 +92,10 @@ import { toast } from "react-toastify";
 // ];
 
 export const TicketPage = () => {
+
+
+
+
   const [updateTicketStatus] = useUpdateTicketStatusMutation()
     const [updateMsg] = useUpdateMsgMutation()
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -101,13 +105,18 @@ export const TicketPage = () => {
        isFetching,
        isError,
        refetch,
-     } = useFetchAllTicketsPageQuery("");
+       
+     } = useFetchAllTicketsPageQuery({
+      refetchOnFocus: true,
+     });
   const [ticketss, setTickets] = useState<Ticket[]>();
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<TicketStatus | "all">("all");
 
+
   const filteredTickets = tickets.filter((ticket) => {
+
     const matchesSearch =
       ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ticket.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -179,7 +188,9 @@ refetch()
     //   })
     // );
   };
+useEffect(()=>{
 
+},[])
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -194,18 +205,7 @@ refetch()
                 <p className="text-xs sm:text-sm text-muted-foreground">Manage all support tickets</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 w-full sm:w-auto">
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm text-muted-foreground">Total:</span>
-                <span className="text-base sm:text-lg font-bold text-foreground">{tickets.length}</span>
-              </div>
-              <Link to="/" className="ml-auto">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  <span className="hidden sm:inline">Admin View</span>
-                </Button>
-              </Link>
-            </div>
+          
           </div>
         </div>
       </header>

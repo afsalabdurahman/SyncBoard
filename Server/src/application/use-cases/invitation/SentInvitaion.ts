@@ -1,14 +1,12 @@
 import { injectable, inject } from "tsyringe";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailServices";
-import { NotFoundError } from "../../../utils/errors";
 import { ISentInvitaion } from "../../repositories/imail/ISentInvitation";
 
 @injectable()
 export class SentInvitaionUsecase implements ISentInvitaion {
   constructor(@inject("IEmailService") private _EmailService: IEmailService) {}
 
- 
-  async send(emails: string[], invitaionLink: string): Promise<boolean> {
+   async send(emails: string[], invitaionLink: string): Promise<boolean> {
  
    
  for (const email of emails) {

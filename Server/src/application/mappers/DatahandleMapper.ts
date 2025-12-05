@@ -1,5 +1,5 @@
 import { formateData, getNextMonthEnd } from "../../utils/dateCoverter";
-import { UserResponse } from "../dto/SuperDTO";
+import { SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserResponse } from "../dto/SuperDTO";
 export class DatahandleMapper {
     static mapSuperEntityToResponse(userCount:number,workspaceCount:number,data:any){
   return {
@@ -49,7 +49,7 @@ static mapAllUserToResponse(result: any[]): UserResponse[] {
     twoFactorEnabled: u.twoFactorEnabled ?? false, 
   }))
 }
-static mapUserDetailsToResponse(result:any){
+static mapUserDetailsToResponse(result:any):UserDetailsResponseDTO{
   return{
     id:result._id,
     name:result.name,
@@ -68,8 +68,8 @@ static mapUserDetailsToResponse(result:any){
 
   }
 }
-static mapSubscriptionToResponse(result: any[]) {
-  return result.map((u) => ({
+static mapSubscriptionToResponse(result: any[]):SuperSubscriptionResponseDTO[] {
+  return result.map((u):SuperSubscriptionResponseDTO => ({
     id: u._id,
     workspace: {
       name: u.name,

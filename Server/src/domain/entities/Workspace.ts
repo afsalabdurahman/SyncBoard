@@ -1,11 +1,6 @@
 import { ObjectId } from "mongoose";
-import { WorkspaceProps } from "../../types/workpaceTypes";
-interface Member {
-  userId: string;
-  title: string;
-}
-import { workspaceStatus } from "../../types/workpaceTypes";
-export type workspaceStorage = 1|5|10|100
+import { WorkspaceProps,Member,workspaceStatus,workspaceStorage } from "../../types/workpaceTypes";
+
 
 
 export class Workspace {

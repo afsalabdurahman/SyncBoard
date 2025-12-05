@@ -28,3 +28,10 @@ console.log(response,"reponse")
 return response.status
    
 }
+export const  myLogs = async (workspaceId:string) =>{
+    console.log(workspaceId,"ID++")
+    const response = await apiService.get(`/activities/logs/${workspaceId}`)
+    console.log(response,"response+++")
+    return response.data
+   
+}

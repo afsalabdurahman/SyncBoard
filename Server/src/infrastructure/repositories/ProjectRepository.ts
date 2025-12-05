@@ -5,6 +5,7 @@ import { ProjectModel } from "../database/models/ProjectModel"
 import { NotFoundError } from "../../utils/errors"
 import { BaseRepository } from "./BaseRepository"
 import mongoose from "mongoose"
+import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
 
 export class ProjectRepository extends BaseRepository<Project> implements IProjectRepository {
    constructor() {
@@ -12,11 +13,15 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
    }
 
 
-   async getAllProjects(): Promise<any | null> {
-      const projects = await ProjectModel.find().sort({ createdAt: -1 });
-     
-      return projects
-   }
+ async getAllProjects(): Promise<ProjectRepositoryDTO[]> {
+  const projects = await ProjectModel
+    .find()
+    .sort({ createdAt: -1 })
+    .lean<ProjectRepositoryDTO[]>()  
+    .exec();
+
+  return projects; 
+}
    async removeAttachment(projectId: string, attachedUrl: string): Promise<void> {
       const isRemove = await ProjectModel.updateOne({ _id: projectId }, { $pull: { attachedUrl: attachedUrl } })
 
@@ -45,13 +50,13 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
       return count
    }
 
-   async getPagenationProjects(workspaceId:string,page: number, limit: number, skip: number): Promise<any> {
+   async getPagenationProjects(workspaceId:string,page: number, limit: number, skip: number): Promise<{items:ProjectRepositoryDTO[],totalItems:number}> {
      const totalItems = await ProjectModel.countDocuments({ workspaceId });
 
       const items = await ProjectModel.find({workspaceId:workspaceId})
          .skip(skip)
          .limit(limit)
-         .sort({ createdAt: -1 });
+         .sort({ createdAt: -1 }).lean<ProjectRepositoryDTO[]>().exec()
       return { items, totalItems }
    }
 }

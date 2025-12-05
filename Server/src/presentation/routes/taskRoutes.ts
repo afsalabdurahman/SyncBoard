@@ -8,8 +8,10 @@ import { roleMiddleware } from "../middleware/roleMiddleware"
 const taskController = container.resolve(TaskController)
 
 let router = express.Router();
+
 const adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
 const memberAuth = [authMiddelware(), roleMiddleware(["Member","Admin"])];
+
 router.post('/create',adminAuth,taskController.createTask.bind(taskController))
 router.get('/alltasks',memberAuth,taskController.allTasks.bind(taskController))
 router.patch('/update/:id',adminAuth,taskController.updateTask.bind(taskController))
@@ -19,5 +21,6 @@ router.patch("/status/:id",memberAuth,taskController.updateTaskStatus.bind(taskC
 router.get("/completed",adminAuth,taskController.findAllCompletedTasks.bind(taskController))
 router.patch("/update/approval/status/:id",adminAuth,taskController.controllApprovalSatatus.bind(taskController))
 router.get("/project/:projectId",memberAuth,taskController.findTaskByProject.bind(taskController))
-router.get('/mytask',taskController.pagination.bind(taskController))
+router.get('/mytask',memberAuth,taskController.pagination.bind(taskController))
+
 export default router;

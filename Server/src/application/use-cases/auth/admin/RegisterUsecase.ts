@@ -32,7 +32,7 @@ export class RegisterUseCase implements IAuth {
    
     if (!savedUser) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     const token = this._authService.generateToken({
-      id: savedUser._id ?? "",
+      id: savedUser._id!,
       email: savedUser.email!,
       role: savedUser.role!,
     });

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
-import {  workspaceStorage } from '../../../domain/entities/Workspace';
-import { workspaceStatus,IMember } from '../../../types/workpaceTypes';
+
+import { workspaceStatus,IMember ,workspaceStorage} from '../../../types/workpaceTypes';
 
 
 export interface WorkspaceDoument extends Document {

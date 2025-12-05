@@ -178,7 +178,7 @@ export default function WorkspaceDetailsPage(props) {
   console.log(props,"props",)
 const [dialogTitle,setDialogTitle]=useState("")
 const [updateWorkspace,   { isLoading: isUpdating } ] = useUpdateWorkspaceMutation();
-const {data,isLoading}=useGetAlluserListQuery(props.viewDetails?.slug,1,5)
+const {data,isLoading}=useGetAlluserListQuery({workspaceslug:props.viewDetails?.slug,page:1,limit:5})
 const [suspented,setSuspendId] =useState("")
 const [IsDialogOpen,setIsDialogOpen]=useState(false)
 console.log(data,"data from fetch qury0000")

@@ -23,6 +23,7 @@ export class ProjectController {
       const ResponseDTO = await this._projectUsecase.excute(input,workspaceId);
       res.status(HttpStatusCode.CREATED).json({ message: ResponseDTO });
     } catch (error) {
+      console.log(error,"err")
       next(error);
     }
    

@@ -1,34 +1,19 @@
-export interface arryOfActivities {
-  id: string;
-  name: string;
-  createdby: string;
-}
+import { Types } from "mongoose";
+import { ActivityLogMessage, ActivityTypes } from "../../types/activityTypes";
 
 
 export class Activities {
-  workspaceActivities?: arryOfActivities;
-  projectActivities?: arryOfActivities;
-  userActivities?: arryOfActivities;
+  workspaceId: Types.ObjectId|string;
+  activityType: ActivityTypes;
+   logMsg:ActivityLogMessage;
+   createdBy: Types.ObjectId | string;
 
-  constructor({
-    workspaceActivities,
-    projectActivities,
-    userActivities,
-  }: {
-    workspaceActivities?: arryOfActivities;
-    projectActivities?: arryOfActivities;
-    userActivities?: arryOfActivities;
-  }) {
-    this.workspaceActivities = workspaceActivities;
-    this.projectActivities = projectActivities;
-    this.userActivities = userActivities;
-  }
-
-  toObject() {
-    return {
-      workspaceActivities: this.workspaceActivities,
-      projectActivities: this.projectActivities,
-      userActivities: this.userActivities,
-    };
-  }
+constructor(params:{workspaceId:Types.ObjectId|string,activityType:ActivityTypes,logMsg:ActivityLogMessage,createdby:Types.ObjectId|string}){
+  this.workspaceId=params.workspaceId,
+  this.activityType=params.activityType,
+  this.logMsg=params.logMsg,
+  this.createdBy=params.createdby
 }
+  
+}
+ 

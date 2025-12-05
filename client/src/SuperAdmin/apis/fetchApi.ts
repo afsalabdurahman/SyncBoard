@@ -24,7 +24,8 @@ export const dashBordDataApi = async () => {
 export const workspaceDataApi = createApi({
   reducerPath: 'workspaceDataApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/'
+    baseUrl: 'http://localhost:5000/api/',
+   credentials:"include"
   }),
   tagTypes: ['Workspace', 'Members','Tickets'],
   endpoints: (builder) => ({
@@ -33,7 +34,7 @@ export const workspaceDataApi = createApi({
       invalidatesTags: ['Workspace',]
     }),
     getAlluserList: builder.query({
-      query: (workspaceslug, page, limit) => `workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}`
+      query: ({workspaceslug, page, limit}) => `workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}`
     }),
     updateWorkspace: builder.mutation({
       query: ({ id, merge }) => ({

@@ -11,12 +11,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../Custom/ui/dropdown-menu"
-
+import { useUser } from "../../Worksapce/hooks/workspacehooks"
+import { logout } from "../../Worksapce/apis/workspaceapis"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router"
 interface HeaderProps {
   sidebarCollapsed: boolean
 }
 
+
+
 export function Header({ sidebarCollapsed }: HeaderProps) {
+const user = useUser()
+const navigate = useNavigate()
+console.log(user,"user isss")
+
+const handleLogout = () =>{
+  logout(user?._id).then((res)=>{
+    if(res==204){
+     toast.success("Logout success")
+     navigate("/platform/login")
+    }
+  })
+  console.log("clicked LOgout")
+}
+
   return (
     <header
       className={cn(
@@ -52,23 +71,21 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
               <Button variant="ghost" className="flex items-center space-x-2 px-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Admin" />
-                  <AvatarFallback>AD</AvatarFallback>
+                  <AvatarFallback>SA</AvatarFallback>
                 </Avatar>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium">Admin User</p>
-                  <p className="text-xs text-gray-500">admin@company.com</p>
+                  <p className="text-sm font-medium">Super Admin</p>
+                  <p className="text-xs text-gray-500">gridesync@company.com</p>
                 </div>
                 <ChevronDown className="h-4 w-4 text-gray-400" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
+             
+           
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile Settings</DropdownMenuItem>
-              <DropdownMenuItem>Security</DropdownMenuItem>
-              <DropdownMenuItem>Preferences</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600">Sign Out</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600" onClick={handleLogout}>Sign Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

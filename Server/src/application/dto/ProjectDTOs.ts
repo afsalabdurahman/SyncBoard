@@ -1,15 +1,8 @@
 import {
   Project,
-<<<<<<< HEAD
-  PriorityTypes,
-  StatusTypes,
-} from "../../domain/entities/Project"
-
-=======
   
 } from "../../domain/entities/Project"
 import {PriorityTypes,StatusTypes} from "../../types/projectTypes"
->>>>>>> rag
 
 export interface ProjectRequstDTO{
       name: string;
@@ -23,6 +16,22 @@ export interface ProjectRequstDTO{
       attachedUrl?: string;
       
 }
+export interface ProjectRepositoryDTO {
+  _id: string;
+  name: string;
+  assignedUsers: string[];
+  clientName: string;
+  description: string;
+  attachedUrl: string[];
+  deadline: Date 
+  priority: PriorityTypes;
+  status: StatusTypes
+  projectAdminId: string;
+  workspaceId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 
 export interface ProjectResponseDTO{
     project:Project

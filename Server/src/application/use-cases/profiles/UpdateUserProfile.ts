@@ -12,7 +12,7 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   async execute(
     userId: string,
     ...args: Record<string, any>[]
-  ): Promise<User | any> {
+  ): Promise<User> {
 
     const merged = Object.assign({}, ...args);
 

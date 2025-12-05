@@ -9,15 +9,19 @@ import { TaskApproval } from "../components/TaskApproval";
 import SubscriptionPage from "../Pages/SuscriptionPages";
 import Tikets from "../Pages/Tikets"
 import { useSelector } from "react-redux";
-
-
+import { logout } from "../../Worksapce/apis/workspaceapis";
+import { useUser } from "../../Worksapce/hooks/workspacehooks";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 const SettingsPage = lazy(() => import("../components/SettingsPage"));
 const ProjectsPage = lazy(()=>import("../components/ProjectsPage"));
 export default function AdminDashboard() {
+  const navigate = useNavigate()
   const isForward = useSelector((state) => state.forward);
   console.log(isForward,"formwsdd")
   const [currentPage, setCurrentPage] = useState("dashboard");
-
+const user=useUser()
+console.log(user,"usereeeeee")
   useEffect(() => {
     if (isForward) {
       setCurrentPage("suscription");
@@ -40,13 +44,19 @@ export default function AdminDashboard() {
         );
       case "tasks":
         return <TasksPage />;
-      case "settings":
-        
-        return (
-          <Suspense fallback={<div className="p-4">Loading Settings...</div>}>
-            <SettingsPage />
-          </Suspense>
-        );
+      case "logout":
+         logout(user?._id).then((res)=>{
+          if(res==204){
+            const id="logout-success"
+            if(!toast.isActive(id)){
+  toast.success("Logout success", { toastId: id });
+            }
+               
+            navigate("/admin")
+       
+          }
+         })
+       break;
       case "approval":
         return <TaskApproval />;
       case "suscription":

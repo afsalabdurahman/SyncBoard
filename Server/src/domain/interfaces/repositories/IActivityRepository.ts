@@ -1,10 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { Activities } from "../../entities/Activities";
+import { ActivitiesResponseDTO } from "../../../application/dto/ActivityDTO";
 
 export interface IActivityRepository{
-createActivity(data:any):Promise<Activities|null>
-findActivities(logId:mongoose.Types.ObjectId):Promise<any>;
-addNewProject(projectName:string,creatdBy:string,activityId:string):Promise<any>
-inviteMember(userName:string,activityId:string):Promise<any>
- workspceDataCount(userId:string):Promise<any>
+createActivity(data:Activities):Promise<void>
+allActivitiesInWorkspace(workspaceId:Types.ObjectId):Promise<ActivitiesResponseDTO[]|null>
 }

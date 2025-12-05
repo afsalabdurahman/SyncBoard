@@ -390,7 +390,7 @@ console.log(reports,"sfusefk")
           </div>
         )}
       </div>
-      <Pagination currentPage={page} totalPages={count}onPageChange={setPage} maxVisible={count}/>
+      {/* <Pagination currentPage={page} totalPages={count}onPageChange={setPage} maxVisible={count}/> */}
       </main>
       
     </div>

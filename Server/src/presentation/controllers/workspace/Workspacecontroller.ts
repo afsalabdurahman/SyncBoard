@@ -76,11 +76,13 @@ export class WorkspaceController {
     }
   }
 async pagination (req:Request,res:Response):Promise<void> {
+ console.log("calinnggggggg")
 const slug = req.params.workspaceslug;
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
 const {items,totalItems} =await this._workspaceUsecase.paginationWorkspace(slug,page,limit,skip)
+console.log(items,totalItems,"+++++")
 res.status(200).json({
   items,
   currentPage: page,
@@ -102,6 +104,7 @@ async updateWorkspace(req:Request,res:Response,next:NextFunction):Promise<void>{
 }
 async abuseReport(req:Request,res:Response,next:NextFunction):Promise<void>{
 try {
+  console.log(req.body)
   const input:AbuseRequestDTO=req.body
   const userId=req.params.id
   const workspaceId=req.params.workspaceid

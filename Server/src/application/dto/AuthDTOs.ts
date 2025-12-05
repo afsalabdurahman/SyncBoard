@@ -57,7 +57,9 @@ refreshToken:string
 export interface adminResponseDTO{
  user:User;
  workspace:Workspace,
- suscribe:Subscription
+ suscribe:Subscription,
+ token:string,
+ refreshToken:string
 }
 export interface IWorkspaceChanges{
   nameOfWorkspace:string,
@@ -75,4 +77,10 @@ export interface SuperadminResponseDTO {
   subscriptionChanges:IWorkspaceChanges[]
 
   
+}
+export interface SuperadminLoginResponseDTO {
+  token: string;
+  refreshToken: string;
+superAdmin:User
+
 }

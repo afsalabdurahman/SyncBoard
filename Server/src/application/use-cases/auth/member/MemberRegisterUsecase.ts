@@ -1,10 +1,5 @@
 import { IMemberRegister } from "../../../repositories/IMemberRegister";
-import {
-  NotFoundError,
-  CustomError,
-   ValidationError,
-  ConflictError,
-} from "../../../../utils/errors";
+import {NotFoundError,CustomError,ValidationError,ConflictError,} from "../../../../utils/errors";
 import { IUserRepository } from "../../../../domain/interfaces/repositories/IUserRepository";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { injectable, inject } from "tsyringe";
@@ -22,7 +17,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private _authService: IAuthService,
     @inject("WorkspaceRepository")
-    private workspaceRepository: IWorkspaceRepository
+    private _workspaceRepository: IWorkspaceRepository
   ) {}
 
   async execute(
@@ -37,7 +32,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
     dto.password = hashedPassword;
     if (!hashedPassword)
       throw new CustomError(
-        "Something went to wrong ",
+        ResponseMessages.PASSWORD_FAILED,
         HttpStatusCode.CONFLICT
       );
     const newMember = AuthMapper.mapMemebrToEntity(dto);
@@ -46,7 +41,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
     if (!createMember || !createMember._id)
       throw new ValidationError(ResponseMessages.CONFLICT);
     const token = this._authService.generateToken({
-      id: createMember._id ?? "",
+      id: createMember._id!,
       email: createMember.email!,
       role: createMember.role!,
     });
@@ -58,8 +53,8 @@ export class MemberRegisterUsecase implements IMemberRegister {
 
 
 
-    let workspace: any = await this.workspaceRepository.findbySlug(
-      dto.slug ?? ""
+    let workspace: any = await this._workspaceRepository.findbySlug(
+      dto.slug!
     );
     if (!workspace || !workspace.slug)
       throw new NotFoundError(ResponseMessages.NOT_FOUND + "Workspace");
@@ -70,11 +65,11 @@ export class MemberRegisterUsecase implements IMemberRegister {
       dto.role
     );
 
-    if (!this.workspaceRepository.addMemberToWorkspace)
+    if (!this._workspaceRepository.addMemberToWorkspace)
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
 
     const insertToWorkspce =
-      await this.workspaceRepository.addMemberToWorkspace(
+      await this._workspaceRepository.addMemberToWorkspace(
         workspace.slug,
         createMember._id,
         dto.role,

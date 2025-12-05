@@ -5,8 +5,8 @@ import {IBaseRepository} from "./IBaseReposiory"
 export interface IUserRepository extends IBaseRepository<User|null>  {
   
   findByEmail(email: string): Promise<any | null>;
-  // create(entity: User): Promise<User>;
-  findById(id: string): Promise<User>;
+
+  findById(id: string | Types.ObjectId): Promise<User>;
   updateUser(
     id: any,
     updateFieldname: string,

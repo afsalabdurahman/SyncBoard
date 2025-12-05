@@ -1,14 +1,14 @@
 import { Task } from "../../domain/entities/Task";
-import { TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 export interface ITaskUseCase {
     execute(taskEntiry:TaskRequestDTO):Promise<TaskResponseDTO>
     getAllTasks():Promise<Task>
     update(taskId:string,...args: any[]): Promise<TaskResponseDTO>;
     deleteTask(taskId:string):Promise<void>
-    myTask(userName:string,query?:string):Promise<Task|any>
+    myTask(userName:string,query?:string):Promise<Task>
     updateTaskStatus(taskId:string,status:string):Promise<void>
-    completedTask():Promise<any>
+    completedTask():Promise<CompletedTaskResponseDTO>
     updateApprovalStatus(taskId:string,status:string,msg?:string):Promise<void>;
-    findTaskByProjectId(projectId:string):Promise<any>;
-    paginationTask(page:number,limit:number,skip:number):Promise<any>
+    findTaskByProjectId(projectId:string):Promise<Task>;
+    paginationTask(page:number,limit:number,skip:number):Promise<{items:number,totalItems:number}>
 }

@@ -5,3 +5,6 @@ export interface ChatRequestDTO{
     sender:string;
     timestamp?:string
 }
+export interface ChatSoketDTO{
+    
+}

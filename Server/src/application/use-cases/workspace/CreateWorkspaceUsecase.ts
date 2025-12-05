@@ -1,10 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IWorkspaceRepository";
-import { Workspace } from "../../../domain/entities/Workspace";
-import { HttpStatusCode } from "../../../common/errorCodes";
-import { IActivity } from "../../repositories/IActivity";
+
 import {
-  ConflictError,
   InternalServerError,
   NotFoundError,
   ValidationError,
@@ -17,12 +14,10 @@ import {
   WorkspaceRequestDTO,
   WorkspaceResponseDTO,
 } from "../../dto/WorkspaceDTOs";
-import { WorkspaceRepository } from "../../../infrastructure/repositories/WorkspaceRepository";
 import { slugify } from "../../../utils/slug";
 import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
-import {IActivityRepository} from "../../../domain/interfaces/repositories/ILogRepository"
-import {Activity} from "../../../domain/entities/Logs"
-import { ActivityType } from "../../../types/activityTypes";
+import { Workspace } from "../../../domain/entities/Workspace";
+
 
 @injectable()
 export class CreateWorkspaceUsecases implements IWorkspace {
@@ -30,8 +25,6 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     @inject("WorkspaceRepository")
     private _workspaceRepository: IWorkspaceRepository,
     @inject("IUserRepository") private _userRepository: IUserRepository,
-  //  @inject("LogRepository") private _useLogrepository:IActivityRepository 
-    // @inject("ActivityUsecase") private _activityUsecase: IActivity
   ) {}
 
   async createWorkspace(
@@ -66,7 +59,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     return WorkspaceMapper.mapEntityToWorkspace(updatedUser, isCreateWorkspace);
   }
 
-  async findWorkspace(id: Types.ObjectId): Promise<any> {
+  async findWorkspace(id: Types.ObjectId): Promise<Workspace> {
     let data = await this._workspaceRepository.findByObjectId(id);
    
     return data;
@@ -75,9 +68,9 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     id: Types.ObjectId,
     logId: Types.ObjectId
   ): Promise<boolean> {
-    if (!this._workspaceRepository.addlogId) throw new NotFoundError("not");
+    if (!this._workspaceRepository.addlogId) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     const result = this._workspaceRepository.addlogId(id, logId);
-    if (!result) throw new InternalServerError("Something went to wrong");
+    if (!result) throw new InternalServerError(ResponseMessages.CONFLICT);
     return true;
   }
 

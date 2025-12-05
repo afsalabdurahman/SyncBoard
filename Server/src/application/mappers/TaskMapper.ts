@@ -1,5 +1,5 @@
 import { Task } from "../../domain/entities/Task";
-import { TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 import { z } from "zod";
 
 export const TaskStatusSchema = z.enum(["To Do", "In Progress", "Completed"]);
@@ -33,8 +33,8 @@ static mapEntityToTask(msg:string,taskData:Task):TaskResponseDTO{
 static validateTask(input:TaskRequestDTO){
 const isValid =  z.object({
 
-  name: z.string().min(1, "Task name is required"),
-  description: z.string().min(1, "Description is required"),
+  name: z.string().min(1, "Task name is required").max(100,"word count is exceed"),
+  description: z.string().min(1, "Description is required").max(1000,"word count is exceed"),
   project: z.string().min(1, "Project is required"),
   assignedUser: z.string().min(1, "Assigned user is required"),
   status: TaskStatusSchema,
@@ -45,4 +45,26 @@ const isValid =  z.object({
 return isValid.safeParse(input);
 }
 
+ static MappedCompletdTask (tasks:Task[]):CompletedTaskResponseDTO{
+     const mappedData = tasks.map((task) => {
+      return {
+        id: task._id,
+        taskName: task.name,
+        project: task.project,
+        username: task.assignedUser,
+        status:
+          task.approvalStatus == "Waiting"
+            ? "pending"
+            : task.approvalStatus == "Approved"
+              ? "approved"
+              : task.approvalStatus == "Rejected"
+                ? "rejected"
+                : "pending",
+
+        submittedAt: task.updatedAt,
+        rejectionReason: task.rejectionMsg,
+      };
+    });
+    return mappedData as unknown as CompletedTaskResponseDTO
+ }
 }

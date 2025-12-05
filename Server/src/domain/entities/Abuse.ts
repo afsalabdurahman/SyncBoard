@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { approvalType } from "./Task";
+import {statusType,approvalType,priorityType} from "../../types/taskTypes"
 export class Abuse {
   description: string;
   otherType?: string;  

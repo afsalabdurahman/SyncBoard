@@ -4,10 +4,11 @@ import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose from "mongoose";
 import { TicketModel } from "../database/models/TicketModel";
+import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
 
 export class SuperAdminRepository implements ISuperAdminRepository {
 
-  async getAllCount(): Promise<any> {
+  async getAllCount(): Promise<GetAllCountResponseDTO> {
     const userCount = await UserModel.countDocuments({ role: { $ne: "SuperAdmin" } });
 
     let workspaceCount = await WorkspaceModel.countDocuments();
@@ -62,7 +63,7 @@ export class SuperAdminRepository implements ISuperAdminRepository {
 
     return { data, userCount, workspaceCount }
   }
-  async getAllWorkspace(): Promise<any> {
+  async getAllWorkspace(): Promise<WorkspaceAggResponseDTO[]> {
 
 
 
@@ -169,14 +170,10 @@ export class SuperAdminRepository implements ISuperAdminRepository {
       }
     ]);
 
-
-
-
-   
     return result
   }
 
-  async getAllUsers(): Promise<any> {
+  async getAllUsers(): Promise<UserAggResponseDTO[]> {
    
     const result = await UserModel.aggregate([
       {
@@ -244,7 +241,7 @@ export class SuperAdminRepository implements ISuperAdminRepository {
   }
 
 
-  async  getUserDetails(userId: string):Promise<any> {
+  async  getUserDetails(userId: string):Promise<UserDetailsAggResponseDTO> {
      let id = new mongoose.Types.ObjectId(userId);
     const result = await UserModel.aggregate([
       {
@@ -308,7 +305,7 @@ export class SuperAdminRepository implements ISuperAdminRepository {
     return result[0];
   }
 
-  async getSubscription(): Promise<any> {
+  async getSubscription(): Promise<SubscriptionAggResponseDTO[]> {
     const result = await WorkspaceModel.aggregate([
       {
         $lookup:{

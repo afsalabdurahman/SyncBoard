@@ -230,8 +230,8 @@ const ProjectDetailsPage = (props: any) => {
                 <p className='text-sm font-medium text-gray-600'>Progress</p>
                 <p className='text-lg font-semibold text-gray-900'>
                   {props.projectDetails.status == "Completed"
-                    ? "0%"
-                    : totalProgress + "%"}
+                    ? totalProgress + "%"
+                    : "0%"}
                 </p>
               </div>
             </div>

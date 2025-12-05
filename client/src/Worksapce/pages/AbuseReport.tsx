@@ -22,13 +22,10 @@ export default function AbuseReportForm() {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-  const status= await  sendAbuse(formData,memeber._id,memeber.workspace[0].workspaceId)
-  console.log(status,"statta")
-  if(status==201) {
-    toast.success("Report send")
-  }else{
-    toast.error("Failed to send")
-  }
+  await sendAbuse(formData,memeber._id,memeber.workspace[0].workspaceId).then((res)=>{
+    toast.success("Report Send")
+  })
+ 
 setFormData({description:"",otherType:"",reportedContent:"",severity:"",type:""})
     console.log(formData)
     // setSubmitted(true);
@@ -60,6 +57,7 @@ setFormData({description:"",otherType:"",reportedContent:"",severity:"",type:""}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center gap-3 mb-6">
             <AlertCircle className="w-8 h-8 text-red-500" />
+            <ToastContainer/>
             <h1 className="text-2xl font-bold text-gray-800">Abuse Report</h1>
           </div>
 

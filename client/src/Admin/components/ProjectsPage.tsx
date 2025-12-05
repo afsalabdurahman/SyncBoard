@@ -87,7 +87,7 @@ useEffect(() => {
 
   const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
       try {
-        console.log(projectData,"data++++++")
+    
            setLoader("Creating project ...");
     await dispatch(createProject({workspaceid,logId,projectData,adminId})).unwrap()
       dispatch(fetchProjectData({workspaceId:workspaceid, page, limit: rowPerPage }));
@@ -97,6 +97,7 @@ useEffect(() => {
     }, 100);
       setLoader("");
       } catch (error) {
+        console.log(error,"ERRRRRRR")
          setLoader("");
          toast.error("Unable to create Project")
       }
@@ -171,6 +172,7 @@ dispatch(fetchProjectData({workspaceId:workspaceid, page, limit: rowPerPage }));
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
       <div className='flex items-center justify-between'>
         <h2 className='text-3xl font-bold tracking-tight'>Projects</h2>
+        
         <Button onClick={openAddModal}>
           <Plus className='mr-2 h-4 w-4' />
           Add Project

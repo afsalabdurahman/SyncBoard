@@ -6,19 +6,29 @@ import { useNavigate } from "react-router";
 import type { AppDispatch } from "../../Redux/store";
 import { fetchAllLogs } from "../../Redux/feature/logs/logThunks";
 import { Activity, Clock, User, MessageCircle, UserPlus, Mail ,FolderKanban ,FileText, Settings } from 'lucide-react';
+import { useWorkspaceid } from "../hooks/workspacehooks";
+import { myLogs } from "../apis/workspaceapis";
 
 export default function ActivityFeed() {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-
+const workspaceId=useWorkspaceid()
   
- const logs = useSelector((state) => {
-  console.log(state.logs, "Inside cosepe++++"); // For debugging
- const workspace= state.logs.workspaceLogs.map((msg) => msg.messages);
-  const project= state.logs.projectActivityLogs.map((msg)=>msg.messages)
-  const user =state.logs.userActivityLogs.map((msg)=>msg.messages)
-   return([...workspace,...project,...user])
-}) ||[]
+
+const [logs, setLogs] = useState([]);
+
+useEffect(() => {
+  const fetchLogs = async () => {
+    const result = await myLogs(workspaceId);
+
+    setLogs([ ...result]);
+  };
+
+  fetchLogs();
+}, []);
+
+
+
 
   const isBlock = useSelector((state) => {
     console.log(state?.user?.user?.isBlock, "block state");
@@ -41,9 +51,9 @@ export default function ActivityFeed() {
     const date = new Date(timestamp);
     return date.toLocaleString(); // You can customize this format
   };
-  const workspaceId = useSelector((state) => {
-    return state.workspace.workspace._id;
-  });
+  // const workspaceId = useSelector((state) => {
+  //   return state.workspace.workspace._id;
+  // });
 
   useEffect(() => {
    // dispatch(fetchAllLogs(workspaceId));

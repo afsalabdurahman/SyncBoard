@@ -4,13 +4,20 @@ import { IProjectRepository } from "../../../domain/interfaces/repositories/IPro
 import { Project } from "../../../domain/entities/Project";
 import { ConflictError, NotFoundError, ValidationError } from "../../../utils/errors";
 import { io } from "../../../server";
-import { ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
+import { ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
 import { ProjectMapper } from "../../mappers/ProjectMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
+import { ActivityMapper } from "../../mappers/ActivityMapper";
+import { IActivityRepository } from "../../../domain/interfaces/repositories/IActivityRepository";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
+import { ActivityLogMessage } from "../../../types/activityTypes";
 @injectable()
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
-    @inject("ProjectRepository") private _projectRepository: IProjectRepository) {}
+    @inject("ProjectRepository") private _projectRepository: IProjectRepository,
+    @inject("ActivityRepository") private _activityRepository:IActivityRepository,
+    @inject("UserRepository") private _userRepository :IUserRepository
+  ) {}
 
   async excute(dto: ProjectRequstDTO,workspaceId:string): Promise<ProjectResponseDTO> {
 
@@ -18,22 +25,27 @@ export class ProjectUsecase implements IProjectUsecase {
     if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
     const projectEntity = ProjectMapper.mapProjectToEntity(dto,workspaceId);
     const projectData = await this._projectRepository.create(projectEntity);
-    if (!projectData) throw new ConflictError("Project not created");
+    if (!projectData || !projectData.workspaceId) throw new ConflictError("Project" + ResponseMessages.CREATEION_FAILED);
 
     io.emit("new-project", {
-      name: "New Project is Added",
+      name: ResponseMessages.NEW_PROJECT_ADDED,
       message: `🚀 New project ${projectData.name} has been added!`,
     });
 
-    const responseDTO = ProjectMapper.mapEntityToProject("Project Create is Success",projectData);
+   const user = await this._userRepository.findById(dto.projectAdminId)
+    if(!user._id) {throw new NotFoundError(ResponseMessages.NOT_FOUND)}
+
+
+    const activityEntity = ActivityMapper.CreateMappedEntities({activityType:"project",createdBy:user._id,workspaceId:projectData.workspaceId,logMsg:ActivityLogMessage.PROJECT_CREATED})
+  
+   await this._activityRepository.createActivity(activityEntity)
+    const responseDTO = ProjectMapper.mapEntityToProject(ResponseMessages.NEW_PROJECT_ADDED,projectData);
     return responseDTO;
   }
 
-  async getAllProjects(): Promise<Project> {
-
-
-    let allProjects = await this._projectRepository.getAllProjects();
-    if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND +' Projects');
+  async getAllProjects(): Promise<ProjectRepositoryDTO[]> {
+     let allProjects = await this._projectRepository.getAllProjects();
+    if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return allProjects;
   }
   async removeAttachment(
@@ -60,8 +72,8 @@ export class ProjectUsecase implements IProjectUsecase {
   async deleteProject(projectId: string): Promise<void> {
     await this._projectRepository.deleteProject(projectId);
   }
-  async paginationProjecust(workspaceId:string,page: number, limit: number, skip: number): Promise<any> {
+  async paginationProjecust(workspaceId:string,page: number, limit: number, skip: number): Promise<{items:ProjectRepositoryDTO[],totalItems:number}> {
     const { items, totalItems } = await this._projectRepository.getPagenationProjects(workspaceId,page, limit, skip)
-    return { items: items, totalItems }
+    return { items, totalItems }
   }
 }

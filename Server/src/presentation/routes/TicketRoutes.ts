@@ -4,15 +4,16 @@ import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";
 import { TicketController } from "../controllers/ticket/TicketController";
 
-let adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
-let memberAuth = [authMiddelware(), roleMiddleware(["Admin", "Member"])];
-
 const router = Router();
+
+let adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
+let superAuth = [authMiddelware(), roleMiddleware(["Admin", "SuperAdmin"])];
 
 let ticketController = container.resolve(TicketController);
 
-router.post("/create",ticketController.createTicket.bind(ticketController));
-router.get("/mytickets/:workspaceid",ticketController.findMyTickets.bind(ticketController))
-router.post("/update/message/:id",ticketController.updateTicketMsg.bind(ticketController))
-router.patch("/update/status/:id",ticketController.updateTicketStatus.bind(ticketController))
+router.post("/create",adminAuth,ticketController.createTicket.bind(ticketController));
+router.get("/mytickets/:workspaceid",adminAuth,ticketController.findMyTickets.bind(ticketController))
+router.post("/update/message/:id",superAuth,ticketController.updateTicketMsg.bind(ticketController))
+router.patch("/update/status/:id",superAuth,ticketController.updateTicketStatus.bind(ticketController))
+
 export default router;

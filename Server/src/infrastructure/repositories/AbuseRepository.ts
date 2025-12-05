@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { AbuseRequestDTO } from "../../application/dto/AbuseDTO";
+import { GetAllReportsResponseDto } from "../../application/dto/AbuseDTO";
 import { Abuse } from "../../domain/entities/Abuse";
 import { IAbuseRepository } from "../../domain/interfaces/repositories/IAbuseRepository";
 import { AbuseModel } from "../database/models/AbuseModel";
@@ -9,7 +9,7 @@ export class AbuseRepository extends BaseRepository <Abuse> implements IAbuseRep
     super(AbuseModel)
    }
    
-   async getAllReports(page:number,limit:number,skip:number): Promise<any> {
+   async getAllReports(page:number,limit:number,skip:number): Promise<GetAllReportsResponseDto> {
     const count = await AbuseModel.countDocuments()
   const reports = await AbuseModel.aggregate([
     {
