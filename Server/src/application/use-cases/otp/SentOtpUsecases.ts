@@ -40,7 +40,7 @@ export class OTPService implements IOTP {
     if (isOtp && isOtp.otp === input.otp) {
       return true;
     } else {
-      throw new NotFoundError(ResponseMessages.NOT_FOUND + 'OTP');
+      throw new NotFoundError(ResponseMessages.OTP_INVALID);
     }
 
   }

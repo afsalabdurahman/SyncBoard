@@ -22,6 +22,7 @@ export const ResponseMessages = {
   INVALID_INPUT: 'Invalid input provided',
   OTP_SENT: 'OTP sent to your email',
   OTP_VERIFIED: 'OTP verified successfully',
+  OTP_INVALID :`Invalid OTP`,
   LOGGED_IN: 'Logged in successfully',
   LOGGED_OUT: 'Logged out successfully',
   PASSWORD_RESET: 'Password reset successfully',

@@ -6,6 +6,7 @@ import { NotFoundError } from "../../utils/errors"
 import { BaseRepository } from "./BaseRepository"
 import mongoose from "mongoose"
 import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
+import { stringToMongoObj } from "../../utils/convertMongoObject"
 
 export class ProjectRepository extends BaseRepository<Project> implements IProjectRepository {
    constructor() {
@@ -58,5 +59,12 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
          .limit(limit)
          .sort({ createdAt: -1 }).lean<ProjectRepositoryDTO[]>().exec()
       return { items, totalItems }
+   }
+   async findProjectbyAdminId(id: string): Promise<Project[]> {
+      const mongoID=stringToMongoObj(id)
+      const projects = await ProjectModel.find({projectAdminId:mongoID}).lean<Project[]>().exec()
+      
+      console.log(projects,"ADMINIDD+")
+      return projects
    }
 }

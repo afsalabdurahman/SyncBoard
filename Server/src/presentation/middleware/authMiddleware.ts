@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import {AuthenticationError,ForbiddenError} from "../../utils/errors";
+import {AuthenticationError,ForbiddenError, NotFoundError} from "../../utils/errors";
 
 import {AuthService} from "../../infrastructure/services/AuthService"
 import { container } from "tsyringe";
 import {CustomRequest,UserRole} from"../types/CustomRequest"
 import { GetUserUseCase } from "../../application/use-cases/user/GetUserUsecase";
 import { User } from "../../domain/entities/User";
+import {CreateWorkspaceUsecases} from"../../application/use-cases/workspace/CreateWorkspaceUsecase"
+import { stringToMongoObj } from "../../utils/convertMongoObject";
+
+import { ResponseMessages } from "../../common/erroResponse";
 
 
 
@@ -15,6 +19,7 @@ export const authMiddelware = () => {
  return async  (req:CustomRequest,res:Response,next:NextFunction):Promise<void>=>{
     let authService= container.resolve(AuthService) 
     let getUserUseCase=container.resolve(GetUserUseCase)
+    let workspaceUsecse= container.resolve(CreateWorkspaceUsecases)
    
     const accessToken = req.cookies.accessToken;
 if (!accessToken) {
@@ -32,9 +37,26 @@ if (!accessToken) {
         throw new AuthenticationError('Invalid user role');
       }
       const user:User | null = await getUserUseCase.execute(decoded.userId);
-        if (!user) {
+      console.log(user,"user+++")
+     if(user?.role=="SuperAdmin") {
+      req.user = { id: decoded.userId, role };
+      return next()
+    
+    }
+      if (!user) {
         throw new AuthenticationError('User not found');
       }
+      if (!user.workspace || user.workspace.length === 0) {
+        throw new NotFoundError(ResponseMessages.NOT_FOUND);
+      }
+      const workspaceId = user.workspace[0].workspaceId;
+        
+      if(!workspaceId)  throw new NotFoundError(ResponseMessages.NOT_FOUND)
+      const workspace= await workspaceUsecse.findWorkspace(workspaceId)
+    if(workspace?.status.toLowerCase()=="suspend"){
+      throw new ForbiddenError('Workspace is Suspended')
+    }
+
        if (user.isBlocked) {
         throw new ForbiddenError('User is blocked');
       }

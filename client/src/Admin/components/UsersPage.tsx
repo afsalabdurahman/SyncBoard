@@ -33,7 +33,7 @@ interface User {
   name: string;
   email: string;
   role: string;
-  isBlock: string;
+  isBlocked: string;
 }
 
 export function UsersPage() {
@@ -141,14 +141,14 @@ const handleChangePage = (event, newPage) => {
 
    
     // let updatedProfile= { isDelete: true };
-    await dispatch(removeUser({deleteUser,updatedProfile:{isDelete:true} })).unwrap()
+    await dispatch(removeUser({deleteUser,updatedProfile:{isDeleted:true} })).unwrap()
     //  dispatch(fetchAllUsers(workspaceslug))
     setRefreshKey(5)
    
     }else{
    
       
-         await dispatch(removeUser({deleteUser,updatedProfile:{isDelete:false} })).unwrap()
+         await dispatch(removeUser({deleteUser,updatedProfile:{isDeleted:false} })).unwrap()
     
   
     }
@@ -156,10 +156,10 @@ const handleChangePage = (event, newPage) => {
    
   };
 
-  const openAddModal = () => {
-    setEditingUser(null);
-    setIsModalOpen(true);
-  };
+  // const openAddModal = () => {
+  //   setEditingUser(null);
+  //   setIsModalOpen(true);
+  // };
 
   const openEditModal = (user: User) => {
     setEditingUser(user);
@@ -199,10 +199,10 @@ const closeDialog = () =>{
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
       <div className='flex items-center justify-between'>
         <h2 className='text-3xl font-bold tracking-tight'>Users</h2>
-        <Button onClick={openAddModal}>
+        {/* <Button onClick={openAddModal}>
           <Plus className='mr-2 h-4 w-4' />
           Add User
-        </Button>
+        </Button> */}
       </div>
 
       <Card>
@@ -242,19 +242,19 @@ const closeDialog = () =>{
                   <TableCell>
                     <Badge
                       variant={getBlockBadgeVariant(
-                        user.isBlock ? "Yes" : "No"
+                        user.isBlocked ? "Yes" : "No"
                       )}
                     >
-                      {user.isBlock ? "Yes" : "No"}
+                      {user.isBlocked ? "Yes" : "No"}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant={getBlockBadgeVariant(
-                        user.isDelete ? "Yes" : "No"
+                        user.isDeleted ? "Yes" : "No"
                       )}
                     >
-                      {user.isDelete ? "Yes" : "No"}
+                      {user.isDeleted ? "Yes" : "No"}
                     </Badge>
                   </TableCell>
                   <TableCell className='text-right'>
@@ -268,7 +268,7 @@ const closeDialog = () =>{
                       </Button>
                       {user.isAdmin?null:
                       <>
-                        {user.isDelete ? (
+                        {user.isDeleted ? (
                           <Button
                             variant='outline'
                             size='sm'

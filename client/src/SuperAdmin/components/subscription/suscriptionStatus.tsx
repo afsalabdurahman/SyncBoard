@@ -5,8 +5,6 @@ import { CreditCard, TrendingDown, Users, Rocket } from "lucide-react"
 interface Stat {
   title: string
   value: string
-  change: string
-  changeType: "positive" | "negative" | "neutral"
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
@@ -14,42 +12,30 @@ export function SubscriptionStats({
   mrr,
   active,
   trialing,
-  churnRate,
+
 }: {
   mrr: number
   active: number
   trialing: number
-  churnRate: number
+
 }) {
   const stats: Stat[] = [
     {
       title: "Monthly Recurring Revenue",
       value: `$${mrr.toLocaleString()}`,
-      change: "+6.2% vs last month",
-      changeType: "positive",
       icon: CreditCard,
     },
     {
       title: "Active Subscriptions",
       value: active.toLocaleString(),
-      change: "+2.3% vs last week",
-      changeType: "positive",
       icon: Users,
     },
     {
       title: "Trialing",
       value: trialing.toLocaleString(),
-      change: "—",
-      changeType: "neutral",
       icon: Rocket,
     },
-    {
-      title: "Churn Rate",
-      value: `${churnRate.toFixed(2)}%`,
-      change: "-0.3% vs last month",
-      changeType: "positive",
-      icon: TrendingDown,
-    },
+   
   ]
 
   const changeColors = {

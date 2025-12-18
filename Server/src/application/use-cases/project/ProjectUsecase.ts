@@ -43,9 +43,10 @@ export class ProjectUsecase implements IProjectUsecase {
     return responseDTO;
   }
 
-  async getAllProjects(): Promise<ProjectRepositoryDTO[]> {
+  async getAllProjects(): Promise<ProjectRepositoryDTO[]|null> {
      let allProjects = await this._projectRepository.getAllProjects();
-    if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND);
+     console.log(allProjects,"p")
+    // if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return allProjects;
   }
   async removeAttachment(

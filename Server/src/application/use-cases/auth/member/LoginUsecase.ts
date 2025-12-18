@@ -31,8 +31,8 @@ export class LoginUsecase implements ILogin {
     if (!user.workspace) {
       throw new NotFoundError(ResponseMessages.NOT_FOUND + 'Workspace');
     }
-    if (user.isBlock) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
-    if (user.isDelete) throw new ForbiddenError(ResponseMessages.USER_STATUS_DELETE);
+    if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
+    if (user.isDeleted) throw new ForbiddenError(ResponseMessages.USER_STATUS_DELETE);
     let isTrue = await this._authService.comparePassword(
       input.password,
       user.password

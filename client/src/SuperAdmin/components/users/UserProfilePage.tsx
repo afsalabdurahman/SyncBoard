@@ -177,13 +177,13 @@ console.log(user,"User documentssssss")
 const dispatch = useDispatch()
   const suspend = async() => {
     setStatus("suspended")
-        await dispatch(removeUser({deleteUser:user.id,updatedProfile:{isDelete:true} })).unwrap()
+        await dispatch(removeUser({deleteUser:user.id,updatedProfile:{isDeleted:true} })).unwrap()
     
     toast("Suspended")
   }
   const reactivate = async() => {
     setStatus("active")
-            await dispatch(removeUser({deleteUser:user.id,updatedProfile:{isDelete:false} })).unwrap()
+            await dispatch(removeUser({deleteUser:user.id,updatedProfile:{isDeleted:false} })).unwrap()
 
     toast.success("Activated")
   }
@@ -277,16 +277,16 @@ const dispatch = useDispatch()
                   <MessageSquare className="h-4 w-4" />
                   Message
                 </Button> */}
-                <Button variant="outline" onClick={editUser} className="gap-2 bg-transparent">
+                {/* <Button variant="outline" onClick={editUser} className="gap-2 bg-transparent">
                   <UserCog className="h-4 w-4" />
                   Edit User
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
 
           {/* KPIs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
@@ -349,7 +349,7 @@ const dispatch = useDispatch()
           </div>
 
           {/* Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Left (Profile, Security, Memberships) */}
             <div className="xl:col-span-2 space-y-6">
               {/* Profile Details */}
@@ -398,10 +398,10 @@ const dispatch = useDispatch()
                   </div>
                   <Separator />
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" className="gap-2 bg-transparent" onClick={resetPassword}>
+                    {/* <Button variant="outline" className="gap-2 bg-transparent" onClick={resetPassword}>
                       <KeyRound className="h-4 w-4" />
                       Send Password Reset
-                    </Button>
+                    </Button> */}
                     {/* <Button variant="outline" className="gap-2 bg-transparent" onClick={toggle2FA}>
                       <Shield className="h-4 w-4" />
                       {twoFA ? "Disable 2FA" : "Enable 2FA"}

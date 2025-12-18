@@ -32,7 +32,7 @@ interface User {
   name: string;
   email: string;
   role: string;
-  isBlock: string;
+  isBlocked: string;
   title:string;
   
 }
@@ -63,7 +63,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
         name: user.name,
         email: user.email,
         role: user.role,
-        isBlock: user.isBlock === true ? "Yes" : "No",
+        isBlock: user.isBlocked === true ? "Yes" : "No",
         isAdmin: user.role === "Admin" ? true : false,
       });
     } else {
@@ -71,7 +71,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
         name: "",
         email: "",
         role: "",
-        isBlock: "",
+        isBlocked: "",
         isAdmin: false,
       });
     }
@@ -176,9 +176,9 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
                   Block
                 </Label>
                 <Select
-                  value={formData.isBlock}
+                  value={formData.isBlocked}
                   onValueChange={(value: "No" | "Yes") =>
-                    setFormData({ ...formData, isBlock: value })
+                    setFormData({ ...formData, isBlocked: value })
                   }
                 >
                   <SelectTrigger className='col-span-3'>

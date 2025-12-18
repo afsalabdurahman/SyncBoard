@@ -13,29 +13,21 @@ export let WorkspaceStats = ({ totalWorkspaces, activeWorkspaces, totalUsers, mo
     {
       title: "Total Workspaces",
       value: totalWorkspaces.toLocaleString(),
-      change: "+12% from last month",
-      changeType: "positive",
       icon: Building2,
     },
     {
       title: "Active Workspaces",
       value: activeWorkspaces.toLocaleString(),
-      change: "+8% from last month",
-      changeType: "positive",
       icon: TrendingUp,
     },
     {
       title: "Total Users",
       value: totalUsers.toLocaleString(),
-      change: "+15% from last month",
-      changeType: "positive",
       icon: Users,
     },
     {
       title: "Monthly Revenue",
       value: `$${monthlyRevenue.toLocaleString()}`,
-      change: "+23% from last month",
-      changeType: "positive",
       icon: DollarSign,
     },
   ]
@@ -49,7 +41,6 @@ export let WorkspaceStats = ({ totalWorkspaces, activeWorkspaces, totalUsers, mo
               <div>
                 <p className="text-sm font-medium text-gray-600">{stat.title}</p>
                 <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                <p className="text-sm text-green-600 mt-1">{stat.change}</p>
               </div>
               <div className="h-12 w-12 bg-blue-50 rounded-lg flex items-center justify-center">
                 <stat.icon className="h-6 w-6 text-blue-600" />

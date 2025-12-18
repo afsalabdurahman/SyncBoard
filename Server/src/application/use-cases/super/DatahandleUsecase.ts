@@ -11,7 +11,7 @@ export class DatahandleUsecase implements IDatahandleUsecase {
     constructor(@inject("SuperAdminRepository") private _superAdminRepository: ISuperAdminRepository) { }
     async fetchDataCounts(): Promise<CountResponseDTO | null> {
         const { data, userCount, workspaceCount,abusereportlas } = await this._superAdminRepository.getAllCount();
-       
+       if(!data || !userCount || !workspaceCount || !abusereportlas) return null
         const responseDTO = DatahandleMapper.mapSuperEntityToResponse(userCount, workspaceCount, data,abusereportlas)
         return responseDTO as CountResponseDTO
     }

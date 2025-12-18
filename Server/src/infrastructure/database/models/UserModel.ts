@@ -22,8 +22,8 @@ export interface UserDoument extends Document {
   imageUrl:string;
   isAdmin:boolean;
   isSuperAdmin:boolean;
-  isBlock:boolean;
-  isDelete:boolean;
+  isBlocked:boolean;
+  isDeleted:boolean;
   isOnline:boolean;
   stripeCustomerId?: string;
   currentSubscription?: Types.ObjectId;
@@ -50,8 +50,8 @@ const userSchema = new Schema<UserDoument>(
     imageUrl:{type:String},
     isAdmin:{type:Boolean,default:false},
     isSuperAdmin:{type:Boolean,default:false},
-    isBlock:{type:Boolean,default:false},
-    isDelete:{type:Boolean,default:false},
+    isBlocked:{type:Boolean,default:false},
+    isDeleted:{type:Boolean,default:false},
     isOnline:{type:Boolean,default:false},
      stripeCustomerId: {type:String},
   currentSubscription: { type: Schema.Types.ObjectId, ref: 'Subscription' },

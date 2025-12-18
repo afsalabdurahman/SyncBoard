@@ -70,95 +70,95 @@ const workspace: WorkspaceDetails = {
 }
 
 // Mock members
-const mockMembers: WorkspaceMember[] = [
-  {
-    id: "m1",
-    name: "John Smith",
-    email: "john../../..acme.com",
-    role: "owner",
-    status: "active",
-    joinedAt: "2023-01-15",
-    lastActive: "2025-10-12",
-    twoFactorEnabled: true,
-    isEmailVerified: true,
-  },
-  {
-    id: "m2",
-    name: "Sarah Johnson",
-    email: "sarah../../..acme.com",
-    role: "admin",
-    status: "active",
-    joinedAt: "2023-03-10",
-    lastActive: "2025-10-12",
-    twoFactorEnabled: false,
-    isEmailVerified: true,
-  },
-  {
-    id: "m3",
-    name: "Mike Chen",
-    email: "mike../../..acme.com",
-    role: "member",
-    status: "active",
-    joinedAt: "2023-06-01",
-    lastActive: "2025-10-11",
-    twoFactorEnabled: false,
-    isEmailVerified: false,
-  },
-  {
-    id: "m4",
-    name: "Emily Davis",
-    email: "emily../../..acme.com",
-    role: "admin",
-    status: "suspended",
-    joinedAt: "2023-07-20",
-    lastActive: "2025-10-02",
-    twoFactorEnabled: true,
-    isEmailVerified: true,
-  },
-  {
-    id: "m5",
-    name: "David Wilson",
-    email: "david../../..acme.com",
-    role: "member",
-    status: "pending",
-    joinedAt: "2025-10-10",
-    lastActive: "2025-10-10",
-    twoFactorEnabled: false,
-    isEmailVerified: false,
-  },
-]
+// const mockMembers: WorkspaceMember[] = [
+//   {
+//     id: "m1",
+//     name: "John Smith",
+//     email: "john../../..acme.com",
+//     role: "owner",
+//     status: "active",
+//     joinedAt: "2023-01-15",
+//     lastActive: "2025-10-12",
+//     twoFactorEnabled: true,
+//     isEmailVerified: true,
+//   },
+//   {
+//     id: "m2",
+//     name: "Sarah Johnson",
+//     email: "sarah../../..acme.com",
+//     role: "admin",
+//     status: "active",
+//     joinedAt: "2023-03-10",
+//     lastActive: "2025-10-12",
+//     twoFactorEnabled: false,
+//     isEmailVerified: true,
+//   },
+//   {
+//     id: "m3",
+//     name: "Mike Chen",
+//     email: "mike../../..acme.com",
+//     role: "member",
+//     status: "active",
+//     joinedAt: "2023-06-01",
+//     lastActive: "2025-10-11",
+//     twoFactorEnabled: false,
+//     isEmailVerified: false,
+//   },
+//   {
+//     id: "m4",
+//     name: "Emily Davis",
+//     email: "emily../../..acme.com",
+//     role: "admin",
+//     status: "suspended",
+//     joinedAt: "2023-07-20",
+//     lastActive: "2025-10-02",
+//     twoFactorEnabled: true,
+//     isEmailVerified: true,
+//   },
+//   {
+//     id: "m5",
+//     name: "David Wilson",
+//     email: "david../../..acme.com",
+//     role: "member",
+//     status: "pending",
+//     joinedAt: "2025-10-10",
+//     lastActive: "2025-10-10",
+//     twoFactorEnabled: false,
+//     isEmailVerified: false,
+//   },
+// ]
 
 // Mock activity
-const activity: ActivityItem[] = [
-  {
-    id: "a1",
-    type: "member_added",
-    title: "Added Lisa Thompson to Acme Corporation",
-    description: "Role: Member",
-    time: "2025-10-12T09:30:00Z",
-  },
-  {
-    id: "a2",
-    type: "billing",
-    title: "Monthly invoice paid",
-    description: "Amount: $2,499 USD",
-    time: "2025-10-10T02:10:00Z",
-  },
-  {
-    id: "a3",
-    type: "setting_change",
-    title: "File uploads enabled",
-    description: "Max file size: 50MB",
-    time: "2025-10-08T11:20:00Z",
-  },
-  {
-    id: "a4",
-    type: "message",
-    title: "Peak daily messages reached",
-    description: "87,540 messages sent",
-    time: "2025-10-07T18:05:00Z",
-  },
-]
+// const activity: ActivityItem[] = [
+//   {
+//     id: "a1",
+//     type: "member_added",
+//     title: "Added Lisa Thompson to Acme Corporation",
+//     description: "Role: Member",
+//     time: "2025-10-12T09:30:00Z",
+//   },
+//   {
+//     id: "a2",
+//     type: "billing",
+//     title: "Monthly invoice paid",
+//     description: "Amount: $2,499 USD",
+//     time: "2025-10-10T02:10:00Z",
+//   },
+//   {
+//     id: "a3",
+//     type: "setting_change",
+//     title: "File uploads enabled",
+//     description: "Max file size: 50MB",
+//     time: "2025-10-08T11:20:00Z",
+//   },
+//   {
+//     id: "a4",
+//     type: "message",
+//     title: "Peak daily messages reached",
+//     description: "87,540 messages sent",
+//     time: "2025-10-07T18:05:00Z",
+//   },
+// ]
 
 function generateSeries(days = 30) {
   const now = new Date()
@@ -324,10 +324,10 @@ if(isLoading){
                   <Mail className="h-4 w-4" />
                   Message Owner
                 </Button> */}
-                <Button onClick={edit} className="gap-2">
+                {/* <Button onClick={edit} className="gap-2">
                   <Edit className="h-4 w-4" />
                   Edit Workspace
-                </Button>
+                </Button> */}
               </div>
             </div>
 

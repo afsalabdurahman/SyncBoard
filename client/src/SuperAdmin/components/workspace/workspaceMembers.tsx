@@ -140,26 +140,26 @@ export function WorkspaceMembersTable({
                   <div className="text-sm">{fmtDate(m.updatedAt)}</div>
                 </TableCell>
                 <TableCell>
-                  <DropdownMenu>
+                  {/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    </DropdownMenuTrigger> */}
+                    {/* <DropdownMenuContent align="end"> */}
+                      {/* <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onView(m)}>View Profile</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onChangeRole(m)}>Change Role</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onSuspend(m)}>
+                      <DropdownMenuItem onClick={() => onChangeRole(m)}>Change Role</DropdownMenuItem> */}
+                      {/* <DropdownMenuItem onClick={() => onSuspend(m)}> */}
                         {/* {m.status === "suspended" ? "Unsuspend" : "Suspend"} */}
-                      </DropdownMenuItem>
+                      {/* </DropdownMenuItem> */}
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => onRemove(m)} className="text-red-600">
+                      {/* <DropdownMenuItem onClick={() => onRemove(m)} className="text-red-600">
                         Remove from Workspace
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                      </DropdownMenuItem> */}
+                    {/* </DropdownMenuContent> */}
+                  {/* </DropdownMenu> */}
                 </TableCell>
               </TableRow>
             ))}

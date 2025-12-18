@@ -107,10 +107,10 @@ export const UserFilters = ({
             <Download className="h-4 w-4" />
             Export
           </Button>
-          <Button onClick={onInviteUser} className="flex items-center gap-2">
+          {/* <Button onClick={onInviteUser} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Invite User
-          </Button>
+          </Button> */}
         </div>
       </div>
 

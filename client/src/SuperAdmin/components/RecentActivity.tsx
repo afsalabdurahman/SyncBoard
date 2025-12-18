@@ -3,49 +3,49 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
 import { Badge } from "../../Custom/ui/badge"
 import { DateInHours, formatDate } from "../../Utility/dateformate"
 
-const recentSignups = [
-  {
-    id: 1,
-    name: "John Smith",
-    email: "john@acme.com",
-    workspace: "Acme Corp",
-    plan: "Pro",
-    time: "2 minutes ago",
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    email: "sarah@techstart.io",
-    workspace: "TechStart",
-    plan: "Enterprise",
-    time: "15 minutes ago",
-  },
-  {
-    id: 3,
-    name: "Mike Chen",
-    email: "mike@designco.com",
-    workspace: "DesignCo",
-    plan: "Basic",
-    time: "1 hour ago",
-  },
-]
+// const recentSignups = [
+//   {
+//     id: 1,
+//     name: "John Smith",
+//     email: "john@acme.com",
+//     workspace: "Acme Corp",
+//     plan: "Pro",
+//     time: "2 minutes ago",
+//   },
+//   {
+//     id: 2,
+//     name: "Sarah Johnson",
+//     email: "sarah@techstart.io",
+//     workspace: "TechStart",
+//     plan: "Enterprise",
+//     time: "15 minutes ago",
+//   },
+//   {
+//     id: 3,
+//     name: "Mike Chen",
+//     email: "mike@designco.com",
+//     workspace: "DesignCo",
+//     plan: "Basic",
+//     time: "1 hour ago",
+//   },
+// ]
 
-const abuseAlerts = [
-  {
-    id: 1,
-    type: "Spam",
-    workspace: "BadActor Inc",
-    severity: "High",
-    time: "5 minutes ago",
-  },
-  {
-    id: 2,
-    type: "Harassment",
-    workspace: "Problem Workspace",
-    severity: "Critical",
-    time: "30 minutes ago",
-  },
-]
+// const abuseAlerts = [
+//   {
+//     id: 1,
+//     type: "Spam",
+//     workspace: "BadActor Inc",
+//     severity: "High",
+//     time: "5 minutes ago",
+//   },
+//   {
+//     id: 2,
+//     type: "Harassment",
+//     workspace: "Problem Workspace",
+//     severity: "Critical",
+//     time: "30 minutes ago",
+//   },
+// ]
 
 // const subscriptionChanges = [
 //   {
@@ -110,7 +110,7 @@ export function RecentActivity({subscription,abuse}:Props) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Recent Signups */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Recent Signups</CardTitle>
         </CardHeader>
@@ -139,7 +139,7 @@ export function RecentActivity({subscription,abuse}:Props) {
             </div>
           ))}
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Abuse Alerts */}
       <Card>
@@ -160,7 +160,7 @@ export function RecentActivity({subscription,abuse}:Props) {
                 {/* <p className="text-xs text-gray-500">{alert.time}</p> */}
               </div>
             </div>
-          ))}
+          ))??"Not available..."}
         </CardContent>
       </Card>
 
@@ -185,7 +185,7 @@ export function RecentActivity({subscription,abuse}:Props) {
                 <p className="text-xs text-gray-500">{ DateInHours( change.updated)}</p>
               </div>
             </div>
-          )):"loading..."}
+          )):"Not available..."}
         </CardContent>
       </Card>
     </div>

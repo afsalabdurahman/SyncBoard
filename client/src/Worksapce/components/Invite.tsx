@@ -5,6 +5,7 @@ import apiService from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { useSelector } from "react-redux";
+const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
 const Invite = () => {
   const workspaceName = useSelector((state: any) => {
    
@@ -36,8 +37,9 @@ const Invite = () => {
   const [showExternalOptions, setShowExternalOptions] = useState(true);
   const [load, setLoad] = useState(false);
   const [invitationLink, setInvitationLink] = useState<string>(
-    `http://localhost:5173/invite-members/workspace-${workspaceName.slug}` // Replace with your actual invitation link
+    `${INVITE_MEMBER_}${workspaceName.slug}` // Replace with your actual invitation link
   );
+  console.log(invitationLink,"linkes++")
   const addEmail = (email) => {
     if (email && !emails.includes(email) && isValidEmail(email)) {
       setEmails([...emails, email]);
@@ -177,7 +179,7 @@ const Invite = () => {
           className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
         >
           <option value='Member'>Member</option>
-          <option value='Admin'>Admin</option>
+          {/* <option value='Admin'>Admin</option> */}
           {/* <option value="Guest">Guest</option>
           <option value="Viewer">Viewer</option> */}
         </select>

@@ -195,17 +195,17 @@ export const UserTable =({
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => onViewUser(user)}>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEditUser(user)}>Edit User</DropdownMenuItem>
-                        {user.status === "pending" && (
+                        {/* <DropdownMenuItem onClick={() => onEditUser(user)}>Edit User</DropdownMenuItem> */}
+                        {/* {user.status === "pending" && (
                           <DropdownMenuItem onClick={() => onResendInvite(user)}>Resend Invite</DropdownMenuItem>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onSuspendUser(user)} className="text-orange-600">
+                        )} */}
+                        {/* <DropdownMenuSeparator /> */}
+                        {/* <DropdownMenuItem onClick={() => onSuspendUser(user)} className="text-orange-600">
                           {user.status === "suspended" ? "Unsuspend User" : "Suspend User"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDeleteUser(user)} className="text-red-600">
+                        </DropdownMenuItem> */}
+                        {/* <DropdownMenuItem onClick={() => onDeleteUser(user)} className="text-red-600">
                           Delete User
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

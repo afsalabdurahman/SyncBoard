@@ -7,7 +7,7 @@ import api from "../../Services/apiServices/apiService";
 import { useParams,useLocation } from 'react-router';
 import { current } from '@reduxjs/toolkit';
 import { useNavigate } from 'react-router';
-
+import { logout } from '../../Worksapce/apis/workspaceapis'; 
 export default function ChangePasswordPage() {
   let naviagte=useNavigate()
 
@@ -72,8 +72,10 @@ console.log(userId,"userId")
   }, [isSuccess]);
 
   const redirectToLogin = () => {
-    // In a real application, this would navigate to your login page
-    window.location.href = '/login'; // Replace with your actual login URL
+     logout(userId).then((res)=>{
+          if(res==204)  window.location.href = '/login'
+         })
+   ; // Replace with your actual login URL
     // For React Router, you would use: navigate('/login')
   };
 

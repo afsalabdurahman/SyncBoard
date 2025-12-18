@@ -2,7 +2,7 @@ import apiService from "../../Services/apiServices/apiService"
 
 export const myProjects = async () => {
     const response = await apiService.get("project/projects")
-    console.log(response)
+    console.log(response,"projectAPICLLLEDD")
     return response
 }
 export const sendQuery = async (userName: string, query: string) => {
@@ -35,3 +35,14 @@ export const  myLogs = async (workspaceId:string) =>{
     return response.data
    
 }
+export const acceptInvitaionLink = async( name,
+          email,
+          password,
+          role,
+          title,
+          workspaceSlug,)=>{
+            const response= await apiService.post( "member/invite/register",{
+                name,email,password,role,title,workspaceSlug
+            })
+            return response
+          }

@@ -26,10 +26,16 @@ try {
      const projectRepo = container.resolve(ProjectRepository);
      const taskRepo = container.resolve(TaskRepository);
      const userRepo = container.resolve(UserMongooseRepository)
-
-if(!req.user?.id) throw new NotFoundError("NOt found")
-  
-const isSubscribe=await subscription.findSuscriptionByUserId(req.user.id);
+const userId=req.user?.id
+console.log(userId,"From susMIDD")
+if(!userId) throw new NotFoundError("NOt found")
+  if(req?.user?.role=="Member") return next()
+    const project =await projectRepo.findProjectbyAdminId(userId)
+  console.log(project,"project")
+ if (!project || project.length === 0) {
+  return next();
+}
+const isSubscribe=await subscription.findSuscriptionByUserId(userId);
 
 if(!isSubscribe ) throw new NotFoundError("Suscription is not found");
 const checkisAvilablePlan= await plan.findByKey(isSubscribe.planKey);

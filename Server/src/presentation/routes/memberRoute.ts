@@ -11,6 +11,6 @@ let memberController = container.resolve(MemberController);
 
 router.patch("/profile/update/:id", memberAuth, memberController.updateUserProfile.bind(memberController))
 router.patch("/change/password/:id", memberAuth,memberController.changeUserPassword.bind(memberController));
-router.post("/invite/register", memberAuth,memberController.inviteAndRegister.bind(memberController))
+router.post("/invite/register",memberController.inviteAndRegister.bind(memberController))
 
 export default router;

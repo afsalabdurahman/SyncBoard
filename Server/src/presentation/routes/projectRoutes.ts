@@ -7,7 +7,7 @@ import {subscriptionMiddle} from "../middleware/subscriptionMiddleware"
 let projectController = container.resolve(ProjectController)
 
 let router = express.Router();
-const adminAuth = [authMiddelware(), roleMiddleware(["Admin"]),subscriptionMiddle("project")];
+const adminAuth = [authMiddelware(), roleMiddleware(["Admin","Member"]),subscriptionMiddle("project")];
 
 router.post('/create/:workspaceid',adminAuth,projectController.createProject.bind(projectController))
 router.get('/projects',adminAuth,projectController.allProjects.bind(projectController))

@@ -179,14 +179,14 @@ export const WorkspaceTable = ({
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => onViewWorkspace(workspace)}>View Details</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEditWorkspace(workspace)}>Edit Workspace</DropdownMenuItem>
+                        {/* <DropdownMenuItem onClick={() => onEditWorkspace(workspace)}>Edit Workspace</DropdownMenuItem> */}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onSuspendWorkspace(workspace)} className="text-orange-600">
+                        {/* <DropdownMenuItem onClick={() => onSuspendWorkspace(workspace)} className="text-orange-600">
                           {workspace.status === "suspended" ? "Reactivate" : "Suspend"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDeleteWorkspace(workspace)} className="text-red-600">
+                        </DropdownMenuItem> */}
+                        {/* <DropdownMenuItem onClick={() => onDeleteWorkspace(workspace)} className="text-red-600">
                           Delete Workspace
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

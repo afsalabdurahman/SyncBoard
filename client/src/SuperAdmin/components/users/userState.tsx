@@ -14,15 +14,11 @@ export const UserStats = ({ totalUsers, activeUsers, suspendedUsers }: UserStats
     {
       title: "Total Users",
       value: totalUsers.toLocaleString(),
-      change: "+12% from last month",
-      changeType: "positive",
       icon: Users,
     },
     {
       title: "Active Users",
       value: activeUsers.toLocaleString(),
-      change: "+8% from last month",
-      changeType: "positive",
       icon: UserCheck,
     },
     {
@@ -50,7 +46,6 @@ export const UserStats = ({ totalUsers, activeUsers, suspendedUsers }: UserStats
               <div>
                 <p className="text-sm font-medium text-gray-600">{stat.title}</p>
                 <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                <p className={`text-sm mt-1 ${changeColors[stat.changeType]}`}>{stat.change}</p>
               </div>
               <div className="h-12 w-12 bg-blue-50 rounded-lg flex items-center justify-center">
                 <stat.icon className="h-6 w-6 text-blue-600" />

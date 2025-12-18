@@ -17,6 +17,7 @@ import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
+import { acceptInvitaionLink } from "../apis/workspaceapis";
 
 const LinkInvitaionPage = () => {
   let { workspaceSlug } = useParams();
@@ -104,17 +105,8 @@ const LinkInvitaionPage = () => {
     });
 
     try {
-      const response: AxiosResponse<any, any> = await api.post(
-        "member/invite/register",
-        {
-          name,
-          email,
-          password,
-          role,
-          title,
-          workspaceSlug,
-        }
-      );
+      const response = await acceptInvitaionLink(name,email,password,role,title,workspaceSlug)
+      console.log(response,"response+++Invite")
       if (response.status === 201) {
         setLoading(false);
         dispatch(setWorkspace(response.data.workspace));

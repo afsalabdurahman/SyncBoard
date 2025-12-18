@@ -94,6 +94,7 @@ export class TaskUsecase implements ITaskUseCase {
   async findTaskByProjectId(projectId: string): Promise<Task> {
     const projectTask =
       await this._taskRepository.findTaskByProjectId(projectId);
+      console.log(projectTask,"Task##")
       if(!projectTask) throw new NotFoundError(ResponseMessages.NOT_FOUND)
 
     return projectTask;
