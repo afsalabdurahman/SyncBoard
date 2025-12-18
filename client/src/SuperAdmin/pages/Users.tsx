@@ -9,110 +9,13 @@ import ProfieViewPage from"../components/users/UserProfilePage";
 import ProfileEditPage from "../components/users/UserProfileEditPage"
 import { UserTable, type User } from "../components/users/userTable"
 import {useFetchUserPageQuery} from"../apis/fetchApi"
-// Mock data
-const mockUsers: User[] = [
-  {
-    id: "usr_1234567890",
-    name: "John Smith",
-    email: "john@acme.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "owner",
-    status: "active",
-    workspace: { name: "Acme Corporation", plan: "enterprise" },
-    joinedAt: "2023-01-15",
-    lastActivity: "2024-01-02T10:30:00Z",
-    loginCount: 245,
-    isEmailVerified: true,
-    twoFactorEnabled: true,
-  },
-  {
-    id: "usr_2345678901",
-    name: "Sarah Johnson",
-    email: "sarah@techstart.io",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "admin",
-    status: "active",
-    workspace: { name: "TechStart Inc", plan: "pro" },
-    joinedAt: "2023-03-22",
-    lastActivity: "2024-01-01T15:45:00Z",
-    loginCount: 156,
-    isEmailVerified: true,
-    twoFactorEnabled: false,
-  },
-  {
-    id: "usr_3456789012",
-    name: "Mike Chen",
-    email: "mike@designstudio.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "member",
-    status: "active",
-    workspace: { name: "Design Studio", plan: "basic" },
-    joinedAt: "2023-12-01",
-    lastActivity: "2023-12-30T09:15:00Z",
-    loginCount: 42,
-    isEmailVerified: false,
-    twoFactorEnabled: false,
-  },
-  {
-    id: "usr_4567890123",
-    name: "Emily Davis",
-    email: "emily@marketing.co",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "admin",
-    status: "suspended",
-    workspace: { name: "Marketing Agency", plan: "pro" },
-    joinedAt: "2023-06-10",
-    lastActivity: "2023-11-15T14:20:00Z",
-    loginCount: 89,
-    isEmailVerified: true,
-    twoFactorEnabled: true,
-  },
-  {
-    id: "usr_5678901234",
-    name: "David Wilson",
-    email: "david@startuphub.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "owner",
-    status: "active",
-    workspace: { name: "Startup Hub", plan: "enterprise" },
-    joinedAt: "2023-02-28",
-    lastActivity: "2024-01-02T11:00:00Z",
-    loginCount: 312,
-    isEmailVerified: true,
-    twoFactorEnabled: true,
-  },
-  {
-    id: "usr_6789012345",
-    name: "Lisa Thompson",
-    email: "lisa@newcompany.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "member",
-    status: "pending",
-    workspace: { name: "New Company", plan: "basic" },
-    joinedAt: "2023-12-28",
-    lastActivity: "2023-12-28T16:30:00Z",
-    loginCount: 0,
-    isEmailVerified: false,
-    twoFactorEnabled: false,
-  },
-  {
-    id: "usr_7890123456",
-    name: "Alex Rodriguez",
-    email: "alex@freelance.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    role: "guest",
-    status: "inactive",
-    workspace: { name: "Freelance Work", plan: "basic" },
-    joinedAt: "2023-08-15",
-    lastActivity: "2023-10-20T08:45:00Z",
-    loginCount: 23,
-    isEmailVerified: true,
-    twoFactorEnabled: false,
-  },
-]
+import { Pagination } from "@mui/material";
+
+
 
 export const  UsersPage = () => {
-  const {data,isLoading,refetch} = useFetchUserPageQuery()
+    const [changePage,setChangePage]=useState(1)
+  const {data,isLoading,refetch} = useFetchUserPageQuery(changePage)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -124,7 +27,10 @@ export const  UsersPage = () => {
 
 console.log(data,"Data Users009")
 
-
+const handleChangePage = (page) => {
+  setChangePage(page);
+  refetch()
+  };
 
   useEffect(() => {
     if (data?.data) {
@@ -258,7 +164,15 @@ if(page){
             onDeleteUser={handleDeleteUser}
             onResendInvite={handleResendInvite}
           />
+         
         </div>
+            <Pagination
+                     component="div"
+              count={Math.max(1, Math.ceil((data?.totalCount || 0) / 5))}
+                 page={data.currentPage}
+                       onChange={(_, page) => handleChangePage(page)}
+                 
+                  />
       </main>
     </div>
   )

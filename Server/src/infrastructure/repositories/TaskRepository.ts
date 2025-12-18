@@ -9,14 +9,14 @@ export class TaskRepository implements ITaskRepository {
     let task = await TaskModel.create(dto);
     return task;
   }
-  async getAlltask(): Promise<any | null> {
+  async getAlltask(): Promise<Task[] | null> {
     const tasks = await TaskModel.find();
  
     return tasks;
   }
-  async updatetask(taskId: string, merged: any): Promise<Task> {
+  async updatetask(taskId: string, merged: Record<string,string>): Promise<Task> {
     
-    const objectId: any = new mongoose.Types.ObjectId(taskId.toString());
+    const objectId = new mongoose.Types.ObjectId(taskId.toString());
  const updatedTask = await TaskModel.findByIdAndUpdate(
   objectId,
   { $set: merged },
@@ -33,10 +33,10 @@ return updatedTask;
   }
 
   async deleteTask(taskId: string): Promise<void> {
-    const objectId: any = new mongoose.Types.ObjectId(taskId.toString());
+    const objectId = new mongoose.Types.ObjectId(taskId.toString());
     await TaskModel.deleteOne({ _id: objectId });
   }
-  async myTask(userName: string, query?: any): Promise<Task | any> {
+  async myTask(userName: string, query?: any): Promise<Task> {
    
     if (query == "count") {
       const myTask = await TaskModel.find({
@@ -103,15 +103,18 @@ return updatedTask;
       );
     }
   }
-  async findTaskByProjectId(projectId: string): Promise<any> {
+  async findTaskByProjectId(projectId: string): Promise<Task|null> {
     const ProjectTask = await TaskModel.find({ projectId: projectId });
     return ProjectTask;
   }
-  countTask(): Promise<any> {
+  countTask(): Promise<number> {
     const countTask = TaskModel.countDocuments();
     return countTask
   }
-  async getPagenationaTask(page: number, limit: number, skip: number): Promise<any> {
+  async getPagenationaTask(page: number, limit: number, skip: number): Promise<{
+  items: Task[];
+  totalItems: number;
+}> {
      const totalItems = await TaskModel.countDocuments();
          const items = await TaskModel.find()
           .skip(skip)

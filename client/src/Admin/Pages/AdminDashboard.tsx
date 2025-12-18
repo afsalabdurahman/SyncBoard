@@ -21,7 +21,6 @@ export default function AdminDashboard() {
   console.log(isForward,"formwsdd")
   const [currentPage, setCurrentPage] = useState("dashboard");
 const user=useUser()
-console.log(user,"usereeeeee")
   useEffect(() => {
     if (isForward) {
       setCurrentPage("suscription");

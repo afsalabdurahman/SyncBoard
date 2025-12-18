@@ -89,4 +89,22 @@ export class NodemailerService implements IEmailService {
     };
       await this.transporter.sendMail(mailOptions);
   }
+ async sendAbuseStatus(email: string, message: string, status:string,name:string): Promise<void> {
+     const mailOptions = {
+      from: process.env.EMAIL_USER || "your-email@gmail.com",
+      to: email,
+      subject: `Report ${status} Status updation`,
+     html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Dear ${name}</h2>
+        <p> I hope you are doing well</p>
+        ${message},
+        <br>
+        <p>Thanks and Regards</p>
+        
+      </div>
+    `,
+    };
+     await this.transporter.sendMail(mailOptions);
+  }
 }

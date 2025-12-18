@@ -8,80 +8,13 @@ import { WorkspaceTable, type Workspace } from "../components/workspace/workspac
 import WorkSapceDetails from "../components/workspace/WorkspaceDetailsPage"
 import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
 import { useGetWorkspaceCountQuery } from "../apis/fetchApi"
+import { Pagination } from "@mui/material"
 // Mock data
-const mockWorkspaces: Workspace[] = [
- 
-  {
-    id: "ws_2345678901",
-    name: "TechStart Inc",
-    owner: {
-      name: "Sarah Johnson",
-      email: "sarah@techstart.io",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    plan: "pro",
-    status: "active",
-    members: 42,
-    createdAt: "2023-03-22",
-    lastActivity: "2024-01-01",
-    monthlyRevenue: 299,
-    storage: { used: 12, limit: 50 },
-  },
-  {
-    id: "ws_3456789012",
-    name: "Design Studio",
-    owner: {
-      name: "Mike Chen",
-      email: "mike@designstudio.com",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    plan: "basic",
-    status: "trial",
-    members: 8,
-    createdAt: "2023-12-01",
-    lastActivity: "2023-12-28",
-    monthlyRevenue: 0,
-    storage: { used: 2, limit: 10 },
-  },
-  {
-    id: "ws_4567890123",
-    name: "Marketing Agency",
-    owner: {
-      name: "Emily Davis",
-      email: "emily@marketing.co",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    plan: "pro",
-    status: "suspended",
-    members: 23,
-    createdAt: "2023-06-10",
-    lastActivity: "2023-11-15",
-    monthlyRevenue: 299,
-    storage: { used: 35, limit: 50 },
-  },
-  {
-    id: "ws_5678901234",
-    name: "Startup Hub",
-    owner: {
-      name: "David Wilson",
-      email: "david@startuphub.com",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    plan: "enterprise",
-    status: "active",
-    members: 156,
-    createdAt: "2023-02-28",
-    lastActivity: "2024-01-02",
-    monthlyRevenue: 2499,
-    storage: { used: 67, limit: 100 },
-  },
-]
 
 export  const  Workspaces =(props)=> {
-  const {data,isLoading,refetch} = useGetWorkspaceCountQuery("fsf")
-  console.log(data,"data frQQQQQ")
-  
-    console.log(isLoading,"LODING?????")
+    const [changePage,setChangePage]=useState(1)
+  const {data,isLoading,refetch} = useGetWorkspaceCountQuery(changePage)
+
   const [details,setDetails] =useState(false)
   const [viewDetails,setViewDetails] = useState(true)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -89,6 +22,7 @@ export  const  Workspaces =(props)=> {
   const [statusFilter, setStatusFilter] = useState("all")
   const [planFilter, setPlanFilter] = useState("all")
   const [page,setPage]=useState("")
+
   const [mockWorkspaces,setWorkspace]=useState([])
   console.log(data,"data frche home")
   useEffect(() => {
@@ -158,6 +92,12 @@ export  const  Workspaces =(props)=> {
     // Implement export logic
   }
 
+const handleChangePage = (page) => {
+  setChangePage(page);
+  refetch()
+  };
+
+
   const handleCreateWorkspace = () => {
     console.log("Create new workspace")
     // Implement create workspace logic
@@ -218,6 +158,15 @@ if(details){
             onDeleteWorkspace={handleDeleteWorkspace}
           />
         </div>
+        <Pagination
+           component="div"
+    count={Math.max(1, Math.ceil((data?.totalCount || 0) / 5))}
+
+           // rowsPerPage={3||0}
+              page={data.currentPage}
+             onChange={(_, page) => handleChangePage(page)}
+          //     rowsPerPageOptions={[]}
+        />
       </main>
     </div>
   )

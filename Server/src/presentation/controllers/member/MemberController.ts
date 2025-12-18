@@ -3,7 +3,7 @@ import { ResponseMessages } from "../../../common/erroResponse";
 import { injectable, inject } from "tsyringe";
 import { NextFunction, Request, Response } from "express";
 import { IUpdateProfileUsecases } from "../../../application/repositories/IUpdateProfile";
-import { NotFoundError, InternalServerError } from "../../../utils/errors";
+import { NotFoundError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
@@ -16,7 +16,6 @@ export class MemberController {
     private _updateProfileUsecase: IUpdateProfileUsecases,
     @inject("ChangePasswordUsecase") private _changePasswordUsecase: IChangePasword,
     @inject("MemberRegisterUsecase") private _memberRegisterUsecase: IMemberRegister,
-    @inject("ActivityUsecase") private _activityUsecase: IActivity
   ) {}
 
   async updateUserProfile(
@@ -25,9 +24,7 @@ export class MemberController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body,"BODYY",req.params,"666")
       let userId = req.params.id;
-
       if (!userId || !req.body) {
         throw new NotFoundError("user is not found");
       }
@@ -82,8 +79,6 @@ export class MemberController {
     try {
       let  response =
         await this._memberRegisterUsecase.execute(input);
-      // const activityId: string = insertToWorkspce.logId;
-      // await this._activityUsecase.userActivity(name, activityId);
 
       setTokensInCookies(res, response.token, response.refreshToken);
       res
@@ -95,10 +90,9 @@ export class MemberController {
   }
   async changeOnlinestatus(userId: string): Promise<void> {
     try {
-      console.log(userId, "fromController");
       await this._updateProfileUsecase.updateOnlineStatus(userId);
     } catch (error) {
-      console.log(error, "errorcatch");
+      console.log(error);
     }
   }
 }

@@ -5,7 +5,7 @@ import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose from "mongoose";
 import { TicketModel } from "../database/models/TicketModel";
 import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
-
+import { AbuseModel } from "../database/models/AbuseModel";
 export class SuperAdminRepository implements ISuperAdminRepository {
 
   async getAllCount(): Promise<GetAllCountResponseDTO> {
@@ -60,13 +60,14 @@ export class SuperAdminRepository implements ISuperAdminRepository {
       }
     ]).exec();
 
-
-    return { data, userCount, workspaceCount }
+const abusereportlas= await AbuseModel.find().sort({createdAt:-1}).limit(3)
+console.log(abusereportlas,"consoleAbuseRepo++")
+    return { data, userCount, workspaceCount,abusereportlas }
   }
-  async getAllWorkspace(): Promise<WorkspaceAggResponseDTO[]> {
+  async getAllWorkspace(limit:number,skip:number): Promise<WorkspaceAggResponseDTO[]> {
 
 
-
+const totalDocCount = await WorkspaceModel.countDocuments();
     const result = await WorkspaceModel.aggregate([
 
       {
@@ -167,14 +168,19 @@ export class SuperAdminRepository implements ISuperAdminRepository {
 
           lastProjectUpdatedDate: 1
         }
-      }
-    ]);
+      },
+      { $sort: { workspaceCreatedDate: -1 } },
+  { $skip: skip },
+  { $limit: limit }
 
+    ])
+result.push(totalDocCount)
     return result
   }
 
-  async getAllUsers(): Promise<UserAggResponseDTO[]> {
-   
+  async getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO[]> {
+   const totalDocCount = await UserModel.countDocuments();
+
     const result = await UserModel.aggregate([
       {
         $match: {
@@ -232,11 +238,13 @@ export class SuperAdminRepository implements ISuperAdminRepository {
           "workspaceDetails.name": 1,
           "subscriptionDetails.planKey": 1
         }
-      }
+      },{ $sort: { workspaceCreatedDate: -1 } },
+  { $skip: skip },
+  { $limit: limit }
     ]);
 
 
-
+result.push(totalDocCount)
     return result;
   }
 
@@ -305,7 +313,8 @@ export class SuperAdminRepository implements ISuperAdminRepository {
     return result[0];
   }
 
-  async getSubscription(): Promise<SubscriptionAggResponseDTO[]> {
+  async getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO[]> {
+    const totalDocCount = await SubscriptionModel.countDocuments();
     const result = await WorkspaceModel.aggregate([
       {
         $lookup:{
@@ -396,14 +405,18 @@ export class SuperAdminRepository implements ISuperAdminRepository {
   priceCents: "$planDetails.priceCents"
 
       }
-     }
+     },{ $sort: { workspaceCreatedDate: -1 } },
+  { $skip: skip },
+  { $limit: limit }
 
     ])
-  return result
+  result.push(totalDocCount)
+    return result;
   }
   
 async getAllTickets(): Promise<any> {
   const result= await TicketModel.find()
+  console.log(result,"reslt")
   return result
 }
 

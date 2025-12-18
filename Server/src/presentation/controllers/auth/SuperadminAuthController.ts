@@ -14,12 +14,12 @@ export class SuperadminAuthController{
     next: NextFunction
   ): Promise<void> {
    try {
-    console.log("calling...")
+  
        let input:LoginRequestDTO = req.body as LoginRequestDTO;
 
 
     const reponseDTO=await this._loginUseCase.superAdmin(input);
-console.log(reponseDTO,"controller")
+
      if(!reponseDTO?.token || !reponseDTO.refreshToken) throw new ValidationError("Validation failed")
        setTokensInCookies(res,reponseDTO?.token,reponseDTO?.refreshToken)
       res.status(200).json({message:"Login success",data:reponseDTO})

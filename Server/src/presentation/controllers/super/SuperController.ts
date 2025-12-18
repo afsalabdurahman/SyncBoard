@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 import { IDatahandleUsecase } from "../../../application/repositories/IDatahandle";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { http } from "winston";
 import { ResponseMessages } from "../../../common/erroResponse";
 
 @injectable()
@@ -15,27 +14,37 @@ export class SuperController {
       const responseDTO = await this._dataHandleUsecase.fetchDataCounts();
       res.status(200).json({ message: "Data fetched", data: responseDTO })
     } catch (error) {
-      next(error)
+      
+    next(error)
     }
   }
 
   async totalWorkspaceCount(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const responseDTO = await this._dataHandleUsecase.fetchDataworkspace();
-      res.status(HttpStatusCode.OK).json({ responseDTO })
+        const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+ console.log(page,skip,limit,"++++++++")
+      const {responseDTO,totalCount} = await this._dataHandleUsecase.fetchDataworkspace(limit,skip);
+      console.log(responseDTO,totalCount,page,skip,limit,"++++++++")
+      res.status(HttpStatusCode.OK).json({ responseDTO, currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
     } catch (error) {
+      console.log(error,"err")
       next(error)
     }
   }
   async totalUsersCount(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const responseDTO = await this._dataHandleUsecase.fetchAllUsers();
-      res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS, data: responseDTO })
+              const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+       const {responseDTO,totalCount}  = await this._dataHandleUsecase.fetchAllUsers(limit,skip);
+      res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS, data: responseDTO,currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
     } catch (error) {
       next(error)
     }
   }
-  async fetchAUser(req: Request, res: Response, next: NextFunction): Promise<any> {
+  async fetchAUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = req.params.id
       const responseDTO = await this._dataHandleUsecase.fetchAUser(userId);
@@ -46,8 +55,12 @@ export class SuperController {
   }
   async fetchSubscription(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
-      const responseDTO=await this._dataHandleUsecase.fetchSubscriptions()
-      res.status(HttpStatusCode.OK).json({message:"Data feched",data:responseDTO})
+         const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+      const {responseDTO,totalCount}=await this._dataHandleUsecase.fetchSubscriptions(limit,skip)
+    console.log(responseDTO,"subscribe+++")
+      res.status(HttpStatusCode.OK).json({message:"Data feched",data:responseDTO,currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
     } catch (error) {
       console.log(error)
     }
@@ -55,9 +68,10 @@ export class SuperController {
 async fetchTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
     const tickets=await this._dataHandleUsecase.fetchTickets();
+    console.log(tickets,"from controller")
 res.status(HttpStatusCode.OK).json(tickets)
   } catch (error) {
-    console.log(error)
+    console.log(error,"erorr")
     next(error)
   }
 }

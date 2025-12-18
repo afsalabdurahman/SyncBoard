@@ -2,6 +2,8 @@ import Stripe from "stripe";
 import {envConfig} from"../config/env.config"
 import { IStripeService } from "../../domain/interfaces/services/IStripService";
 import { ObjectId } from "mongodb";
+import { NotFoundError, ValidationError } from "../../utils/errors";
+import { ResponseMessages } from "../../common/erroResponse";
 export const stripe = new Stripe(
   envConfig.STRIP_KEY,
   { apiVersion: "2025-08-27.basil" }
@@ -10,12 +12,12 @@ export class StripeService implements IStripeService {
   constructor() {}
 
   async createCheckoutSession(
-    name: any,
+    name: string,
     customer_email: string,
     price: any,
     userId:any,
     key:string,
-  ): Promise<any> {
+  ): Promise<string> {
     const id = userId.toString();
      
     const response = await stripe.checkout.sessions.create({
@@ -39,12 +41,12 @@ export class StripeService implements IStripeService {
       },
       
     });
-
+if(!response.url) throw new NotFoundError(ResponseMessages.NOT_FOUND)
 
     return response.url;
   }
 
-  async createStripeCustomerId(email: string, name: string): Promise<any> {
+  async createStripeCustomerId(email: string, name: string): Promise<Stripe.Customer> {
     let stripeCustomer = await stripe.customers.create({ email, name });
   
     return stripeCustomer;
@@ -53,7 +55,7 @@ export class StripeService implements IStripeService {
   async paymentMethods(
     paymentMethodId: string,
     stripeCustomerId: string
-  ): Promise<any> {
+  ): Promise<boolean> {
     let paymentattched = await stripe.paymentMethods.attach(paymentMethodId, {
       customer: stripeCustomerId,
     });
@@ -76,10 +78,10 @@ export class StripeService implements IStripeService {
   }
   async createStripeSuscription(
     customer: string,
-    items: any,
-    expand: any,
-    metadata: any
-  ): Promise<any> {
+    items: Array<Stripe.SubscriptionCreateParams.Item>,
+    expand: Array<string>,
+    metadata: Record<string, string>
+  ): Promise<Stripe.Subscription> {
     const sub = await stripe.subscriptions.create({
       customer,
       items,

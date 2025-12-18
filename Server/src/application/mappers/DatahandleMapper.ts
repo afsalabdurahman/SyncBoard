@@ -1,16 +1,27 @@
+import { Abuse } from "../../domain/entities/Abuse";
 import { formateData, getNextMonthEnd } from "../../utils/dateCoverter";
 import { SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserResponse } from "../dto/SuperDTO";
 export class DatahandleMapper {
-    static mapSuperEntityToResponse(userCount:number,workspaceCount:number,data:any){
+    static mapSuperEntityToResponse(userCount:number,workspaceCount:number,data:any,abusereportlas:Abuse[]){
+     const Abuse = abusereportlas.map((report) => ({
+  id: report.id,
+  type: report.type,
+  severity: report.severity,
+  time: formateData(report?.createdAt?.toString() || "")
+}));
+
+  
   return {
     userCount,
     workspaceCount,
     subscriptionCount:data[0].count,
     subscriptionChanges:data[0].data,
+    Abuse:Abuse
   }
 }
 static mapSuperWorkspaceToResponse(results: any[]) {
-  return results.map((result) => ({
+    const totalCount=results.pop()
+  const responseDTO= results.map((result) => ({
     id: result.workspaceId,
     name: result.workspaceName,
     slug:result.workspaceSlug,
@@ -27,9 +38,15 @@ static mapSuperWorkspaceToResponse(results: any[]) {
     monthlyRevenue: result.monthlyRevenue/100,
     storage: { used: 2, limit: 10 },
   }));
+
+  return{
+  responseDTO,
+  totalCount
+  }
 }
-static mapAllUserToResponse(result: any[]): UserResponse[] {
-  return result.map((u) => ({
+static mapAllUserToResponse(result: any[]){
+   const totalCount=result.pop()
+   const responseDTO= result.map((u) => ({
     id: u._id?.toString() || "",
     name: u.name || "",
     email: u.email || "",
@@ -48,6 +65,10 @@ static mapAllUserToResponse(result: any[]): UserResponse[] {
     isEmailVerified: u.isEmailVerified ?? true, 
     twoFactorEnabled: u.twoFactorEnabled ?? false, 
   }))
+   return{
+  responseDTO,
+  totalCount
+  }
 }
 static mapUserDetailsToResponse(result:any):UserDetailsResponseDTO{
   return{
@@ -68,8 +89,9 @@ static mapUserDetailsToResponse(result:any):UserDetailsResponseDTO{
 
   }
 }
-static mapSubscriptionToResponse(result: any[]):SuperSubscriptionResponseDTO[] {
-  return result.map((u):SuperSubscriptionResponseDTO => ({
+static mapSubscriptionToResponse(result: any[]) {
+   const totalCount=result.pop()
+  const responseDTO = result.map((u):SuperSubscriptionResponseDTO => ({
     id: u._id,
     workspace: {
       name: u.name,
@@ -93,6 +115,7 @@ static mapSubscriptionToResponse(result: any[]):SuperSubscriptionResponseDTO[] {
     },
     lastInvoiceStatus: "paid",
   }));
+  return {totalCount,responseDTO}
 }
 
 

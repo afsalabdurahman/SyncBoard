@@ -8,7 +8,7 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   constructor(
     @inject("UserRepository") private _userRepository: IUserRepository
-  ) { }
+  ) {}
   async execute(
     userId: string,
     ...args: Record<string, any>[]

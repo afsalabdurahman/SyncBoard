@@ -42,10 +42,7 @@ const ActivitySchema = new Schema<IActivityDocument>(
   }
 );
 
-// Compound indexes for common queries
-// ActivitySchema.index({ workspaceId: 1, createdAt: -1 });
-// ActivitySchema.index({ projectId: 1, createdAt: -1 });
-// ActivitySchema.index({ userId: 1, createdAt: -1 });
+
 
 export const ActivityModel = mongoose.model<IActivityDocument>(
   "Activity",

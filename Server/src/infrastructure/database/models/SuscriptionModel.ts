@@ -14,7 +14,7 @@ const PaymentMethodSchema = new Schema<IPaymentMethod>(
 
 
 
-export interface ISubscription extends Document {
+export interface SubscriptionDocument extends Document {
   user: Types.ObjectId;
   workspace:Types.ObjectId;
   planKey: string; 
@@ -35,7 +35,7 @@ export interface ISubscription extends Document {
 
 
 
-const SubscriptionSchema = new Schema<ISubscription>({
+const SubscriptionSchema = new Schema<SubscriptionDocument>({
    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   workspace:{ type: Schema.Types.ObjectId, ref: 'Workspace', required: true },
   planKey: { type: String, required: true,default:"free" },
@@ -51,4 +51,4 @@ const SubscriptionSchema = new Schema<ISubscription>({
   paymentMethode:PaymentMethodSchema
 }, { timestamps: true });
 
-export const SubscriptionModel = model<ISubscription>('Subscription', SubscriptionSchema);
+export const SubscriptionModel = model<SubscriptionDocument>('Subscription', SubscriptionSchema);

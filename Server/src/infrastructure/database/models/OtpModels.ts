@@ -15,6 +15,6 @@ expAt:{type:Date,required:true}
 
 })
 
-OTPschema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+OTPschema.index({ expAt: 1 }, { expireAfterSeconds: 300 });
 
 export const OTPModel = model<OTPDocument>("OTP",OTPschema) 

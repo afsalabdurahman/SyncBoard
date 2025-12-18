@@ -1,5 +1,7 @@
+import { Types } from "mongoose";
+
 export class Plan {
-  _id?: any;
+  _id?: string| Types.ObjectId;
   key?: string;
   name?: string;
   priceCents?: number;
@@ -9,7 +11,7 @@ export class Plan {
   description?: string;
 
   constructor(
-    _id?: any,
+    _id?: string | Types.ObjectId,
     key?: string,
     name?: string,
     priceCents?: number,

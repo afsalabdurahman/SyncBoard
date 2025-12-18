@@ -23,7 +23,7 @@ const TicketDashboard = ({ tickets, onSelectTicket, selectedTicketId, onCreateTi
     const matchesSearch =
       ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ticket.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.id.toLowerCase().includes(searchQuery.toLowerCase());
+      ticket.SLno.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === "all" || ticket.status === statusFilter;
 

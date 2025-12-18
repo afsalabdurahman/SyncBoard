@@ -91,6 +91,8 @@ import { toast } from "react-toastify";
 //   },
 // ];
 
+
+
 export const TicketPage = () => {
 
 
@@ -109,6 +111,9 @@ export const TicketPage = () => {
      } = useFetchAllTicketsPageQuery({
       refetchOnFocus: true,
      });
+     useEffect(()=>{
+refetch()
+     },[])
   const [ticketss, setTickets] = useState<Ticket[]>();
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,9 +125,7 @@ export const TicketPage = () => {
     const matchesSearch =
       ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ticket.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.workspace.toLowerCase().includes(searchQuery.toLowerCase());
+      ticket.SLno.toLowerCase().includes(searchQuery.toLowerCase()) 
     
     const matchesStatus = statusFilter === "all" || ticket.status === statusFilter;
 
@@ -163,7 +166,7 @@ refetch()
     try {
       console.log(ticketId,newStatus,"gfffffffff")
       await updateTicketStatus({ticketId,newStatus})
-   
+   refetch()
       toast.success("Updated")
     } catch (error) {
       toast.error("Failed to update")

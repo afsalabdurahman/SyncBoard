@@ -48,7 +48,7 @@ export class TaskUsecase implements ITaskUseCase {
   async deleteTask(taskId: string): Promise<void> {
     await this._taskRepository.deleteTask(taskId);
   }
-  async myTask(userName: string, query: any): Promise<Task> {
+  async myTask(userName: string, query: string): Promise<Task> {
 
     const myTask = await this._taskRepository.myTask(userName, query);
     return myTask;
@@ -94,10 +94,12 @@ export class TaskUsecase implements ITaskUseCase {
   async findTaskByProjectId(projectId: string): Promise<Task> {
     const projectTask =
       await this._taskRepository.findTaskByProjectId(projectId);
+      if(!projectTask) throw new NotFoundError(ResponseMessages.NOT_FOUND)
 
     return projectTask;
   }
-  async paginationTask(page: number, limit: number, skip: number): Promise<{items:number,totalItems:number}> {
+  async paginationTask(page: number, limit: number, skip: number): Promise<{ items: Task[];
+    totalItems: number}> {
     const { items, totalItems } = await this._taskRepository.getPagenationaTask(page, limit, skip)
     return { items: items, totalItems }
   }

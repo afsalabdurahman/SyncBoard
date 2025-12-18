@@ -30,30 +30,20 @@ export class SubscriptionController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const input: SuscriptionRequestDTO = {
         userId: req.params.userid,
         planKey: req.body.plan,
 
       }
-
-
-
-      try {
         const checkoutLink = await this._planUsecase.excute(input);
         res.status(HttpStatusCode.OK).json(checkoutLink)
-      } catch (error) {
-
-        next(error)
-      }
-
 
     } catch (error) {
       console.log(error);
     }
   }
-
 
 
 

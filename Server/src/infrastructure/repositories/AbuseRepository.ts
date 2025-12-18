@@ -50,7 +50,6 @@ export class AbuseRepository extends BaseRepository <Abuse> implements IAbuseRep
   return {reports,count};
 }
 async updateReport(id: Types.ObjectId, status: string): Promise<void> {
-  console.log(id,status,"statuss")
  await AbuseModel.findByIdAndUpdate(
   id,
   { $set: { status: status } },

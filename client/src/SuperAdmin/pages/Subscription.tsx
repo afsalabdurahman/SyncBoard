@@ -1,116 +1,18 @@
 
 import { useEffect, useMemo, useState } from "react"
-// import { Sidebar } from "./components/sidebar"
-// import { Header } from "./components/header"
+
 import { SubscriptionStats } from "../components/subscription/suscriptionStatus"
 import { SubscriptionFilters } from "../components/subscription/subscriptionFilter"
 import { SubscriptionTable, type Subscription } from "../components/subscription/subscriptionTable"
 import { SubscriptionDetails } from "../components/subscription/subscriptionDetails"
 import { useFetchSubscriptionPageQuery } from "../apis/fetchApi"
-// Mock subscription dataset
-const mockSubs: Subscription[] = [
-  {
-    id: "sub_01HTD3M9K7",
-    workspace: {
-      name: "Acme Corporation",
-      ownerName: "John Smith",
-      ownerEmail: "john@acme.com",
-      avatar: "/acme-logo.jpg",
-    },
-    plan: "enterprise",
-    status: "active",
-    amount: 2499,
-    currency: "USD",
-    interval: "month",
-    startedAt: "2023-01-15",
-    currentPeriodEnd: "2025-11-10",
-    cancelAtPeriodEnd: false,
-     paymentMethod: { brand: "visa", last4: "4242", expMonth: 4, expYear: 2027 },
-    lastInvoiceStatus: "paid",
-  },
-  {
-    id: "sub_01HTD4PZQF",
-    workspace: {
-      name: "TechStart Inc",
-      ownerName: "Sarah Johnson",
-      ownerEmail: "sarah@techstart.io",
-      avatar: "/techstart-logo.jpg",
-    },
-    plan: "pro",
-    status: "trialing",
-    amount: 299,
-    currency: "USD",
-    interval: "month",
-    startedAt: "2025-10-01",
-    currentPeriodEnd: "2025-10-31",
-    cancelAtPeriodEnd: false,
-    paymentMethod: { brand: "mastercard", last4: "4444", expMonth: 8, expYear: 2026 },
-    lastInvoiceStatus: "paid",
-  },
-  {
-    id: "sub_01HTD5W2TR",
-    workspace: {
-      name: "Design Studio",
-      ownerName: "Mike Chen",
-      ownerEmail: "mike@designstudio.com",
-      avatar: "/designstudio-logo.jpg",
-    },
-    plan: "basic",
-    status: "past_due",
-    amount: 49,
-    currency: "USD",
-    interval: "month",
-    startedAt: "2024-02-12",
-    currentPeriodEnd: "2025-10-08",
-    cancelAtPeriodEnd: false,
-    paymentMethod: { brand: "visa", last4: "1881", expMonth: 11, expYear: 2025 },
-    lastInvoiceStatus: "past_due",
-  },
-  {
-    id: "sub_01HTD6YQPC",
-    workspace: {
-      name: "Marketing Agency",
-      ownerName: "Emily Davis",
-      ownerEmail: "emily@marketing.co",
-      avatar: "/marketing-logo.jpg",
-    },
-    plan: "pro",
-    status: "canceled",
-    amount: 299,
-    currency: "USD",
-    interval: "month",
-    startedAt: "2023-06-10",
-    currentPeriodEnd: "2024-04-10",
-    cancelAtPeriodEnd: true,
-    paymentMethod: { brand: "amex", last4: "0005", expMonth: 1, expYear: 2028 },
-    lastInvoiceStatus: "void",
-  },
-  {
-    id: "sub_01HTD7V2LM",
-    workspace: {
-      name: "Startup Hub",
-      ownerName: "David Wilson",
-      ownerEmail: "david@startuphub.com",
-      avatar: "/startuphub-logo.jpg",
-    },
-    plan: "enterprise",
-    status: "active",
-    amount: 2499,
-    currency: "USD",
-    interval: "year",
-    startedAt: "2023-02-28",
-    currentPeriodEnd: "2026-02-28",
-    cancelAtPeriodEnd: false,
-    paymentMethod: { brand: "discover", last4: "6011", expMonth: 3, expYear: 2029 },
-    lastInvoiceStatus: "paid",
-  },
-]
-
+import { Pagination } from "@mui/material"
 export const SubscriptionsPage = () =>{
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-const{data,isLoading}=useFetchSubscriptionPageQuery()
+      const [changePage,setChangePage]=useState(1)
+const{data,isLoading,refetch}=useFetchSubscriptionPageQuery(changePage)
 console.log(data,"$$$$$$ss$$")
-  // Filters state
+
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
   const [plan, setPlan] = useState("all")
@@ -124,9 +26,12 @@ useEffect(()=>{
   if(data){
 setMock(data.data)
   }
-},[])
+},[data])
 
-
+const handleChangePage = (page) => {
+  setChangePage(page);
+  refetch()
+  };
 const filtered = useMemo(() => {
   return mockSubs.filter((s) => {
     console.log(s,"sssss")
@@ -143,9 +48,11 @@ const filtered = useMemo(() => {
   })
 }, [mockSubs, search, status, plan, period])
 if(isLoading){
-  return(
-    <>loading.....</>
-  )
+ return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500 text-lg font-medium">Loading workspaces...</p>
+      </div>
+    )
 }
   // Stats derived from dataset
   const stats = {
@@ -222,6 +129,13 @@ if(isLoading){
             onRefund={onRefund}
           />
         </div>
+         <Pagination
+                             component="div"
+                      count={Math.max(1, Math.ceil((data?.totalCount || 0) / 5))}
+                         page={data.currentPage}
+                               onChange={(_, page) => handleChangePage(page)}
+                         
+                          />
       </main>
 
       <SubscriptionDetails open={detailsOpen} onOpenChange={setDetailsOpen} sub={selected} />

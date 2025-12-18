@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, response } from "express";
 import { NotFoundError } from "../../../utils/errors";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
 import { inject, injectable } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { LoginRequestDTO } from "../../../application/dto/AuthDTOs";
+import { adminResponseDTO, LoginRequestDTO } from "../../../application/dto/AuthDTOs";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 
 @injectable()
@@ -18,13 +18,13 @@ export class AdminAuthController {
 
     let input:LoginRequestDTO = req.body as LoginRequestDTO;
     try {
-      let { user, workspace,suscribe,token,refreshToken }: any = await this._loginUseCase.execute(input );
+      let response= await this._loginUseCase.execute(input );
 
-      if (!user) {
+      if (!response) {
         throw new NotFoundError("User is found");
       }
-        setTokensInCookies(res, token, refreshToken);
-      res.status(HttpStatusCode.OK).json({ user, workspace,suscribe });
+        setTokensInCookies(res, response.token, response.refreshToken);
+      res.status(HttpStatusCode.OK).json({ user:response.user, workspace:response.workspace,suscribe:response.suscribe });
     } catch (error) {
       next(error);
     }

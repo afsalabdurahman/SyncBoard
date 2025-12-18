@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Mongoose, Types } from "mongoose";
 import {IPaymentMethod} from"../../types/subscriptionTypes"
 
 
@@ -20,7 +20,7 @@ export class Subscription {
   paymentMethode?: IPaymentMethod;
   constructor(params: {
     user: string | Types.ObjectId;
-    workspace: string | Types.ObjectId;
+    workspace: string | Types.ObjectId ;
     planKey: string;
     status: string;
     startedAt?: Date;

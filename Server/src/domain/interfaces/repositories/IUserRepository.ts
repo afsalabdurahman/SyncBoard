@@ -2,6 +2,7 @@ import mongoose, { Date, Types } from "mongoose";
 import { User } from "../../entities/User";
 import { ObjectId } from "mongoose";
 import {IBaseRepository} from "./IBaseReposiory"
+import { UserDoument } from "../../../infrastructure/database/models/UserModel";
 export interface IUserRepository extends IBaseRepository<User|null>  {
   
   findByEmail(email: string): Promise<any | null>;
@@ -23,6 +24,6 @@ export interface IUserRepository extends IBaseRepository<User|null>  {
   findUsersInsameWorkspace(worspaceId: any): Promise<any>;
   updateOnlineStatus(userId: string): Promise<void>;
   countUser():Promise<any>
-  paginationUser(workspaceId:string|ObjectId,page:number,limit:number,skip:number):Promise<any>
+  paginationUser(workspaceId:string|ObjectId,page:number,limit:number,skip:number):Promise<{items:UserDoument[]|null,totalItems:number}>
   changeOnlineStatus(userId:Types.ObjectId):Promise<boolean>
 }

@@ -4,16 +4,32 @@ import { useFetchAbuseReportPageQuery, useUpdateAbuseReportStatusMutation } from
 import {Pagination} from "../../Custom/reusecomponents/Pagination"
 import { toast } from 'react-toastify';
 export  const AbuseReportsPage =()=> {
-  const [page,setPage] = useState(1);
-  const {data,refetch,isLoading}=useFetchAbuseReportPageQuery({ page, limit: 5 })
-  const  [updateReportStatus,   { isLoading: isUpdating } ] = useUpdateAbuseReportStatusMutation()
-  
-  // Mock data based on your structure
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-   const [reports,setReports]=useState([]);
-   const [change,Setchange]=useState(1)
+   const [page,setPage] = useState(1);
+   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [selectedReport, setSelectedReport] = useState(null);
+  const [filterType, setFilterType] = useState('All');
+  const [filterSeverity, setFilterSeverity] = useState('All');
+  const [filterStatus, setFilterStatus] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+      const [change,Setchange]=useState(1)
 
-   const count = Math.ceil((data?.Data?.count ?? 0) / 5);
+  const {data:reports,refetch,isLoading,error}=useFetchAbuseReportPageQuery({ page, limit: 5 })
+  const  [updateReportStatus,   { isLoading: isUpdating } ] = useUpdateAbuseReportStatusMutation()
+    useEffect(()=>{
+refetch()
+  },[])
+  
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loadoooing posts</div>;
+  
+
+  // Mock data based on your structure
+ 
+    
+  //  const [reports,setReports]=useState([]);
+
+
+   const count = Math.ceil((reports?.Data?.count ?? 0) / 5);
  
   // const [reports, setReports] = useState([
   //   {
@@ -29,24 +45,20 @@ export  const AbuseReportsPage =()=> {
   //     reportedUserName: 'user_abc123'
   //   },
    
-  // ]);
-useEffect(() => {
-  if (data?.Data) {
-    setReports(data.Data.reports);
-  }
-}, [data])
-
+//   // ]);
+// useEffect(() => {
+//   refetch()
+//   console.log(data.Data.reports,"reports")
+//    setReports(data.Data.reports)
+// }, [])
+// //  setReports(data.Data.reports)
   
 
-  const [selectedReport, setSelectedReport] = useState(null);
-  const [filterType, setFilterType] = useState('All');
-  const [filterSeverity, setFilterSeverity] = useState('All');
-  const [filterStatus, setFilterStatus] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+ 
 
   const types = ['All', 'Spam', 'Harassment', 'Inappropriate Content', 'Other'];
   const severities = ['All', 'Low', 'Medium', 'High', 'Critical'];
-  const statuses = ['All', 'Pending', 'Under Review', 'Approved', 'Dismissed','Rejected'];
+  const statuses = ['All', 'Waiting', 'Under Review', 'Resolved', 'Dismissed','Rejected'];
 
   const getSeverityColor = (severity) => {
     const colors = {
@@ -68,17 +80,15 @@ useEffect(() => {
     return colors[status] || 'bg-slate-50 text-slate-700';
   };
 
-  const filteredReports = reports.filter(report => {
+  const filteredReports = reports.Data.reports.filter(report => {
     const matchesType = filterType === 'All' || report.type === filterType;
     const matchesSeverity = filterSeverity === 'All' || report.severity === filterSeverity;
     const matchesStatus = filterStatus === 'All' || report.status === filterStatus;
-    const matchesSearch = report.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         report.reportedBy.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = report.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesType && matchesSeverity && matchesStatus && matchesSearch;
   });
 
   const handleStatusChange = async(reportId, report) => {
-    console.log(reportId,report,"22222222222")
     try {
       await  updateReportStatus({reportId,report}).unwrap()
       toast.success("Report Updated")
@@ -89,7 +99,7 @@ useEffect(() => {
       toast.error(error.data.message)
     }
 
-    setReports(reports.map(report => 
+    setReports(reports.Data.reports.map(report => 
       report._id === reportId ? { ...report, status: newStatus } : report
     ));
     if (selectedReport && selectedReport._id === reportId) {
@@ -108,12 +118,9 @@ useEffect(() => {
     });
   };
 
-if(isLoading){
-  return(<div>
-    <p>loading...</p>
-  </div>)
-}
+
 console.log(reports,"sfusefk")
+
   return (
   <div className="min-h-screen bg-gray-50">
      
@@ -126,7 +133,7 @@ console.log(reports,"sfusefk")
               <div>
                 <p className="text-sm font-medium text-slate-600">Pending Review</p>
                 <p className="text-3xl font-semibold text-slate-900 mt-2">
-                  {reports.filter(r => r.status === 'Waiting').length}
+                  {reports.Data.reports.filter(r => r.status === 'Waiting').length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
@@ -140,7 +147,7 @@ console.log(reports,"sfusefk")
               <div>
                 <p className="text-sm font-medium text-slate-600">Under Review</p>
                 <p className="text-3xl font-semibold text-slate-900 mt-2">
-                  {reports.filter(r => r.status === 'Under Review').length}
+                  {reports.Data.reports.filter(r => r.status === 'Under Review').length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
@@ -154,7 +161,7 @@ console.log(reports,"sfusefk")
               <div>
                 <p className="text-sm font-medium text-slate-600">Resolved</p>
                 <p className="text-3xl font-semibold text-slate-900 mt-2">
-                  {reports.filter(r => r.status === 'Approved').length}
+                  {reports.Data.reports.filter(r => r.status === 'Resolved').length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
@@ -168,7 +175,7 @@ console.log(reports,"sfusefk")
               <div>
                 <p className="text-sm font-medium text-slate-600">Critical Cases</p>
                 <p className="text-3xl font-semibold text-slate-900 mt-2">
-                  {reports.filter(r => r.severity === 'Critical').length}
+                  {reports.Data.reports.filter(r => r.severity === 'Critical').length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center">

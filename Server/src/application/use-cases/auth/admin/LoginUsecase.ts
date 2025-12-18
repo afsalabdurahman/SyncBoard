@@ -31,14 +31,14 @@ export class AdminLoginUseCase implements ILoginUseCase {
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
    let workspace=await this._workspceRepository.findByObjectId(workspceId)
-   if(!user._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
+   if(!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
 const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id);
  
  let mySuscription;
    if(!isSuscribed){
 const entity = new Subscription({
   user: user._id,
-  workspace:workspace._id,
+  workspace:workspace._id?.toString(),
   planKey: "free",
   status: "trialing"
 });

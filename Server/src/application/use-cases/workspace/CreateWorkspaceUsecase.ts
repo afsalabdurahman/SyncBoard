@@ -17,6 +17,7 @@ import {
 import { slugify } from "../../../utils/slug";
 import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
 import { Workspace } from "../../../domain/entities/Workspace";
+import { WorkspaceDoument } from "../../../infrastructure/database/models/WorkspaceModel";
 
 
 @injectable()
@@ -59,7 +60,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     return WorkspaceMapper.mapEntityToWorkspace(updatedUser, isCreateWorkspace);
   }
 
-  async findWorkspace(id: Types.ObjectId): Promise<Workspace> {
+  async findWorkspace(id: Types.ObjectId): Promise<Workspace|null> {
     let data = await this._workspaceRepository.findByObjectId(id);
    
     return data;

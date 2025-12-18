@@ -10,5 +10,6 @@ export interface ITaskUseCase {
     completedTask():Promise<CompletedTaskResponseDTO>
     updateApprovalStatus(taskId:string,status:string,msg?:string):Promise<void>;
     findTaskByProjectId(projectId:string):Promise<Task>;
-    paginationTask(page:number,limit:number,skip:number):Promise<{items:number,totalItems:number}>
+    paginationTask(page:number,limit:number,skip:number):Promise<{ items: Task[];
+      totalItems: number}>
 }

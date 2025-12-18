@@ -1,4 +1,4 @@
-import { UserModel } from "../database/models/UserModel";
+import { UserDoument, UserModel } from "../database/models/UserModel";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
 import { BaseRepository } from "./BaseRepository";
@@ -140,7 +140,7 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
     const countUser = await this.model.countDocuments()
     return countUser;
   }
-  async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<any> {
+  async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<{items:UserDoument[]|null,totalItems:number}> {
       const totalItems = await UserModel.countDocuments()-1;
              const items = await UserModel.find({
                "workspace.workspaceId": workspaceId,

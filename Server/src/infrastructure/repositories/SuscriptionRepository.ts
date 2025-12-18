@@ -1,22 +1,22 @@
 import mongoose, { ObjectId } from "mongoose";
 import { Subscription } from "../../domain/entities/Suscription";
 import { ISuscription } from "../../domain/interfaces/repositories/ISuscriptionRepository";
-import { ISubscription,SubscriptionModel } from "../database/models/SuscriptionModel";
+import { SubscriptionDocument,SubscriptionModel } from "../database/models/SuscriptionModel";
 
 export class SuscriptionRepository implements ISuscription {
 
-async create(entity: Subscription): Promise<any> {
+async create(entity: Subscription): Promise<SubscriptionDocument> {
    const created= await SubscriptionModel.create(entity);
  
     return created
 }
-async findSuscriptionByUserId(customerId:string|ObjectId):Promise<Subscription|any>{
+async findSuscriptionByUserId(customerId:string|ObjectId):Promise<SubscriptionDocument|null>{
   
     const suscription=await SubscriptionModel.findOne({user:customerId})
  
     return suscription ;
 }
-async updateSuscriptionPlan(userId: string | any, plankey: string, status: string): Promise<Subscription|any> {
+async updateSuscriptionPlan(userId: string , plankey: string, status: string): Promise<SubscriptionDocument|null> {
   
   const updatedSubscription = await SubscriptionModel.findOneAndUpdate(
       { user: userId },

@@ -34,31 +34,22 @@ console.log(data,"data")
     {
       title: "Total Workspaces",
       value: data?.workspaceCount??"0",
-      change: "+12% from last month",
-      changeType: "positive" as const,
+  
+     
       icon: Building2,
     },
     {
       title: "Active Users",
       value: data?.userCount ?? "0",
-      change: "+8% from last month",
-      changeType: "positive" as const,
+     
       icon: Users,
     },
     {
       title: "Subscribed Plans",
       value: data?.subscriptionCount ??"0",
-      change: "+15% from last month",
-      changeType: "positive" as const,
       icon: CreditCard,
     },
-    {
-      title: "Daily Messages",
-      value: "892K",
-      change: "-3% from yesterday",
-      changeType: "negative" as const,
-      icon: MessageSquare,
-    },
+   
   ]
 
   return (
@@ -80,7 +71,7 @@ console.log(data,"data")
           </div>
 
           {/* Recent Activity */}
-          <RecentActivity subscription={data?.subscriptionChanges} />
+          <RecentActivity subscription={data?.subscriptionChanges} abuse={data?.Abuse} />
         </div>
       </main>
     </div>

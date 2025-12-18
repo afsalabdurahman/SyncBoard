@@ -21,17 +21,18 @@ const Tikets = () => {
   const [updateMsg] = useUpdateMsgMutation()
   const {
     data: tickets = [],
+  
     isLoading,
-    isFetching,
+    
     isError,
     refetch,
   } = useGetTicketsQuery(workspaceId ?? skipToken);
 
   console.log(tickets,"data","66666")
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-// useEffect(()=>{
-// refetch()
-// },[])
+useEffect(()=>{
+refetch()
+},[refetch])
 
 
   const handleSendMessage = async (ticketId: string, message: string) => {

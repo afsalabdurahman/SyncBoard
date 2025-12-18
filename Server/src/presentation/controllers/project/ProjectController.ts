@@ -23,7 +23,6 @@ export class ProjectController {
       const ResponseDTO = await this._projectUsecase.excute(input,workspaceId);
       res.status(HttpStatusCode.CREATED).json({ message: ResponseDTO });
     } catch (error) {
-      console.log(error,"err")
       next(error);
     }
    
@@ -34,7 +33,6 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log("allprojects....")
       const projects = await this._projectUsecase.getAllProjects();
       res.status(HttpStatusCode.OK).json(projects);
     } catch (error) {
@@ -71,7 +69,6 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
    try {
-    console.log(req.body,"update project......")
     const projectId = req.params.id;
     const responseDTO = await this._projectUsecase.update(
       projectId,
@@ -94,7 +91,6 @@ export class ProjectController {
     try {
       const projectId = req.params.id;
       if (!projectId) throw new NotFoundError("ProjectId not found");
-      console.log(req.params);
       await this._projectUsecase.deleteProject(projectId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
     } catch (error) {
@@ -106,12 +102,10 @@ export class ProjectController {
     next: NextFunction):Promise<void> {
 try {
  const workspaceId = req.params.workspaceId;
- console.log(workspaceId,"workspceIDDD")
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
 
-    console.log(page,limit,skip,"paese:::::::::::")
 const {items,totalItems} =await this._projectUsecase.paginationProjecust(workspaceId,page,limit,skip)
 res.status(200).json({
   items,

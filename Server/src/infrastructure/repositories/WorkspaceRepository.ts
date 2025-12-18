@@ -1,5 +1,5 @@
 import { Workspace } from "../../domain/entities/Workspace";
-import { WorkspaceModel } from "../database/models/WorkspaceModel";
+import { WorkspaceDoument, WorkspaceModel } from "../database/models/WorkspaceModel";
 import { IWorkspaceRepository } from "../../domain/interfaces/repositories/IWorkspaceRepository";
 import { injectable } from "tsyringe";
 import { Types } from "mongoose";
@@ -28,16 +28,16 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     name: string,
     email: string,
     title: string
-  ): Promise<any> {
+  ): Promise<Workspace> {
     const data = { userId: userId, title: title };
     let updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
       { slug },
       { $push: { members: data } }
     );
-    return updatedWorkspce;
+    return updatedWorkspce as Workspace;
   }
   
-  async findbySlug(slug: string): Promise<Workspace | any> {
+  async findbySlug(slug: string): Promise<Workspace | null> {
     
     let workspaceData = await WorkspaceModel.findOne({ slug: slug });
   
@@ -49,7 +49,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
 return true
   }
-  async updateWorkspaceDate(workspaceId: string, merge: any): Promise<any> {
+  async updateWorkspaceDate(workspaceId: string, merge: any): Promise<Workspace> {
     console.log(workspaceId,merge)
     const objectId = new mongoose.Types.ObjectId(workspaceId); 
     const updated = await WorkspaceModel.findOneAndUpdate(

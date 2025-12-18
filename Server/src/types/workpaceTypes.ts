@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { ObjectId } from "mongoose";
-import { workspaceStorage } from "../domain/entities/Workspace";
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
   role: "Member" | "Admin" | "SuperAdmin";

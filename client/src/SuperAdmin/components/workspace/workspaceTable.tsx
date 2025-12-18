@@ -1,4 +1,4 @@
-"use client"
+
 
 import { MoreHorizontal, Users, Calendar, DollarSign, AlertTriangle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"

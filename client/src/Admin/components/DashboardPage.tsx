@@ -65,22 +65,7 @@ export function DashboardPage() {
   );
  
 
-  // useEffect(() => {
-  //   if (!workspaceslug) return; // prevent empty request
-
-  //   apiService
-  //     .get(`workspace/member/data/${workspaceslug}`)
-  //     .then((response) => {
-  //       console.log(response.data, "data fetch from api+++");
-  //        dispacth(setUsers(response.data));
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, [workspaceslug]);
-
-  //
-
+ 
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
       <div className='flex items-center justify-between space-y-2'>

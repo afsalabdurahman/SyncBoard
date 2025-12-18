@@ -14,14 +14,15 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
    async getWorkspceDate(slug: string): Promise<Workspace> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace')
-      const users = await this.userRepository.findUsersInsameWorkspace(workspceData.id)
+      const users = await this.userRepository.findUsersInsameWorkspace(workspceData._id)
 
       return users
 
    }
    async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<any> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
-      const { items, totalItems } = await this.userRepository.paginationUser(workspceData.id, page, limit, skip)
+      if(!workspceData||!workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+      const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip)
       return { items: items, totalItems }
    }
 }

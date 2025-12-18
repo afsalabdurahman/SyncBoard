@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose"
+import { Abuse } from "../../domain/entities/Abuse"
 
 export interface UserResponse {
   id: string
@@ -73,6 +74,7 @@ export interface GetAllCountResponseDTO {
   userCount: number;
   workspaceCount: number;
   data: SubscriptionAggregateDTO[];
+  abusereportlas:Abuse[];
 }
 export interface WorkspaceAggResponseDTO {
   workspaceId: string;
@@ -93,6 +95,7 @@ export interface WorkspaceAggResponseDTO {
 
   monthlyRevenue: number;
   lastProjectUpdatedDate: Date | null;
+  totalDocCount:number
 }
 
 
@@ -117,6 +120,7 @@ export interface UserAggResponseDTO {
   loginCount: number;
   isEmailVerified: boolean;
   twoFactorEnabled: boolean;
+   totalDocCount:number;
 }
 
 export interface UserWorkspaceDetailsDTO {
@@ -148,6 +152,7 @@ export interface SubscriptionAggResponseDTO {
   subscriptionStatus: string;
 
   priceCents: number;
+    totalDocCount:number;
 }
 
 export interface MessageDto {

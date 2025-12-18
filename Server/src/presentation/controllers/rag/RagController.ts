@@ -11,7 +11,6 @@ export class RagController {
 
     async search(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            console.log(req.body, "body")
             const inputDTO = req.body
              const answer = await this._ragUsecase.execute(inputDTO)
             res.status(HttpStatusCode.OK).json({message:answer})

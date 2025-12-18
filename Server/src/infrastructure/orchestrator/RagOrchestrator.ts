@@ -4,7 +4,6 @@ import { IRagOrchestartorService } from "../../domain/interfaces/services/IRagOr
 import { injectable, inject } from "tsyringe";
 import { hybridFilter } from "../services/ragPipeline/filters/hybridFilter"
 import { modelMap } from "../services/ragPipeline/filters/chooseModel"
-import mongoose from "mongoose";
 import { INTENT_TASK_PROMPT, RESPONSE_Task_PROMPT } from "../services/ragPipeline/filters/expandPrompts";
 @injectable()
 export class RagOrchestrator implements IRagOrchestartorService {

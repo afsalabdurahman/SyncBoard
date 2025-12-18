@@ -47,22 +47,22 @@ const abuseAlerts = [
   },
 ]
 
-const subscriptionChanges = [
-  {
-    id: 1,
-    workspace: "Growing Startup",
-    change: "Upgraded to Enterprise",
-    amount: "+$299/mo",
-    time: "1 hour ago",
-  },
-  {
-    id: 2,
-    workspace: "Small Team",
-    change: "Downgraded to Basic",
-    amount: "-$49/mo",
-    time: "3 hours ago",
-  },
-]
+// const subscriptionChanges = [
+//   {
+//     id: 1,
+//     workspace: "Growing Startup",
+//     change: "Upgraded to Enterprise",
+//     amount: "+$299/mo",
+//     time: "1 hour ago",
+//   },
+//   {
+//     id: 2,
+//     workspace: "Small Team",
+//     change: "Downgraded to Basic",
+//     amount: "-$49/mo",
+//     time: "3 hours ago",
+//   },
+// ]
 interface SubscriptionItem {
   status: string;
   workspaceName: string;
@@ -104,7 +104,7 @@ const upgradeStatus = (plan:string) =>{
 }
 
 
-export function RecentActivity({subscription}:Props) {
+export function RecentActivity({subscription,abuse}:Props) {
   console.log(subscription,"propbs")
   
   return (
@@ -147,17 +147,17 @@ export function RecentActivity({subscription}:Props) {
           <CardTitle className="text-lg font-semibold">Abuse Alerts</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {abuseAlerts.map((alert) => (
+          {abuse?.map((alert) => (
             <div key={alert.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-gray-900">{alert.type}</p>
-                <p className="text-sm text-gray-600">{alert.workspace}</p>
+                {/* <p className="text-sm text-gray-600">{alert.workspace}</p> */}
               </div>
               <div className="text-right">
                 <Badge variant="destructive" className="mb-1">
                   {alert.severity}
                 </Badge>
-                <p className="text-xs text-gray-500">{alert.time}</p>
+                {/* <p className="text-xs text-gray-500">{alert.time}</p> */}
               </div>
             </div>
           ))}

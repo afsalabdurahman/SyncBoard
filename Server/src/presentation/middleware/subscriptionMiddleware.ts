@@ -13,14 +13,9 @@ import { PlanRepository } from "../../infrastructure/repositories/PlanRepository
 import { ProjectRepository } from "../../infrastructure/repositories/ProjectRepository";
 import { TaskRepository } from "../../infrastructure/repositories/TaskRepository";
 import { UserMongooseRepository } from "../../infrastructure/repositories/UserRepository";
-// const Team = require('../models/Team');
+import { SUBSCRIPTION_LIMITS } from "../../utils/subscriptionUtil";
 
-const SUBSCRIPTION_LIMITS :any = {
-  free: { maxProjects: 1, maxTasks: 2, maxUsers: 2 },
-  basic: { maxProjects: 4, maxTasks: 10, maxUsers: 10 },
-  pro: { maxProjects: 10, maxTasks: 100, maxUsers: 30 },
-  enterprise:  { maxProjects: Infinity, maxTasks: Infinity, maxUsers: Infinity },
-};
+
 
 export const subscriptionMiddle=(resorce:string)=>{
 
@@ -32,8 +27,6 @@ try {
      const taskRepo = container.resolve(TaskRepository);
      const userRepo = container.resolve(UserMongooseRepository)
 
-//     let userId = req.params.userid;
-//   if(!userId) throw new NotFoundError("User is missing");
 if(!req.user?.id) throw new NotFoundError("NOt found")
   
 const isSubscribe=await subscription.findSuscriptionByUserId(req.user.id);

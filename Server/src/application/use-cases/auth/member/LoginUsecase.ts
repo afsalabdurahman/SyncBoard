@@ -54,7 +54,8 @@ export class LoginUsecase implements ILogin {
       role: user.role!,
     });
    const workspaceData=await this._workspaceRepository.findByObjectId(user.workspace[0].workspaceId)
-return AuthMapper.mapEntityToMember(user,workspaceData,token,refreshToken)
+  if(!workspaceData) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+   return AuthMapper.mapEntityToMember(user,workspaceData,token,refreshToken)
    
   }
   async logoutUser(userId: string): Promise<void> {

@@ -6,6 +6,7 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 import {  NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { TaskRequestDTO } from "../../../application/dto/TaskDTOs";
+import { CustomRequest } from "../../types/CustomRequest";
 @injectable()
 export class TaskController {
   constructor(@inject("TaskUsecase") private _taskUsecase: ITaskUseCase) {}
@@ -19,7 +20,6 @@ export class TaskController {
       const input: TaskRequestDTO = req.body.newTask as TaskRequestDTO
 
       const resposeDTO = await this._taskUsecase.execute(input);
-      console.log(resposeDTO,"resposse DTO Task")
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
       
     } catch (error) {
@@ -46,8 +46,6 @@ export class TaskController {
   ): Promise<void> {
     const taskId = req.params.id;
     try {
-
-      console.log(req.body,"BODY PART", req.params.id,"PRSMD SID")
       const responseDTO = await this._taskUsecase.update(
         taskId,
         req.body.updatedTask
@@ -67,7 +65,6 @@ export class TaskController {
 
     try {
       const taskId = req.params.id;
-      console.log(taskId,"taskId")
       await this._taskUsecase.deleteTask(taskId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
     } catch (error) {
@@ -82,10 +79,9 @@ export class TaskController {
   ): Promise<void> {
     try {
      
-      const alltask: any = req.query.count;
-      console.log(alltask);
+      const alltask = req.query.count;
       const userName = req.params.username;
-      if (!req.params.username) throw new NotFoundError("User not found");
+      if (!req.params.username) throw new NotFoundError("User "+ResponseMessages.NOT_FOUND);
       if (alltask == "all") {
         const data = await this._taskUsecase.myTask(userName, alltask);
       }
@@ -150,8 +146,8 @@ export class TaskController {
       next(error);
     }
   }
-async pagination (req:Request,res:Response):Promise<void> {
-
+async pagination (req:CustomRequest,res:Response):Promise<void> {
+ 
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;

@@ -38,3 +38,9 @@ export interface Task {
   deadline: string; 
   embedding?: number[]; 
 }
+export interface TaskPaginatedResponse<T> {
+  items: T[];
+  totalItems: number;
+  page: number;
+  limit: number;
+}
