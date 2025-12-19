@@ -110,15 +110,22 @@ export const WorkspaceTable = ({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={workspace.owner.avatar || "/placeholder.svg"} alt={workspace.owner.name} />
-                        <AvatarFallback>
-                          {workspace.owner.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
+                     <Avatar className="h-8 w-8">
+  <AvatarImage
+    src={workspace?.owner?.avatar || "/placeholder.svg"}
+    alt={workspace?.owner?.name || "User"}
+  />
+
+  <AvatarFallback>
+    {workspace?.owner?.name
+      ? workspace.owner.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+      : "?"}
+  </AvatarFallback>
+</Avatar>
+
                       <div>
                         <div className="font-medium text-gray-900">{workspace.owner.name}</div>
                         <div className="text-sm text-gray-500">{workspace.owner.email}</div>

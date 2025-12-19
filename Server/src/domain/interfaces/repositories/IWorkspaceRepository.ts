@@ -17,4 +17,5 @@ export interface IWorkspaceRepository {
   findByObjectId(id: mongoose.Types.ObjectId): Promise<Workspace | null>;
   addlogId?(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
   updateWorkspaceDate(workspaceId:string,merge:any):Promise<Workspace>
+  findAll():Promise<Workspace[]>
 }

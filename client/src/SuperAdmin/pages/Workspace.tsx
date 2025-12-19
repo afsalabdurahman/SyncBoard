@@ -7,7 +7,7 @@ import {WorkspaceStats} from "../components/workspace/workspaceState"
 import { WorkspaceTable, type Workspace } from "../components/workspace/workspaceTable"
 import WorkSapceDetails from "../components/workspace/WorkspaceDetailsPage"
 import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
-import { useGetWorkspaceCountQuery } from "../apis/fetchApi"
+import { downloadExcel, useGetWorkspaceCountQuery } from "../apis/fetchApi"
 import { Pagination } from "@mui/material"
 // Mock data
 
@@ -87,9 +87,10 @@ export  const  Workspaces =(props)=> {
     // Implement delete workspace logic
   }
 
-  const handleExport = () => {
+  const handleExport = async() => {
     console.log("Export workspaces")
-    // Implement export logic
+   const response= await downloadExcel();
+ 
   }
 
 const handleChangePage = (page) => {

@@ -64,4 +64,8 @@ return true
 console.log(updated)
 return updated
   }
+  async findAll(): Promise<Workspace[]> {
+    const workspaceData= await WorkspaceModel.find({})
+    return workspaceData 
+  }
 }

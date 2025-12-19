@@ -1,6 +1,6 @@
 import { IUserRepository } from "../../../../domain/interfaces/repositories/IUserRepository";
 import { injectable, inject } from "tsyringe";
-import { NotFoundError, ValidationError } from "../../../../utils/errors";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../../../utils/errors";
 import { ILoginUseCase } from "../../../repositories/admin/ILoginUseCase";
 import { User } from "../../../../domain/entities/User";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
@@ -31,6 +31,8 @@ export class AdminLoginUseCase implements ILoginUseCase {
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
    let workspace=await this._workspceRepository.findByObjectId(workspceId)
+   if(!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+   if(workspace?.status.toLowerCase()=="suspend") throw new ForbiddenError("Workspace not found")
    if(!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
 const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id);
  

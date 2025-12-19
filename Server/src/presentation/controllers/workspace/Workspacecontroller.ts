@@ -10,6 +10,8 @@ import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";
 import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
 import { IAbuseUsecase } from "../../../application/repositories/IAbuse";
 import { AbuseRequestDTO, UpdateAbuseStatusDTO } from "../../../application/dto/AbuseDTO";
+import { workerData } from "worker_threads";
+import { request } from "http";
 @injectable()
 export class WorkspaceController {
   constructor(
@@ -128,8 +130,24 @@ async updateStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
   } catch (error) {
     next(error)
   }
-  
+
 
 }
-
+async downloadWorkerData (req:Request,res:Response,next:NextFunction):Promise<void>{
+try {
+  const excelBuffer: Buffer = await this._createWorkspceUsecases.generateWorkspaceExcel();
+  res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="workspaces.xlsx"'
+      );
+      res.setHeader('Content-Length', excelBuffer.length);
+      res.send(excelBuffer);
+} catch (error) {
+  console.log(error,"error")
+}
+} 
 }

@@ -21,6 +21,41 @@ export const dashBordDataApi = async () => {
 
 }
 
+export const downloadExcel = async () => {
+  try {
+    const response = await apiService.get('workspace/download/workspace', {
+      responseType: 'arraybuffer',     // ← Change to 'arraybuffer' (more reliable)
+      withCredentials: true,
+      // Optional: still add this to be extra safe
+      transformResponse: [(data: any) => data],
+    });
+
+    // Create Blob from ArrayBuffer
+    const blob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'workspaces.xlsx'; // or dynamic: `workspaces_${new Date().toISOString().slice(0,10)}.xlsx`
+    document.body.appendChild(a);
+    a.click();
+    a.remove(); // better than parentNode.removeChild
+    window.URL.revokeObjectURL(url);
+
+    console.log('Excel file downloaded successfully');
+  } catch (error: any) {
+    console.error('Download error:', error);
+
+    // Better error feedback
+    if (error.response?.status === 404) {
+      alert('No workspaces found to export.');
+    } else {
+      alert('Failed to download Excel file. Please try again.');
+    }
+  }
+};
 
 export const workspaceDataApi = createApi({
   reducerPath: 'workspaceDataApi',

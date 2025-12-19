@@ -6,12 +6,12 @@ import { WorkspaceController } from "../controllers/workspace/Workspacecontrolle
 
 const router = Router();
 
-let adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
+let adminAuth = [authMiddelware(), roleMiddleware(["Admin","SuperAdmin"])];
 let memberAuth = [authMiddelware(), roleMiddleware(["Admin", "Member","SuperAdmin"])];
 
 let workspaceController = container.resolve(WorkspaceController);
 
-router.post("/create",adminAuth,workspaceController.Create.bind(workspaceController));
+router.post("/create",workspaceController.Create.bind(workspaceController));
 router.post("/invite",adminAuth,workspaceController.inviteMembers.bind(workspaceController));
 router.get("/member/data/:workspaceslug",memberAuth,workspaceController.getAllMembersData.bind(workspaceController));
 router.get("/member/pagination/data/:workspaceslug",memberAuth,workspaceController.pagination.bind(workspaceController))
@@ -19,5 +19,5 @@ router.patch("/update/:id",memberAuth, workspaceController.updateWorkspace.bind(
 router.post("/abuse/:id/:workspaceid",memberAuth,workspaceController.abuseReport.bind(workspaceController))
 router.get("/abuse/reports",memberAuth,workspaceController.finAbuseReports.bind(workspaceController))
 router.post("/abuse/report/status/:id",memberAuth,workspaceController.updateStatus.bind(workspaceController))
-
+router.get('/download/workspace',adminAuth,workspaceController.downloadWorkerData.bind(workspaceController))
 export default router;
