@@ -1,10 +1,10 @@
-import express, { NextFunction, Response, Request } from "express";
+import express, { NextFunction, Response, Request, response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "reflect-metadata";
 import { envConfig } from "./infrastructure/config/env.config";
 import dotenv from "dotenv";
-import { createServer } from "http";
+import { createServer, request } from "http";
 import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
@@ -15,6 +15,7 @@ import activityRoutes from "./presentation/routes/activityRoutes"
 import projectRoutes from "./presentation/routes/projectRoutes"
 import taskRoutes from "./presentation/routes/taskRoutes"
 import checkoutRoutes from "./presentation/routes/checkoutRoutes"
+import stripehookRoutes from "./presentation/routes/stripehookRoutes"
 import { Server } from "socket.io";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
 import { CustomRequest } from "./presentation/types/CustomRequest";
@@ -36,13 +37,13 @@ const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
 const sentMail = container.resolve(NodemailerService)
 dotenv.config();
 
-const strip = new Stripe(envConfig.STRIP_KEY, {
+const stripe = new Stripe(envConfig.STRIP_KEY, {
   apiVersion: "2025-08-27.basil"
 })
 const suscriptionRepo = container.resolve(SuscriptionRepository)
 
 const app = express();
-
+ app.use("/api/checkout", stripehookRoutes);
 const CLIENT_URL = envConfig.MONGODB_URI;
 const PORT = envConfig.PORT || 5000;
 
@@ -55,78 +56,6 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
-// For Stripe webhook
-
-
-app.post(
-  "/api/checkout/pay/webhook",
-  bodyParser.raw({ type: "application/json" }), // Ensure raw body for Stripe
-  async (req: Request, res: Response): Promise<void> => {
-    const sig = req.headers["stripe-signature"] as string;
-    if (!sig) {
-      res.status(400).send("Missing Stripe signature");
-      return;
-    }
-
-    let event: Stripe.Event;
-
-    try {
-      event = strip.webhooks.constructEvent(
-        req.body,
-        sig,
-        STRIPE_WEBHOOK_SECRET
-      );
-
-    } catch (err: any) {
-      console.error("❌ Webhook signature verification failed:", err.message);
-      res.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-    }
-
-
-
-    switch (event.type) {
-      // case "invoice.payment_succeeded":
-      //   const recipt = event.data.object as Stripe.Invoice
-      //   const pdf=recipt.invoice_pdf;
-      //   const email=recipt.customer_email
-      //   if(email)await sentMail.sentRecipt(email,pdf)
-
-      // break;
-      case "checkout.session.completed":
-        const session = event.data.object as Stripe.Checkout.Session;
-        console.log("🎉 Checkout completed:5550", session);
-
-        if (session.metadata) {
-          console.log(session.metadata)
-          await suscriptionRepo.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
-        }
-        if (session.invoice) {
-          const invoice = await strip.invoices.retrieve(session.invoice as string);
-          const pdf = invoice.invoice_pdf;
-          const email = invoice.customer_email;
-
-          if (email && pdf) {
-            console.log("📧 Sending receipt email after checkout:", email);
-            await sentMail.sentRecipt(email, pdf);
-          }
-        }
-
-
-
-        break;
-      case "invoice.payment_failed":
-        const invoice = event.data.object as Stripe.Invoice;
-        console.log("❌ Payment failed:00000", invoice);
-        break;
-      default:
-        console.log(`Unhandled event type00000 ${event.type}`);
-    }
-
-    res.sendStatus(200); // Always acknowledge receipt to Stripe
-  }
-);
-
 
 
 
@@ -160,7 +89,9 @@ let serverStart = async () => {
 };
 serverStart();
 //
-
+// app.get("/",(reques:Request,response:Response)=>{
+//   response.send("hiii")
+// })
 // app.use("/", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes)

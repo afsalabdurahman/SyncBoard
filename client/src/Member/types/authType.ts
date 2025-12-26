@@ -5,3 +5,11 @@ export interface SignupResponse {
   otpSent?: boolean;
   status?:number;
 }
+
+export interface commentType {
+  name:string;
+  text:string;
+  url:string[];
+  timestamp:Date | string;
+  attachments?: string[] 
+}

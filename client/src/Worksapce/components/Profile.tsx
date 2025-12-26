@@ -118,8 +118,7 @@ export default function Profile() {
 
       try {
         const response = await axios.post(
-          CLOUDINARY_URL,
-          
+          CLOUDINARY_URL,  
           formData
         );
 

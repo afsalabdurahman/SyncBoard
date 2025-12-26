@@ -107,4 +107,58 @@ export class NodemailerService implements IEmailService {
     };
      await this.transporter.sendMail(mailOptions);
   }
+  async sendReceipts(name:string,email: string, receiptLink: string): Promise<void> {
+   const mailOptions = {
+  from: process.env.EMAIL_USER || "no-reply@gridesync.com",
+  to: email,
+  subject: "Your Plan Upgrade Confirmation & Receipt",
+  html: `
+    <div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #333;">
+      <h2 style="color: #222;">Hello ${name},</h2>
+
+      <p>
+        Thank you for upgrading your plan with <strong>GrideSync</strong>.
+        We truly appreciate your trust and are excited to provide you with enhanced features and benefits.
+      </p>
+
+      <p>
+        Your upgrade has been successfully completed. You can download your payment receipt using the link below:
+      </p>
+
+      <p style="margin: 20px 0;">
+        <a 
+          href="${receiptLink}" 
+          style="
+            display: inline-block;
+            padding: 10px 16px;
+            background-color: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+          "
+        >
+          Download Receipt
+        </a>
+      </p>
+
+      <p>
+        If you have any questions or need assistance, feel free to reach out to our support team.
+      </p>
+
+      <p style="margin-top: 30px;">
+        Best regards,<br />
+        <strong>GrideSync Team</strong>
+      </p>
+
+      <hr style="margin-top: 40px; border: none; border-top: 1px solid #e5e7eb;" />
+
+      <p style="font-size: 12px; color: #6b7280;">
+        This is an automated email. Please do not reply to this message.
+      </p>
+    </div>
+  `,
+};
+  await this.transporter.sendMail(mailOptions);
+  }
 }

@@ -4,10 +4,11 @@ import { NotFoundError, ValidationError } from "../../../utils/errors";
 import { ITaskRepository } from "../../../domain/interfaces/repositories/ITaskRepository";
 import { ITaskUseCase } from "../../repositories/ITask";
 import { io } from "../../../server";
-import { CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
 import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { addToVectors } from "../../../infrastructure/services/ragPipeline/ConvertToVector";
+import { commentType } from "../../../types/taskTypes";
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
   constructor(
@@ -61,26 +62,6 @@ export class TaskUsecase implements ITaskUseCase {
       await this._taskRepository.allCompletedTasks();
     const tasks = [...completedTasks, ...taskReject];
     const mappedData = TaskMapper.MappedCompletdTask(tasks)
-    // const mappedData = tasks.map((task: any) => {
-    //   return {
-    //     id: task._id,
-    //     taskName: task.name,
-    //     project: task.project,
-    //     username: task.assignedUser,
-    //     status:
-    //       task.approvalStatus == "Waiting"
-    //         ? "pending"
-    //         : task.approvalStatus == "Approved"
-    //           ? "approved"
-    //           : task.approvalStatus == "Rejected"
-    //             ? "rejected"
-    //             : "pending",
-
-    //     submittedAt: task.updatedAt,
-    //     rejectionReason: task.rejectionMsg,
-    //   };
-    // });
-
     return mappedData;
   }
   async updateApprovalStatus(
@@ -103,5 +84,17 @@ export class TaskUsecase implements ITaskUseCase {
     totalItems: number}> {
     const { items, totalItems } = await this._taskRepository.getPagenationaTask(page, limit, skip)
     return { items: items, totalItems }
+  }
+  async addComment(taskId: string, comment: commentType): Promise<void> {
+    const updatedTask=await this._taskRepository.addComments(taskId,comment)
+  console.log(updatedTask,"updatedTask..")
+  }
+  async getTaskComments(taskId: string): Promise<commentsDTO[] | null> {
+    const task = await this._taskRepository.getTaskbyId(taskId)
+    if(!task) return null
+    const comments=TaskMapper.mappedEntityToComments(task)
+    console.log(comments,"usedcesComments")
+    return comments
+
   }
 }

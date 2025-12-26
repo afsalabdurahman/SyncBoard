@@ -10,6 +10,7 @@ export interface TaskRequestDTO {
   priority?: priorityType;
   projectId?: string;
   project?: string;
+  attachedURLs?:string[]
 }
 
 export interface TaskResponseDTO{
@@ -43,4 +44,11 @@ export interface TaskPaginatedResponse<T> {
   totalItems: number;
   page: number;
   limit: number;
+}
+export interface commentsDTO {
+  name:string;
+  text:string;
+  urls:string[];
+  timestamp:Date | string;
+  attachments?: string[] 
 }

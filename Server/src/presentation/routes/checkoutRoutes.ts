@@ -3,13 +3,11 @@ import {SubscriptionController} from "../controllers/suscription/SuscriptionCont
 import {container } from "tsyringe";
 import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";
-
 const router = express.Router();
 
-const suscriptionController=container.resolve(SubscriptionController)
+const subscriptionController=container.resolve(SubscriptionController)
 const adminAuth = [authMiddelware(), roleMiddleware(["Member", "Admin"])];
 
-router.post("/payment/:userid",adminAuth,suscriptionController.addCheckout.bind(suscriptionController))
-
+router.post("/payment/:userid",adminAuth,subscriptionController.addCheckout.bind(subscriptionController))
 
 export default router;

@@ -22,5 +22,6 @@ router.get("/completed",adminAuth,taskController.findAllCompletedTasks.bind(task
 router.patch("/update/approval/status/:id",adminAuth,taskController.controllApprovalSatatus.bind(taskController))
 router.get("/project/:projectId",memberAuth,taskController.findTaskByProject.bind(taskController))
 router.get('/mytask',memberAuth,taskController.pagination.bind(taskController))
-
+router.post('/send/comment/:id',taskController.addComment.bind(taskController))
+router.get('/comments/:id',taskController.getCommentsById.bind(taskController))
 export default router;

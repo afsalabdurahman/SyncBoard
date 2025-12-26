@@ -4,6 +4,7 @@ import { Button } from "../../Custom/ui/button";
 import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 import {TablePagination} from"@mui/material"
 import { AppDispatch } from "../../Redux/store";
+import CommentBox from "../../Custom/ui/CommentBox";
 import {
   Card,
   CardContent,
@@ -28,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../Custom/ui/select";
-import { Edit, Trash2, Plus, Calendar } from "lucide-react";
+import { Edit, Trash2, Plus, Calendar,MessageCircle } from "lucide-react";
 import { updateTask,setTaskPage } from "../../Redux/feature/task/taskSlice";
 import { useDispatch } from "react-redux";
   import { addTaskApi, deleteTaskApi, fetchTaskData, updateTaskApi } from "../../Redux/feature/task/taskThunks";
@@ -51,7 +52,14 @@ interface Task {
 export function TasksPage() {
 
    const {page,rowPerPage,totalItems,totalPage} = usePaginationTask()
-   
+     const [openCommentId, setOpenCommentId] = useState<string | null>(null);
+    const toggleComment = (taskId: string) => {
+    setOpenCommentId((prev) => (prev === taskId ? null : taskId));
+  };
+  const closeComment=()=>{
+    setOpenCommentId(null)
+  }
+  console.log(openCommentId,"commentId")
  
   let AdminId = useSelector((state: any) => {
     return state?.user?.user?.id;
@@ -252,6 +260,25 @@ const handleChangePage = (event, newPage) => {
                       )}
                     </div>
                   </TableCell>
+                     <TableCell className='text-right'>
+                    <div className='flex justify-end gap-2'>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        // isOpen={openCommentId === task.id}
+                          onClick={() => toggleComment(task._id)}
+                      >
+                        <MessageCircle className='h-4 w-4' />
+                      </Button>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={() => handleDeleteTask(task._id)}
+                      >
+                        <Trash2 className='h-4 w-4' />
+                      </Button>
+                    </div>
+                  </TableCell>
                   <TableCell className='text-right'>
                     <div className='flex justify-end gap-2'>
                       <Button
@@ -271,7 +298,8 @@ const handleChangePage = (event, newPage) => {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+             
+             ))}
             </TableBody>
           </Table>
         </CardContent>
@@ -300,6 +328,13 @@ const handleChangePage = (event, newPage) => {
               rowsPerPageOptions={[]}
               
            />
+            {openCommentId  && (
+                                   <CommentBox
+                                     isOpen={true}
+                                      onClose={closeComment}
+                                     taskId={openCommentId}
+                                   />
+                                 )}
     </div>
   );
 }

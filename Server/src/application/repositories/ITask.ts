@@ -1,5 +1,6 @@
 import { Task } from "../../domain/entities/Task";
-import { CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { commentType } from "../../types/taskTypes";
+import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 export interface ITaskUseCase {
     execute(taskEntiry:TaskRequestDTO):Promise<TaskResponseDTO>
     getAllTasks():Promise<Task>
@@ -12,4 +13,6 @@ export interface ITaskUseCase {
     findTaskByProjectId(projectId:string):Promise<Task>;
     paginationTask(page:number,limit:number,skip:number):Promise<{ items: Task[];
       totalItems: number}>
+      addComment(taskId:string,comment:commentType):Promise<void>
+      getTaskComments(taskId:string):Promise<commentsDTO[]|null>
 }

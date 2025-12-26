@@ -1,8 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 // import apiService from "../../Services/apiServices/apiService";
 import apiService from "../../Services/apiServices/apiService";
-import { SignupResponse } from "../types/authType"
+import { commentType, SignupResponse } from "../types/authType"
 import { ToastContainer, toast } from "react-toastify";
+import { error } from "console";
 
 export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null> => {
   try {
@@ -63,5 +64,38 @@ export const loginApi = async (email: string, password: string): Promise<any> =>
 
     throw new Error(errorMessage);
   }
+};
+export const sendComment = async (
+  taskId: string,
+  name: string,
+  text: string,
+  urls: string[] = [] // default to empty array
+): Promise<boolean> => {
+  try {
+    console.log(urls,taskId,name,"in api+++")
+    const response = await apiService.post(`/task/send/comment/${taskId}`, {
+      name,
+      text,
+      urls, // better name: plural
+    });
+
+    // Common success codes: 200 or 201
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
+
+    // If status is not success, treat as failure
+    return false;
+  } catch (error) {
+
+    console.error('Failed to send comment:', error);
+    return false; // or throw error if you prefer
+  }
+
+};
+export const fetchComments = async (taskId: string): Promise<commentType[]> => {
+  const response = await apiService.get(`/task/comments/${taskId}`);
+  console.log(response, "respeApii");
+  return response.data.data as commentType[];
 };
 

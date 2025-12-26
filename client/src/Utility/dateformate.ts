@@ -29,3 +29,52 @@ export const DateInHours= (dateStr:string):string=>{
 
 
 }
+// jan 10 12:30
+export const formatTime = (input: Date | string): string => {
+  let date: Date;
+  
+  if (typeof input === "string") {
+    // Parse ISO string (handles Z correctly)
+    date = new Date(input);
+  } else {
+    date = input;
+  }
+
+  if (isNaN(date.getTime())) {
+    return "Invalid Date";
+  }
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  // Today → only time
+  if (messageDate.getTime() === today.getTime()) {
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  // Yesterday
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (messageDate.getTime() === yesterday.getTime()) {
+    return "Yesterday " + date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  // Older → day month time (e.g., "24 Dec 18:01")
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+  }) + " " + date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};

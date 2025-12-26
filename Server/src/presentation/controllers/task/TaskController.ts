@@ -159,5 +159,28 @@ res.status(200).json({
       totalItems,
 })
 }
+async addComment(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+   const taskId=req.params.id;
+    const comment = req.body;
+    console.log(req.body,req.params)
+await this._taskUsecase.addComment(taskId,comment)
+res.status(HttpStatusCode.CREATED).json({message:"Comment added"})
+  } catch (error) {
+    console.log(error,"error")
+    next(error)
+  }
+}
+async getCommentsById(req:Request,res:Response,next:NextFunction):Promise<void>{
+ try {
+   const taskId= req.params.id;
+   console.log(taskId,"taskID")
+   const responseDTO = await this._taskUsecase.getTaskComments(taskId)
+   res.status(HttpStatusCode.OK).json({data:responseDTO})
+ } catch (error) {
+  console.log(error)
+  next(error)
+ }
 
+}
 }

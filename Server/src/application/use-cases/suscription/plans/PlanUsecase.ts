@@ -28,6 +28,7 @@ async excute(input: SuscriptionRequestDTO): Promise<string> {
 const haveSuscription = await this._suscriptionRepository.findSuscriptionByUserId(user._id) 
 if(!SuscriptionRepository) throw new NotFoundError("Suscription not found");
 const isCreateLink=await this._stripeService.createCheckoutSession(user.name,user.email,myKey.stripePriceId,user._id,myKey.key!)
+console.log(isCreateLink,"LInkesd...")
       if(!isCreateLink) throw new ValidationError("Not a valid id")
             
         return isCreateLink

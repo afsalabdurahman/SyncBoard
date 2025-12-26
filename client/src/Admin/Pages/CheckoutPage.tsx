@@ -43,7 +43,6 @@ const success = searchParams.get("success");
     return state.user.user._id;
   });
 
-  console.log(setCheckout, "pspbss", payamentInfo);
   const [selectedPlan, setSelectedPlan] = useState<Plan>(payamentInfo.plan);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

@@ -19,7 +19,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     @inject("SuscriptionRepository")private _suscriptionRepository:ISuscription,
   ) {}
  
-  async execute(input:LoginRequestDTO): Promise<adminResponseDTO | null> {
+  async execute(input:LoginRequestDTO): Promise<adminResponseDTO> {
     let user: User = await this._userRepository.findByEmail(input.email)
     if(!user.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     const workspceId:any=user.workspace[0].workspaceId

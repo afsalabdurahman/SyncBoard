@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose";
-import {approvalType,priorityType,statusType} from "../../types/taskTypes"
+import {approvalType,priorityType,statusType,commentType} from "../../types/taskTypes"
 
 export class Task {
   [x: string]: any;
@@ -15,6 +15,8 @@ export class Task {
   approvalStatus?:approvalType;
   rejectionMsg?:string;
   embedding?:any;
+  comments?:commentType[];
+  attachedURLs?:string[];
 
 
   constructor({
@@ -29,7 +31,9 @@ export class Task {
     project,
     approvalStatus,
     rejectionMsg,
-    embedding
+    embedding,
+    commentType,
+    attachedURLs,
   }: {
     id?: ObjectId | string;
     description?: string;
@@ -43,6 +47,8 @@ export class Task {
     approvalStatus?:approvalType;
     rejectionMsg?:string;
     embedding?:any;
+    commentType?:commentType[],
+    attachedURLs?:string[],
   }) {
     this.id = id;
     this.assignedUser = assignedUser;
@@ -56,5 +62,7 @@ export class Task {
     this.approvalStatus=approvalStatus;
     this.rejectionMsg=rejectionMsg;
     this.embedding=embedding;
+    this.comments=this.comments;
+    this.attachedURLs=this.attachedURLs
   }
 }
