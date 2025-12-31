@@ -24,4 +24,5 @@ router.get("/project/:projectId",memberAuth,taskController.findTaskByProject.bin
 router.get('/mytask',memberAuth,taskController.pagination.bind(taskController))
 router.post('/send/comment/:id',taskController.addComment.bind(taskController))
 router.get('/comments/:id',taskController.getCommentsById.bind(taskController))
+router.patch('/attachment/delete/:taskid',taskController.deleteAttachment.bind(taskController))
 export default router;

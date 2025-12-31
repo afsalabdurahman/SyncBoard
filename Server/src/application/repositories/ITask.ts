@@ -15,4 +15,5 @@ export interface ITaskUseCase {
       totalItems: number}>
       addComment(taskId:string,comment:commentType):Promise<void>
       getTaskComments(taskId:string):Promise<commentsDTO[]|null>
+      deleteAttachment(taskId:string,url:string):Promise<string>
 }

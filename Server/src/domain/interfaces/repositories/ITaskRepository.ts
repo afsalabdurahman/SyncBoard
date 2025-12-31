@@ -18,5 +18,7 @@ export interface ITaskRepository {
  }>;
   
     addComments(taskId: string, comments: commentType):Promise<Task|null>
-    getTaskbyId(taskId:string):Promise<Task|null>
+    getTaskbyId(taskId:string):Promise<Task|null>;
+    deleteAttachment(taskId:string,url:string):Promise<Task|null>
+    
 }

@@ -22,6 +22,7 @@ export class TaskUsecase implements ITaskUseCase {
     //const vectors= await addToVectors(input)
     const vectors = [1]
     const taskEntity = TaskMapper.mapTaskToEntity(input, vectors);
+    console.log(taskEntity,"taskEntity...")
     const taskData = await this._taskRepository.create(taskEntity);
     if (!taskData) throw new NotFoundError("Task not created");
 
@@ -96,5 +97,10 @@ export class TaskUsecase implements ITaskUseCase {
     console.log(comments,"usedcesComments")
     return comments
 
+  }
+  async deleteAttachment(taskId: string, url: string): Promise<string> {
+    const task = await this._taskRepository.deleteAttachment(taskId,url);
+    if(!task) throw new NotFoundError(ResponseMessages.NOT_FOUND);
+    return ResponseMessages.DELETE
   }
 }

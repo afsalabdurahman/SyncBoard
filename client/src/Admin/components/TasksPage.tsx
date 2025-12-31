@@ -36,6 +36,8 @@ import { useDispatch } from "react-redux";
 import { usePaginationTask, useTasks } from "../hooks/taskhooks";
 import { useProjects } from "../hooks/projectshooks";
 import { useMember } from "../../Member/hooks/memeberhooks";
+import { toast } from "react-toastify";
+import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
 interface Task {
   _id: string;
   name: string;
@@ -68,8 +70,11 @@ export function TasksPage() {
   // const [tasks, setTasks] = useState<any>(initialTasks);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<string>("");
+  const [loader, setLoader] = useState("");
 const dispatch: AppDispatch = useDispatch();
-
+useSelector((state)=>{
+  console.log(state,"+++++++++++")
+})
 const tasks = useTasks()
 useEffect(()=>{
 dispatch(fetchTaskData({page,limit:rowPerPage}))
@@ -105,16 +110,32 @@ const handleChangePage = (event, newPage) => {
 
   const handleAddTask = async (taskData: Omit<Task, "id">) => {
    
+ try {
+  
+ 
+
+ setLoader("Creating new task ...");
+
     const newTask = {
       ...taskData,
       id: Math.max(...tasks.map((t) => t.id)) + 1,
     };
     
    await dispatch(addTaskApi(newTask)).unwrap()
+
 //  dispatch(fetchTaskData({page,limit:rowPerPage}))
  await dispatch(fetchTaskData({page,limit:rowPerPage}))
+  setTimeout(() => {
+      toast.success("Created project successfully 🎉");
+    }, 100);
+      setLoader("");
 
-  };
+  }catch (error) {
+    setLoader("");
+  toast.error("Task is not created")
+ }
+
+};
   const handleEditTask = async (taskData) => {
    
     const id = taskData.id;
@@ -177,7 +198,9 @@ const handleChangePage = (event, newPage) => {
   const isOverdue = (deadline: string) => {
     return new Date(deadline) < new Date() && deadline !== "";
   };
-
+if (loader) {
+    return <ProjectLoader title={loader} />;
+  }
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
       <div className='flex items-center justify-between'>
@@ -270,13 +293,7 @@ const handleChangePage = (event, newPage) => {
                       >
                         <MessageCircle className='h-4 w-4' />
                       </Button>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={() => handleDeleteTask(task._id)}
-                      >
-                        <Trash2 className='h-4 w-4' />
-                      </Button>
+                  
                     </div>
                   </TableCell>
                   <TableCell className='text-right'>

@@ -14,7 +14,8 @@ export interface TaskDocument extends Document {
   approvalStatus?: approvalType;
   rejectionMsg?: string;
   embedding?: number[];   // ← 384-dim vector
-  comments:commentType[]
+  comments:commentType[];
+  attachedURLs:string[];
 }
 
 const TaskSchema = new Schema<TaskDocument>(
@@ -39,6 +40,7 @@ const TaskSchema = new Schema<TaskDocument>(
         urls: { type: [String], default: [] },
       },
     ],
+   attachedURLs: { type: [String] },
   },
   { timestamps: true, collection: "Task" }
 );

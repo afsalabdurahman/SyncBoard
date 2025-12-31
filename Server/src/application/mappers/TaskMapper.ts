@@ -11,6 +11,7 @@ export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 
 export class TaskMapper {
   static mapTaskToEntity(input: TaskRequestDTO, vector: number[]): Task {
+    console.log(input,"TAskMapperINput")
     return new Task({
       name: input.name,
       description: input.description,
@@ -20,7 +21,8 @@ export class TaskMapper {
       deadline: input.deadline,
       priority: input.priority,
       projectId: input.projectId,
-      embedding: vector
+      embedding: vector,
+      attachedURLs:input.attachedURLs
     })
   }
   static mapEntityToTask(msg: string, taskData: Task): TaskResponseDTO {
@@ -41,6 +43,7 @@ export class TaskMapper {
       deadline: z.string().min(1, "Date is required"),
       priority: TaskPrioritySchema,
       projectId: z.string().min(1, "Project ID is required"),
+      attachedURLs: z.array(z.string().url("Must be a valid URL")).optional().default([]),
     });
     return isValid.safeParse(input);
   }

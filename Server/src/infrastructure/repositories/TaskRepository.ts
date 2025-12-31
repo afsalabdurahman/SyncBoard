@@ -141,4 +141,17 @@ async getTaskbyId(taskId: string): Promise<Task | null> {
     console.log(task,"TaskReposioty")
   return task ?? null
 }
+
+async deleteAttachment(taskId: string, url: string): Promise<Task | null> {
+  return await TaskModel.findByIdAndUpdate(
+    taskId,
+    {
+      $pull: { attachedURLs: url }
+    },
+    { new: true } 
+  );
+  
+}
+
+
 }

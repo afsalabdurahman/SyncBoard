@@ -32,7 +32,7 @@ export class Task {
     approvalStatus,
     rejectionMsg,
     embedding,
-    commentType,
+    comments,
     attachedURLs,
   }: {
     id?: ObjectId | string;
@@ -47,7 +47,7 @@ export class Task {
     approvalStatus?:approvalType;
     rejectionMsg?:string;
     embedding?:any;
-    commentType?:commentType[],
+    comments?:commentType[],
     attachedURLs?:string[],
   }) {
     this.id = id;
@@ -62,7 +62,7 @@ export class Task {
     this.approvalStatus=approvalStatus;
     this.rejectionMsg=rejectionMsg;
     this.embedding=embedding;
-    this.comments=this.comments;
-    this.attachedURLs=this.attachedURLs
+    this.comments=comments;
+    this.attachedURLs=attachedURLs
   }
 }

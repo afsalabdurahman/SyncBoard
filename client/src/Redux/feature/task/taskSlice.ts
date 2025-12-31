@@ -16,6 +16,7 @@ interface Task {
   completedAt?: string;
   createdAt: string;
   updatedAt: string;
+ attachedURLs:string[]
 }
 
 interface TaskState {
@@ -60,14 +61,26 @@ const TaskSlice = createSlice({
       }
     },
     deleteTask(state, action: PayloadAction<string>) {
-      state.tasks = state.tasks.filter((task) => task._id !== action.payload);
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
-    }
+    },
+deleteAttachment: (
+  state,
+  action: PayloadAction<{ taskId: string; url: string }>
+) => {
+  const { taskId, url } = action.payload;
+
+  state.tasks = state.tasks.map((task)=>({
+ ...task,
+ attachedURLs:task.attachedURLs.filter((linkUrl)=>url!==linkUrl)
+  }))
+},
+
   },
   extraReducers :builder => {
         builder
@@ -117,7 +130,8 @@ export const {
   deleteTask,
   setLoading,
   setError,
-  setTaskPage
+  setTaskPage,
+  deleteAttachment
 } = TaskSlice.actions;
 
 export default TaskSlice.reducer;

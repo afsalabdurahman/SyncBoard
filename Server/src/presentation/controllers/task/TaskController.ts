@@ -183,4 +183,16 @@ async getCommentsById(req:Request,res:Response,next:NextFunction):Promise<void>{
  }
 
 }
+async deleteAttachment(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    const taskId=req.params.taskid;
+    const url=req.body.attachment;
+    console.log(taskId,url,req.body,req.params)
+   const  deleteMsg=await this._taskUsecase.deleteAttachment(taskId,url)
+res.status(HttpStatusCode.OK).json({message:deleteMsg})
+  } catch (error) {
+    next(error)
+  }
+}
+
 }
