@@ -4,7 +4,7 @@ import registerReducer from "./feature/RegisterSlice"
 import StatusSliceReducer from './feature/StatusSlice';
 import workspaceReducer from './feature/WorkspaceSlice';
 import usersliceReducer from "./feature/user/userSlice";
-import logsliceReducer from "./feature/logs/LogSlice"
+import logsliceReducer from "./feature/logs/logSlice"
 import projectReducer from './feature/project/projectSlice';
 import alluserReducer from "./feature/users/AlluserSlice";
 import subscriptionReducer from "./feature/subscription/subscriptionSlice";
