@@ -43,17 +43,20 @@ const projectProgressData = [
 import { useSelector, useDispatch } from "react-redux";
 import apiService from "../../Services/apiServices/apiService";
 import { setUsers } from "../../Redux/feature/users/AlluserSlice";
+import { useTasks } from "../hooks/taskhooks";
 export function DashboardPage() {
   let initialState = useSelector((state: any) => {
     console.log(state, "state");
     let countProject = state.projects.list.length;
     let countMembers = state.workspace.workspace.members.length;
+
     return {
       countProject: countProject,
       countMembers: countMembers,
     };
   });
-
+    const totalTasks=useTasks()
+    console.log(totalTasks,"appp++++")
   //useEffetc
     let dispacth = useDispatch<AppDispatch>();
 
