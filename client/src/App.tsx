@@ -17,7 +17,7 @@ import AdminDashboard from "./Admin/Pages/AdminDashboard";
 import AdminLogin from "./Admin/Pages/AdminLogin";
 
 import Invite from "./Worksapce/components/Invite";
-import { Layout } from "./SuperAdmin/layout/Layout";
+import { Layout } from "./SuperAdmin/Layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
 import PaymentRejected from "./Admin/Pages/PaymentRejected";
