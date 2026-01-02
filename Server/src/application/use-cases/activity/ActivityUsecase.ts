@@ -19,5 +19,8 @@ export class ActivityUsecase implements IActivity {
     const responseDTO=ActivityMapper.mapToResponseDto(activty)
     return responseDTO
   }
+  async projctActivity(name: string, createdBy: string, activityId: string): Promise<void> {
+ 
+  }
  
 }

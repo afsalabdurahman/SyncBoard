@@ -1,13 +1,14 @@
 import { Types } from "mongoose";
-import {Task,priorityType,statusType} from "../../domain/entities/Task"
+
 import { TaskPriority, TaskStatus } from "../mappers/TaskMapper";
+import { Task as TaskEntity } from "../../domain/entities/Task";
 export interface TaskRequestDTO {
   name?: string;
   description?: string;
   assignedUser?: string;
   deadline?: string;
-  status?: statusType;
-  priority?: priorityType;
+  status?: TaskStatus;
+  priority?: TaskPriority;
   projectId?: string;
   project?: string;
   attachedURLs?:string[]
@@ -15,7 +16,7 @@ export interface TaskRequestDTO {
 
 export interface TaskResponseDTO{
     message:string,
-    task:Task
+    task:TaskEntity
 }
 
 export interface CompletedTaskResponseDTO {
