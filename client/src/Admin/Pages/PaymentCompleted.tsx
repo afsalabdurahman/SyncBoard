@@ -11,7 +11,7 @@ const PaymentCompleted: React.FC = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to homepage
-         window.location.href = "http://localhost:5173/admin-dashboard";
+         window.location.href = "https://www.syncworkspace.co.in/admin-dashboard";
 
           //window.location.href = '/';
           return 0;

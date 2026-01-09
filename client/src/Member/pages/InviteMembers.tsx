@@ -160,7 +160,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
             <input
               type='text'
               className='flex-1 p-2 text-sm'
-              value={`http://localhost:5173/invite-members/workspace-${workspaceLink}`}
+              value={`https://www.syncworkspace.co.in/invite-members/workspace-${workspaceLink}`}
               readOnly
             />
             <button
