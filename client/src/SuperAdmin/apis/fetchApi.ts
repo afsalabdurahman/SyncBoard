@@ -60,7 +60,7 @@ export const downloadExcel = async () => {
 export const workspaceDataApi = createApi({
   reducerPath: 'workspaceDataApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/',
+    baseUrl: 'https://api.syncworkspace.co.in/api/',
     credentials: "include"
   }),
   tagTypes: ['Workspace', 'Members', 'Tickets'],

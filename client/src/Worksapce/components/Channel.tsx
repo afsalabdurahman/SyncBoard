@@ -577,7 +577,7 @@ console.log(attachments,"attchements")
                                   </video>
                                 )}
                                 {att.type === "audio" && (
-                                  <audio controls className="w-full mt-2">
+                                  <audio controls  className="w-full h-12 mt-2">
                                     <source src={att.url} />
                                   </audio>
                                 )}
