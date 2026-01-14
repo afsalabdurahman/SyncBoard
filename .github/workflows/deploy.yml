@@ -36,7 +36,7 @@ jobs:
             cd Server
 
             echo "➡️ Install dependencies"
-            npm install --omit=dev
+            npm install 
 
             echo "➡️ Build backend (low memory)"
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
