@@ -16,35 +16,9 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ ec2-52-200-26-174.compute-1.amazonaws.com }}
-          username: ${{ ubuntu }}
-          key: ${{-----BEGIN RSA PRIVATE KEY-----
-MIIEowIBAAKCAQEAxBgPT7BVibzMntlkjc505EBeAl9X4UoQ+cM4YVrrQ+ZHMYMK
-rUyC6Ry8ZPFk+ieEb7nqUiXH2YKLU8yR6nufJ7yFPyQ+3wtfBQ+hksqNvVHGXf2e
-lRW9gm+ZeOjcHEOx9yTaeDswlCuNjqgF0t23VfPJAxeL440TlFxccBe89xDNCRZs
-2MkXpCzT/d9eJ3ECa5W61BWCibGiUVpyLpboO3Myne8JIKlDDq5UUpBDaeHSmRK2
-IwDvQoHvCASj06SqZ/XZCk+EC7570/U//nmt3Gj29oVLAfFxMy93qU9VIEeRDPcv
-375+OZ7Vz347rk7Ha3sKSEsB3xz702jc4JN/uQIDAQABAoIBADJg0AY0EjW5uIQS
-6792zBcb5ksLvaMWiTfxjJmOZyThk2bH+MU/A97p0AjK75tI7cBabjW+mRJrdGoK
-A27PZbsqtrzbDf/1hurg8iypNzLtQF5DWyuIE1DgZPhoMqxcQ+tvn2UGJ9vZOJvu
-1Ngwt/owEHNn6DuEsgQKmoD9yEFcr3/OdWepJ19Co3YO0fT+nd/JQ5zZ7Lwg8VM9
-J81v4w26Tb7zeH1ORPxXvsuH84vLZK60Zr5xI+gj31k7NEBBFT5lnEbTN0qytfd6
-ghaCPYJ7mNYoW0jBCsi1WxDpQICs93tHXoXLpj7OUlC90e0Mhf9Q9G10Ts2Os7OV
-B1mqOsUCgYEA4bFq67JmyMV9WsH4QX7BDNewgpjLYmbDxgYWA6Hwz6BfVSgxUQsH
-aORFKXZohTLEGrL2hZt5/puWfRgglclWqcn/gjpFooDdXvJzuO+MP5dlAfl6Hb8F
-eMMWsPpOfpiM/Et6JyPoJgiha197Jid2q1tICt72zgwvTt/QUTKeHI8CgYEA3m0f
-0Qh7tuihDHMbP5JQCRBbs/7QCe/YuB6Wv7umprbCf33Xg70J5JYzS58ogIi4W3Aq
-rDiluV0ilbJdVa1qJ13FR1+T7AEr0XKsH01C6ShOung6fKC2yrDljiI0KZgU9HMr
-91ZQQSJeodeZV1Guma+qdtZhYYQN75LmD0uXUzcCgYEAkg2JXswNngHHtHLwIBpR
-/eia7njIrX5JVR3dIy6qMwLajrY66/JSMjv+0e0xiHko1QpZZG8QDIdNZNi3RZeM
-wMXa1sC1DYuNNoN6BgTnYsOrdxKmRxe2B8dgKNli8KPyINcLTsb61ZoiM+UPQcqq
-Dgw9W+OcHg1elBFcsx8pmNsCgYBauq6oyMoWMUxIVMe/pcIqAFc30/AurXx8llWt
-vjDbfl9WPBHmNf1MFgy0gya1T4/MFLQDblQDib8qywgRg9xyVGi9lXo0YcHq/NjD
-J/PsQbnjjFlnLvOBOKla0g7vDI83q6c6jCXOe+OYJubw3GvZWvOw5//vFDvPBt/7
-Sz1d/wKBgGfd4h5MVeUyFIpl7mL5UjvhxLHl9tQZL53O+KKzm/zpb964zZxmU9Ew
-PPHgKhSgorctfJ5w0YW/NsMjqKztEhMXoISoP9J1tIUs7+ZL25Un0Ql2GuGi5HFN
-ZVoBIVIG2HE9jJtOyuAPU3LP7a0Whd7hNVZKTeuqdrUuPsTNINcO
------END RSA PRIVATE KEY----- }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
             set -e
 
