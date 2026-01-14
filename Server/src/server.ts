@@ -43,7 +43,7 @@ const stripe = new Stripe(envConfig.STRIP_KEY, {
 const suscriptionRepo = container.resolve(SuscriptionRepository)
 
 const app = express();
- app.use("/api/checkout", stripehookRoutes);
+app.use("/api/checkout", stripehookRoutes);
 const CLIENT_URL = envConfig.MONGODB_URI;
 const PORT = envConfig.PORT || 5000;
 
@@ -89,7 +89,7 @@ let serverStart = async () => {
 };
 serverStart();
 //
-app.get("/",(reques:Request,response:Response)=>{
+app.get("/", (reques: Request, response: Response) => {
   response.status(200).send("Health is ok")
 })
 
@@ -104,6 +104,6 @@ app.use("/api/subscription", suscriptionRoutes)
 app.use("/api/workspace", workspaceRoutes)
 app.use("/api/super", superRoutes);
 app.use("/api/rag", ragRoutes)
-app.use("/api/ticket",ticketRoutes)
+app.use("/api/ticket", ticketRoutes)
 app.use(errorMiddleware);
 export { io };
