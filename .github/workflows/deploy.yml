@@ -36,6 +36,7 @@ jobs:
             cd Server
 
             echo "➡️ Install dependencies"
+
             npm install 
 
             echo "➡️ Build backend (low memory)"
