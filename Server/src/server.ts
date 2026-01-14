@@ -89,10 +89,10 @@ let serverStart = async () => {
 };
 serverStart();
 //
-// app.get("/",(reques:Request,response:Response)=>{
-//   response.send("hiii")
-// })
-// app.use("/", userRoutes);
+app.get("/",(reques:Request,response:Response)=>{
+  response.status(200).send("Health is ok")
+})
+
 app.use("/api/auth", authRoutes);
 app.use("/api/member", memberRoutes)
 app.use("/api/project", projectRoutes)
