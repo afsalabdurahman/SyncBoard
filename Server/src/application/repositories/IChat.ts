@@ -3,6 +3,6 @@ import { User } from "../../domain/entities/User"
 import {ChatRequestDTO} from"../dto/ChatDTOs"
 export interface IChatUsecase {
     sendMessage(dto:ChatRequestDTO):Promise<void>
-    history():Promise<Chat[]>
-    findUserSatatus():Promise<User>
+    history(workapaceid:string):Promise<Chat[]>
+    findUserSatatus(workapaceid:string):Promise<User[]>
 }

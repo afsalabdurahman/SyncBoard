@@ -29,7 +29,7 @@ import { fetchAllUsers, removeUser } from "../../Redux/feature/users/AlluserThun
 import { useDispatch } from "react-redux";
 import { usePaginationUser, useUsers } from "../hooks/userhooks";
 interface User {
-  id: number;
+  _id: number;
   name: string;
   email: string;
   role: string;
@@ -162,6 +162,7 @@ const handleChangePage = (event, newPage) => {
   // };
 
   const openEditModal = (user: User) => {
+    
     setEditingUser(user);
     setIsModalOpen(true);
   };

@@ -1,514 +1,384 @@
-import { useMemo, useState } from "react"
-import { useForm,SubmitHandler } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
+import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
+import { format } from "date-fns"
+
+import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../../Custom/ui/card"
 import { Input } from "../../../Custom/ui/input"
 import { Label } from "../../../Custom/ui/label"
 import { Textarea } from "../../../Custom/ui/textarea"
 import { Button } from "../../../Custom/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
-import { Switch } from "../../../Custom/ui/switch"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../Custom/ui/select"
 import { Badge } from "../../../Custom/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Separator } from "../../../Custom/ui/separator"
-import {toast} from "react-toastify"
-import { cn } from "../../../Utility/utils"
+
 import {
-  UserIcon,
+  User,
   Mail,
+  Phone,
+  ShieldCheck,
+  ShieldOff,
   UserCog,
-  CheckCircle2,
-  RefreshCw,
-  Shield,
   Globe,
-  Languages,
-  Bell,
-  AlertTriangle,
-  Trash2,
-  PauseCircle,
+  Clock,
+  Calendar,
+  Activity,
+  LogIn,
+  Building2,
+  Save,
+  RefreshCw,
+  Ban,
   PlayCircle,
-  KeyRound,
-  ImageIcon,
+  CheckCircle2,
 } from "lucide-react"
-import { error } from "console";
-import { dataMap } from "../../types/mapData";
-import { updateUser } from "../../apis/updateApi";
-import { useFetchUserPageQuery } from "../../apis/fetchApi";
 
-type Role = "owner" | "admin" | "member" | "guest"
-type Status = "active" | "inactive" | "suspended" | "pending"
+import { cn } from "../../../Utility/utils"
+import { updateUser } from "../../apis/updateApi"
+import { useFetchUserPageQuery } from "../../apis/fetchApi"
+import { dataMap } from "../../types/mapData"
 
-const roleColors: Record<Role, string> = {
-  owner: "bg-purple-100 text-purple-800",
-  admin: "bg-blue-100 text-blue-800",
-  member: "bg-green-100 text-green-800",
-  guest: "bg-gray-100 text-gray-800",
-}
+export default function UserProfileEditPage({ setPage, user,refetch,setUser }) {
+  // const { refetch } = useFetchUserPageQuery()
 
-const statusColors: Record<Status, string> = {
-  active: "bg-green-100 text-green-800",
-  inactive: "bg-gray-100 text-gray-800",
-  suspended: "bg-red-100 text-red-800",
-  pending: "bg-yellow-100 text-yellow-800",
-}
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    bio: "",
+    role: "member",
+    timezone: "UTC",
+    locale: "en-US",
+  })
 
-const schema = z.object({
-  // Identity
-  name: z.string().min(2, "Name is required"),
-  title: z.string().max(80).optional().or(z.literal("")),
-  avatar: z.string().optional().or(z.literal("")),
-  // Contact
-  email: z.string().email("Invalid email"),
-  phone: z.string().max(40).optional().or(z.literal("")),
-  // Role & Status
-  role: z.enum(["owner", "admin", "member", "guest"]),
-  status: z.enum(["active", "inactive", "suspended", "pending"]),
-  // Locale
-  timezone: z.string(),
-  locale: z.string(),
-  // Profile
-  bio: z.string().max(280, "Bio must be 280 characters or fewer").optional().or(z.literal("")),
-  // Security
-  twoFactorEnabled: z.boolean().default(false),
-  emailVerified: z.boolean().default(true),
-  // Notifications
-  notifProduct: z.boolean().default(true),
-  notifSecurity: z.boolean().default(true),
-  notifBilling: z.boolean().default(true),
-})
+  const [status, setStatus] = useState("active") // separate so we can style differently
 
-// type FormValues = z.infer<typeof schema>
+  useEffect(() => {
+    if (!user) return
 
-export default function UserProfileEditPage({setPage,user}) {
- const {refetch}= useFetchUserPageQuery()
-  console.log(user,"user+++")
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-const defaultValues = {
-    name: user.name || "",
-    title: user.title || "",
-    avatar: user.avatar || "",
-    email: user.email || "",
-    phone: user.phone || "",
-    role: user.role || "member",
-    status: user.status || "active",
-    timezone: user.timezone || "UTC",
-    locale: user.locale || "en-US",
-    bio: user.bio || "",
-    twoFactorEnabled: user.twoFactorEnabled ?? false,
-    emailVerified: user.emailVerified ?? true,
-    notifProduct: user.notifProduct ?? true,
-    notifSecurity: user.notifSecurity ?? true,
-    notifBilling: user.notifBilling ?? true,
-};
+    setFormData({
+      name: user.name ?? "",
+      email: user.email ?? "",
+      phone: user.phone ?? "",
+      bio: user.bio ?? "",
+      role: user.role ?? "member",
+      timezone: user.timezone ?? "UTC",
+      locale: user.locale ?? "en-US",
+    })
 
+    setStatus(user.status ?? "active")
+  }, [user])
 
-
-
-const onReset =()=>{
-  console.log("allReset...")
-}
-
-
-const {register,handleSubmit,setValue,watch,formState:{errors,isDirty,isSubmitting}}=useForm({resolver:zodResolver(schema),mode:"onChange",defaultValues:defaultValues})
-
-
-
-const sendPasswordReset = ()=>{
-  console.log("sendREset")
-}
-
-const reactivate=()=>{
-  console.log("reAcivr")
-}
-const suspend = ()=>{
-  console.log("suspenf")
-}
-const deleteUser = ()=>{
-  console.log("DeleteUser")
-}
-  const onSubmit = async (data) => {
-    const updatedProfile=dataMap(data)
-
-    console.log(updatedProfile,"$$$$$$$$$$$$$DATA")
- await updateUser(user.id,updatedProfile).then(()=>{
-  refetch()
-  toast.success("Updated")
-  
-  setPage(null)
-
- })
-    
- 
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+      
   }
+
+console.log(formData,"FormData")
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const payload = dataMap({
+        ...formData,
+        status, // include current status decision
+      })
+      console.log(payload,"Payload sebf")
+      await updateUser(user.id, payload)
+      await refetch()
+      toast.success("User updated successfully")
+      setPage(null)
+    } catch (err) {
+      toast.error("Failed to update user")
+    }
+  }
+
+  const onReset = () => {
+    setFormData({
+      name: user.name ?? "",
+      email: user.email ?? "",
+      phone: user.phone ?? "",
+      bio: user.bio ?? "",
+      role: user.role ?? "member",
+      timezone: user.timezone ?? "UTC",
+      locale: user.locale ?? "en-US",
+    })
+    setStatus(user.status ?? "active")
+    toast.info("Form reset")
+  }
+
+  if (!user) return <div className="p-10 text-center text-muted-foreground">Loading user...</div>
+
+  const isActive = status === "active"
+  const joinedDate = user.joinedAt ? format(new Date(user.joinedAt), "MMM d, yyyy") : "—"
+  const lastActive = user.lastActivity ? format(new Date(user.lastActivity), "MMM d, yyyy HH:mm") : "—"
+const changeStatus = async(status) =>{
+  setStatus(status);
+   const stat= status=="inactive"?true:false
+    await updateUser(user.id, {isDeleted:stat});
+    refetch()
+   toast.success("User updated successfully")
+}
   return (
-    <div className="min-h-screen bg-gray-50">
-    
+    <div className="min-h-screen bg-gray-50/60 pb-24 ml-[15em]">
+      <form onSubmit={onSubmit} className="mx-auto max-w-5xl px-5 py-18 space-y-8">
 
-      <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-8">
-          {/* Header */}
-          <div className="flex justify-end">
-        
-        <CloseIcon onClose={() => setPage(null)} />
-      </div>
-          <div className="rounded-xl bg-white border p-5 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-center gap-4 min-w-0">
-                <Avatar className="h-14 w-14 rounded-lg">
-                  <AvatarImage
-                    src={user.avatar?user.avatar:""}
-                    alt="profile"
-                  />
-                 
-                </Avatar>
-
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-xl font-semibold text-gray-900 truncate">Edit User</h1>
-                    <Badge variant="secondary" className={roleColors[user.role]}>
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                    </Badge>
-                    <Badge variant="secondary" className={statusColors[user.status]}>
-                      {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                    </Badge>
-                    <span className="text-xs rounded bg-gray-100 px-2 py-0.5">ID: {user.id}</span>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Joined {new Date(user.joinedAt).toLocaleDateString("en-US")} · Last active{" "}
-                    {new Date(user.lastActive).toLocaleDateString("en-US")}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button type="button" variant="outline" onClick={onReset} className="gap-2 bg-transparent">
-                  <RefreshCw className="h-4 w-4" />
-                  Reset
-                </Button>
-               
-
-                <Button type="submit" disabled={isSubmitting || !isDirty} className="gap-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  {isSubmitting ? "Saving..." : "Save Changes"}
-                </Button>
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b -mx-5 px-5 md:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-12 w-12 ring-1 ring-border">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
+                {user.name?.[0]?.toUpperCase() || "?"}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight">{user.name}</h3>
+              <div className="flex flex-wrap gap-2 mt-1.5">
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  {user.role.toUpperCase()}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "px-3 py-0.5",
+                    isActive
+                      ? "bg-green-50 text-green-700 border-green-200"
+                      : "bg-red-50 text-red-700 border-red-200"
+                  )}
+                >
+                  {isActive ? "ACTIVE" : "INACTIVE"}
+                </Badge>
+                {user.isEmailVerified && (
+                  <Badge variant="secondary" className="bg-emerald-50 text-emerald-700">
+                    <ShieldCheck className="h-3 w-3 mr-1" /> Verified
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Form grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            {/* Left column (2) */}
-            <div className="xl:col-span-2 space-y-6">
-              {/* Identity */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserIcon className="h-5 w-5 text-gray-500" />
-                    Identity
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="grid md:grid-cols-1 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input id="name" {...register("name")} placeholder="Enter Name" />
-                      {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
-                    </div>
-                    
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">Email</Label>
-                      <div className="relative">
-                        <Mail className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <Input id="email" className="pl-9" {...register("email")} placeholder={user.email} />
-                      </div>
-                      {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input id="phone" {...register("phone")} placeholder={user.phone||"Enter Phone Number"} />
-                      {errors.phone && <p className="text-xs text-red-600">{errors.phone.message}</p>}
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="avatar">Avatar</Label>
-                      <div className="flex items-center gap-4">
-                        <div className="h-14 w-14 rounded-lg border bg-white overflow-hidden flex items-center justify-center">
-                          {user.avatar ? (
-                            <img
-                              src={user.avatar || ""}
-                              alt="Avatar"
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <ImageIcon className="h-6 w-6 text-gray-400" />
-                          )}
-                        </div>
-                        {/* <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => e.target.files && onUpload(e.target.files[0])}
-                          className="cursor-pointer"
-                        /> */}
-                      </div>
-                    </div>
-
-                    <div className="grid gap-2">
-                      <Label htmlFor="bio">Bio</Label>
-                      <Textarea id="bio" rows={3} {...register("bio")} placeholder="Add Your Bio" />
-                      {errors.bio && <p className="text-xs text-red-600">{errors.bio.message}</p>}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Security */}
-              {/* <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-gray-500" />
-                    Security
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between rounded-lg border bg-white p-3">
-                    <div>
-                      <p className="font-medium">Two‑Factor Authentication</p>
-                      <p className="text-sm text-gray-600">Require a second factor on sign in.</p>
-                    </div>
-                    <Switch
-                      checked={twoFA}
-                      onCheckedChange={(v) => setValue("twoFactorEnabled", v, { shouldDirty: true })}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between rounded-lg border bg-white p-3">
-                    <div>
-                      <p className="font-medium">Email Verified</p>
-                      <p className="text-sm text-gray-600">Mark the email as verified/unverified.</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {!emailVerified && (
-                        <Button type="button" variant="outline" onClick={resendVerification}>
-                          Resend Verification
-                        </Button>
-                      )}
-                      <Switch
-                        checked={emailVerified}
-                        onCheckedChange={(v) => setValue("emailVerified", v, { shouldDirty: true })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="gap-2 bg-transparent"
-                      onClick={sendPasswordReset}
-                    >
-                      <KeyRound className="h-4 w-4" />
-                      Send Password Reset
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card> */}
-            </div>
-
-            {/* Right column (1) */}
-            <div className="space-y-6">
-              {/* Role & Status */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserCog className="h-5 w-5 text-gray-500" />
-                    Role & Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label>Role</Label>
-                    <Select
-                      value={watch("role")}
-                      onValueChange={(v: Role) => setValue("role", v, { shouldDirty: true, shouldTouch: true })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        
-                        <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="member">Member</SelectItem>
-                        <SelectItem value="guest">Guest</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label>Status</Label>
-                    <Select
-                      value={watch("status")} 
-                      onValueChange={(v: Status) => setValue("status", v, { shouldDirty: true, shouldTouch: true })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={user.status} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        {/* <SelectItem value="suspended">Suspended</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem> */}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex flex-wrap gap-2">
-                    {user.status === "inActive" ? (
-                      <Button type="button" variant="outline" onClick={reactivate} className="gap-2 bg-transparent">
-                        <PlayCircle className="h-4 w-4" />
-                        Reactivate User
-                      </Button>
-                    ) : (
-                      <Button type="button" variant="outline" onClick={suspend} className="gap-2 bg-transparent">
-                        <PauseCircle className="h-4 w-4" />
-                        Suspend User
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Locale */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-gray-500" />
-                    Locale
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-2">
-                    <Label>Timezone</Label>
-                    <Select
-                      value={watch("timezone")}
-                      onValueChange={(v) => setValue("timezone", v, { shouldDirty: true })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select timezone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="UTC">UTC</SelectItem>
-                        <SelectItem value="America/Los_Angeles">America/Los_Angeles</SelectItem>
-                        <SelectItem value="America/New_York">America/New_York</SelectItem>
-                        <SelectItem value="Europe/Berlin">Europe/Berlin</SelectItem>
-                        <SelectItem value="Asia/Tokyo">Asia/Tokyo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label className="flex items-center gap-2">
-                      <Languages className="h-4 w-4 text-gray-400" />
-                      Locale
-                    </Label>
-                    <Select value={watch("locale")} onValueChange={(v) => setValue("locale", v, { shouldDirty: true })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select locale" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="en-US">English (US)</SelectItem>
-                        <SelectItem value="en-GB">English (UK)</SelectItem>
-                        <SelectItem value="de-DE">Deutsch (DE)</SelectItem>
-                        <SelectItem value="fr-FR">Français (FR)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Notifications */}
-              {/* <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Bell className="h-5 w-5 text-gray-500" />
-                    Notifications
-                  </CardTitle>
-                </CardHeader>
-                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between rounded-lg border bg-white p-3">
-                    <div>
-                      <p className="font-medium">Product updates</p>
-                      <p className="text-sm text-gray-600">Get product announcements and tips.</p>
-                    </div>
-                    <Switch
-                      checked={watch("notifProduct")}
-                      onCheckedChange={(v) => setValue("notifProduct", v, { shouldDirty: true })}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border bg-white p-3">
-                    <div>
-                      <p className="font-medium">Security alerts</p>
-                      <p className="text-sm text-gray-600">Receive security and unusual activity notifications.</p>
-                    </div>
-                    <Switch
-                      checked={watch("notifSecurity")}
-                      onCheckedChange={(v) => setValue("notifSecurity", v, { shouldDirty: true })}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border bg-white p-3">
-                    <div>
-                      <p className="font-medium">Billing</p>
-                      <p className="text-sm text-gray-600">Invoices and payment related updates.</p>
-                    </div>
-                    <Switch
-                      checked={watch("notifBilling")}
-                      onCheckedChange={(v) => setValue("notifBilling", v, { shouldDirty: true })}
-                    />
-                  </div>
-                </CardContent> 
-              </Card> */}
-
-              {/* Danger Zone */}
-              {/* <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-red-700">
-                    <AlertTriangle className="h-5 w-5" />
-                    Danger Zone
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm text-gray-700">
-                    Suspending prevents the user from signing in. Deleting is permanent and cannot be undone.
-                  </p>
-                   <div className="flex flex-wrap gap-2">
-                    {user.status === "suspended" ? (
-                      <Button type="button" variant="outline" onClick={reactivate}>
-                        Reactivate User
-                      </Button>
-                    ) : (
-                      <Button type="button" variant="destructive" onClick={suspend}>
-                        Block
-                      </Button>
-                    )}
-                    <Button type="button" variant="destructive" className="gap-2" onClick={deleteUser}>
-                      <Trash2 className="h-4 w-4" />
-                      Suspend User
-                    </Button>
-                  </div> 
-                </CardContent>
-              </Card> */}
-            </div>
+          <div className="flex items-center gap-3">
+            <Button type="button" variant="ghost" size="sm" onClick={onReset}>
+              <RefreshCw className="h-4 w-4 mr-1.5" />
+              Reset
+            </Button>
+            <Button type="submit" className="gap-1.5 min-w-[140px]">
+              <Save className="h-4 w-4" />
+              Save Changes
+            </Button>
+            <CloseIcon onClose={() => setPage(null)} />
           </div>
-        </form>
-      </main>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+          <StatCard icon={Calendar} label="Joined" value={joinedDate} color="violet" />
+          <StatCard icon={Activity} label="Last Active" value={lastActive} color="green" />
+          {/* <StatCard icon={LogIn} label="Logins" value={user.loginCount ?? 0} color="blue" /> */}
+          {/* <StatCard
+            icon={user.twoFactorEnabled ? ShieldCheck : ShieldOff}
+            label="2FA"
+            value={user.twoFactorEnabled ? "Enabled" : "Disabled"}
+            color={user.twoFactorEnabled ? "emerald" : "amber"}
+          /> */}
+          <StatCard
+            icon={Building2}
+            label="Workspace"
+            value={user.workspace?.name ?? "—"}
+            color="purple"
+          />
+        </div>
+
+        {/* Identity */}
+        <Card className="shadow-sm border">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5 text-muted-foreground" />
+              Personal Information
+            </CardTitle>
+            <CardDescription>Core user identity details</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" name="name" value={formData.name} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <div className="md:col-span-2 space-y-2">
+              <Label htmlFor="bio">Bio / About</Label>
+              <Textarea
+                id="bio"
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                placeholder="Tell something about the user..."
+                rows={3}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Role & Status */}
+        <Card className="shadow-sm border">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2">
+              <UserCog className="h-5 w-5 text-muted-foreground" />
+              Role & Account Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <Select
+                value={formData.role}
+                onValueChange={(v) => setFormData((p) => ({ ...p, role: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="member">Member</SelectItem>
+                  <SelectItem value="guest">Guest</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-3">
+              <Label>Account Status</Label>
+              <div className="flex flex-wrap gap-3">
+                {isActive ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="border-red-200 text-red-700 hover:bg-red-50"
+                    onClick={() => changeStatus('inactive')}
+                  >
+                    <Ban className="h-4 w-4 mr-1.5" />
+                    Suspend User
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => changeStatus("active")}
+                  >
+                    <PlayCircle className="h-4 w-4 mr-1.5" />
+                    Reactivate User
+                  </Button>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {isActive
+                  ? "User is currently active and can log in."
+                  : "User is suspended and cannot access the system."}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Locale */}
+        <Card className="shadow-sm border">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5 text-muted-foreground" />
+              Locale & Timezone
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Timezone</Label>
+              <Select
+                value={formData.timezone}
+                onValueChange={(v) => setFormData((p) => ({ ...p, timezone: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="UTC">UTC</SelectItem>
+                  <SelectItem value="Asia/Kolkata">Asia/Kolkata (IST)</SelectItem>
+                  <SelectItem value="America/New_York">America/New_York (EST)</SelectItem>
+                  {/* Add more as needed */}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Language / Locale</Label>
+              <Select
+                value={formData.locale}
+                onValueChange={(v) => setFormData((p) => ({ ...p, locale: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en-US">English (United States)</SelectItem>
+                  <SelectItem value="en-GB">English (United Kingdom)</SelectItem>
+                  <SelectItem value="fr-FR">French (France)</SelectItem>
+                  {/* Add more */}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+      </form>
     </div>
+  )
+}
+
+function StatCard({ icon: Icon, label, value, color }) {
+  return (
+    <Card className="shadow-sm">
+      <CardContent className="p-5 flex items-center gap-4">
+        <div className={cn("p-3 rounded-full", `bg-${color}-100/60`)}>
+          <Icon className={cn("h-6 w-6", `text-${color}-700`)} />
+        </div>
+        <div>
+          <p className="text-sm text-muted-foreground">{label}</p>
+          <p className="text-md font-semibold mt-0.2">{value}</p>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

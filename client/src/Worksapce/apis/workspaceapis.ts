@@ -1,7 +1,7 @@
 import apiService from "../../Services/apiServices/apiService"
 
-export const myProjects = async () => {
-    const response = await apiService.get("project/projects")
+export const myProjects = async (workspaceId:string) => {
+    const response = await apiService.get(`project/projects/${workspaceId}`)
     console.log(response,"projectAPICLLLEDD")
     return response
 }
@@ -20,6 +20,25 @@ export const sendAbuse = async (formData:any,userId,workspaceId)=>{
     })
     console.log(response,"api")
     return response.status
+}
+
+export const searchApi = (searchQuery,workspaceid,userid) =>{
+    try {
+       const response= apiService.get(`workspace/abuse/report/search/${workspaceid}/${userid}?q=${encodeURIComponent(searchQuery)}`);
+       return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+export const abuseReportList = async (userId:string,workspaceId:string,page:number)=>{
+    const response = await apiService.get(`workspace/abuse/list/${workspaceId}/${userId}?page=${page}&&limit=5`);
+    console.log(response,"response+++PAi")
+    return response
+}
+
+export const getMyAbuseReports = ()=>{
+    console.log("sefs")
+    return {data:"fseifhils"}
 }
 export const logout = async (userId:string) =>{
     console.log("logout...",userId)

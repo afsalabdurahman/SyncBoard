@@ -18,6 +18,8 @@ router.get("/member/pagination/data/:workspaceslug",memberAuth,workspaceControll
 router.patch("/update/:id",memberAuth, workspaceController.updateWorkspace.bind(workspaceController))
 router.post("/abuse/:id/:workspaceid",memberAuth,workspaceController.abuseReport.bind(workspaceController))
 router.get("/abuse/reports",memberAuth,workspaceController.finAbuseReports.bind(workspaceController))
+ router.get("/abuse/list/:workspaceid/:userid",memberAuth,workspaceController.listOfAbuseReports.bind(workspaceController))
 router.post("/abuse/report/status/:id",memberAuth,workspaceController.updateStatus.bind(workspaceController))
+router.get("/abuse/report/search/:workspaceid/:userid",memberAuth,workspaceController.searchReports.bind(workspaceController))
 router.get('/download/workspace',adminAuth,workspaceController.downloadWorkerData.bind(workspaceController))
 export default router;

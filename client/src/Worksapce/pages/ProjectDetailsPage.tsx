@@ -69,7 +69,7 @@ const ProjectDetailsPage = (props: any) => {
   });
 
   let imageArry = props.projectDetails.attachedUrl?.filter(
-    (url: string) => url.includes(".jpg") || url.includes(".png")
+    (url: string) => url.includes(".jpg") || url.includes(".png") ||url.includes(".webp")
   );
   console.log(imageArry, pdfArray);
   //Define task
@@ -229,9 +229,7 @@ const ProjectDetailsPage = (props: any) => {
               <div className='ml-4'>
                 <p className='text-sm font-medium text-gray-600'>Progress</p>
                 <p className='text-lg font-semibold text-gray-900'>
-                  {props.projectDetails.status == "Completed"
-                    ? totalProgress + "%"
-                    : "0%"}
+               {`${totalProgress?totalProgress:0}% `}
                 </p>
               </div>
             </div>

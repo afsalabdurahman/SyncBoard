@@ -13,8 +13,8 @@ export const dataMap=(data)=>{
         //location:data.location,
         email:data.email,
       
-       // phone:data.phone,
-       // about:data.bio
+        phone:data.phone,
+        about:data.bio
 
 
     }

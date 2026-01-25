@@ -19,6 +19,7 @@ import { slugify } from "../../../utils/slug";
 import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
 import { Workspace } from "../../../domain/entities/Workspace";
 import { WorkspaceDoument } from "../../../infrastructure/database/models/WorkspaceModel";
+import { ISuscription } from "../../../domain/interfaces/repositories/ISuscriptionRepository";
 
 
 @injectable()
@@ -27,6 +28,8 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     @inject("WorkspaceRepository")
     private _workspaceRepository: IWorkspaceRepository,
     @inject("IUserRepository") private _userRepository: IUserRepository,
+      @inject("SuscriptionRepository")
+        private _suscriptionRepository: ISuscription,
   ) {}
 
   async createWorkspace(
@@ -43,7 +46,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
 
     const workspaceEntity = WorkspaceMapper.mapWorkspaceToEntity(
       input,
-      user._id,
+      user._id??"",
       input.title
     );
   
@@ -52,7 +55,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
       throw new ValidationError(ResponseMessages.NOT_FOUND + ' Workspace');
 
     const updatedUser = await this._userRepository.addToWorkspace(
-      user._id,
+      user._id??"",
       isCreateWorkspace._id,
       input.title
     );
@@ -76,8 +79,15 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     return true;
   }
 
-async updateWorkspaceData(id: string, merge: any): Promise<void> {
+async updateWorkspaceData(id: string, merge:Record<string,string>): Promise<void> {
+  console.log(merge,"555")
+  if(merge.plan){
+    await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name,merge.plan);
+    
+  }else{
   const data=await this._workspaceRepository.updateWorkspaceDate(id,merge)
+  }
+
 
 }
 async generateWorkspaceExcel(): Promise<Buffer> {

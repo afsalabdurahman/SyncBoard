@@ -114,7 +114,11 @@ async finAbuseReports(req:Request,res:Response,next:NextFunction):Promise<void>{
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
     const responseDTO=await this._abuseUsecase.findAbuseReports(page,limit,skip)
-    res.status(HttpStatusCode.OK).json({Data:responseDTO})
+    res.status(HttpStatusCode.OK).json({Data:responseDTO,
+      currentPage: page,
+      totalPages: Math.ceil(responseDTO.count / limit),
+      totalItems:responseDTO.count,
+    })
   } catch (error) {
     next(error)
   }
@@ -133,6 +137,41 @@ async updateStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
 
 
 }
+async listOfAbuseReports(req:Request,res:Response,next:NextFunction):Promise<void>{
+try {
+ const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+    const userid=req.params.userid;
+   const workspaceid=req.params.workspaceid;
+
+   console.log(page,limit,skip,userid,workspaceid,"checkController");
+   const {mappedReponse,docsize}=await this._abuseUsecase.listOfReports(page,limit,skip,userid,workspaceid);
+   res.status(HttpStatusCode.OK).json({data:mappedReponse,count:docsize})
+
+
+} catch (error) {
+  next(error)
+}
+
+}
+
+async searchReports(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    const  q   = req.query.q as string
+       const userid=req.params.userid;
+   const workspaceid=req.params.workspaceid;
+  console.log(q,userid,workspaceid,"Checkvalidyipn")
+     const result= await this._abuseUsecase.searchReport(q,workspaceid,userid);
+     console.log(result,"resulr")
+     res.status(HttpStatusCode.OK).json({data:result})
+  } catch (error) {
+    console.log(error,"wererre")
+  }
+}
+
+
+
 async downloadWorkerData (req:Request,res:Response,next:NextFunction):Promise<void>{
 try {
   const excelBuffer: Buffer = await this._createWorkspceUsecases.generateWorkspaceExcel();

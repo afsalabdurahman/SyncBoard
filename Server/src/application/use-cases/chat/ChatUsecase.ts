@@ -5,6 +5,7 @@ import { ChatMapper } from "../../mappers/ChatMapper";
 import { Chat } from "../../../domain/entities/Chat";
 import { User } from "../../../domain/entities/User";
 import { ChatRequestDTO } from "../../dto/ChatDTOs";
+import { stringToMongoObj } from "../../../utils/convertMongoObject";
 @injectable()
 export class ChatUsecase implements IChatUsecase {
   constructor(
@@ -17,12 +18,12 @@ export class ChatUsecase implements IChatUsecase {
    await this._chatRepository.saveChats(messageEntity);
     
   }
-   async history(): Promise<Chat[]> {
-     const chats=await this._chatRepository.findAllChats() 
+   async history(workspaceid:string): Promise<Chat[]> {
+     const chats=await this._chatRepository.findAllChats(stringToMongoObj(workspaceid)) 
      return chats as Chat[]
    }
-  async findUserSatatus(): Promise<User> {
-     const users = await this._chatRepository.Onlinestatus()
+  async findUserSatatus(worksoaceid:string): Promise<User[]> {
+     const users = await this._chatRepository.Onlinestatus(stringToMongoObj(worksoaceid))
      return users
    }
 

@@ -11,7 +11,8 @@ export interface UserResponse {
   workspace: {
     name: string
     plan: string | null
-  }
+  },
+  phone:string;
   joinedAt: string
   lastActivity: string
   loginCount: number
@@ -51,6 +52,7 @@ export interface UserDetailsResponseDTO {
     name: string;
     plan: string;
   };
+  phone:string;
   joinedAt: Date;
   lastActivity: Date;
   loginCount: number;
@@ -111,6 +113,7 @@ export interface UserAggResponseDTO {
   avatar: string | null;
   role: string;
   status: string;
+  phone:string;
 
   workspace: UserWorkspaceDTO;
 

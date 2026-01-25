@@ -5,15 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Badge } from "../../../Custom/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Button } from "../../../Custom/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../../Custom/ui/dropdown-menu"
-import { Calendar, CreditCard, MoreHorizontal, DollarSign, AlertTriangle } from "lucide-react"
+import { Calendar, CreditCard, DollarSign, AlertTriangle, Eye, Pencil,Repeat,Ban } from "lucide-react"
 
 export type Plan = "basic" | "pro" | "enterprise"
 export type SubStatus = "active" | "trialing" | "past_due" | "canceled"
@@ -85,35 +77,43 @@ export function SubscriptionTable({
               <TableHead>Amount</TableHead>
               <TableHead>Next Renewal</TableHead>
               <TableHead>Payment</TableHead>
-              <TableHead className="w-12"></TableHead>
+              <TableHead>view</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((sub) => (
-              <TableRow key={sub.id} className="hover:bg-gray-50">
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage
-                        src={sub.workspace.avatar || "/placeholder.svg?height=40&width=40&query=workspace-avatar"}
-                        alt={sub.workspace.name}
-                      />
-                      <AvatarFallback>
-                        {sub.workspace.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <div className="font-medium text-gray-900 truncate">{sub.workspace.name}</div>
-                      <div className="text-xs text-gray-500 truncate">{sub.workspace.ownerEmail}</div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
+          {data
+  .filter((_, index) => index % 2 === 0) // ✅ 0, 2, 4, 6...
+  .map((sub) => (
+    
+    <TableRow key={sub.id} className="hover:bg-gray-50">
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-9 w-9">
+            <AvatarImage
+              src={sub.workspace.avatar || "/placeholder.svg"}
+              alt={sub.workspace.name}
+            />
+           
+            <AvatarFallback>
+              {sub.workspace.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <div className="font-medium text-gray-900 truncate">
+              {sub.workspace.name}
+            </div>
+            <div className="text-xs text-gray-500 truncate">
+              {sub.workspace.ownerEmail}
+            </div>
+          </div>
+        </div>
+      </TableCell>
+  <TableCell>
                   <Badge variant="secondary" className={planColors[sub.plan]}>
                     {sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)} ·{" "}
                     {sub.interval === "year" ? "Yearly" : "Monthly"}
@@ -152,28 +152,46 @@ export function SubscriptionTable({
                     </span>
                   </div>
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => onView(sub)}>View Details</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onChangePlan(sub)}>Change Plan</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onRefund(sub)}>Refund Last Payment</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => onCancel(sub)} className="text-red-600">
-                        Cancel Subscription
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                 <TableCell>
+              
+  <button
+    onClick={() => onView(sub)}
+    className="p-1.5 rounded-md hover:bg-muted transition-colors"
+    title="View Details"
+  >
+    <Eye className="h-4 w-4" />
+  </button>
+
+  {/* <button
+    onClick={() => onChangePlan(sub)}
+    className="p-1.5 rounded-md hover:bg-muted transition-colors"
+    title="Change Plan"
+  >
+    <Repeat className="h-4 w-4" />
+  </button>
+
+  <button
+    onClick={() => onRefund(sub)}
+    className="p-1.5 rounded-md hover:bg-muted transition-colors"
+    title="Refund Last Payment"
+  >
+    <DollarSign className="h-4 w-4" />
+  </button>
+
+  <button
+    onClick={() => onCancel(sub)}
+    className="p-1.5 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+    title="Cancel Subscription"
+  >
+    <Ban className="h-4 w-4" />
+  </button> */}
+
                 </TableCell>
-              </TableRow>
-            ))}
+                
+      {/* rest of your cells stay the same */}
+    </TableRow>
+  ))}
+
           </TableBody>
         </Table>
       </CardContent>

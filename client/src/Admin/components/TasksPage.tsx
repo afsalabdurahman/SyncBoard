@@ -38,6 +38,7 @@ import { useProjects } from "../hooks/projectshooks";
 import { useMember } from "../../Member/hooks/memeberhooks";
 import { toast } from "react-toastify";
 import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 interface Task {
   _id: string;
   name: string;
@@ -70,6 +71,7 @@ export function TasksPage() {
   // const [tasks, setTasks] = useState<any>(initialTasks);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<string>("");
+  const workspaceid = useWorkspaceid()
   const [loader, setLoader] = useState("");
 const dispatch: AppDispatch = useDispatch();
 useSelector((state)=>{
@@ -77,7 +79,7 @@ useSelector((state)=>{
 })
 const tasks = useTasks()
 useEffect(()=>{
-dispatch(fetchTaskData({page,limit:rowPerPage}))
+dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
 },[dispatch,rowPerPage,page])
 
 
@@ -124,7 +126,7 @@ const handleChangePage = (event, newPage) => {
    await dispatch(addTaskApi(newTask)).unwrap()
 
 //  dispatch(fetchTaskData({page,limit:rowPerPage}))
- await dispatch(fetchTaskData({page,limit:rowPerPage}))
+ await dispatch(fetchTaskData({workspaceid,  page,limit:rowPerPage}))
   setTimeout(() => {
       toast.success("Created project successfully 🎉");
     }, 100);
@@ -142,7 +144,7 @@ const handleChangePage = (event, newPage) => {
   
   
    await  dispatch(updateTaskApi(taskData)).unwrap()
- await dispatch(fetchTaskData({page,limit:rowPerPage}))
+ await dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
   };
 
   const handleDeleteTask = (id: string) => {
@@ -152,7 +154,7 @@ const handleChangePage = (event, newPage) => {
   const handleConfirmDelete = async () => {
   
     await dispatch(deleteTaskApi(deleteTaskId)).unwrap()
-    await dispatch(fetchTaskData({page,limit:rowPerPage}))
+    await dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
   };
 
   const openAddModal = () => {

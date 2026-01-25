@@ -1,7 +1,7 @@
 
 import apiService from "../../Services/apiServices/apiService";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 export const superLoginApi = async (email: string, password: string) => {
   const response = await apiService.post("auth/super/login", {
     email,
@@ -60,7 +60,7 @@ export const downloadExcel = async () => {
 export const workspaceDataApi = createApi({
   reducerPath: 'workspaceDataApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.syncworkspace.co.in/api/',
+    baseUrl: API_BASE_URL,
     credentials: "include"
   }),
   tagTypes: ['Workspace', 'Members', 'Tickets'],

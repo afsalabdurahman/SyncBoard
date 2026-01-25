@@ -4,7 +4,7 @@ import { IProjectRepository } from "../../domain/interfaces/repositories/IProjec
 import { ProjectModel } from "../database/models/ProjectModel"
 import { NotFoundError } from "../../utils/errors"
 import { BaseRepository } from "./BaseRepository"
-import mongoose from "mongoose"
+import mongoose, { Types } from "mongoose"
 import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
 import { stringToMongoObj } from "../../utils/convertMongoObject"
 
@@ -14,9 +14,9 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
    }
 
 
- async getAllProjects(): Promise<ProjectRepositoryDTO[]> {
+ async getAllProjects(workspaceId:Types.ObjectId): Promise<ProjectRepositoryDTO[]> {
   const projects = await ProjectModel
-    .find()
+    .find({workspaceId:workspaceId})
     .sort({ createdAt: -1 })
     .lean<ProjectRepositoryDTO[]>()  
     .exec();

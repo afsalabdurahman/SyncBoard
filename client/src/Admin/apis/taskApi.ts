@@ -1,11 +1,12 @@
 
-import { error } from "console";
+
+
 import apiService from "../../Services/apiServices/apiService";
 import { Task } from "../types/taskTypes";
 
 
-export const fetchTasks = async (): Promise<Task[]> => {
-  const response = await apiService.get("task/completed");
+export const fetchTasks = async (workspaceid): Promise<Task[]> => {
+  const response = await apiService.get(`task/completed/${workspaceid}`);
   return response.data;
 };
 

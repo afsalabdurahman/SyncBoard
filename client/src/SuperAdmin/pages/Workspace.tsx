@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react"
-import { Sidebar } from "../components/Sidebar"
-import { Header } from "../components/Header"
+
 import  {WorkspaceFilters}  from "../components/workspace/workspaceFilter"
 import {WorkspaceStats} from "../components/workspace/workspaceState"
 import { WorkspaceTable, type Workspace } from "../components/workspace/workspaceTable"
@@ -16,7 +15,7 @@ export  const  Workspaces =(props)=> {
   const {data,isLoading,refetch} = useGetWorkspaceCountQuery(changePage)
 
   const [details,setDetails] =useState(false)
-  const [viewDetails,setViewDetails] = useState(true)
+  const [viewDetails,setViewDetails] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")

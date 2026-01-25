@@ -2,6 +2,8 @@ import mongoose, { ObjectId } from "mongoose";
 import { Subscription } from "../../domain/entities/Suscription";
 import { ISuscription } from "../../domain/interfaces/repositories/ISuscriptionRepository";
 import { SubscriptionDocument,SubscriptionModel } from "../database/models/SuscriptionModel";
+import { WorkspaceModel } from "../database/models/WorkspaceModel";
+import { ValidationError } from "../../utils/errors";
 
 export class SuscriptionRepository implements ISuscription {
 
@@ -25,4 +27,26 @@ async updateSuscriptionPlan(userId: string , plankey: string, status: string): P
     );
     return updatedSubscription ? updatedSubscription.toObject() as Subscription : null;
 }
+async updateSubscriptionPlanBysuper(
+  name: string,
+  plan: string
+): Promise<void> {
+
+  const workspace = await WorkspaceModel.findOne({ name })
+
+  if (!workspace) {
+    throw new ValidationError("Workspace not found")
+  }
+
+  const updated = await SubscriptionModel.findOneAndUpdate(
+    { workspace: workspace._id },
+    { $set: { planKey: plan } },
+    { new: true }
+  )
+
+  if (!updated) {
+    throw new ValidationError("Subscription not found")
+  }
+}
+
 }

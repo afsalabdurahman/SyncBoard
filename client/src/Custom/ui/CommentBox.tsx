@@ -19,6 +19,7 @@ import LoadingSpinner from "../reusecomponents/LoadingSpinner";
 import { formatTime } from "../../Utility/dateformate";
 import { useUser } from "../../Worksapce/hooks/workspacehooks";
 import { channelAttachement } from "../../Utility/attachmentValidation";
+import { socket } from "../../Services/socket";
 
 interface Attachment {
   id: string;
@@ -57,13 +58,24 @@ interface CommentBoxProps {
 // }
 // ]
 
+
 const CommentBox = ({ isOpen, onClose, taskId }: CommentBoxProps) => {
   useEffect(()=>{
+  
+
+
 fetchComments(taskId).then((data)=>{
   console.log(data,"fetched.....")
   setComments([...data])
 })
   },[])
+
+// socket.io on commet
+
+
+// 
+
+
   console.log(taskId,"taskIdd")
 
    const [comments, setComments] = useState<Comment[]>([]);
@@ -179,7 +191,13 @@ const handleCommentSubmit = async () => {
 
     console.log("Comment updated with URLs:", { ...newComment, urls: uploadedUrls });
     console.log(newComment,"NewCoometss++")
-    
+    socket.emit("add-comment", {
+    taskId,
+   commentName : newComment.name,
+    commentText :newComment.text,
+    uploadedUrls
+
+  });
   } catch (error) {
     console.error("Failed to upload attachments:", error);
     // Optionally: show error to user or mark comment as having failed uploads
@@ -191,6 +209,10 @@ const handleCommentSubmit = async () => {
       )
     );
   }
+    socket.on("join-comment", (taskId) => {
+    socket.join(taskId);
+    console.log(`User joined topic: ${taskId}`);
+  });
 };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

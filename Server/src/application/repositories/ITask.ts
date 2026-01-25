@@ -8,12 +8,13 @@ export interface ITaskUseCase {
     deleteTask(taskId:string):Promise<void>
     myTask(userName:string,query?:string):Promise<Task>
     updateTaskStatus(taskId:string,status:string):Promise<void>
-    completedTask():Promise<CompletedTaskResponseDTO>
+    completedTask(workspaceid:string):Promise<CompletedTaskResponseDTO>
     updateApprovalStatus(taskId:string,status:string,msg?:string):Promise<void>;
     findTaskByProjectId(projectId:string):Promise<Task>;
-    paginationTask(page:number,limit:number,skip:number):Promise<{ items: Task[];
+    paginationTask(workspaceId:string,page:number,limit:number,skip:number):Promise<{ items: Task[];
       totalItems: number}>
       addComment(taskId:string,comment:commentType):Promise<void>
       getTaskComments(taskId:string):Promise<commentsDTO[]|null>
-      deleteAttachment(taskId:string,url:string):Promise<string>
+      deleteAttachment(taskId:string,url:string):Promise<string>;
+      // adminDashBoardData(workspaceId:string):Promise<any>
 }

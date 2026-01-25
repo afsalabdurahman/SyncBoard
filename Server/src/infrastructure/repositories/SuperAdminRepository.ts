@@ -193,8 +193,8 @@ result.push(totalDocCount)
             $cond: {
               if: {
                 $or: [
-                  { $eq: ["$isBlock", true] },
-                  { $eq: ["$isDelete", true] }
+                 
+                  { $eq: ["$isDeleted", true] }
                 ]
               },
               then: "inactive",
@@ -233,6 +233,7 @@ result.push(totalDocCount)
           imageUrl: 1,
           role: 1,
           status: 1,
+          phone:1,
           createdAt: 1,
           updatedAt: 1,
           "workspaceDetails.name": 1,
@@ -243,7 +244,7 @@ result.push(totalDocCount)
   { $limit: limit }
     ]);
 
-
+console.log(result,"++++result checking")
 result.push(totalDocCount)
     return result;
   }

@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { socket } from "../../Services/socket";
 import apiService from "../../Services/apiServices/apiService";
 import EmojiPicker from "emoji-picker-react"; // npm install emoji-picker-react
-import { useUser } from "../hooks/workspacehooks";
+import { useUser, useWorkspaceid } from "../hooks/workspacehooks";
 import { audioUpload, uploadAttachment, uploadVideo } from "../../Services/Cloudinary";
 import { toast } from "react-toastify";
 import { channelAttachement } from "../../Utility/attachmentValidation";
@@ -63,7 +63,8 @@ export default function GroupChannel() {
 
   const user = useSelector((state: any) => state.user.user.name);
   const userId = useSelector((state: any) => state.user.user._id);
-
+const workspaceid=useWorkspaceid();
+console.log(workspaceid,"iddddd")
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -92,7 +93,7 @@ export default function GroupChannel() {
 
   useEffect(() => {
     // Fetch online users
-    apiService.get("chat/online").then((res) => {
+    apiService.get(`chat/online/${workspaceid}`).then((res) => {
       const users = res.data
         .map((u: any) => u.name)
         .filter((name: string) => name && name !== user);
@@ -100,7 +101,7 @@ export default function GroupChannel() {
     });
 
     // Fetch chat history
-    apiService.get("chat/history").then((resp) => {
+    apiService.get(`chat/history/${workspaceid}`).then((resp) => {
       const formatted: Message[] = resp.data.map((msg: any) => ({
         id: msg._id || Date.now().toString(),
         sender: msg.senderName === user ? "You" : msg.senderName,
@@ -115,7 +116,10 @@ export default function GroupChannel() {
       }));
       setMessages(formatted);
     });
-
+    socket.emit("join-workspace", {
+  workspaceId: workspaceid,
+  userId: userId
+});
     socket.emit("UserId", userId);
 
     const handleReceiveMessage = (msg: any) => {
@@ -289,11 +293,11 @@ console.log(attachments,"attchements")
         type: att.type,
       })),
       userId:userData._id,
-      workspaceId:userData.workspace[0].workspaceId
+      workspaceId:workspaceid
     
     };
 
-    socket.emit("send-message", messageData);
+    socket.emit("send-message", messageData,workspaceid??userId);
 
     setInput("");
     setAttachments([]);

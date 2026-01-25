@@ -11,6 +11,7 @@ import { ActivityMapper } from "../../mappers/ActivityMapper";
 import { IActivityRepository } from "../../../domain/interfaces/repositories/IActivityRepository";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { ActivityLogMessage } from "../../../types/activityTypes";
+import { stringToMongoObj } from "../../../utils/convertMongoObject";
 @injectable()
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
@@ -43,8 +44,8 @@ export class ProjectUsecase implements IProjectUsecase {
     return responseDTO;
   }
 
-  async getAllProjects(): Promise<ProjectRepositoryDTO[]|null> {
-     let allProjects = await this._projectRepository.getAllProjects();
+  async getAllProjects(workspaceId:string): Promise<ProjectRepositoryDTO[]|null> {
+     let allProjects = await this._projectRepository.getAllProjects(stringToMongoObj( workspaceId));
      console.log(allProjects,"p")
     // if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return allProjects;

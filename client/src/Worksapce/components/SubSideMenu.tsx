@@ -83,7 +83,7 @@ console.log(bgColor,"bgColor")
 
         <button onClick={meetings} className={`flex items-center space-x-2 px-3 py-2 text-purple-300 hover:text-white rounded cursor-pointer ${bgColor === "meetings" ? "bg-purple-700" : ""}`}>
           <FiHeadphones />
-          <span>Meeting room</span>
+          <span>Members</span>
         </button>
 
         <button onClick={()=>channels("channels")} className={`flex items-center space-x-2 px-3 py-2 text-purple-300 hover:text-white rounded cursor-pointer ${bgColor === "channels" ? "bg-purple-700" : ""}`}>

@@ -66,41 +66,8 @@ export default function UsageMetrics({ usageMetrics }: UsageMetricsProps) {
             )}
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <HardDrive className="h-4 w-4 text-purple-500" />
-                <span className="font-medium">Storage</span>
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {formatUsage(usageMetrics.storage.current, usageMetrics.storage.limit, usageMetrics.storage.unit)}
-              </span>
-            </div>
-            {usageMetrics.storage.limit !== -1 && (
-              <Progress
-                value={getUsagePercentage(usageMetrics.storage.current, usageMetrics.storage.limit)}
-                className="h-2"
-              />
-            )}
-          </div>
+         
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-orange-500" />
-                <span className="font-medium">API Calls</span>
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {formatUsage(usageMetrics.apiCalls.current, usageMetrics.apiCalls.limit)}
-              </span>
-            </div>
-            {usageMetrics.apiCalls.limit !== -1 && (
-              <Progress
-                value={getUsagePercentage(usageMetrics.apiCalls.current, usageMetrics.apiCalls.limit)}
-                className="h-2"
-              />
-            )}
-          </div>
         </div>
       </CardContent>
     </Card>

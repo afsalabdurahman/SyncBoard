@@ -1,11 +1,17 @@
 import { MessageSquare, X, Reply } from "lucide-react";
+import { useEffect } from "react";
+import { socket } from "../../Services/socket";
 
 interface CommentButtonProps {
   isOpen: boolean;
   onClick: () => void;
+  notify:boolean
 }
 
-const CommentButton = ({ isOpen, onClick }: CommentButtonProps) => {
+const CommentButton = ({isOpen, onClick,notify}: CommentButtonProps) => {
+
+
+
   return (
     <div className="relative group"> {/* 👈 Added positioning context */}
       <button
@@ -16,7 +22,10 @@ const CommentButton = ({ isOpen, onClick }: CommentButtonProps) => {
         {/* 👈 FIXED: Pulse ring animation */}
         {!isOpen && (
           <>
-            <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping w-10 h-10" />
+          {
+            notify? <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping w-10 h-10" />:
+             <span className="absolute inset-0 rounded-full bg-primary/20  w-10 h-10" />
+          }
             <span className="absolute inset-0 rounded-full bg-primary/30 animate-pulse w-10 h-10" />
           </>
         )}

@@ -1,10 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { Task } from "../../domain/entities/Task";
 import { ITaskRepository } from "../../domain/interfaces/repositories/ITaskRepository";
 import { InternalServerError, NotFoundError } from "../../utils/errors";
 import { TaskModel } from "../database/models/TaskModel";
 import { commentType } from "../../types/taskTypes";
 import { commentsDTO } from "../../application/dto/TaskDTOs";
+import { ProjectModel } from "../database/models/ProjectModel";
+import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -17,7 +19,7 @@ export class TaskRepository implements ITaskRepository {
     return tasks;
   }
   async updatetask(taskId: string, merged: Record<string, string>): Promise<Task> {
-
+console.log(taskId)
     const objectId = new mongoose.Types.ObjectId(taskId.toString());
     const updatedTask = await TaskModel.findByIdAndUpdate(
       objectId,
@@ -74,7 +76,39 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async allCompletedTasks(): Promise<any> {
+  async allCompletedTasks(workspaceid: Types.ObjectId): Promise<any> {
+    console.log(workspaceid, "IDDD")
+
+    const tasksCompleted = await ProjectModel.aggregate([{
+      $match: {
+        workspaceId: workspaceid
+      }
+    }, {
+      $lookup: {
+        from: "Task",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "tasks"
+      }
+    },
+
+    {
+      $unwind: "$tasks"
+    },
+    {
+      $match: {
+        "tasks.isCompleted": true
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$tasks"
+      }
+    }
+
+    ])
+
+    console.log(tasksCompleted, "completede+++")
     const completedTasks = await TaskModel.find({ status: "Completed" });
     const taskReject = await TaskModel.find({ approvalStatus: "Rejected" });
 
@@ -113,16 +147,24 @@ export class TaskRepository implements ITaskRepository {
     const countTask = TaskModel.countDocuments();
     return countTask
   }
-  async getPagenationaTask(page: number, limit: number, skip: number): Promise<{
+  async getPagenationaTask(workspaceId: Types.ObjectId, page: number, limit: number, skip: number): Promise<{
     items: Task[];
     totalItems: number;
   }> {
+
+    //
+    const projects = await ProjectModel.findOne({ workspaceId: workspaceId }, { _id: 1 })
+
+    const result = await TaskModel.find({ projectId: projects?._id });
+
+    // END 
     const totalItems = await TaskModel.countDocuments();
     const items = await TaskModel.find()
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
     return { items, totalItems }
+
 
   }
   async addComments(taskId: string, comments: commentType): Promise<Task | null> {
@@ -136,22 +178,55 @@ export class TaskRepository implements ITaskRepository {
     return updatedTask ?? null;
   }
 
-async getTaskbyId(taskId: string): Promise<Task | null> {
-    const task=await TaskModel.findById(taskId)
-    console.log(task,"TaskReposioty")
-  return task ?? null
-}
+  async getTaskbyId(taskId: string): Promise<Task | null> {
+    const task = await TaskModel.findById(taskId)
+    console.log(task, "TaskReposioty")
+    return task ?? null
+  }
 
-async deleteAttachment(taskId: string, url: string): Promise<Task | null> {
-  return await TaskModel.findByIdAndUpdate(
-    taskId,
-    {
-      $pull: { attachedURLs: url }
-    },
-    { new: true } 
-  );
-  
-}
+  async deleteAttachment(taskId: string, url: string): Promise<Task | null> {
+    return await TaskModel.findByIdAndUpdate(
+      taskId,
+      {
+        $pull: { attachedURLs: url }
+      },
+      { new: true }
+    );
+
+  }
+
+  // async getAllTaskInWorkspace(
+  //   workspaceId: Types.ObjectId
+  // ): Promise<{
+  //   items: Task[];
+  //   projectsData: ProjectRepositoryDTO[];
+  // } | null> {
+
+  //   // 1. Get all projects in workspace
+  //   const projects = await ProjectModel
+  //     .find({ workspaceId })
+  //     .select("_id")
+  //     .lean();
+
+  //   if (!projects.length) {
+  //     return { items: [], projectsData: [] };
+  //   }
+
+  //   const projectIds = projects.map(p => p._id);
+
+  //   // 2. Get all tasks belonging to those projects
+  //   const items = await TaskModel
+  //     .find({ projectId: { $in: projectIds } })
+  //     .lean<Task[]>();
+
+  //   // 3. Get project details
+  //   const projectsData = await ProjectModel
+  //     .find({ workspaceId })
+  //     .sort({ createdAt: -1 })
+  //     .lean<ProjectRepositoryDTO[]>();
+
+  //   return { items, projectsData };
+  // }
 
 
 }

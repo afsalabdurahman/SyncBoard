@@ -27,18 +27,18 @@ import {
 import { Users, FolderOpen, AlertTriangle, CheckCircle } from "lucide-react";
 import { useEffect } from "react";
 const taskStatusData = [
-  { name: "To Do", value: 12, fill: "#ef4444" },
-  { name: "In Progress", value: 8, fill: "#f59e0b" },
-  { name: "Done", value: 15, fill: "#10b981" },
+  { name: "To Do", value: 5, fill: "#ef4444" },
+  { name: "In Progress", value: 6, fill: "#f59e0b" },
+  { name: "Done", value: 1, fill: "#10b981" },
 ];
 
 const projectProgressData = [
   { name: "Jan", completed: 4, total: 6 },
-  { name: "Feb", completed: 6, total: 8 },
-  { name: "Mar", completed: 8, total: 10 },
-  { name: "Apr", completed: 5, total: 7 },
-  { name: "May", completed: 9, total: 12 },
-  { name: "Jun", completed: 7, total: 9 },
+  // { name: "Feb", completed: 6, total: 8 },
+  // { name: "Mar", completed: 8, total: 10 },
+  // { name: "Apr", completed: 5, total: 7 },
+  // { name: "May", completed: 9, total: 12 },
+  // { name: "Jun", completed: 7, total: 9 },
 ];
 import { useSelector, useDispatch } from "react-redux";
 import apiService from "../../Services/apiServices/apiService";
@@ -67,7 +67,9 @@ export function DashboardPage() {
     (state: any) => state.workspace.workspace.slug
   );
  
-
+useEffect(()=>{
+console.log("initial loading+++++++")
+},[])
  
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>

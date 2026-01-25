@@ -51,7 +51,7 @@ const ProjectCount = await projectRepo.countProject();
 
   if (ProjectCount > limit.maxProjects && limit.maxProjects !== Infinity){
 
-throw new ForbiddenError("Project is exceed")
+throw new ValidationError("Project is exceed")
   }
     
   }else if(resorce == "task"){

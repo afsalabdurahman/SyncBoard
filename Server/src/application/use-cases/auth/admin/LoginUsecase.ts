@@ -20,8 +20,8 @@ export class AdminLoginUseCase implements ILoginUseCase {
   ) {}
  
   async execute(input:LoginRequestDTO): Promise<adminResponseDTO> {
-    let user: User = await this._userRepository.findByEmail(input.email)
-    if(!user.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+    let user = await this._userRepository.findByEmail(input.email)
+    if(!user||!user.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     const workspceId:any=user.workspace[0].workspaceId
     if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const isValid = await this._authService.comparePassword(
@@ -65,8 +65,8 @@ const entity = new Subscription({
   }
 
   async superAdmin(input: LoginRequestDTO): Promise<SuperadminLoginResponseDTO | null> {
-      let superAdmin: User = await this._userRepository.findByEmail(input.email)
-      if(!superAdmin.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+      let superAdmin = await this._userRepository.findByEmail(input.email)
+      if(!superAdmin||!superAdmin.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
       let token = this._authService.generateToken({
         id:superAdmin._id ?? "",
       email: superAdmin.email!,

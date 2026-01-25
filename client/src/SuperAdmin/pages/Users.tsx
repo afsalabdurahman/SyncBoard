@@ -111,9 +111,9 @@ const handleChangePage = (page) => {
 if(page){
   switch (page) {
     case "view":
-      return <ProfieViewPage setPage={setPage} user={user} />
+      return <ProfieViewPage setPage={setPage} user={user}  />
       case "edit":
-        return <ProfileEditPage  setPage={setPage} user={user}/>
+        return <ProfileEditPage  setPage={setPage} user={user} refetch={refetch} setUser={setUser}/>
   
     default:
       break;

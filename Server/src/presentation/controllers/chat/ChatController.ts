@@ -14,13 +14,17 @@ export class ChatController{
 async saveMessage(message:ChatRequestDTO):Promise<void>{
 await this._chatuseCase.sendMessage(message)
 }
-async chatHistor(req:Request,res:Response,next:NextFunction):Promise<void>{
-const historyData=await this._chatuseCase.history()
+async chatHistory(req:Request,res:Response,next:NextFunction):Promise<void>{
+    console.log(req.params)
+    const workapaceid=req.params.workspaceid as string;
+    console.log(workapaceid,"idddd")
+const historyData=await this._chatuseCase.history(workapaceid)
 res.status(HttpStatusCode.OK).json(historyData)
 }
 
 async findOnlineStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
-    const users=await this._chatuseCase.findUserSatatus()
+     const workapaceid=req.params.workspaceid as string;
+    const users=await this._chatuseCase.findUserSatatus(workapaceid)
     res.status(HttpStatusCode.OK).json(users)
 }
 

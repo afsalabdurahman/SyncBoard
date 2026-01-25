@@ -55,14 +55,14 @@ console.log(projectCount,"count project++++",userCount)
   const [usageMetrics] = useState<UsageMetrics>(() => {
     const baseMetrics = {
       free: {
-        projects: { current: projectCount, limit: 3 },
-        users: { current: userCount, limit: 2 },
+        projects: { current: projectCount, limit: 1 },
+        users: { current: userCount, limit: 5 },
         storage: { current: 0.5, limit: 1, unit: "GB" },
         apiCalls: { current: 850, limit: 1000 },
       },
         basic: {
         projects: { current: projectCount, limit: 3 },
-        users: { current: userCount, limit: 5 },
+        users: { current: userCount, limit: 15 },
         storage: { current: 0.5, limit: 1, unit: "GB" },
         apiCalls: { current: 850, limit: 1000 },
       },

@@ -110,7 +110,9 @@ export class TaskController {
     }
   }
   async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
-    const task = await this._taskUsecase.completedTask();
+    const workspaceid = req.params.workspaceid;
+    console.log(workspaceid,"+++WORKDPACEID")
+    const task = await this._taskUsecase.completedTask(workspaceid);
     res.status(HttpStatusCode.OK).json(task);
   }
   async controllApprovalSatatus(
@@ -147,11 +149,12 @@ export class TaskController {
     }
   }
 async pagination (req:CustomRequest,res:Response):Promise<void> {
- 
+ const workspaceId= req.params.workspaceid;
+ console.log(workspaceId,"786Works")
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
-const {items,totalItems} =await this._taskUsecase.paginationTask(page,limit,skip)
+const {items,totalItems} =await this._taskUsecase.paginationTask(workspaceId,page,limit,skip)
 res.status(200).json({
   items,
   currentPage: page,

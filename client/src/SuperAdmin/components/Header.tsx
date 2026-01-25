@@ -1,16 +1,9 @@
 
-import { Search, Bell, ChevronDown } from "lucide-react"
+import { Search, Bell, ChevronDown,LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
 import { Button } from "../../Custom/ui/button"
 import { Input } from "../../Custom/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../Custom/ui/dropdown-menu"
+
 import { useUser } from "../../Worksapce/hooks/workspacehooks"
 import { logout } from "../../Worksapce/apis/workspaceapis"
 import { toast } from "react-toastify"
@@ -66,28 +59,29 @@ const handleLogout = () =>{
           </Button> */}
 
           {/* Profile Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2 px-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Admin" />
-                  <AvatarFallback>SA</AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium">Super Admin</p>
-                  <p className="text-xs text-gray-500">gridesync@company.com</p>
-                </div>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-             
-           
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600" onClick={handleLogout}>Sign Out</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+       <div className="flex items-center gap-4">
+  <div className="flex items-center gap-3">
+    <Avatar className="h-8 w-8">
+      <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Admin" />
+      <AvatarFallback>SA</AvatarFallback>
+    </Avatar>
+
+    <div className="hidden md:block text-left">
+      <p className="text-sm font-medium">Super Admin</p>
+      <p className="text-xs text-muted-foreground">gridesync@company.com</p>
+    </div>
+  </div>
+
+  <button
+    onClick={handleLogout}
+    className="text-sm text-red-600 hover:text-red-700 
+               px-3 py-1.5 rounded-md hover:bg-red-50/70 
+               transition-colors flex items-center gap-1.5"
+  >
+    <LogOut className="h-3.5 w-3.5" />
+    Sign Out
+  </button>
+</div>
         </div>
       </div>
     </header>

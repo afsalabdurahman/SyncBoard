@@ -68,19 +68,21 @@ export default function NotificationBell(props: any) {
   return (
     <div>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <Button className='relative  h-12 w-12 hover:bg-dark-100 bg-transparent cursor-pointer'>
-            <Bell className='w-5 h-5' />
-            {unreadCount > 0 && (
-              <Badge
-                variant='destructive'
-                className='absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs'
-              >
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </Badge>
-            )}
-          </Button>
-        </PopoverTrigger>
+    <PopoverTrigger asChild>
+  <button 
+    className="relative h-12 w-12 hover:bg-dark-100 bg-transparent cursor-pointer flex items-center justify-center"
+  >
+    <Bell className="w-5 h-5" />
+    {unreadCount > 0 && (
+      <Badge
+        variant="destructive"
+        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs"
+      >
+        {unreadCount > 9 ? "9+" : unreadCount}
+      </Badge>
+    )}
+  </button>
+</PopoverTrigger>
         <PopoverContent className='w-80 p-0' align='end'>
           <Card className='shadow-none border-0'>
             <CardHeader className='border-b bg-gray-50/50'>

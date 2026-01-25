@@ -23,6 +23,7 @@ import { socket } from "../../Services/socket";
 import {setTasks} from "../../Redux/feature/task/taskSlice"
 import { fetchProjectData } from "../../Redux/feature/project/projectThunks";
 import { myProjects } from "../apis/workspaceapis";
+import { useWorkspaceid } from "../hooks/workspacehooks";
 
 const MyProject = () => {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const MyProject = () => {
   });
   const [projects, setProjects] = useState([]);
   console.log(projects, "newProjects");
-  
+  const workspaceId=useWorkspaceid()
 
   useEffect(() => {
     
@@ -55,7 +56,7 @@ const MyProject = () => {
   }, [dispatch,userName]);
  
  useEffect(()=>{
- const list= myProjects().then((res)=>{
+ const list= myProjects(workspaceId).then((res)=>{
 console.log(res.data,"loistsssssss")
 setProjects(res.data)
   })

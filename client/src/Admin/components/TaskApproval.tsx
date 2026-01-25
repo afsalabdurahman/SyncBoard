@@ -8,6 +8,7 @@ import { Label } from "../../Custom/ui/label";
 import { Check, X, Clock, CheckCircle } from 'lucide-react';
 import {  fetchTasks,updateTaskStatus } from "../apis/taskApi";
 import { Task } from "../types/taskTypes";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 
 
 interface TaskApprovalProps {}
@@ -19,11 +20,12 @@ export const TaskApproval: React.FC<TaskApprovalProps> = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [error, setError] = useState<string | null>(null);
+const workspaceid = useWorkspaceid();
 
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        const fetchedTasks = await fetchTasks();
+        const fetchedTasks = await fetchTasks(workspaceid);
         setTasks(fetchedTasks);
         setError(null);
       } catch (err) {

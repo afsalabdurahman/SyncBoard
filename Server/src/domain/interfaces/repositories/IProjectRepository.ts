@@ -4,7 +4,7 @@ import { Project } from "../../entities/Project";
 import { IBaseRepository } from "./IBaseReposiory";
 export interface IProjectRepository extends IBaseRepository <Project> {
     
-    getAllProjects():Promise<ProjectRepositoryDTO[]|null>
+    getAllProjects(workspaceId:Types.ObjectId):Promise<ProjectRepositoryDTO[]|null>
     removeAttachment(projectId:string,attachedUrl:string):Promise<void>
     updateProject(projectId:string,merged:any):Promise<Project|null>
     deleteProject(projectId:string):Promise<void>;

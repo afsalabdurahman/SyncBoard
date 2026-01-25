@@ -8,9 +8,8 @@ import { GetUserUseCase } from "../../application/use-cases/user/GetUserUsecase"
 import { User } from "../../domain/entities/User";
 import {CreateWorkspaceUsecases} from"../../application/use-cases/workspace/CreateWorkspaceUsecase"
 import { stringToMongoObj } from "../../utils/convertMongoObject";
-
 import { ResponseMessages } from "../../common/erroResponse";
-
+import { UserMongooseRepository } from "../../infrastructure/repositories/UserRepository";
 
 
 
@@ -20,7 +19,7 @@ export const authMiddelware = () => {
     let authService= container.resolve(AuthService) 
     let getUserUseCase=container.resolve(GetUserUseCase)
     let workspaceUsecse= container.resolve(CreateWorkspaceUsecases)
-   
+    const userRepository=container.resolve(UserMongooseRepository)
     const accessToken = req.cookies.accessToken;
 if (!accessToken) {
       throw next(new AuthenticationError('No token provided'));
@@ -58,15 +57,19 @@ if (!accessToken) {
     }
 
        if (user.isBlocked) {
+         await userRepository.changeOnlineStatus(stringToMongoObj(user._id??""))
         throw new ForbiddenError('User is blocked');
       }
       if(user.isDeleted){
+         await userRepository.changeOnlineStatus(stringToMongoObj(user._id??""))
          throw new ForbiddenError('User is removed');
+        
       }
             req.user = { id: decoded.userId, role };
       next();
       
     } catch (error) {
+      
         next(error)
     }
 }

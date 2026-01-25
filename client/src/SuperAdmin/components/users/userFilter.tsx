@@ -81,7 +81,7 @@ export const UserFilters = ({
               </SelectContent>
             </Select>
 
-            <Select value={planFilter} onValueChange={onPlanFilterChange}>
+            {/* <Select value={planFilter} onValueChange={onPlanFilterChange}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Plan" />
               </SelectTrigger>
@@ -91,7 +91,7 @@ export const UserFilters = ({
                 <SelectItem value="pro">Pro</SelectItem>
                 <SelectItem value="enterprise">Enterprise</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {activeFiltersCount > 0 && (
               <Badge variant="secondary" className="ml-2">
@@ -103,10 +103,7 @@ export const UserFilters = ({
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button variant="outline" onClick={onExport} className="flex items-center gap-2 bg-transparent">
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
+         
           {/* <Button onClick={onInviteUser} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Invite User

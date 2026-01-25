@@ -33,7 +33,9 @@ export class ProjectController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const projects = await this._projectUsecase.getAllProjects();
+      const workspaceId = req.params.workspaceid;
+      console.log(workspaceId,"params WorkspceID")
+      const projects = await this._projectUsecase.getAllProjects(workspaceId);
       res.status(HttpStatusCode.OK).json(projects);
     } catch (error) {
      

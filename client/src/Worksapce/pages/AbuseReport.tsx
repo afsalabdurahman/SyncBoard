@@ -1,176 +1,296 @@
-import React, { useState } from 'react';
-import { AlertCircle, CheckCircle, Clock, Search } from 'lucide-react';
-import { sendAbuse } from '../apis/workspaceapis';
+import React, { useEffect, useState } from 'react';
+import {
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Search
+} from 'lucide-react';
+import debounce from 'lodash/debounce';
+import { Pagination } from "@mui/material"
+import { abuseReportList, searchApi, sendAbuse } from '../apis/workspaceapis';
 import { useMember } from '../../Member/hooks/memeberhooks';
-import { ToastContainer,toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import apiService from '../../Services/apiServices/apiService';
+import Tikets from '../../Admin/Pages/Tikets';
+
 export default function AbuseReportForm() {
-  const memeber=useMember()
-  console.log(memeber,"membersss")
-  console.log(memeber,"memeberss")
+  const memeber = useMember();
+  const [refresh,setRefresh]=useState(1);
+const [loading, setLoading] = useState(false);
+console.log(memeber,"member++REdux")
   const [formData, setFormData] = useState({
     type: '',
-    otherType:'',
+    otherType: '',
     severity: '',
     description: '',
     reportedContent: ''
   });
 
-  const [submitted, setSubmitted] = useState(false);
-
-  const abuseTypes = ['Spam', 'Fraud', 'Harassment', 'Copyright', 'Inappropriate','Other'];
-  const severityTypes = ['Critical', 'High', 'Medium', 'Low'];
-
-
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-  await sendAbuse(formData,memeber._id,memeber.workspace[0].workspaceId).then((res)=>{
-    toast.success("Report Send")
-  })
+  /* 🆕 Dummy Raised Tickets */
+  const [tickets,setTickets] = useState([]);
+  const [count,setCount]=useState()
+useEffect(() => {
  
-setFormData({description:"",otherType:"",reportedContent:"",severity:"",type:""})
-    console.log(formData)
-    // setSubmitted(true);
-    // setTimeout(() => setSubmitted(false), 3000);
+
+  const fetchReports = async () => {
+    try {
+      const response = await abuseReportList(
+        memeber._id,
+        memeber.workspace[0].workspaceId,
+        1
+      );
+console.log(response,'Api+++')
+      setTickets(response?.data?.data ?? []);
+      setCount(response.data.count)
+    } catch (error) {
+      console.error("Failed to fetch abuse reports", error);
+    }
   };
 
+  fetchReports();
+}, [refresh, memeber?._id, memeber?.workspace]);
+
+
+  const [search, setSearch] = useState('');
+
+  const abuseTypes = ['Spam', 'Fraud', 'Harassment', 'Copyright', 'Inappropriate', 'Other'];
+  const severityTypes = ['Critical', 'High', 'Medium', 'Low'];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await sendAbuse(formData, memeber._id, memeber.workspace[0].workspaceId);
+    toast.success('Report Sent');
+
+    setFormData({
+      type: '',
+      otherType: '',
+      severity: '',
+      description: '',
+      reportedContent: ''
+    });
+    setRefresh(prev => prev + 1);
+  };
+const handleSerach = (e)=>{
+
+  setSearch(e.target.value);
+  if(filteredTickets.length==0){
+    setLoading(true)
+   console.log(search,"keywordSSS")
+  }
+  
+
+}
+//Debouse..
+const debouncedSearch = debounce(async (searchQuery) => {
+    if (!searchQuery) {
+      setTickets([]);;
+      setRefresh((prv)=>prv+1)
+      return;
+    }
+
+    setLoading(true);
+    try {
+      
+
+      const response = await searchApi(searchQuery,memeber.workspace[0].workspaceId,memeber._id,)
+      console.log(response,"api++Res")
+      setTickets(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setTickets([]);
+    } finally {
+      setLoading(false);
+    }
+  }, 300);
+
+
+  useEffect(() => {
+    debouncedSearch(search);
+    // Cleanup debounce on unmount
+    return () => debouncedSearch.cancel();
+  }, [search]);
+
+
+  //End Debousing.............
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
+const handleChangePage =async (page) =>{
+  console.log(page,"pagess");
+    const response = await abuseReportList(
+        memeber._id,
+        memeber.workspace[0].workspaceId,
+        page
+      );
+      setTickets(response?.data?.data ?? []);
 
+}
   const getSeverityColor = (severity) => {
-    switch(severity) {
-      case 'Critical': return 'text-red-600 bg-red-50 border-red-200';
-      case 'High': return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'Medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'Low': return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+    switch (severity) {
+      case 'Critical':
+        return 'text-red-600 bg-red-50 border-red-200';
+      case 'High':
+        return 'text-orange-600 bg-orange-50 border-orange-200';
+      case 'Medium':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case 'Low':
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   };
 
- 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Waiting':
+        return 'bg-yellow-100 text-yellow-700';
+      case 'In Review':
+        return 'bg-blue-100 text-blue-700';
+      case 'Resolved':
+        return 'bg-green-100 text-green-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const filteredTickets = tickets.filter(
+    (t) =>
+      t.type.toLowerCase().includes(search.toLowerCase()) ||
+      t.status.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
+      <ToastContainer />
+
+      <div className="max-w-4xl mx-auto space-y-8">
+
+        {/* ================= FORM ================= */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center gap-3 mb-6">
             <AlertCircle className="w-8 h-8 text-red-500" />
-            <ToastContainer/>
             <h1 className="text-2xl font-bold text-gray-800">Abuse Report</h1>
           </div>
-
-          {submitted && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700">
-              <CheckCircle className="w-5 h-5" />
-              <span>Report submitted successfully!</span>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Abuse Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Abuse Type *
-              </label>
+              <label className="block text-sm font-medium mb-2">Abuse Type *</label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border px-4 py-2 rounded-lg"
               >
                 <option value="">Select type...</option>
-                {abuseTypes.map(type => (
-                  <option key={type}  value={type}>{type}</option>
+                {abuseTypes.map((type) => (
+                  <option key={type}>{type}</option>
                 ))}
               </select>
             </div>
-            {/* other */}
-{formData.type === "Other" && (
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">
-      Other *
-    </label>
-    <input
-      type="text"
-      name="Specify type"
-      value={formData.otherType}
-      onChange={handleChange}
-      placeholder="Specify Type"
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-    />
-  </div>
-)}
+
+            {formData.type === 'Other' && (
+              <input
+                name="otherType"
+                value={formData.otherType}
+                onChange={handleChange}
+                placeholder="Specify type"
+                className="w-full border px-4 py-2 rounded-lg"
+              />
+            )}
 
             {/* Severity */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Severity *
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {severityTypes.map(severity => (
-                  <button
-                    key={severity}
-                    type="button"
-                    onClick={() => setFormData({...formData, severity})}
-                    className={`px-4 py-2 rounded-lg border-2 font-medium transition-all ${
-                      formData.severity === severity
-                        ? getSeverityColor(severity)
-                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                    }`}
-                  >
-                    {severity}
-                  </button>
-                ))}
-              </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {severityTypes.map((severity) => (
+                <button
+                  key={severity}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, severity })}
+                  className={`border rounded-lg py-2 ${
+                    formData.severity === severity
+                      ? getSeverityColor(severity)
+                      : 'border-gray-300'
+                  }`}
+                >
+                  {severity}
+                </button>
+              ))}
             </div>
-
-           
-           
-
-         
-          
 
             {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-                rows="4"
-                placeholder="Provide details about the abuse..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              />
-            </div>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              rows="4"
+              placeholder="Describe the issue..."
+              className="w-full border px-4 py-2 rounded-lg"
+            />
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
+            <button className="w-full bg-blue-600 text-white py-3 rounded-lg">
               Submit Report
             </button>
           </form>
+        </div>
 
-          {/* Report Summary */}
-          {(formData.type || formData.severity || formData.status) && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Report Summary</h3>
-              <div className="space-y-1 text-sm text-gray-600">
-                {formData.type && <div><span className="font-medium">Type:</span> {formData.type}</div>}
-                {formData.severity && <div><span className="font-medium">Severity:</span> {formData.severity}</div>}
+        {/* ================= RAISED TICKETS ================= */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">Your Raised Tickets</h2>
 
-              </div>
+            <div className="flex items-center gap-2 border px-3 py-1 rounded-lg">
+              <Search size={16} />
+              <input
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => handleSerach(e)}
+                className="outline-none"
+              />
+            </div>
+          </div>
+
+          {filteredTickets.length === 0  ? (
+            <p className="text-gray-500 text-sm">No tickets found</p>
+          ) : (
+            <div className="space-y-3">
+              {filteredTickets.map((ticket) => (
+                <div
+                  key={ticket.id}
+                  className="border rounded-lg p-4 flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-medium">{ticket.type}</p>
+                    <p className={`${getSeverityColor(ticket.severity)}`}>
+                      Severity: {ticket.severity}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Created: {ticket.createdAt}
+                    </p>
+                  </div>
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+                      ticket.status
+                    )}`}
+                  >
+                    {ticket.status}
+                  </span>
+                </div>
+              ))}
             </div>
           )}
+        
         </div>
+          <Pagination  component="div"
+           count={Math.max(1, Math.ceil((count || 0) / 5))}
+            onChange={(_, page) => handleChangePage(page)}
+          
+          />
       </div>
     </div>
   );

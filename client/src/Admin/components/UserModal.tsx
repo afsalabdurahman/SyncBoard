@@ -47,12 +47,12 @@ interface UserModalProps {
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispacth:AppDispatch =  useDispatch();
   const userId = user?._id;
-  console.log(user, "before editing...");
+  console.log(userId, "before editing...");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     role: "",
-    isBlock: "",
+    isBlocked: "",
     isAdmin: false,
   });
   console.log(formData, "before editing2...");
@@ -63,7 +63,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
         name: user.name,
         email: user.email,
         role: user.role,
-        isBlock: user.isBlocked === true ? "Yes" : "No",
+        isBlocked: user.isBlocked === true ? "Yes" : "No",
         isAdmin: user.role === "Admin" ? true : false,
       });
     } else {
@@ -83,7 +83,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
 
     const updatedData = {
       ...formData,
-      isBlock: formData.isBlock === "Yes" ? true : false,
+      isBlocked: formData.isBlocked === "Yes" ? true : false,
       isAdmin: formData.role === "Admin" ? true : false,
     };
 

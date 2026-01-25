@@ -9,6 +9,7 @@ import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { addToVectors } from "../../../infrastructure/services/ragPipeline/ConvertToVector";
 import { commentType } from "../../../types/taskTypes";
+import { stringToMongoObj } from "../../../utils/convertMongoObject";
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
   constructor(
@@ -58,9 +59,9 @@ export class TaskUsecase implements ITaskUseCase {
   async updateTaskStatus(taskId: string, status: string): Promise<void> {
     await this._taskRepository.updateTaskStatus(taskId, status);
   }
-  async completedTask(): Promise<CompletedTaskResponseDTO> {
+  async completedTask(workspaceid:string): Promise<CompletedTaskResponseDTO> {
     const [completedTasks, taskReject] =
-      await this._taskRepository.allCompletedTasks();
+      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid));
     const tasks = [...completedTasks, ...taskReject];
     const mappedData = TaskMapper.MappedCompletdTask(tasks)
     return mappedData;
@@ -81,9 +82,9 @@ export class TaskUsecase implements ITaskUseCase {
 
     return projectTask;
   }
-  async paginationTask(page: number, limit: number, skip: number): Promise<{ items: Task[];
+  async paginationTask(workspaceId:string,page: number, limit: number, skip: number): Promise<{ items: Task[];
     totalItems: number}> {
-    const { items, totalItems } = await this._taskRepository.getPagenationaTask(page, limit, skip)
+    const { items, totalItems } = await this._taskRepository.getPagenationaTask(stringToMongoObj(workspaceId) , page, limit, skip)
     return { items: items, totalItems }
   }
   async addComment(taskId: string, comment: commentType): Promise<void> {
@@ -103,4 +104,9 @@ export class TaskUsecase implements ITaskUseCase {
     if(!task) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return ResponseMessages.DELETE
   }
+//  async adminDashBoardData(workspaceId:string):Promise<any>{
+//   const {tasks,projects} = await this._taskRepository.getAllTaskInWorkspace(stringToMongoObj(workspaceId));
+//   console.log(tasks,"Task");
+  
+//  }
 }

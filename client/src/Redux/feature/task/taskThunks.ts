@@ -3,10 +3,10 @@ import apiService from "../../../Services/apiServices/apiService";
 
 
 
-export const fetchTaskData = createAsyncThunk('/adminTaskData/fetchTasks', async ({ page, limit }: { page: number, limit: number }, { rejectWithValue }) => {
+export const fetchTaskData = createAsyncThunk('/adminTaskData/fetchTasks', async ({workspaceid, page, limit }: {workspaceid:string, page: number, limit: number }, { rejectWithValue }) => {
   try {
 
-    const response = await apiService.get(`task/mytask?page=${page}&limit=${limit}`);
+    const response = await apiService.get(`task/mytasks/${workspaceid}?page=${page}&limit=${limit}`);
 
     if (response.status == 200) {
       return {

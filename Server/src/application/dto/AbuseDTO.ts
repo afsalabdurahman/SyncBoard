@@ -1,3 +1,4 @@
+import { Abuse } from "../../domain/entities/Abuse";
 
 export interface AbuseRequestDTO{
      description: string;
@@ -29,6 +30,19 @@ export interface ReportDto {
   count: number;
   reports: ReportDto[];
 }
+export interface listOfAbsuseReposnseDTO  {
+      id:string;
+      type: string,
+      severity: string,
+      status: string,
+      createdAt: string,
+}
+ export interface listResponseDto {
+  count: number;
+  list: Abuse[];
+  
+}
+
 
 
 

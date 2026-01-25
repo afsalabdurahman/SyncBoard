@@ -6,6 +6,7 @@ import {
   CardTitle,
   
 } from "../../Custom/ui/card";
+import { TaskDetails } from "./TaskDetails";
 import { Badge } from "../../Custom/ui/badge";
 import CommentButton from "../../Custom/ui/CommentButton";
 import {
@@ -19,6 +20,7 @@ import apiService from "../../Services/apiServices/apiService";
 import SimpleAlert from "../../Custom/ui/alertBox";
 import CommentBox from "../../Custom/ui/CommentBox";
 import { AttachmentButton } from "../../Admin/components/AttachmentButton";
+import { socket } from "../../Services/socket";
 
 interface Attachment {
   id: string;
@@ -55,7 +57,7 @@ export default function KanbanBoard() {
   const [popup, setPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
-
+const [notify,setNotify]=useState(false)
   const user = useSelector((state: any) => state.user.user);
 
   useEffect(() => {
@@ -94,6 +96,18 @@ export default function KanbanBoard() {
   const toggleComment = (taskId: string) => {
     setOpenCommentId((prev) => (prev === taskId ? null : taskId));
   };
+
+// socketNotify
+useEffect(()=>{
+socket.emit("task-join-comment", openCommentId);
+socket.on("comment-notification", (data) => {
+  console.log("Notification received:", data);
+  setOpenCommentId(data.taskId)
+  setNotify(true)
+});
+},[notify,openCommentId])
+console.log(openCommentId,"CommentId")
+// 
 
   const closeComment = () => setOpenCommentId(null);
 
@@ -239,8 +253,10 @@ return (
                       {/* Description */}
                       {task.description && (
                         <p className="text-sm text-gray-600 line-clamp-3">
-                          {task.description}
+                          {task.description.slice(0,50)+"..."}
+                           <TaskDetails details={task.description}/>
                         </p>
+                       
                       )}
 
                       {/* Attachments */}
@@ -264,8 +280,10 @@ return (
                       {/* Bottom Bar: Comments + Status */}
                       <div className="flex items-center justify-between gap-4 pt-2 border-t border-gray-100">
                         <CommentButton
+                         
                           isOpen={openCommentId === task.id}
                           onClick={() => toggleComment(task.id)}
+                          notify={notify}
                         />
 
                         <div className="flex items-center gap-3 flex-wrap justify-end">
@@ -316,6 +334,7 @@ return (
                 )}
               </div>
             </div>
+            
           </div>
         ))}
       </div>

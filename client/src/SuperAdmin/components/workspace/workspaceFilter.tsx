@@ -71,10 +71,10 @@ export const WorkspaceFilters=({
 
       {/* Actions */}
       <div className="flex gap-2">
-        <Button variant="outline" onClick={onExport} className="flex items-center gap-2 bg-transparent">
+        {/* <Button variant="outline" onClick={onExport} className="flex items-center gap-2 bg-transparent">
           <Download className="h-4 w-4" />
           Export
-        </Button>
+        </Button> */}
        
       </div>
     </div>

@@ -53,6 +53,7 @@ static mapAllUserToResponse(result: any[]){
     avatar: u.imageUrl || "/placeholder.svg?height=40&width=40",
     role: u.role?.toLowerCase() || "member",
     status: u.status || "inactive",
+    phone:u.phone ||"",
 
     workspace: {
       name: u.workspaceDetails?.name || "",
@@ -80,6 +81,7 @@ static mapUserDetailsToResponse(result:any):UserDetailsResponseDTO{
       name:result.workspaceDetails.name,
       plan:result.subscriptionDetails[0].planKey
     },
+    phone:result.phone,
     joinedAt:result.createdAt,
     lastActivity:result.createdAt,
     loginCount:0,
