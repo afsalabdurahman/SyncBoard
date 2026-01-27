@@ -66,7 +66,7 @@ export class NodemailerService implements IEmailService {
     };
     await this.transporter.sendMail(mailOptions);
   }
-  async sentRecipt(customerEmail:string,pdfPath:any):Promise<void>{
+  async sentRecipt(customerEmail:string,pdfPath:string):Promise<void>{
  const mailOptions = {
       from: process.env.EMAIL_USER || "your-email@gmail.com",
       to: customerEmail,

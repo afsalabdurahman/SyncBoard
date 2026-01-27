@@ -11,7 +11,7 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   ) {}
   async execute(
     userId: string,
-    ...args: Record<string, any>[]
+    ...args: string[]
   ): Promise<User> {
 
     const merged = Object.assign({}, ...args);

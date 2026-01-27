@@ -16,16 +16,3 @@ export type ActivityTypes =
   | "task";
 
 
-// export interface ActivityProps {
-//   id?: string;
-//   workspaceId?: string;
-//   projectId?: string;
-//   taskId?: string;
-//   performedBy?: string;
-//   affectedUser?: string;
-//   type: ActivityType;
-//   message: string;
-//   metadata?: Record<string, any>;
-//   createdAt?: Date;
-//   updatedAt?: Date;
-// }

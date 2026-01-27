@@ -3,9 +3,9 @@ import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO,
 export interface ISuperAdminRepository {
     getAllCount(): Promise<GetAllCountResponseDTO>
     getAllWorkspace(limit:number,skip:number): Promise<WorkspaceAggResponseDTO[]>
-    getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO[]>
+    getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO>
     getUserDetails(userId: string): Promise<UserDetailsAggResponseDTO>
-    getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO[]>
+    getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO>
     getAllTickets():Promise<any>
 }
 

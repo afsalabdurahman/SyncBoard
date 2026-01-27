@@ -1,5 +1,5 @@
 import { Project } from "../../domain/entities/Project";
-import { ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
+import { ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 import { z } from "zod";
 
 import mongoose, { Schema,ObjectId } from "mongoose";
@@ -32,13 +32,23 @@ export class ProjectMapper {
         : undefined,
     });
   }
-  static mapEntityToProject(msg: string, savedProject: any): ProjectResponseDTO {
-    let project = new Project(savedProject)
-    return {
-      message: msg,
-      project
-    }
-  }
+static mapEntityToProject(
+  msg: string,
+  savedProject: Project
+): ProjectResponseDTO {
+
+  const project = new Project({
+    ...savedProject,
+    workspaceId: savedProject.workspaceId || new mongoose.Types.ObjectId()
+  });
+
+  return {
+    message: msg,
+    project
+  };
+}
+
+
   static ValidateProjectData(input: ProjectRequstDTO) {
 
     const isValid = z.object({

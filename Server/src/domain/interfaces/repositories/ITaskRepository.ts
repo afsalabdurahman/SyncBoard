@@ -10,7 +10,7 @@ export interface ITaskRepository {
   deleteTask(taskId: string): Promise<void>;
   myTask(userName: string, query?: any): Promise<Task>;
   updateTaskStatus(taskId: string, updatedStatus: string): Promise<void>;
-  allCompletedTasks(workspaceid:Types.ObjectId): Promise<any>;
+  allCompletedTasks(workspaceid:Types.ObjectId): Promise<Task[]>;
   updateApprovalStatus(taskId: string, status: string, msg?: string | null): Promise<void>
   findTaskByProjectId(projectId: string): Promise<Task | null>;
   countTask(): Promise<number>

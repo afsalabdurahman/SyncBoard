@@ -17,7 +17,7 @@ export class MongoVectorStore implements IVectorStore {
   //   this.collection = client.db(dbName).collection(coll);
   // }
 
-  // async upsert(userId: string, chunks: {id: string; embedding: number[]; metadata: any}[]) {
+  // async upsert(userId: string, chunks: {id: string; embedding: number[]; metadata: Record<string,string>}[]) {
   //   const ops = chunks.map(c => ({
   //     replaceOne: {
   //       filter: { userId, chunkId: c.id },
@@ -56,7 +56,7 @@ export class MongoVectorStore implements IVectorStore {
     .limit(3)
     .sort({ createdAt: 1 });
 
-  console.log("Result:", result);
+
   return result;
 
   }

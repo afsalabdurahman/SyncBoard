@@ -58,9 +58,9 @@ export class SuperController {
          const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
-      const {responseDTO,totalCount}=await this._dataHandleUsecase.fetchSubscriptions(limit,skip)
+      const {responseDTO,totalDocCounts}=await this._dataHandleUsecase.fetchSubscriptions(limit,skip)
     console.log(responseDTO,"subscribe+++")
-      res.status(HttpStatusCode.OK).json({message:"Data feched",data:responseDTO,currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
+      res.status(HttpStatusCode.OK).json({message:"Data feched",data:responseDTO,currentPage: page, totalPages: Math.ceil(totalDocCounts / limit),totalDocCounts })
     } catch (error) {
       console.log(error)
     }

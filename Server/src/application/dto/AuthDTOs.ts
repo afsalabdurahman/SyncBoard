@@ -28,9 +28,8 @@ export interface AdminSignupResponseDTO {
   user:{
     name:string;
   email:string;
-  
   role:string
-  id:string|any;
+  id:string;
   }
   refreshToken:string;
   token:string;
@@ -66,7 +65,7 @@ export interface IWorkspaceChanges{
   nameOfWorkspace:string,
   subscriptionPlan: string;
   amount: number;
-  date: Date|any;
+  date: Date;
 
 }
 export interface SuperadminResponseDTO {

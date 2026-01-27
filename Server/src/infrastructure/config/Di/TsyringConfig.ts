@@ -42,43 +42,43 @@ import { ChatUsecase } from "../../../application/use-cases/chat/ChatUsecase";
 import { ChatRepository } from "../../repositories/ChatRepository";
 import { ActivityUsecase } from "../../../application/use-cases/activity/ActivityUsecase";
 import { ActivityRepository } from "../../repositories/ActivityRepository";
-import {SuscriptionRepository} from "../../repositories/SuscriptionRepository"
-import {SubscriptionUsecase} from "../../../application/use-cases/suscription/SuscriptionUsecase"
-import {PlanUsecase} from "../../../application/use-cases/suscription/plans/PlanUsecase"
-import {StripeService} from "../../services/StripeService"
-import {PlanRepository} from "../../repositories/PlanRepository";
+import { SuscriptionRepository } from "../../repositories/SuscriptionRepository"
+import { SubscriptionUsecase } from "../../../application/use-cases/suscription/SuscriptionUsecase"
+import { PlanUsecase } from "../../../application/use-cases/suscription/plans/PlanUsecase"
+import { StripeService } from "../../services/StripeService"
+import { PlanRepository } from "../../repositories/PlanRepository";
 import { SuperAdminRepository } from "../../repositories/SuperAdminRepository";
 import { DatahandleUsecase } from "../../../application/use-cases/super/DatahandleUsecase";
 //import { LogUseCases } from "../../../application/use-cases/activity/LogUsecases";
 // container.register("LogRepository",{useClass:LogRepository})
 // container.register("LogUsecases",{useClass:LogUseCases})
-import {RagOrchestrator} from "../../orchestrator/RagOrchestrator";
+import { RagOrchestrator } from "../../orchestrator/RagOrchestrator";
 // import {XenovaEmbeddingProvider} from "../../services/ragPipeline/EmbbedPipeline";
- import {MongoVectorStore} from "../../services/ragPipeline/VectorSerach";
-import {GroqLLMProvider} from "../../services/ragPipeline/LLMrapper";
-import {RagUseCase} from "../../../application/use-cases/rag/RagUsecase"
+import { MongoVectorStore } from "../../services/ragPipeline/VectorSerach";
+import { GroqLLMProvider } from "../../services/ragPipeline/LLMrapper";
+import { RagUseCase } from "../../../application/use-cases/rag/RagUsecase"
 import { AbuseUsecase } from "../../../application/use-cases/workspace/AbuseUsecase";
 import { TicketRepository } from "../../repositories/TicketRepository";
 import { TicketUsecase } from "../../../application/use-cases/ticket/TicketUsecase";
-container.register("TicketUsecase",{useClass:TicketUsecase})
-container.register("TicketRepository",{useClass:TicketRepository})
-container.register("AbuseRepository",{useClass:AbuseRepository})
-container.register("AbuseUsecase",{useClass:AbuseUsecase})
-container.register("RagUsecase",{useClass:RagUseCase})
-container.register("MongoVectorStore",{useClass:MongoVectorStore}) 
-container.register("GroqLLMProvider",{useClass:GroqLLMProvider}) 
+container.register("TicketUsecase", { useClass: TicketUsecase })
+container.register("TicketRepository", { useClass: TicketRepository })
+container.register("AbuseRepository", { useClass: AbuseRepository })
+container.register("AbuseUsecase", { useClass: AbuseUsecase })
+container.register("RagUsecase", { useClass: RagUseCase })
+container.register("MongoVectorStore", { useClass: MongoVectorStore })
+container.register("GroqLLMProvider", { useClass: GroqLLMProvider })
 // container.register("XenovaEmbeddingProvider",{useClass:XenovaEmbeddingProvider}) 
-container.register("RagOrchestrator",{useClass:RagOrchestrator}) 
-container.register("SuperAdminRepository",{useClass:SuperAdminRepository})
-container.register("DatahandleUsecase",{useClass:DatahandleUsecase})
+container.register("RagOrchestrator", { useClass: RagOrchestrator })
+container.register("SuperAdminRepository", { useClass: SuperAdminRepository })
+container.register("DatahandleUsecase", { useClass: DatahandleUsecase })
 container.registerSingleton<ILogger>('ILogger', WinstonLoggerImpl);
-container.register("SuscriptionRepository",{useClass:SuscriptionRepository})
-container.register("IStripeServices",{useClass:StripeService})
-container.register("PlanRepository",{useClass:PlanRepository})
+container.register("SuscriptionRepository", { useClass: SuscriptionRepository })
+container.register("IStripeServices", { useClass: StripeService })
+container.register("PlanRepository", { useClass: PlanRepository })
 container.register("ActivityRepository", { useClass: ActivityRepository });
 container.register("ActivityUsecase", { useClass: ActivityUsecase });
-container.register("SuscriptionUsecase",{useClass:SubscriptionUsecase})
-container.register("PlanUsecase",{useClass:PlanUsecase})
+container.register("SuscriptionUsecase", { useClass: SubscriptionUsecase })
+container.register("PlanUsecase", { useClass: PlanUsecase })
 container.register("ChatUseCase", { useClass: ChatUsecase });
 container.register("ChatRepository", { useClass: ChatRepository });
 container.register("TaskUsecase", { useClass: TaskUsecase });
@@ -114,7 +114,7 @@ container.register("OTPService", { useClass: OTPService });
 
 container.register(OTPController, { useClass: OTPController });
 // container.registerSingleton<DatabaseConfig>('DatabaseConfig', DatabaseConfig);
-container.registerSingleton<IWorkspaceRepository | any>(
+container.registerSingleton<IWorkspaceRepository>(
   "WorkspaceRepository",
   WorkspaceRepository
 );

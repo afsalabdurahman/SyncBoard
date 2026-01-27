@@ -16,15 +16,15 @@ import { stringToMongoObj } from "../../../utils/convertMongoObject";
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
     @inject("ProjectRepository") private _projectRepository: IProjectRepository,
-    @inject("ActivityRepository") private _activityRepository:IActivityRepository,
-    @inject("UserRepository") private _userRepository :IUserRepository
-  ) {}
+    @inject("ActivityRepository") private _activityRepository: IActivityRepository,
+    @inject("UserRepository") private _userRepository: IUserRepository
+  ) { }
 
-  async excute(dto: ProjectRequstDTO,workspaceId:string): Promise<ProjectResponseDTO> {
+  async excute(dto: ProjectRequstDTO, workspaceId: string): Promise<ProjectResponseDTO> {
 
     const isValid = ProjectMapper.ValidateProjectData(dto);
     if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
-    const projectEntity = ProjectMapper.mapProjectToEntity(dto,workspaceId);
+    const projectEntity = ProjectMapper.mapProjectToEntity(dto, workspaceId);
     const projectData = await this._projectRepository.create(projectEntity);
     if (!projectData || !projectData.workspaceId) throw new ConflictError("Project" + ResponseMessages.CREATEION_FAILED);
 
@@ -33,20 +33,20 @@ export class ProjectUsecase implements IProjectUsecase {
       message: `🚀 New project ${projectData.name} has been added!`,
     });
 
-   const user = await this._userRepository.findById(dto.projectAdminId)
-    if(!user._id) {throw new NotFoundError(ResponseMessages.NOT_FOUND)}
+    const user = await this._userRepository.findById(dto.projectAdminId)
+    if (!user._id) { throw new NotFoundError(ResponseMessages.NOT_FOUND) }
 
 
-    const activityEntity = ActivityMapper.CreateMappedEntities({activityType:"project",createdBy:user._id,workspaceId:projectData.workspaceId,logMsg:ActivityLogMessage.PROJECT_CREATED})
-  
-   await this._activityRepository.createActivity(activityEntity)
-    const responseDTO = ProjectMapper.mapEntityToProject(ResponseMessages.NEW_PROJECT_ADDED,projectData);
+    const activityEntity = ActivityMapper.CreateMappedEntities({ activityType: "project", createdBy: user._id, workspaceId: projectData.workspaceId, logMsg: ActivityLogMessage.PROJECT_CREATED })
+
+    await this._activityRepository.createActivity(activityEntity)
+    const responseDTO = ProjectMapper.mapEntityToProject(ResponseMessages.NEW_PROJECT_ADDED, projectData);
     return responseDTO;
   }
 
-  async getAllProjects(workspaceId:string): Promise<ProjectRepositoryDTO[]|null> {
-     let allProjects = await this._projectRepository.getAllProjects(stringToMongoObj( workspaceId));
-     console.log(allProjects,"p")
+  async getAllProjects(workspaceId: string): Promise<ProjectRepositoryDTO[] | null> {
+    let allProjects = await this._projectRepository.getAllProjects(stringToMongoObj(workspaceId));
+    console.log(allProjects, "p")
     // if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return allProjects;
   }
@@ -58,24 +58,24 @@ export class ProjectUsecase implements IProjectUsecase {
   }
   async update(
     projectId: string,
-    ...args: Record<string, any>[]
-  ): Promise<ProjectResponseDTO|null> {
+    ...args: string[]
+  ): Promise<ProjectResponseDTO | null> {
     const merged = Object.assign({}, ...args);
-  
+
     let updateProject = await this._projectRepository.updateProject(
       projectId,
       merged
     );
- 
-    if(!updateProject) throw new ValidationError (ResponseMessages.INVALID_INPUT)
-    const responseDTO =ProjectMapper.mapEntityToProject("Project is updated",updateProject)
+
+    if (!updateProject) throw new ValidationError(ResponseMessages.INVALID_INPUT)
+    const responseDTO = ProjectMapper.mapEntityToProject(ResponseMessages.PROJECT_UPDATED, updateProject)
     return responseDTO;
   }
   async deleteProject(projectId: string): Promise<void> {
     await this._projectRepository.deleteProject(projectId);
   }
-  async paginationProjecust(workspaceId:string,page: number, limit: number, skip: number): Promise<{items:ProjectRepositoryDTO[],totalItems:number}> {
-    const { items, totalItems } = await this._projectRepository.getPagenationProjects(workspaceId,page, limit, skip)
+  async paginationProjecust(workspaceId: string, page: number, limit: number, skip: number): Promise<{ items: ProjectRepositoryDTO[], totalItems: number }> {
+    const { items, totalItems } = await this._projectRepository.getPagenationProjects(workspaceId, page, limit, skip)
     return { items, totalItems }
   }
 }

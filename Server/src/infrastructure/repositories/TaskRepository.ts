@@ -19,7 +19,7 @@ export class TaskRepository implements ITaskRepository {
     return tasks;
   }
   async updatetask(taskId: string, merged: Record<string, string>): Promise<Task> {
-console.log(taskId)
+    console.log(taskId)
     const objectId = new mongoose.Types.ObjectId(taskId.toString());
     const updatedTask = await TaskModel.findByIdAndUpdate(
       objectId,
@@ -40,7 +40,7 @@ console.log(taskId)
     const objectId = new mongoose.Types.ObjectId(taskId.toString());
     await TaskModel.deleteOne({ _id: objectId });
   }
-  async myTask(userName: string, query?: any): Promise<Task> {
+  async myTask(userName: string, query?: string): Promise<Task> {
 
     if (query == "count") {
       const myTask = await TaskModel.find({
@@ -76,7 +76,7 @@ console.log(taskId)
       );
     }
   }
-  async allCompletedTasks(workspaceid: Types.ObjectId): Promise<any> {
+  async allCompletedTasks(workspaceid: Types.ObjectId): Promise<Task[]> {
     console.log(workspaceid, "IDDD")
 
     const tasksCompleted = await ProjectModel.aggregate([{

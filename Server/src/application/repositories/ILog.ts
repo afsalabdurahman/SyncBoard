@@ -1,3 +1,3 @@
 // export interface ILog{
-//     execute(data:any):Promise<any>
+//     execute(data:Record<string,string):Promise<string>
 // }

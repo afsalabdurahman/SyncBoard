@@ -9,7 +9,7 @@ export interface CreateActivityDTO {
   affectedUser?: string;
   type: ActivityTypes;
   message: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string>;
 }
 
 export interface ActivityFilter {

@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import {
   Project,
   
@@ -17,7 +18,7 @@ export interface ProjectRequstDTO{
       
 }
 export interface ProjectRepositoryDTO {
-  _id: string;
+  _id: string|ObjectId;
   name: string;
   assignedUsers: string[];
   clientName: string;

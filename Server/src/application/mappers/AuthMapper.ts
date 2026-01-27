@@ -2,6 +2,7 @@ import { User } from "../../domain/entities/User";
 import { AdminSignupRequestDTO, AdminSignupResponseDTO, LoginRequestDTO, MemeberRegisterRequestDTO } from "../dto/AuthDTOs";
 import { Workspace } from "../../domain/entities/Workspace";
 import { z ,ZodError} from "zod";
+import { SubscriptionAggregateDTO, SubscriptionSummaryDTO } from "../dto/SuperDTO";
 export class AuthMapper {
   static mapUserToEntity(dto: AdminSignupRequestDTO): User {
     return new User({
@@ -19,7 +20,7 @@ export class AuthMapper {
         email: entity.email,
       name: entity.name,
       role:entity.role,
-      id:entity._id||null
+      id:entity._id||""
       },
       refreshToken,
       token
@@ -68,7 +69,7 @@ const isValid=z.object({email: z.string().email({ message: "Invalid email format
   return isValid.safeParse(input);
   }
 
-static mapSuperEntityToResponse(token:string,refreshToken:string,userCount:number,workspaceCount:number,data:any){
+static mapSuperEntityToResponse(token:string,refreshToken:string,userCount:number,workspaceCount:number,data:SubscriptionAggregateDTO[]){
   return {
     token,
     refreshToken,

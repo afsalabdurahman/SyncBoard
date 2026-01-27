@@ -27,7 +27,6 @@ import superRoutes from "./presentation/routes/superRoutes";
 import ticketRoutes from "./presentation/routes/TicketRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
 import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
-import { generatePDFReceipt } from "./infrastructure/services/GeneratePdf";
 import { NodemailerService } from "./infrastructure/services/NodeMailerService";
 
 

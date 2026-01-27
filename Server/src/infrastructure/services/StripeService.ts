@@ -1,27 +1,27 @@
 import Stripe from "stripe";
-import {envConfig} from"../config/env.config"
+import { envConfig } from "../config/env.config"
 import { IStripeService } from "../../domain/interfaces/services/IStripService";
 import { ObjectId } from "mongodb";
-import { NotFoundError, ValidationError } from "../../utils/errors";
+import { InternalServerError, NotFoundError, ValidationError } from "../../utils/errors";
 import { ResponseMessages } from "../../common/erroResponse";
 export const stripe = new Stripe(
   envConfig.STRIP_KEY,
   { apiVersion: "2025-08-27.basil" }
 );
 export class StripeService implements IStripeService {
-  constructor() {}
+  constructor() { }
 
   async createCheckoutSession(
     name: string,
     customer_email: string,
-    price: any,
-    userId:any,
-    key:string,
+    price: string,
+    userId: string,
+    key: string,
   ): Promise<string> {
     const id = userId.toString();
-     
+
     const response = await stripe.checkout.sessions.create({
-     
+
       payment_method_types: ["card"],
       customer_email: customer_email,
       line_items: [
@@ -31,24 +31,24 @@ export class StripeService implements IStripeService {
         },
       ],
       mode: "subscription", // or "payment" if one-time,
-     
+
       success_url: envConfig.STRIPE_PAYMENT_SUCCESS,
       cancel_url: envConfig.STRIPE_PAYMENT_CANCEL,
       metadata: {
         userName: name,
-        userId:id,
-        planName:key
+        userId: id,
+        planName: key
       },
-      
+
     });
-if(!response.url) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+    if (!response.url) throw new NotFoundError(ResponseMessages.NOT_FOUND)
 
     return response.url;
   }
 
   async createStripeCustomerId(email: string, name: string): Promise<Stripe.Customer> {
     let stripeCustomer = await stripe.customers.create({ email, name });
-  
+
     return stripeCustomer;
   }
 
@@ -59,21 +59,21 @@ if(!response.url) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     let paymentattched = await stripe.paymentMethods.attach(paymentMethodId, {
       customer: stripeCustomerId,
     });
-   
+
     return true;
   }
 
   async updateStripeOfCustomer(
     stripeCustomerId: string,
     paymentMethodId: string
-  ): Promise<any> {
+  ): Promise<boolean> {
     try {
       await stripe.customers.update(stripeCustomerId, {
         invoice_settings: { default_payment_method: paymentMethodId },
       });
       return true;
     } catch (error) {
-  
+throw new InternalServerError("Something went to wrong")
     }
   }
   async createStripeSuscription(

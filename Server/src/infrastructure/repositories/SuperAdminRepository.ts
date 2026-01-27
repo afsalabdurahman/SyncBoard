@@ -178,7 +178,7 @@ result.push(totalDocCount)
     return result
   }
 
-  async getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO[]> {
+  async getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO> {
    const totalDocCount = await UserModel.countDocuments();
 
     const result = await UserModel.aggregate([
@@ -244,9 +244,9 @@ result.push(totalDocCount)
   { $limit: limit }
     ]);
 
-console.log(result,"++++result checking")
-result.push(totalDocCount)
-    return result;
+
+
+    return {userList:result,totalCount:totalDocCount};
   }
 
 
@@ -304,7 +304,9 @@ result.push(totalDocCount)
           role: 1,
           imageUrl: 1,
           createdAt: 1,
+          updatedAt:1,
           status: 1,
+          phone:1,
           "workspaceDetails.name": 1,
           "subscriptionDetails.planKey": 1
         }
@@ -314,7 +316,7 @@ result.push(totalDocCount)
     return result[0];
   }
 
-  async getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO[]> {
+  async getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO> {
     const totalDocCount = await SubscriptionModel.countDocuments();
     const result = await WorkspaceModel.aggregate([
       {
@@ -411,8 +413,8 @@ result.push(totalDocCount)
   { $limit: limit }
 
     ])
-  result.push(totalDocCount)
-    return result;
+ 
+    return {subscriptions:result,totalDocCount:totalDocCount};
   }
   
 async getAllTickets(): Promise<any> {

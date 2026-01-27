@@ -4,7 +4,7 @@ import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO 
 export interface ITaskUseCase {
     execute(taskEntiry:TaskRequestDTO):Promise<TaskResponseDTO>
     getAllTasks():Promise<Task>
-    update(taskId:string,...args: any[]): Promise<TaskResponseDTO>;
+    update(taskId:string,...args: string[]): Promise<TaskResponseDTO>;
     deleteTask(taskId:string):Promise<void>
     myTask(userName:string,query?:string):Promise<Task>
     updateTaskStatus(taskId:string,status:string):Promise<void>
@@ -16,5 +16,4 @@ export interface ITaskUseCase {
       addComment(taskId:string,comment:commentType):Promise<void>
       getTaskComments(taskId:string):Promise<commentsDTO[]|null>
       deleteAttachment(taskId:string,url:string):Promise<string>;
-      // adminDashBoardData(workspaceId:string):Promise<any>
 }

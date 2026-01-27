@@ -16,7 +16,7 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
 
   async findByEmail(email: string): Promise<User | null> {
     try {
-      const document = await this.model.findOne({ email })
+      const document = await this.model.findOne({ email }).lean()
       
         .exec();
    
@@ -27,7 +27,7 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
       throw new Error("Failed to find user");
     }
   }
-  async findById(id: string): Promise<any> {
+  async findById(id: string): Promise<User> {
     let user = await this.model.findById(id).exec();
     return user;
   }
@@ -51,7 +51,7 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
     workspaceId: string | ObjectId,
     role: string,
     joinDate?: Date
-  ): Promise<User | any> {
+  ): Promise<User | undefined> {
     const data = { workspaceId, role, joinDate: new Date() };
 
     try {
@@ -62,11 +62,12 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
           $push: { workspace: data },
         },
         { new: true }
-      ).lean<User | null>();
+      ).lean<User>();
 
-      return updatedModel;
+      return updatedModel || undefined;
     } catch (error) {
       console.log(error, "err");
+      return undefined;
     }
   }
   async updateUser(

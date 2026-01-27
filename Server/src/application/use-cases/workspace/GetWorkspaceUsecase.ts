@@ -5,6 +5,8 @@ import { IWokspaceMember } from "../../repositories/IWorkspaceMembers"
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository"
 import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IWorkspaceRepository"
 import { ResponseMessages } from "../../../common/erroResponse"
+import { UserDoument } from "../../../infrastructure/database/models/UserModel"
+import { stringToMongoObj } from "../../../utils/convertMongoObject"
 @injectable()
 export class GetWorkspaceUsecase implements IWokspaceMember {
    constructor(@inject("WorkspaceRepository") private workspaceRepository: IWorkspaceRepository,
@@ -13,13 +15,13 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
 
    async getWorkspceDate(slug: string): Promise<Workspace> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
-      if (!workspceData) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace')
-      const users = await this.userRepository.findUsersInsameWorkspace(workspceData._id)
+      if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace')
+      const users = await this.userRepository.findUsersInsameWorkspace(  workspceData._id)
 
       return users
 
    }
-   async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<any> {
+   async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<{items:UserDoument[]|null,totalItems:number}> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if(!workspceData||!workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND)
       const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip)

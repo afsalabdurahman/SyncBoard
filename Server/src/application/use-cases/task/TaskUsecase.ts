@@ -41,7 +41,7 @@ export class TaskUsecase implements ITaskUseCase {
     if (!allTasks) throw new NotFoundError("Task is not found");
     return allTasks;
   }
-  async update(taskId: string, ...args: any[]): Promise<TaskResponseDTO> {
+  async update(taskId: string, ...args: string[]): Promise<TaskResponseDTO> {
 
     const merged = Object.assign({}, ...args);
     let updatetask = await this._taskRepository.updatetask(taskId, merged);

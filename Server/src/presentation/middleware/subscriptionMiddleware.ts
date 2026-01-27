@@ -13,7 +13,7 @@ import { PlanRepository } from "../../infrastructure/repositories/PlanRepository
 import { ProjectRepository } from "../../infrastructure/repositories/ProjectRepository";
 import { TaskRepository } from "../../infrastructure/repositories/TaskRepository";
 import { UserMongooseRepository } from "../../infrastructure/repositories/UserRepository";
-import { SUBSCRIPTION_LIMITS } from "../../utils/subscriptionUtil";
+import { SUBSCRIPTION_LIMITS, SubscriptionLimitsMap } from "../../utils/subscriptionUtil";
 
 
 
@@ -42,9 +42,9 @@ const checkisAvilablePlan= await plan.findByKey(isSubscribe.planKey);
 
 if (!checkisAvilablePlan) throw new NotFoundError("Plan is not Avilable")
 
-    let myPlan:any=isSubscribe.planKey
+let myPlan = isSubscribe.planKey as keyof SubscriptionLimitsMap;
 
-const limit = SUBSCRIPTION_LIMITS[myPlan]
+const limit = SUBSCRIPTION_LIMITS[myPlan];
 
 if(resorce == "project"){
 const ProjectCount = await projectRepo.countProject();

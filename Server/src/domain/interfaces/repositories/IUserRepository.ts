@@ -20,7 +20,7 @@ export interface IUserRepository extends IBaseRepository<User|null>  {
     workspaceId: string |ObjectId,
     role: string,
     joinDate?: Date
-  ): Promise<User|null>;
+  ): Promise<User | undefined>;
   findUsersInsameWorkspace(worspaceId: any): Promise<any>;
   updateOnlineStatus(userId: string): Promise<void>;
   countUser():Promise<string|Types.ObjectId>

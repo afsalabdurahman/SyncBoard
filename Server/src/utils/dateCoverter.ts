@@ -11,10 +11,11 @@ export const nextMonth = () => {
   return nextMonthDate
   
 }
-export const formateData = (date:string)=>{
-  let ISOdate = new Date(date);
-   return ISOdate.toISOString().split("T")[0];
-}
+export const formatDate = (date: string | Date): string => {
+  const isoDate = date instanceof Date ? date : new Date(date);
+  return isoDate.toISOString().split("T")[0];
+};
+
 export const getNextMonthEnd=(dateString: string): string => {
   const date = new Date(dateString);
   const nextMonth = date.getMonth() + 1; // move to next month
