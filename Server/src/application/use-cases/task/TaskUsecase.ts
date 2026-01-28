@@ -62,7 +62,10 @@ export class TaskUsecase implements ITaskUseCase {
   async completedTask(workspaceid:string): Promise<CompletedTaskResponseDTO> {
     const [completedTasks, taskReject] =
       await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid));
-    const tasks = [...completedTasks, ...taskReject];
+    const tasks = [
+      ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
+      ...(Array.isArray(taskReject) ? taskReject : [taskReject]),
+    ];
     const mappedData = TaskMapper.MappedCompletdTask(tasks)
     return mappedData;
   }
@@ -104,9 +107,5 @@ export class TaskUsecase implements ITaskUseCase {
     if(!task) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return ResponseMessages.DELETE
   }
-//  async adminDashBoardData(workspaceId:string):Promise<any>{
-//   const {tasks,projects} = await this._taskRepository.getAllTaskInWorkspace(stringToMongoObj(workspaceId));
-//   console.log(tasks,"Task");
-  
-//  }
+
 }

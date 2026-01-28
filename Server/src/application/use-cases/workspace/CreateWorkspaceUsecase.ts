@@ -80,7 +80,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   }
 
 async updateWorkspaceData(id: string, merge:Record<string,string>): Promise<void> {
-  console.log(merge,"555")
+
   if(merge.plan){
     await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name,merge.plan);
     
@@ -117,12 +117,12 @@ async generateWorkspaceExcel(): Promise<Buffer> {
 
   workspaceData.forEach((space) => {
     const memberRoles = space.members
-      ?.map((m: any) => m.title || 'Unknown')
+      ?.map((m) => m.title || 'Unknown')
       .filter(Boolean)
       .join(', ') || 'No members';
 
     const memberUserIds = space.members
-      ?.map((m: any) => m.userId)
+      ?.map((m) => m.userId)
       .filter(Boolean)
       .join(', ') || 'None';
 

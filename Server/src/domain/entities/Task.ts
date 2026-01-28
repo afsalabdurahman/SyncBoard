@@ -14,7 +14,7 @@ export class Task {
   project?:string;
   approvalStatus?:approvalType;
   rejectionMsg?:string;
-  embedding?:any;
+  embedding?:number[];
   comments?:commentType[];
   attachedURLs?:string[];
 
