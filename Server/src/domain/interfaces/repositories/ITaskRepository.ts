@@ -6,9 +6,9 @@ import { ProjectRepositoryDTO } from "../../../application/dto/ProjectDTOs";
 export interface ITaskRepository {
   create(dto: Task): Promise<Task | null>;
   getAlltask(): Promise<Task[] | null>;
-  updatetask(taskId: string, merged: Record<string, string>): Promise<Task>;
+  updatetask(taskId: string, merged: Record<string, string>): Promise<Task|null>;
   deleteTask(taskId: string): Promise<void>;
-  myTask(userName: string, query?: any): Promise<Task>;
+  myTask(userName: string, query?: string): Promise<Task>;
   updateTaskStatus(taskId: string, updatedStatus: string): Promise<void>;
   allCompletedTasks(workspaceid:Types.ObjectId): Promise<Task[]>;
   updateApprovalStatus(taskId: string, status: string, msg?: string | null): Promise<void>
@@ -22,8 +22,5 @@ export interface ITaskRepository {
     addComments(taskId: string, comments: commentType):Promise<Task|null>
     getTaskbyId(taskId:string):Promise<Task|null>;
     deleteAttachment(taskId:string,url:string):Promise<Task|null>
-    // getAllTaskInWorkspace(workspaceId:Types.ObjectId):Promise<{
-    //   items: Task[];
-    //   projectsData: ProjectRepositoryDTO[];
-    // } | null>
+  
 }

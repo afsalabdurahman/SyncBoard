@@ -9,100 +9,82 @@ import { HttpStatusCode } from "../../common/errorCodes";
 import mongoose from "mongoose";
 import { WorkspaceMembership } from "../../types/workpaceTypes";
 @injectable()
-export class UserMongooseRepository  extends BaseRepository <User|null> implements IUserRepository {
-    constructor() {
+export class UserMongooseRepository extends BaseRepository<User | null> implements IUserRepository {
+  constructor() {
     super(UserModel);
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    try {
-      const document = await this.model.findOne({ email }).lean()
-      
-        .exec();
-   
-      if (!document) return null;
-      return document as User;
-    } catch (error) {
-      console.error(`Error finding user by email ${email}:`, error);
-      throw new Error("Failed to find user");
-    }
-  }
-  async findById(id: string): Promise<User> {
-    let user = await this.model.findById(id).exec();
-    return user;
-  }
-  
-  // async create(entity: User): Promise<User> {
-  //   try {
-  //     // Ensure mongoose connection is open before saving
-  //     if (this.model.db.readyState !== 1) {
-  //       throw new Error("Database connection is not open");
-  //     }
-  //     const savedDocument = await this.model.create(entity);
 
-  //     return savedDocument.toObject() as User;
-  //   } catch (error) {
-  //     console.error("Error creating user:", error);
-  //     throw new Error("Failed to create user");
-  //   }
-  // }
+    const document: UserDoument = await this.model.findOne({ email }).lean().exec()
+
+    console.log(document, "deoc++")
+
+    if (!document) return null;
+    return new User({ ...document, _id: document._id?.toString() });
+
+
+  }
+  async findById(id: string): Promise<User | null> {
+    let document: UserDoument = await this.model.findById(id).lean().exec();
+    if (!document) return null;
+    return new User({ ...document, _id: document._id?.toString() });
+  }
+
+
   async addToWorkspace(
     userId: string | ObjectId,
     workspaceId: string | ObjectId,
     role: string,
     joinDate?: Date
-  ): Promise<User | undefined> {
+  ): Promise<User | null> {
     const data = { workspaceId, role, joinDate: new Date() };
 
-    try {
-      const updatedModel = await UserModel.findOneAndUpdate(
-        { _id: userId },
-        {
-          $set: { title: role },
-          $push: { workspace: data },
-        },
-        { new: true }
-      ).lean<User>();
 
-      return updatedModel || undefined;
-    } catch (error) {
-      console.log(error, "err");
-      return undefined;
-    }
+    const updatedDocument = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: { title: role },
+        $push: { workspace: data },
+      },
+      { new: true }
+    ).lean<User>().exec();
+    if (!updatedDocument) return null;
+    return new User({ ...updatedDocument, _id: updatedDocument._id?.toString() });
+
   }
   async updateUser(
-    id: any,
+    id: string,
     updateFieldname: string,
     value: string
-  ): Promise<User | any> {
-    const objectId: any = new mongoose.Types.ObjectId(id.toString());
+  ): Promise<User | null> {
+    const objectId: Types.ObjectId = new mongoose.Types.ObjectId(id.toString());
 
     const updatedUser = await this.model.findOneAndUpdate(
       { _id: objectId },
       { $set: { [updateFieldname]: value } },
       { new: true, upsert: true }
-    );
+    ).lean().exec()
 
-    return updatedUser;
+    if (!updatedUser) return null;
+    return new User({ ...updatedUser, _id: updatedUser._id?.toString() });
+
   }
   // Update profile
-  async updateProfile(userId: string, merge: any): Promise<User | any> {
-    const objectId: any = new mongoose.Types.ObjectId(userId.toString());
-   
-  const updated = await this.model.findOneAndUpdate(
-  { _id: objectId },
-  { $set: merge.profileData },
-  {
-    new: true,            
-    upsert: true,         
-    runValidators: true,  
-  }
-);
+  async updateProfile(userId: string, merge: Record<string, string>): Promise<User | null> {
+    const objectId: Types.ObjectId = new mongoose.Types.ObjectId(userId.toString());
 
-
-    if (!updated) throw new ConflictError("Database error");
- console.log(updated,"reponse Updated filess")
-    return updated;
+    const updatedUser = await this.model.findOneAndUpdate(
+      { _id: objectId },
+      { $set: merge.profileData },
+      {
+        new: true,
+        upsert: true,
+        runValidators: true,
+      }
+    ).lean().exec()
+    if (!updatedUser) return null;
+    return new User({ ...updatedUser, _id: updatedUser._id?.toString() });
   }
   async changePassword(userId: string, newPassword: string): Promise<boolean> {
     const result = await this.model.findByIdAndUpdate(
@@ -111,15 +93,16 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
       { new: true, upsert: true }
     );
 
-  
+
     return true;
   }
-  async findUsersInsameWorkspace(workspaceId: ObjectId): Promise<any> {
-    const users = await this.model.find({
+  async findUsersInsameWorkspace(workspaceId: Types.ObjectId): Promise<UserDoument[] | null> {
+    const document: UserDoument[] = await this.model.find({
       "workspace.workspaceId": workspaceId,
-    });
-
-    return users;
+    }).lean().exec()
+    console.log(document, "document+++")
+    if (!document) return null;
+    return document
   }
   async updateOnlineStatus(userId: string): Promise<void> {
     let objectId = new mongoose.Types.ObjectId(userId.toString());
@@ -128,37 +111,33 @@ export class UserMongooseRepository  extends BaseRepository <User|null> implemen
       { isOnline: true },
       { new: true, upsert: true }
     );
-    // if(user.isOnline==true){
-    //    await this.model.findByIdAndUpdate(
-    //   objectId,
-    //   { isOnline: false },
-    //   { new: true,upsert:true }
-    // );
-    // }
- 
+
+
   }
-  async countUser(): Promise<any> {
+  async countUser(): Promise<number> {
     const countUser = await this.model.countDocuments()
     return countUser;
   }
-  async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<{items:UserDoument[]|null,totalItems:number}> {
-      const totalItems = await UserModel.countDocuments()-1;
-             const items = await UserModel.find({
-               "workspace.workspaceId": workspaceId,
-                isSuperAdmin: { $ne: true }, 
-             })
-              .skip(skip)
-              .limit(limit)
-              .sort({ createdAt: -1 });
-              console.log(items)
-              return {items,totalItems}
-        
-      }
-      async changeOnlineStatus(userId: Types.ObjectId): Promise<boolean> {
-        console.log(userId,"in DBBD")
-       const rest= await UserModel.findByIdAndUpdate(userId,{isOnline:false},{new:true})
-       console.log(rest,"fom")
-        return true
-      }
+  async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<{ items: UserDoument[] | null, totalItems: number }> {
+    const totalItems = await UserModel.countDocuments() - 1;
+    const items = await UserModel.find({
+      "workspace.workspaceId": workspaceId,
+      isSuperAdmin: { $ne: true },
+    })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    console.log(items)
+    return { items, totalItems }
+
+
+
   }
+  async changeOnlineStatus(userId: Types.ObjectId): Promise<boolean> {
+
+    const isUpdated = await UserModel.findByIdAndUpdate(userId, { isOnline: false }, { new: true })
+    if (!isUpdated) throw new ValidationError("Updation failed")
+    return true
+  }
+}
 

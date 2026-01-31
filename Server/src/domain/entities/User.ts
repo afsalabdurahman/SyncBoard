@@ -4,7 +4,7 @@ import { WorkspaceMembership } from "../../types/workpaceTypes";
 
 export class User {
   email: string;
-  password: string;
+  password?: string;
   name: string;
   role: "Member" | "Admin" | "SuperAdmin";
   stripeCustomerId?: string;
@@ -27,7 +27,7 @@ export class User {
 
   constructor(params: {
     email: string;
-    password: string;
+    password?: string;
     name: string;
     role: "Member" | "Admin" | "SuperAdmin";
     _id?: string;

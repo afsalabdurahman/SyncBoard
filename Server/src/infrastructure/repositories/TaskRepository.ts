@@ -10,28 +10,26 @@ import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
-    let task = await TaskModel.create(dto);
-    return task;
+    const task = await TaskModel.create(dto);
+   if (!task) return null;
+        return new Task({ ...task, id: task._id?.toString() });
   }
   async getAlltask(): Promise<Task[] | null> {
-    const tasks = await TaskModel.find();
-
+    const tasks = await TaskModel.find().lean().exec();
+    if(!tasks) return null
     return tasks;
   }
-  async updatetask(taskId: string, merged: Record<string, string>): Promise<Task> {
-    console.log(taskId)
+  async updatetask(taskId: string, merged: Record<string, string>): Promise<Task | null> {
+
     const objectId = new mongoose.Types.ObjectId(taskId.toString());
     const updatedTask = await TaskModel.findByIdAndUpdate(
       objectId,
       { $set: merged },
       { new: true, runValidators: true }
-    );
+    ).exec()
 
-    if (!updatedTask) {
-      throw new Error("Task not found");
-    }
-
-    return updatedTask;
+   if (!updatedTask) return null;
+        return new Task({ ...updatedTask, id: updatedTask._id?.toString() });
 
 
   }
@@ -55,7 +53,7 @@ export class TaskRepository implements ITaskRepository {
       approvalStatus: { $ne: "Approved" },
     });
 
-    //   isApprove: { $ne: "approved" }
+
 
     return myTask;
   }
@@ -77,7 +75,7 @@ export class TaskRepository implements ITaskRepository {
     }
   }
   async allCompletedTasks(workspaceid: Types.ObjectId): Promise<Task[]> {
-    console.log(workspaceid, "IDDD")
+   
 
     const tasksCompleted = await ProjectModel.aggregate([{
       $match: {
@@ -108,7 +106,7 @@ export class TaskRepository implements ITaskRepository {
 
     ])
 
-    console.log(tasksCompleted, "completede+++")
+ 
     const completedTasks = await TaskModel.find({ status: "Completed" });
     const taskReject = await TaskModel.find({ approvalStatus: "Rejected" });
 
@@ -179,54 +177,25 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async getTaskbyId(taskId: string): Promise<Task | null> {
-    const task = await TaskModel.findById(taskId)
-    console.log(task, "TaskReposioty")
-    return task ?? null
+    const task = await TaskModel.findById(taskId).lean().exec()
+   if (!task) return null;
+        return new Task({ ...task, id: task._id?.toString() });
   }
 
   async deleteAttachment(taskId: string, url: string): Promise<Task | null> {
-    return await TaskModel.findByIdAndUpdate(
+    const task = await TaskModel.findByIdAndUpdate(
       taskId,
       {
         $pull: { attachedURLs: url }
       },
       { new: true }
     );
+     if (!task) return null;
+        return new Task({ ...task, id: task._id?.toString() });
 
   }
 
-  // async getAllTaskInWorkspace(
-  //   workspaceId: Types.ObjectId
-  // ): Promise<{
-  //   items: Task[];
-  //   projectsData: ProjectRepositoryDTO[];
-  // } | null> {
 
-  //   // 1. Get all projects in workspace
-  //   const projects = await ProjectModel
-  //     .find({ workspaceId })
-  //     .select("_id")
-  //     .lean();
-
-  //   if (!projects.length) {
-  //     return { items: [], projectsData: [] };
-  //   }
-
-  //   const projectIds = projects.map(p => p._id);
-
-  //   // 2. Get all tasks belonging to those projects
-  //   const items = await TaskModel
-  //     .find({ projectId: { $in: projectIds } })
-  //     .lean<Task[]>();
-
-  //   // 3. Get project details
-  //   const projectsData = await ProjectModel
-  //     .find({ workspaceId })
-  //     .sort({ createdAt: -1 })
-  //     .lean<ProjectRepositoryDTO[]>();
-
-  //   return { items, projectsData };
-  // }
 
 
 }

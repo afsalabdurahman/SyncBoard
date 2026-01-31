@@ -3,6 +3,7 @@ import { TicketStatus, Message } from "../../types/tiketTypes";
 import { ticketRequestDTO } from "../dto/TiketDTO";
 import { Ticket } from "../../domain/entities/Ticket";
 import { stringToMongoObj } from "../../utils/convertMongoObject";
+import { TicketDocument } from "../../infrastructure/database/models/TicketModel";
 
 export class TicketMapper {
   static validateTicket(input: ticketRequestDTO) {
@@ -64,5 +65,16 @@ return new Ticket({
   priority:input.priority,
 
 })
+  }
+
+  static mapTOTickets(tickets: TicketDocument[]): Ticket[] {
+     const ticketDomain= tickets.map((ticket)=>{
+      return new Ticket({_id: ticket._id?.toString(), category: ticket.category, description: ticket.description, SLno: ticket.SLno
+        ,status:ticket.status,title:ticket.title,userId:ticket.userId,workspaceId:ticket.workspaceId,
+        createdAt:ticket.createdAt,messages:ticket.messages,priority:ticket.priority,updatedAt:ticket.updatedAt
+      })
+
+     })
+     return ticketDomain
   }
 }

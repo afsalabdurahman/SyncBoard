@@ -25,10 +25,10 @@ export class MemberRegisterUsecase implements IMemberRegister {
   ): Promise<MemberRegisterResposeDTO> {
     const isValid= AuthMapper.memberRegisterValidation(dto)
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
-    let isFound = await this._userRepository.findByEmail(dto.email);
+    const isFound = await this._userRepository.findByEmail(dto.email);
     if (isFound)
       throw new ConflictError(ResponseMessages.USER_EXIST);
-    let hashedPassword = await this._authService.hashPassword(dto.password);
+    const hashedPassword = await this._authService.hashPassword(dto.password);
     dto.password = hashedPassword;
     if (!hashedPassword)
       throw new CustomError(
@@ -37,7 +37,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
       );
     const newMember = AuthMapper.mapMemebrToEntity(dto);
 
-    let createMember = await this._userRepository.create(newMember);
+    const createMember = await this._userRepository.create(newMember);
     if (!createMember || !createMember._id)
       throw new ValidationError(ResponseMessages.CONFLICT);
     const token = this._authService.generateToken({
@@ -53,15 +53,15 @@ export class MemberRegisterUsecase implements IMemberRegister {
 
 
 
-    let workspace: any = await this._workspaceRepository.findbySlug(
+    const workspace = await this._workspaceRepository.findbySlug(
       dto.slug!
     );
-    if (!workspace || !workspace.slug)
+    if (!workspace || !workspace.slug ||!workspace._id )
       throw new NotFoundError(ResponseMessages.NOT_FOUND + "Workspace");
 
     const addToWorkspace = await this._userRepository.addToWorkspace(
       createMember._id,
-      workspace.id,
+      workspace._id,
       dto.role
     );
 
@@ -77,7 +77,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
         dto.email,
         dto.title
       );
-
+if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOTFOUND)
     const response = AuthMapper.mapEntityToMember(
       createMember,
       insertToWorkspce,

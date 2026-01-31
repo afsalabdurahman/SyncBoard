@@ -11,19 +11,19 @@ import { stringToMongoObj } from "../../../utils/convertMongoObject"
 export class GetWorkspaceUsecase implements IWokspaceMember {
    constructor(@inject("WorkspaceRepository") private workspaceRepository: IWorkspaceRepository,
       @inject("UserRepository") private userRepository: IUserRepository
-   ) {}
+   ) { }
 
-   async getWorkspceDate(slug: string): Promise<Workspace> {
+   async getWorkspceDate(slug: string): Promise<UserDoument[] | null> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace')
-      const users = await this.userRepository.findUsersInsameWorkspace(  workspceData._id)
-
+      const users = await this.userRepository.findUsersInsameWorkspace(stringToMongoObj(workspceData._id.toString()))
+      console.log(users, "786")
       return users
 
    }
-   async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<{items:UserDoument[]|null,totalItems:number}> {
+   async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<{ items: UserDoument[] | null, totalItems: number }> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
-      if(!workspceData||!workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+      if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND)
       const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip)
       return { items: items, totalItems }
    }

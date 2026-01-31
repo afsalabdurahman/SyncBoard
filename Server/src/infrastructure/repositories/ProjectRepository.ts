@@ -1,7 +1,7 @@
 import { NotBeforeError } from "jsonwebtoken"
 import { Project } from "../../domain/entities/Project"
 import { IProjectRepository } from "../../domain/interfaces/repositories/IProjectRepository"
-import { ProjectModel } from "../database/models/ProjectModel"
+import { ProjectModel, ProjectDocument } from "../database/models/ProjectModel"
 import { NotFoundError } from "../../utils/errors"
 import { BaseRepository } from "./BaseRepository"
 import mongoose, { Types } from "mongoose"
@@ -30,23 +30,44 @@ export class ProjectRepository extends BaseRepository<Project> implements IProje
 
    }
 
-  async updateProject(projectId: string, merged: any): Promise<any | null> {
+  async updateProject(projectId: string, merged: Record<string,string>): Promise<Project | null> {
   const objectId = new mongoose.Types.ObjectId(projectId);
   const updatedProject = await ProjectModel.findByIdAndUpdate(
     objectId,
     { $set: merged },
     { new: true, upsert: true, runValidators: true }
-  )
+  ).exec()
 
-  return updatedProject ;
+    
+       if (!updatedProject) return null;
+   if (!updatedProject) return null;
+
+const raw = updatedProject.toObject() as ProjectDocument;
+
+return new Project({
+  _id: raw._id?.toString(),
+  name: raw.name,
+  description: raw.description,
+  assignedUsers: raw.assignedUsers,
+  deadline: raw.deadline,
+  status: raw.status,
+  priority: raw.priority,
+  clientName: raw.clientName,
+  projectAdminId: raw.projectAdminId?.toString(),
+  workspaceId: raw.workspaceId?.toString(),
+  attachedUrl: raw.attachedUrl,
+  createdAt: raw.createdAt,
+  updatedAt: raw.updatedAt,
+});
+
 }
 
    async deleteProject(projectId: string): Promise<void> {
-      const objectId: any = new mongoose.Types.ObjectId(projectId.toString());
+      const objectId = new mongoose.Types.ObjectId(projectId.toString());
       await ProjectModel.deleteOne({ _id: objectId })
    }
 
-   async countProject(): Promise<any> {
+   async countProject(): Promise<number> {
       const count = await ProjectModel.countDocuments();
       return count
    }

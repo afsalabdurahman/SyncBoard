@@ -15,44 +15,47 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
   async findByObjectId(id: Types.ObjectId): Promise<Workspace | null> {
    
-    let dbData = await WorkspaceModel.findById(id);
+    let workspace = await WorkspaceModel.findById(id).lean().exec();
+     
+           if (!workspace) return null;
+           return new Workspace({ ...workspace, _id: workspace._id?.toString() });
 
 
-    return dbData;
+  
   }
 
   async addMemberToWorkspace(
     slug: string,
     userId: string,
-    role: string,
-    name: string,
-    email: string,
     title: string
-  ): Promise<Workspace> {
+  ): Promise<Workspace | null> {
     const data = { userId: userId, title: title };
     let updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
       { slug },
-      { $push: { members: data } }
-    );
-    return updatedWorkspce as Workspace;
+      { $push: { members: data } },{new:true}
+    ).exec()
+     if (!updatedWorkspce) return null;
+           return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString() });
+
   }
   
   async findbySlug(slug: string): Promise<Workspace | null> {
     
-    let workspaceData = await WorkspaceModel.findOne({ slug: slug });
+    const workspace = await WorkspaceModel.findOne({ slug: slug }).lean().exec();
   
  
-    return workspaceData
+           if (!workspace) return null;
+           return new Workspace({ ...workspace, _id: workspace._id?.toString() });
   }
  async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{
     const result= await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})
 
 return true
   }
-  async updateWorkspaceDate(workspaceId: string, merge: any): Promise<Workspace> {
-    console.log(workspaceId,merge)
+  async updateWorkspaceDate(workspaceId: string, merge: Record<string,string>): Promise<Workspace | null> {
+
     const objectId = new mongoose.Types.ObjectId(workspaceId); 
-    const updated = await WorkspaceModel.findOneAndUpdate(
+    const updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
   { _id: objectId },
   { $set: merge },
   {
@@ -61,11 +64,12 @@ return true
     runValidators: true,  
   }
 );
-console.log(updated)
-return updated
+ if (!updatedWorkspce) return null;
+           return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString() });
+
   }
-  async findAll(): Promise<Workspace[]> {
-    const workspaceData= await WorkspaceModel.find({})
+  async findAll(): Promise<WorkspaceDoument[]> {
+    const workspaceData= await WorkspaceModel.find({}).lean().exec()
     return workspaceData 
   }
   

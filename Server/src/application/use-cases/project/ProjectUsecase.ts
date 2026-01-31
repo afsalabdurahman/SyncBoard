@@ -1,7 +1,6 @@
 import { IProjectUsecase } from "../../repositories/IProject";
 import { inject, injectable } from "tsyringe";
 import { IProjectRepository } from "../../../domain/interfaces/repositories/IProjectRepository";
-import { Project } from "../../../domain/entities/Project";
 import { ConflictError, NotFoundError, ValidationError } from "../../../utils/errors";
 import { io } from "../../../server";
 import { ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
@@ -34,7 +33,7 @@ export class ProjectUsecase implements IProjectUsecase {
     });
 
     const user = await this._userRepository.findById(dto.projectAdminId)
-    if (!user._id) { throw new NotFoundError(ResponseMessages.NOT_FOUND) }
+    if (!user || !user._id) { throw new NotFoundError(ResponseMessages.USER_NOT_FOUND) }
 
 
     const activityEntity = ActivityMapper.CreateMappedEntities({ activityType: "project", createdBy: user._id, workspaceId: projectData.workspaceId, logMsg: ActivityLogMessage.PROJECT_CREATED })
@@ -46,8 +45,7 @@ export class ProjectUsecase implements IProjectUsecase {
 
   async getAllProjects(workspaceId: string): Promise<ProjectRepositoryDTO[] | null> {
     let allProjects = await this._projectRepository.getAllProjects(stringToMongoObj(workspaceId));
-    console.log(allProjects, "p")
-    // if (!allProjects) throw new NotFoundError(ResponseMessages.NOT_FOUND);
+
     return allProjects;
   }
   async removeAttachment(

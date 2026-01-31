@@ -12,13 +12,13 @@ export const ResponseMessages = {
   USER_STATUS_BLOCK:"User is blocked",
  USER_STATUS_DELETE:"User is not exist",
   TOKEN_EXPIRED: 'Access token has expired',
+  USER_NOT_FOUND:'User not found',
   INVALID_TOKEN: 'Invalid token',
   NOT_FOUND: 'Resource not found',
   CONFLICT: 'Resource conflict occurred',
   INTERNAL_SERVER_ERROR: 'Something went wrong on the server',
   INVALID_FILE_TYPE: 'Only images (jpeg, jpg, png) are allowed',
   FILE_UPLOAD_ERROR: 'File upload error',
-  USER_NOT_FOUND: 'User not found',
   INVALID_INPUT: 'Invalid input provided',
   OTP_SENT: 'OTP sent to your email',
   OTP_VERIFIED: 'OTP verified successfully',
@@ -30,5 +30,7 @@ export const ResponseMessages = {
   PROJECT_UPDATED:"Project is updated",
   ATTACHEMNT_REMOVE:"Attachment remove successfully ",
   NEW_PROJECT_ADDED:"New Project is Added",
-  CREATEION_FAILED: "Creation Failed"
+  CREATEION_FAILED: "Creation Failed",
+  WORKSPACE_NOTFOUND:"Workspace not found",
+  TASK_NOTFOUND:"Task not found"
 };

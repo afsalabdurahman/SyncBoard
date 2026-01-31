@@ -3,9 +3,10 @@ import { UserModel } from "../database/models/UserModel";
 import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose from "mongoose";
-import { TicketModel } from "../database/models/TicketModel";
+import { TicketDocument, TicketModel } from "../database/models/TicketModel";
 import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
 import { AbuseModel } from "../database/models/AbuseModel";
+import { Ticket } from "../../domain/entities/Ticket";
 export class SuperAdminRepository implements ISuperAdminRepository {
 
   async getAllCount(): Promise<GetAllCountResponseDTO> {
@@ -417,9 +418,9 @@ result.push(totalDocCount)
     return {subscriptions:result,totalDocCount:totalDocCount};
   }
   
-async getAllTickets(): Promise<any> {
-  const result= await TicketModel.find()
-  console.log(result,"reslt")
+async getAllTickets(): Promise<TicketDocument[]> {
+  const result= await TicketModel.find().lean().exec()
+
   return result
 }
 

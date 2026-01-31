@@ -14,8 +14,8 @@ export class Project {
   projectAdminId?: Types.ObjectId | string;
   workspaceId?:Types.ObjectId | string;
   attachedUrl?: string[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | string;
+  updatedAt?: Date |string;
   
 
   constructor({
@@ -44,8 +44,8 @@ export class Project {
     projectAdminId?: string|Types.ObjectId;
     workspaceId: string|Types.ObjectId;
     attachedUrl?: string[];
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt?: Date |string;
+    updatedAt?: Date |string;
   }) {
     this._id = _id;
     this.name = name;

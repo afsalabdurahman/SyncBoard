@@ -1,3 +1,4 @@
+import { WorkspaceDoument } from "../../../infrastructure/database/models/WorkspaceModel";
 import { Workspace } from "../../entities/Workspace";
 import mongoose, { Types } from "mongoose";
 export interface IWorkspaceRepository {
@@ -12,10 +13,10 @@ export interface IWorkspaceRepository {
     name: string,
     email: string,
     title:string,
-  ): Promise<Workspace>;
+  ): Promise<Workspace | null>;
   allWorkspace?(email: string): Promise<Workspace | null>;
   findByObjectId(id: mongoose.Types.ObjectId): Promise<Workspace | null>;
   addlogId?(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
-  updateWorkspaceDate(workspaceId:string,merge:any):Promise<Workspace>
-  findAll():Promise<Workspace[]>
+  updateWorkspaceDate(workspaceId:string,merge:Record<string,string>):Promise<Workspace | null>
+  findAll():Promise<WorkspaceDoument[]>
 }

@@ -45,6 +45,7 @@ export class TaskUsecase implements ITaskUseCase {
 
     const merged = Object.assign({}, ...args);
     let updatetask = await this._taskRepository.updatetask(taskId, merged);
+    if(!updatetask) throw new NotFoundError(ResponseMessages.TASK_NOTFOUND)
     const responseDTO = TaskMapper.mapEntityToTask("Task is updated", updatetask)
     return responseDTO;
   }

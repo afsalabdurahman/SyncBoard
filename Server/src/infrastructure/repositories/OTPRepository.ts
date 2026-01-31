@@ -22,9 +22,11 @@ export class OTPRepository implements IOtpRepository {
     //    OTPModel.create()
     return Promise.resolve();
   }
-  async findOTPbyEMAIL(email: string): Promise<OTP | any> {
-    let otp = await OTPModel.findOne({ email }).sort({ createAt: -1 });
-    return otp;
+  async findOTPbyEMAIL(email: string): Promise<OTP|null> {
+    let otp = await OTPModel.findOne({ email }).sort({ createAt: -1 }).lean().exec()
+    if(!otp) return null
+   return  new OTP(otp.email,otp.otp)
+   
   }
   // deleteByEmail(email: string): Promise<void> {
   //   console.log("delete")

@@ -5,6 +5,7 @@ import { IChatRepository } from "../../domain/interfaces/repositories/IChatRepos
 import { UserModel } from "../database/models/UserModel";
 import { Types } from "mongoose";
 import { User } from "../../domain/entities/User";
+import { ChatMessage } from "../../application/dto/ChatDTOs";
 
 @injectable()
 export class ChatRepository implements IChatRepository {
@@ -15,11 +16,16 @@ export class ChatRepository implements IChatRepository {
     const responseDb = await ChatMessageModel.create(message);
 
   }
-  async findAllChats(worksoaceid:Types.ObjectId): Promise<any> {
-    const chats = await ChatMessageModel.find({workspaceId:worksoaceid});
-    console.log(chats,"ALL CHAT FROM DB")
-    return chats;
-  }
+async findAllChats(
+  workspaceId: Types.ObjectId
+): Promise<ChatMessage[]> {
+  const chats = await ChatMessageModel
+    .find({ workspaceId })
+    .lean<ChatMessage[]>();
+
+  return chats;
+}
+
   async Onlinestatus(worksoaceid:Types.ObjectId): Promise<User[]> {
    const users = await UserModel.find(
     {

@@ -5,7 +5,7 @@ export interface ActivitiesReqestDTO {
   workspaceId: Types.ObjectId | string;
    activityType: ActivityTypes;
    logMsg: ActivityLogMessage;
-   createdBy: Types.ObjectId |string;      
+   createdBy: string;      
   
 }
 export interface ActivitiesResponseDTO {

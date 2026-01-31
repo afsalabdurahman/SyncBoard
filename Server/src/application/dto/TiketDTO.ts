@@ -19,3 +19,6 @@ export interface ticketRequestDTO {
     updatedAt: string;
     messages: Message[];
 }
+interface TiketDTO {
+    
+}

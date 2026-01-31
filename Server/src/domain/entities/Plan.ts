@@ -11,7 +11,7 @@ export class Plan {
   description?: string;
 
   constructor(
-    _id?: string | Types.ObjectId,
+    _id?: string ,
     key?: string,
     name?: string,
     priceCents?: number,

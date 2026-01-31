@@ -1,4 +1,5 @@
 import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, WorkspaceAggResponseDTO } from "../../../application/dto/SuperDTO"
+import { TicketDocument } from "../../../infrastructure/database/models/TicketModel"
 
 export interface ISuperAdminRepository {
     getAllCount(): Promise<GetAllCountResponseDTO>
@@ -6,7 +7,7 @@ export interface ISuperAdminRepository {
     getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO>
     getUserDetails(userId: string): Promise<UserDetailsAggResponseDTO>
     getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO>
-    getAllTickets():Promise<any>
+    getAllTickets():Promise<TicketDocument[]>
 }
 
 

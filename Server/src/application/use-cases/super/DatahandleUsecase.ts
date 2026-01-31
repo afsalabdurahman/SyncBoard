@@ -5,6 +5,7 @@ import { ISuperAdminRepository } from "../../../domain/interfaces/repositories/I
 import { DatahandleMapper } from "../../mappers/DatahandleMapper";
 import { listOfSubscriptionsDTO, SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
 import { Ticket } from "../../../domain/entities/Ticket";
+import { TicketMapper } from "../../mappers/TicketMapper";
 @injectable()
 
 export class DatahandleUsecase implements IDatahandleUsecase {
@@ -32,15 +33,15 @@ export class DatahandleUsecase implements IDatahandleUsecase {
         const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result)
         return responseDTO
     }
-    async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO:SuperSubscriptionResponseDTO [], totalDocCounts: number }> {
-        const { subscriptions,totalDocCount } = await this._superAdminRepository.getSubscription(limit, skip)
-        const { responseDTO,totalDocCounts } = DatahandleMapper.mapSubscriptionToResponse(subscriptions, totalDocCount)
+    async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[], totalDocCounts: number }> {
+        const { subscriptions, totalDocCount } = await this._superAdminRepository.getSubscription(limit, skip)
+        const { responseDTO, totalDocCounts } = DatahandleMapper.mapSubscriptionToResponse(subscriptions, totalDocCount)
         return { responseDTO, totalDocCounts }
     }
     async fetchTickets(): Promise<Ticket[]> {
         const result = await this._superAdminRepository.getAllTickets()
-        console.log(result, "results")
-        return result
+        const responseDTO = TicketMapper.mapTOTickets(result)
+        return responseDTO
     }
 
 }
