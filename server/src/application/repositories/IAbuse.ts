@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import { Abuse } from "../../domain/entities/Abuse";
+=======
+>>>>>>> fix/eslint
 import { AbuseRequestDTO, GetAllReportsResponseDto, listOfAbsuseReposnseDTO, UpdateAbuseStatusDTO } from "../dto/AbuseDTO";
 
 export interface IAbuseUsecase{

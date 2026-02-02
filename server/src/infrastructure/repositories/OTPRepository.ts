@@ -2,7 +2,6 @@ import { injectable } from "tsyringe";
 import { IOtpRepository } from "../../domain/interfaces/repositories/IOtpRepository";
 import { OTP } from "../../domain/entities/Otp";
 import { OTPModel } from "../database/models/OtpModels";
-import { User } from "../../domain/entities/User";
 @injectable()
 export class OTPRepository implements IOtpRepository {
   generateOTP(): string {
@@ -11,19 +10,19 @@ export class OTPRepository implements IOtpRepository {
 
   async save(entity: OTP): Promise<void> {
 
-    let document = new OTPModel({
+    const document = new OTPModel({
       email: entity.email,
       otp: entity.otp,
       expAt: entity.expireAt,
     });
-    const savedDocument = await document.save();
+     await document.save();
 
 
     //    OTPModel.create()
     return Promise.resolve();
   }
   async findOTPbyEMAIL(email: string): Promise<OTP|null> {
-    let otp = await OTPModel.findOne({ email }).sort({ createAt: -1 }).lean().exec()
+    const otp = await OTPModel.findOne({ email }).sort({ createAt: -1 }).lean().exec()
     if(!otp) return null
    return  new OTP(otp.email,otp.otp)
    

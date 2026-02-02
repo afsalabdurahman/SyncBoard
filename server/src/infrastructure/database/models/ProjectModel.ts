@@ -1,4 +1,4 @@
-import mongoose, { model, Schema, Document } from "mongoose";
+import { model, Schema, Document } from "mongoose";
 import { PriorityTypes, StatusTypes } from "../../../types/projectTypes"
 export interface ProjectDocument extends Document {
   updatedAt: string | Date | undefined;

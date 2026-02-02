@@ -24,7 +24,11 @@ export class LoginUsecase implements ILogin {
     const isValid = AuthMapper.loginValidation(input)
 
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
+<<<<<<< HEAD
     let user = await this._userRepository.findByEmail(input.email);
+=======
+    const user = await this._userRepository.findByEmail(input.email);
+>>>>>>> fix/eslint
 
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user) {
@@ -35,7 +39,11 @@ export class LoginUsecase implements ILogin {
     }
     if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
     if (user.isDeleted) throw new ForbiddenError(ResponseMessages.USER_STATUS_DELETE);
+<<<<<<< HEAD
     let isTrue = await this._authService.comparePassword(
+=======
+    const isTrue = await this._authService.comparePassword(
+>>>>>>> fix/eslint
       input.password,
       user.password!
     );
@@ -44,13 +52,21 @@ export class LoginUsecase implements ILogin {
       throw new CustomError(ResponseMessages.PASSWORD_FAILED, 422);
     }
 
+<<<<<<< HEAD
     let token = await this._authService.generateToken({
+=======
+    const token = await this._authService.generateToken({
+>>>>>>> fix/eslint
       id: user._id!,
       email: user.email!,
       role: user.role!,
     });
 
+<<<<<<< HEAD
     let refreshToken = await this._authService.generateRefreshToken({
+=======
+    const refreshToken = await this._authService.generateRefreshToken({
+>>>>>>> fix/eslint
       id: user._id!,
       email: user.email!,
       role: user.role!,

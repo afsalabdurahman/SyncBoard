@@ -1,5 +1,4 @@
 import Stripe from "stripe";
-import { SubscriptionDocument } from "../../../infrastructure/database/models/SuscriptionModel";
 
 export interface IStripeService {
    createCheckoutSession(name:string,customer_email:string,price:string,userId:string,key:string):Promise<string>

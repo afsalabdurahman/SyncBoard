@@ -16,7 +16,7 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
 
     const merged = Object.assign({}, ...args);
 
-    let updatedUser = await this._userRepository.updateProfile(userId, merged);
+    const updatedUser = await this._userRepository.updateProfile(userId, merged);
 
     if (!updatedUser) {
       throw new CustomError("Profile Updation Failed", HttpStatusCode.CONFLICT);

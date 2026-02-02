@@ -10,9 +10,6 @@ export interface ChatRequestDTO {
     attachments?:chatAttachmentTypes[]
 
 }
-export interface ChatSoketDTO{
-    
-}
 export interface ChatAttachment {
   name?: string;
   url?: string;

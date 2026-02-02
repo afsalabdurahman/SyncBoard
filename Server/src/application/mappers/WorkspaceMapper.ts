@@ -1,13 +1,8 @@
 import { Workspace, } from "../../domain/entities/Workspace";
-import { workspaceStatus } from "../../types/workpaceTypes";
 import { WorkspaceRequestDTO, WorkspaceResponseDTO } from "../dto/WorkspaceDTOs";
 import { User } from "../../domain/entities/User";
 import { z } from "zod";
-import { UserModel } from "../../infrastructure/database/models/UserModel";
-interface Member {
-  userId: string;
-  title: string;
-}
+
 export class WorkspaceMapper {
   static mapWorkspaceToEntity(dto: WorkspaceRequestDTO, userID: string, title: string,): Workspace {
 
@@ -28,7 +23,7 @@ export class WorkspaceMapper {
     }
   }
   static validateWorkspace(input: WorkspaceRequestDTO) {
-    let isValid = z.object({
+    const isValid = z.object({
       email: z.string().email(),
       ownerId: z.string(),
       slug: z.string(),

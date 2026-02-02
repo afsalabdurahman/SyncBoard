@@ -2,7 +2,6 @@ import { injectable, inject } from "tsyringe";
 import { IChatRepository } from "../../../domain/interfaces/repositories/IChatRepository";
 import { IChatUsecase } from "../../repositories/IChat";
 import { ChatMapper } from "../../mappers/ChatMapper";
-import { Chat } from "../../../domain/entities/Chat";
 import { User } from "../../../domain/entities/User";
 import { ChatMessage, ChatRequestDTO } from "../../dto/ChatDTOs";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
@@ -13,7 +12,6 @@ export class ChatUsecase implements IChatUsecase {
 
   ) { }
   async sendMessage(dto: ChatRequestDTO): Promise<void> {
-    const data = { content: dto.content, senderName: dto.sender }
     const messageEntity = ChatMapper.chatToEntity(dto)
     await this._chatRepository.saveChats(messageEntity);
 

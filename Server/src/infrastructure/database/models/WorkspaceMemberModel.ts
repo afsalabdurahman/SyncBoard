@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document,Types } from "mongoose";
+import  { Schema,   } from "mongoose";
 import { WorkspaceMembership } from "../../../types/workpaceTypes";
 export const workspaceMembershipSchema = new Schema<WorkspaceMembership>(
   {

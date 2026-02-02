@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { TicketStatus, Message } from "../../types/tiketTypes";
 import { ticketRequestDTO } from "../dto/TiketDTO";
 import { Ticket } from "../../domain/entities/Ticket";
 import { stringToMongoObj } from "../../utils/convertMongoObject";

@@ -3,14 +3,12 @@ import axios, {
   AxiosError,
   AxiosResponse,
   AxiosRequestConfig,
-  InternalAxiosRequestConfig,
+  
 } from "axios";
 import { handleApiError } from "./apiErrorHandle";
-import { handleTokenRefresh } from "./tokenManage";
 import { toast } from "react-toastify";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
-const VITE_TOKEN_API_URL = import.meta.env.VITE_TOKEN_API_URL;
 
 
 const axiosInstance = axios.create({
@@ -23,17 +21,8 @@ const axiosInstance = axios.create({
   },
 });
 
-// ✅ Request interceptor
-axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
-// ✅ Response interceptor
+
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -48,8 +37,7 @@ axiosInstance.interceptors.response.use(
       !originalRequest.url?.includes("/auth/refresh-token")
     ) {
       toast.error("Session expaired")
-      originalRequest._retry = true;
-      return handleTokenRefresh(error, originalRequest, VITE_TOKEN_API_URL);
+  
     }
 
     // Handle other known errors

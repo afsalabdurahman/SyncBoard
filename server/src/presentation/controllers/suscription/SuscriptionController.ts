@@ -1,7 +1,10 @@
 
 import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
+<<<<<<< HEAD
 import { NotFoundError } from "../../../utils/errors";
+=======
+>>>>>>> fix/eslint
 import { ISuscriptionUsecase } from "../../../application/repositories/ISuscription";
 import { IPlanUsecase } from "../../../application/repositories/IPlan";
 import Stripe from "stripe";
@@ -14,7 +17,12 @@ import { envConfig } from "../../../infrastructure/config/env.config";
 const stripe = new Stripe(envConfig.STRIP_KEY, {
   apiVersion: "2025-08-27.basil"
 })
+<<<<<<< HEAD
 const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
+=======
+const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || "";
+console.log(STRIPE_WEBHOOK_SECRET, "secret")
+>>>>>>> fix/eslint
 @injectable()
 export class SubscriptionController {
   private stripe: Stripe;

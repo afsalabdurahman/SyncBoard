@@ -11,12 +11,12 @@ import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs";
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
     const task = await TaskModel.create(dto);
-   if (!task) return null;
-        return new Task({ ...task, id: task._id?.toString() });
+    if (!task) return null;
+    return new Task({ ...task, id: task._id?.toString() });
   }
   async getAlltask(): Promise<Task[] | null> {
     const tasks = await TaskModel.find().lean().exec();
-    if(!tasks) return null
+    if (!tasks) return null
     return tasks;
   }
   async updatetask(taskId: string, merged: Record<string, string>): Promise<Task | null> {
@@ -28,8 +28,8 @@ export class TaskRepository implements ITaskRepository {
       { new: true, runValidators: true }
     ).exec()
 
-   if (!updatedTask) return null;
-        return new Task({ ...updatedTask, id: updatedTask._id?.toString() });
+    if (!updatedTask) return null;
+    return new Task({ ...updatedTask, id: updatedTask._id?.toString() });
 
 
   }
@@ -38,12 +38,12 @@ export class TaskRepository implements ITaskRepository {
     const objectId = new mongoose.Types.ObjectId(taskId.toString());
     await TaskModel.deleteOne({ _id: objectId });
   }
-  async myTask(userName: string, query?: string): Promise<Task> {
+  async myTask(userName: string, query?: string): Promise<Task[]> {
 
     if (query == "count") {
       const myTask = await TaskModel.find({
         assignedUser: userName,
-      });
+      }).lean().exec()
 
       return myTask;
     }
@@ -74,57 +74,57 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async allCompletedTasks(workspaceid: Types.ObjectId): Promise<Task[]> {
-   
+  async allCompletedTasks(workspaceid: Types.ObjectId): Promise<{ completedTasks: Task[], taskReject: Task[] }> {
 
-    const tasksCompleted = await ProjectModel.aggregate([{
-      $match: {
-        workspaceId: workspaceid
-      }
-    }, {
-      $lookup: {
-        from: "Task",
-        localField: "projectId",
-        foreignField: "_id",
-        as: "tasks"
-      }
-    },
 
-    {
-      $unwind: "$tasks"
-    },
-    {
-      $match: {
-        "tasks.isCompleted": true
-      }
-    },
-    {
-      $replaceRoot: {
-        newRoot: "$tasks"
-      }
-    }
+    // const tasksCompleted = await ProjectModel.aggregate([{
+    //   $match: {
+    //     workspaceId: workspaceid
+    //   }
+    // }, {
+    //   $lookup: {
+    //     from: "Task",
+    //     localField: "projectId",
+    //     foreignField: "_id",
+    //     as: "tasks"
+    //   }
+    // },
 
-    ])
+    // {
+    //   $unwind: "$tasks"
+    // },
+    // {
+    //   $match: {
+    //     "tasks.isCompleted": true
+    //   }
+    // },
+    // {
+    //   $replaceRoot: {
+    //     newRoot: "$tasks"
+    //   }
+    // }
 
- 
-    const completedTasks = await TaskModel.find({ status: "Completed" });
-    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" });
+    // ])
 
-    return [completedTasks, taskReject];
+
+    const completedTasks = await TaskModel.find({ status: "Completed" }).lean().exec()
+    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).lean().exec()
+
+    return { completedTasks, taskReject };
   }
   async updateApprovalStatus(
     taskId: string,
-    status: String,
+    status: string,
     msg: string | null
   ): Promise<void> {
     const objId = new mongoose.Types.ObjectId(taskId.toString());
     if (msg == null) {
-      const updated = await TaskModel.updateOne(
+      await TaskModel.updateOne(
         { _id: objId },
         { $set: { approvalStatus: "Approved", rejectionMsg: null } }
       );
     } else {
-      const updated = await TaskModel.updateOne(
+      await TaskModel.updateOne(
         { _id: objId },
         {
           $set: {
@@ -138,8 +138,10 @@ export class TaskRepository implements ITaskRepository {
     }
   }
   async findTaskByProjectId(projectId: string): Promise<Task | null> {
-    const ProjectTask = await TaskModel.find({ projectId: projectId });
-    return ProjectTask;
+    const projectTask = await TaskModel.findOne({ projectId: projectId }).lean().exec()
+    if (!projectTask) return null;
+    return new Task({ ...projectTask })
+
   }
   countTask(): Promise<number> {
     const countTask = TaskModel.countDocuments();
@@ -178,8 +180,8 @@ export class TaskRepository implements ITaskRepository {
 
   async getTaskbyId(taskId: string): Promise<Task | null> {
     const task = await TaskModel.findById(taskId).lean().exec()
-   if (!task) return null;
-        return new Task({ ...task, id: task._id?.toString() });
+    if (!task) return null;
+    return new Task({ ...task, id: task._id?.toString() });
   }
 
   async deleteAttachment(taskId: string, url: string): Promise<Task | null> {
@@ -190,8 +192,8 @@ export class TaskRepository implements ITaskRepository {
       },
       { new: true }
     );
-     if (!task) return null;
-        return new Task({ ...task, id: task._id?.toString() });
+    if (!task) return null;
+    return new Task({ ...task, id: task._id?.toString() });
 
   }
 

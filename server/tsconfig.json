@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",               // or ES2020/ES2018 etc.
+    "module": "commonjs",             // or "ESNext" if using ESM
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+
+    // === These two are required for decorators ===
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // other options...
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
+  ]
+}

@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { Activities } from "../../domain/entities/Activities";
 import { ActivitiesReqestDTO, ActivitiesResponseDTO } from "../dto/ActivityDTO";
 import {  timeAgo } from "../../utils/dateCoverter";

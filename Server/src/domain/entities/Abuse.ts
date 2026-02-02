@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import {statusType,approvalType,priorityType} from "../../types/taskTypes"
+import {approvalType} from "../../types/taskTypes"
 export class Abuse {
   id?:Types.ObjectId | string;
   description: string;

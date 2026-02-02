@@ -1,4 +1,4 @@
-import mongoose, { Mongoose, Types } from "mongoose";
+import  {  Types } from "mongoose";
 import {IPaymentMethod} from"../../types/subscriptionTypes"
 
 

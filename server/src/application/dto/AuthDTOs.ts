@@ -12,7 +12,7 @@ export interface LoginResponseDTO {
   refreshToken: string;
   user:User;
   workspace:Workspace;
-  suscribe?:String;
+  suscribe?:string;
   
 }
 

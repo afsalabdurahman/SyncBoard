@@ -1,4 +1,4 @@
-import mongoose, { ObjectId,Schema,Types } from "mongoose";
+import  { ObjectId,Types } from "mongoose";
 import {PriorityTypes,StatusTypes} from "../../types/projectTypes"
 
 

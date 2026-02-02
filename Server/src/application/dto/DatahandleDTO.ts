@@ -1,4 +1,4 @@
-import { ObjectId, Types } from "mongoose";
+import {  Types } from "mongoose";
 import { workspaceStatus } from "../../types/workpaceTypes";
 import { SubscriptionSummaryDTO } from "./SuperDTO";
 
@@ -26,15 +26,15 @@ export interface CountResponseDTO {
   Abuse: Abuse[]
 }
 
-interface WorkspaceDetails {
-  _id: string | ObjectId;
-  name: string;
-  slug: string;
-  ownerName: string;
-  plan: string;
-  status: string;
+// interface WorkspaceDetails {
+//   _id: string | ObjectId;
+//   name: string;
+//   slug: string;
+//   ownerName: string;
+//   plan: string;
+//   status: string;
 
-}
+// }
 
 export interface CountWorkspaceReponseDTO {
   id: string ,

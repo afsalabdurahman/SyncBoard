@@ -3,10 +3,10 @@ import { commentType } from "../../types/taskTypes";
 import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 export interface ITaskUseCase {
     execute(taskEntiry:TaskRequestDTO):Promise<TaskResponseDTO>
-    getAllTasks():Promise<Task>
+    getAllTasks():Promise<Task[]>
     update(taskId:string,...args: string[]): Promise<TaskResponseDTO>;
     deleteTask(taskId:string):Promise<void>
-    myTask(userName:string,query?:string):Promise<Task>
+    myTask(userName:string,query?:string):Promise<Task[]>
     updateTaskStatus(taskId:string,status:string):Promise<void>
     completedTask(workspaceid:string):Promise<CompletedTaskResponseDTO>
     updateApprovalStatus(taskId:string,status:string,msg?:string):Promise<void>;

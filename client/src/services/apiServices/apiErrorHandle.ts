@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 export const handleApiError = (error: AxiosError): void => {
-  console.log(error,"apiError")
+
   const status = error.response?.status;
   const data = error.response?.data as { message?: string; error?: string };
   let message = "Unexpected error occurred. Please try again.";
@@ -48,6 +48,6 @@ export const handleApiError = (error: AxiosError): void => {
     message = error.message || "An unknown error occurred.";
   }
 
-  toast.error(message);
+  // toast.error(message);
   console.error(`[API Error] ${message}`, error);
 };

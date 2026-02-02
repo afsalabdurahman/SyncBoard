@@ -1,8 +1,8 @@
 import { Project } from "../../domain/entities/Project";
-import { ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
+import {  ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 import { z } from "zod";
 
-import mongoose, { Schema,ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 
 export const StatusTypesSchema = z.enum(["Pending", "In Progress", "Completed", "On Hold", "Planning"]);

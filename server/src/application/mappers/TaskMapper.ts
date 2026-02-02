@@ -11,7 +11,7 @@ export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 
 export class TaskMapper {
   static mapTaskToEntity(input: TaskRequestDTO, vector: number[]): Task {
-    console.log(input,"TAskMapperINput")
+    console.log(input, "TAskMapperINput")
     return new Task({
       name: input.name,
       description: input.description,
@@ -22,7 +22,8 @@ export class TaskMapper {
       priority: input.priority,
       projectId: input.projectId,
       embedding: vector,
-      attachedURLs:input.attachedURLs
+      attachedURLs: input.attachedURLs,
+
     })
   }
   static mapEntityToTask(msg: string, taskData: Task): TaskResponseDTO {
@@ -51,7 +52,7 @@ export class TaskMapper {
   static MappedCompletdTask(tasks: Task[]): CompletedTaskResponseDTO {
     const mappedData = tasks.map((task) => {
       return {
-        id: task._id,
+        id: task.id,
         taskName: task.name,
         project: task.project,
         username: task.assignedUser,

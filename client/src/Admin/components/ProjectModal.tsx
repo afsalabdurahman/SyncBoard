@@ -80,7 +80,7 @@ export function ProjectModal({
   let uploadFiles = () => {
     setUploadPage(true);
   };
- const [pdfPopup, setPdfPopup] = useState(false);
+ const [pdfPopup, setPdfPopup] = useState(false)
 const [imagePopup, setImagePopup] = useState(false);
   let onSubmitFiles = (data: any) => {
     setUploads(data);

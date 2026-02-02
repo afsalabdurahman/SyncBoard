@@ -44,7 +44,7 @@ export class ProjectUsecase implements IProjectUsecase {
   }
 
   async getAllProjects(workspaceId: string): Promise<ProjectRepositoryDTO[] | null> {
-    let allProjects = await this._projectRepository.getAllProjects(stringToMongoObj(workspaceId));
+    const allProjects = await this._projectRepository.getAllProjects(stringToMongoObj(workspaceId));
 
     return allProjects;
   }
@@ -60,7 +60,7 @@ export class ProjectUsecase implements IProjectUsecase {
   ): Promise<ProjectResponseDTO | null> {
     const merged = Object.assign({}, ...args);
 
-    let updateProject = await this._projectRepository.updateProject(
+    const updateProject = await this._projectRepository.updateProject(
       projectId,
       merged
     );

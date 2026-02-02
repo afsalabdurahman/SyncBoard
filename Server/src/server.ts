@@ -1,10 +1,10 @@
-import express, { NextFunction, Response, Request, response } from "express";
+import express, {  Response, Request,  } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "reflect-metadata";
 import { envConfig } from "./infrastructure/config/env.config";
 import dotenv from "dotenv";
-import { createServer, request } from "http";
+import { createServer,  } from "http";
 import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
@@ -18,32 +18,23 @@ import checkoutRoutes from "./presentation/routes/checkoutRoutes"
 import stripehookRoutes from "./presentation/routes/stripehookRoutes"
 import { Server } from "socket.io";
 import { connectToMongoDB } from "./infrastructure/config/DatabaseConfig";
-import { CustomRequest } from "./presentation/types/CustomRequest";
 import { errorMiddleware } from "./presentation/middleware/errorMiddleware";
 import { initSocketServer } from "./infrastructure/services/SocketService"
-import bodyParser from "body-parser"
-import Stripe from "stripe";
 import superRoutes from "./presentation/routes/superRoutes";
 import ticketRoutes from "./presentation/routes/TicketRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
-import { SuscriptionRepository } from "./infrastructure/repositories/SuscriptionRepository";
-import { NodemailerService } from "./infrastructure/services/NodeMailerService";
 
 
 
 
-const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || ""
-const sentMail = container.resolve(NodemailerService)
 dotenv.config();
 
-const stripe = new Stripe(envConfig.STRIP_KEY, {
-  apiVersion: "2025-08-27.basil"
-})
-const suscriptionRepo = container.resolve(SuscriptionRepository)
+
+
 
 const app = express();
 app.use("/api/checkout", stripehookRoutes);
-const CLIENT_URL = envConfig.MONGODB_URI;
+
 const PORT = envConfig.PORT || 5000;
 
 const httpServer = createServer(app);
@@ -80,7 +71,7 @@ app.use(
 
 initSocketServer(io);
 
-let serverStart = async () => {
+const serverStart = async () => {
   connectToMongoDB();
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);

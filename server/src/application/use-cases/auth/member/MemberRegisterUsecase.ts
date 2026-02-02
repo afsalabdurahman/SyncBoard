@@ -58,8 +58,12 @@ export class MemberRegisterUsecase implements IMemberRegister {
     );
     if (!workspace || !workspace.slug ||!workspace._id )
       throw new NotFoundError(ResponseMessages.NOT_FOUND + "Workspace");
+<<<<<<< HEAD
 
     const addToWorkspace = await this._userRepository.addToWorkspace(
+=======
+    await this._userRepository.addToWorkspace(
+>>>>>>> fix/eslint
       createMember._id,
       workspace._id,
       dto.role

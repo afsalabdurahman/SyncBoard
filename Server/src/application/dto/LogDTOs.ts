@@ -1,5 +1,4 @@
 import { ActivityTypes } from "../../types/activityTypes";
-import { Types } from "mongoose";
 
 export interface CreateActivityDTO {
   workspaceId?: string; 

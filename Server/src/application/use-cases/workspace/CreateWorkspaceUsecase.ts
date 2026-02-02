@@ -18,7 +18,6 @@ import {
 import { slugify } from "../../../utils/slug";
 import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
 import { Workspace } from "../../../domain/entities/Workspace";
-import { WorkspaceDoument } from "../../../infrastructure/database/models/WorkspaceModel";
 import { ISuscription } from "../../../domain/interfaces/repositories/ISuscriptionRepository";
 
 
@@ -65,9 +64,9 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   }
 
   async findWorkspace(id: Types.ObjectId): Promise<Workspace|null> {
-    let data = await this._workspaceRepository.findByObjectId(id);
+    const workspace = await this._workspaceRepository.findByObjectId(id);
    
-    return data;
+    return workspace;
   }
   async updateWorkspace(
     id: Types.ObjectId,
@@ -85,7 +84,7 @@ async updateWorkspaceData(id: string, merge:Record<string,string>): Promise<void
     await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name,merge.plan);
     
   }else{
-  const data=await this._workspaceRepository.updateWorkspaceDate(id,merge)
+    await this._workspaceRepository.updateWorkspaceDate(id,merge)
   }
 
 
