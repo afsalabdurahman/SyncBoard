@@ -43,13 +43,13 @@ const SideMenu = () => {
 
   const menuItems = [
     { name: "Home", icon: <FiHome />, key: "home" },
-    { name: "Teams", icon: <FiUsers />, key: "teams" },
+   
     {
       name: "Notification",
       icon: <NotificationBell messages={message} />,
       key: "notification",
     },
-    { name: "Messages", icon: <FiMessageCircle />, key: "messages" },
+ 
   ];
   let Userprofile = { name: "Profile", key: "profile" };
   let Handleprofile = () => {
