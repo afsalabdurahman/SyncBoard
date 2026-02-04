@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router';
+const ADMIN_URL = import.meta.env.VITE_BASE_ADMIN_DASHBOARD;
 const PaymentCompleted: React.FC = () => {
     const navigate = useNavigate()
   const [seconds, setSeconds] = useState(5);
@@ -11,7 +12,7 @@ const PaymentCompleted: React.FC = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to homepage
-         window.location.href = "http://localhost:5173/admin-dashboard";
+         window.location.href = ADMIN_URL;
 
           //window.location.href = '/';
           return 0;

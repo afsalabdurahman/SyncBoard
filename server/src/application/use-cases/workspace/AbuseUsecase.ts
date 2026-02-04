@@ -23,7 +23,7 @@ async execute(input: AbuseRequestDTO,userId:string,workspaceId:string): Promise<
    console.log(userId,workspaceId)
     const abuseEntity = new Abuse({description:input.description,otherType:input.otherType,userId:stringToMongoObj(userId),severity:input.severity,type:input.type,workspaceId:stringToMongoObj(workspaceId),status:"Waiting",})
     if(!abuseEntity) throw new ValidationError("Report"+ResponseMessages.CREATEION_FAILED) 
-    const isCreate=await this._abuseRepository.create(abuseEntity)
+  await this._abuseRepository.create(abuseEntity)
    return ResponseMessages.SUCCESS 
 }
 async findAbuseReports(page:number,limit:number,skip:number): Promise<GetAllReportsResponseDto> {

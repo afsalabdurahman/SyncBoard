@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe"
-import { Workspace } from "../../../domain/entities/Workspace"
 import { NotFoundError } from "../../../utils/errors"
 import { IWokspaceMember } from "../../repositories/IWorkspaceMembers"
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository"

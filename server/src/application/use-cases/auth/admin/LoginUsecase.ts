@@ -2,19 +2,11 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import { injectable, inject } from "tsyringe";
 import { ForbiddenError, NotFoundError, ValidationError } from "../../../../utils/errors";
 import { ILoginUseCase } from "../../../repositories/admin/ILoginUseCase";
-<<<<<<< HEAD
-import { User } from "../../../../domain/entities/User";
-=======
->>>>>>> fix/eslint
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository"
 import { ISuscription } from "../../../../domain/interfaces/repositories/ISuscriptionRepository";
 import { Subscription } from "../../../../domain/entities/Suscription";
-<<<<<<< HEAD
-import { adminResponseDTO, LoginRequestDTO, SuperadminLoginResponseDTO, SuperadminResponseDTO } from "../../../dto/AuthDTOs";
-=======
 import { adminResponseDTO, LoginRequestDTO, SuperadminLoginResponseDTO, } from "../../../dto/AuthDTOs";
->>>>>>> fix/eslint
 import { ResponseMessages } from "../../../../common/erroResponse";
 
 @injectable()

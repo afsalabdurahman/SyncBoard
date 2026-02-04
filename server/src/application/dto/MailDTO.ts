@@ -5,6 +5,3 @@ password?:string,
 otp?:string,
 role?:"Admin"
 }
-export interface MailResponseDTO{
-
-}

@@ -7,7 +7,6 @@ import { NotFoundError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
-import { IActivity } from "../../../application/repositories/IActivity";
 import { MemeberRegisterRequestDTO } from "../../../application/dto/AuthDTOs";
 @injectable()
 export class MemberController {
@@ -24,12 +23,8 @@ export class MemberController {
     next: NextFunction
   ): Promise<void> {
     try {
-      let userId = req.params.id;
-      console.log(userId,"userIddd++",req.body,"bodyy++")
-      if (!userId || !req.body) {
-        throw new NotFoundError("user is not found");
-      }
-      let updatedData = await this._updateProfileUsecase.execute(
+      const userId = req.params.id;
+      const updatedData = await this._updateProfileUsecase.execute(
         userId,
         req.body
       );
@@ -38,7 +33,7 @@ export class MemberController {
         .status(HttpStatusCode.CREATED)
         .json({ message: ResponseMessages.SUCCESS, updatedData });
     } catch (error) {
-      throw error;
+     next(error)
     }
   }
 
@@ -47,14 +42,14 @@ export class MemberController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    let { currentPassword, newPassword } = req.body;
-    let userId = req.params.id;
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.params.id;
 
     try {
       if (!currentPassword || !newPassword) {
         throw new NotFoundError("filed is emty please enter");
       }
-      let status = await this._changePasswordUsecase.execute(
+       await this._changePasswordUsecase.execute(
         userId,
         currentPassword,
         newPassword
@@ -78,7 +73,7 @@ export class MemberController {
       slug: req.body.workspaceSlug,
     };
     try {
-      let  response =
+      const  response =
         await this._memberRegisterUsecase.execute(input);
 
       setTokensInCookies(res, response.token, response.refreshToken);
