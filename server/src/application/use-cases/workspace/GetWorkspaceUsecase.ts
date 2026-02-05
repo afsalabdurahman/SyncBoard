@@ -6,6 +6,7 @@ import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IW
 import { ResponseMessages } from "../../../common/erroResponse"
 import { UserDoument } from "../../../infrastructure/database/models/UserModel"
 import { stringToMongoObj } from "../../../utils/convertMongoObject"
+import { UserResponseDTO } from "../../dto/SuperDTO"
 @injectable()
 export class GetWorkspaceUsecase implements IWokspaceMember {
    constructor(@inject("WorkspaceRepository") private workspaceRepository: IWorkspaceRepository,
@@ -25,5 +26,12 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND)
       const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip)
       return { items: items, totalItems }
+   }
+  async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{
+          const workspceData = await this.workspaceRepository.findbySlug(slug);
+            if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace');
+            console.log(workspceData,"5665Workspace in usecase")
+               const users=await this.userRepository.searchUser(stringToMongoObj(workspceData._id.toString()),query);
+               return users
    }
 }

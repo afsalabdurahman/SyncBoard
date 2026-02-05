@@ -1,6 +1,7 @@
 import mongoose, { Types } from "mongoose"
 import { Abuse } from "../../domain/entities/Abuse"
 import { workspaceStatus } from "../../types/workpaceTypes"
+import { subscriptionHistory } from "./SuscriptionDTOs"
 
 export interface UserResponseDTO {
   id: string
@@ -42,6 +43,7 @@ export interface SuperSubscriptionResponseDTO {
     expMonth: number;
     expYear: number;
   };
+  history?:subscriptionHistory[]
   lastInvoiceStatus: string;
 }
 export interface UserDetailsResponseDTO {
@@ -176,6 +178,7 @@ export interface listOfSubscriptionsDTO {
   subscriptionStatus: string;
 
   priceCents: number;
+  history?:subscriptionHistory[]
 
 }
 export interface SubscriptionAggResponseDTO {

@@ -5,7 +5,6 @@ import "reflect-metadata";
 import { envConfig } from "./infrastructure/config/env.config";
 import dotenv from "dotenv";
 import { createServer,  } from "http";
-import { container } from "./infrastructure/config/Di/TsyringConfig";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
 import ragRoutes from "./presentation/routes/ragRoutes"

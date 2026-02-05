@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import {approvalType,priorityType,statusType,commentType} from "../../types/taskTypes"
 
 export class Task {
-  // [x: string]: any;
+ 
   id?: string | ObjectId;
   assignedUser?: string;
   deadline?: string;

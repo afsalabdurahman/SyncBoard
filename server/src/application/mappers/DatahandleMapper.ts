@@ -126,6 +126,7 @@ export class DatahandleMapper {
         expYear: 2027,
       },
       lastInvoiceStatus: "paid",
+      history:u.history
     }));
     return { totalDocCounts, responseDTO }
   }

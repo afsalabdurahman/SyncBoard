@@ -378,6 +378,7 @@ result.push(totalDocCount)
   userName: 1,
   userEmail: 1,
   planKey: "$subscriptionDetails.planKey",
+  history: "$subscriptionDetails.history",
   subscriptionStatus:
     "$subscriptionDetails.status"
 }
@@ -405,6 +406,7 @@ result.push(totalDocCount)
   userName: 1,
   userEmail: 1,
   planKey: 1,
+  history:1,
   subscriptionStatus: 1,
   priceCents: "$planDetails.priceCents"
 
@@ -414,7 +416,7 @@ result.push(totalDocCount)
   { $limit: limit }
 
     ])
- 
+ console.log(result,"sub786")
     return {subscriptions:result,totalDocCount:totalDocCount};
   }
   

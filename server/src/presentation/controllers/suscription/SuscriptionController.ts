@@ -82,9 +82,10 @@ export class SubscriptionController {
       case "checkout.session.completed":
         const session = event.data.object as Stripe.Checkout.Session;
         console.log("🎉 Checkout completed:5550", session);
-
+await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString()??"",session.id,new Date(),session?.amount_subtotal??0,session.payment_status)
         if (session.metadata) {
           console.log(session.metadata, "metaDta os seion...")
+          
           await this._suscriptionUsecase.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
         }
         break;
@@ -111,4 +112,5 @@ export class SubscriptionController {
 
     res.status(HttpStatusCode.OK).json(subscription)
   }
+  
 }

@@ -62,7 +62,7 @@ function App() {
           <Route path='/user-profile' element={<Profile />}></Route>
           {/* Admin DashBorad */}
           <Route path='/admin' element={<AdminLogin />}></Route>
-          <Route path='/admin-dashboard' element={<AdminDashboard />}></Route>
+          <Route path='/admin/dashboard' element={<AdminDashboard />}></Route>
           <Route path='/test' element={<Invite />}></Route>
           <Route path='/payment/success' element={<PaymentCompleted/>}></Route>
           <Route path='/payment/cancel' element={<PaymentRejected/>}></Route>

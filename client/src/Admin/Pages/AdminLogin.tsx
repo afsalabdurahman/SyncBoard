@@ -41,7 +41,7 @@ const [loading, setLoading] = useState(false);
             //  dispatch(setLog(response.data.logs))
              dispatch(setSubscription(response.data.suscribe))
             dispatch(setUserData(response.data.user))
-      navigate("/admin-dashboard");
+      navigate("/admin/dashboard");
    
     } catch (error) {
       setLoading(false);

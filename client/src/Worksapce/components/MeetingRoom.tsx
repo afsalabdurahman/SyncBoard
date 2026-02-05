@@ -1,35 +1,92 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Search, Users } from "lucide-react";
 import { useSelector } from "react-redux";
 import apiService from "../../Services/apiServices/apiService";
+import { fetchAllUsers } from "../../Redux/feature/users/AlluserThunks";
+import { allMembers, paginationUser, searchUser } from "../apis/workspaceapis";
+import { Pagination } from "@mui/material";
+import { setPage } from "../../Redux/feature/project/projectSlice";
+
+
+function useDebounce<T>(value: T, delay: number = 450): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export default function MeetingRoom() {
+  const [page,setPage]=useState();
+const [total,setTotal]=useState()
   const workspaceSlug = useSelector(
     (state: any) => state.workspace.workspace.slug
   );
 
-  const [users, setUsers] = useState<any[]>([]);
+useEffect(()=>{
+ async function fetch(){
+const data=await paginationUser(workspaceSlug,1);
+setMembers(data.items);
+setTotal(data.totalItems);
+setPage(data.currentPage)
+  }
+ fetch()
+
+},[workspaceSlug])
+
+
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [members, setMembers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  /* ---------------- FILTER USERS ---------------- */
-  const filteredUsers = users.filter((u) =>
-    u.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const debouncedSearch = useDebounce(searchQuery.trim(), 450);
 
-  /* ---------------- FETCH USERS ---------------- */
-  useEffect(() => {
+  // Fetch members when debounced search changes or workspace changes
+  const fetchMembers = useCallback(async (query: string) => {
     if (!workspaceSlug) return;
 
-    apiService
-      .get(`workspace/member/data/${workspaceSlug}`)
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error("MeetingRoom error:", error);
-      });
+    setLoading(true);
+    try {
+      // Adjust endpoint & params according to your real API
+      // Examples:
+      //   /api/workspace/member/search?q=...
+      //   /api/members?search=...&workspace=...
+
+      // const response = await apiService.get(`workspace/member/data/${workspaceSlug}`, {
+      //   params: {
+      //     search: query || undefined,     // send only if there's actual search
+      //     // q: query || undefined,       // ← try this if your API uses ?q=
+      //     // name: query || undefined,
+      //   },
+      // });
+    const response= await searchUser(workspaceSlug,query)
+
+       setMembers(response || []);
+    } catch (error) {
+      console.error("Failed to fetch members:", error);
+      setMembers([]);
+    } finally {
+      setLoading(false);
+    }
   }, [workspaceSlug]);
 
+  // Trigger fetch on workspace change OR debounced search change
+  useEffect(() => {
+    fetchMembers(debouncedSearch);
+  }, [fetchMembers, debouncedSearch]);
+const handleChangePage = (page)=>{
+  console.log(page,"pagee")
+}
   return (
     <div className="mt-8 w-full bg-slate-50 min-h-screen p-4 max-w-[1000px] mx-auto">
       <div className="max-w-[60rem] mx-auto">
@@ -52,42 +109,38 @@ export default function MeetingRoom() {
           <input
             type="text"
             className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Search User"
+            placeholder="Search members..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        {/* Participants List */}
+        {/* Members List */}
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-          {filteredUsers.length > 0 ? (
-            filteredUsers.map((participant) => (
+          {loading ? (
+            <div className="p-8 text-center text-slate-500">
+              Loading members...
+            </div>
+          ) : members.length > 0 ? (
+            members.map((member) => (
               <div
-                key={participant.id}
+                key={member.id}
                 className="px-4 py-3 flex items-center justify-between border-b last:border-0 hover:bg-slate-50"
               >
                 <div className="flex items-center">
                   <div className="relative mr-3">
                     <img
-                      src={
-                        participant.imageUrl
-                          ? participant.imageUrl
-                          : "/images/user.jpeg"
-                      }
-                      alt={participant.name}
+                      src={member.imageUrl ?? "/images/user.jpeg"}
+                      alt={member.name}
                       className="w-10 h-10 rounded-full object-cover border"
                     />
-                    {participant.online && (
+                    {member.online && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
                     )}
                   </div>
                   <div>
-                    <p className="text-slate-800 font-medium">
-                      {participant.name}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {participant.role}
-                    </p>
+                    <p className="text-slate-800 font-medium">{member.name}</p>
+                    <p className="text-xs text-slate-500">{member.role}</p>
                   </div>
                 </div>
 
@@ -96,11 +149,19 @@ export default function MeetingRoom() {
             ))
           ) : (
             <div className="p-6 text-center text-slate-500">
-              No users found
+              {debouncedSearch
+                ? "No members found matching your search"
+                : "No members found"}
             </div>
           )}
         </div>
+<Pagination 
+component="div"
+count={total/4}
+page={page}
+ onChange={(_, page) => handleChangePage(page)}
 
+/>
       </div>
     </div>
   );

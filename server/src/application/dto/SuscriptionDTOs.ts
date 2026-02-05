@@ -7,3 +7,9 @@ export interface SuscriptionReponseDTO{
 
     link:string,
 }
+export interface subscriptionHistory{
+    id:string;
+    date:Date;
+    amount:number;
+    status:string;
+}

@@ -7,8 +7,7 @@ export interface IEmbeddingProvider {
 }
 export interface IVectorStore {
   findFromdb(user:string,key:string,value:string,model:mongoose.Model<any>):Promise<any>
-  // upsert(userId: string, chunks: {id: string; embedding: number[]; metadata: any}[]): Promise<void>;
-  // query(userId: string, vector: number[], topK: number): Promise<Array<{id: string; score: number; metadata: any}>>;
+ 
 }
 export interface ILLMProvider {
   generate(prompt: string, context: string): Promise<string>;

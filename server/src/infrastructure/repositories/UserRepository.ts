@@ -8,6 +8,7 @@ import { ConflictError, ValidationError } from "../../utils/errors";
 import { HttpStatusCode } from "../../common/errorCodes";
 import mongoose from "mongoose";
 import { WorkspaceMembership } from "../../types/workpaceTypes";
+import { UserResponseDTO } from "../../application/dto/SuperDTO";
 @injectable()
 export class UserMongooseRepository extends BaseRepository<User | null> implements IUserRepository {
   constructor() {
@@ -139,5 +140,19 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     if (!isUpdated) throw new ValidationError("Updation failed")
     return true
   }
+async searchUser(workspaceId: Types.ObjectId, query: string): Promise<UserResponseDTO[]> {
+  const regex = new RegExp(query.trim(), 'i');
+
+  const users = await UserModel.find({
+    "workspace.workspaceId": workspaceId,
+    $or: [
+      { name: regex },
+      { email: regex }
+    ]
+  }).lean<UserResponseDTO[]>().exec()
+ return users 
+}
+
+
 }
 

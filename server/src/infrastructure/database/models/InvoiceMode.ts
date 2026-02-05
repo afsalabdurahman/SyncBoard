@@ -10,7 +10,7 @@ export interface InvoiceDocument extends Document {
   hostedInvoiceUrl?: string;
   periodStart?: Date;
   periodEnd?: Date;
-  raw?: any;
+  raw?: string;
   createdAt: Date;
 }
 

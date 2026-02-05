@@ -65,3 +65,25 @@ export const acceptInvitaionLink = async( name,
             })
             return response
           }
+
+          export const paginationUser = async(slug:string,page:number)=>{
+            const response = await apiService.get(`workspace/member/pagination/data/${slug}?page=${page}&limit=5`);
+            console.log(response,"responseAPI,")
+            return response.data
+          }
+
+           
+          export const allMembers = async (slug:string)=>{
+         const response = await apiService.get(`workspace/member/data/${slug}`) 
+         console.log(response,"APi Fetch alldataUser")
+         return response.data
+          }
+          export  const searchUser = async (slug:string,q:string)=>{
+           try {
+            const response=await apiService.get(`workspace/members/find/${slug}?query=${q}`);
+            console.log(response,"respse SErach")
+            return response.data
+           } catch (error) {
+            console.log(error)
+           }
+          }

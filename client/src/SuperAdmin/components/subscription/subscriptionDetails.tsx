@@ -17,7 +17,7 @@ export function SubscriptionDetails({
   sub: Subscription | null
 }) {
   if (!sub) return null
-
+console.log(sub,"subc++++")
   const fmtDate = (d: string) =>
     new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
 
@@ -120,13 +120,13 @@ export function SubscriptionDetails({
             <CardContent className="p-4">
               <div className="font-semibold text-gray-900 mb-3">Recent Invoices</div>
               <div className="space-y-2">
-                {[0, 1, 2].map((i) => {
+                {/* {[0, 1, 2].map((i) => {
                   const date = new Date(sub.currentPeriodEnd)
                   date.setMonth(date.getMonth() - i)
                   return (
                     <div key={i} className="flex items-center justify-between text-sm">
                       <div className="text-gray-700">
-                        INV-{sub.id.slice(-6).toUpperCase()}-{i + 1}
+                        INV-
                       </div>
                       <div className="text-gray-500">{fmtDate(date.toISOString())}</div>
                       <div className="font-medium text-gray-900">
@@ -137,6 +137,19 @@ export function SubscriptionDetails({
                       </Badge>
                     </div>
                   )
+                })} */}
+                {sub.history.map((invoice,i)=>{
+                  return(<>
+                   <div key={i} className="flex items-center justify-between text-sm">
+                      <div className="text-gray-700">
+                        INV-{invoice.id.slice(5,15)}
+                      </div>
+                      <div className="text-gray-500">25-01-2029</div>
+                      <div className="font-medium text-gray-900">
+                        ${invoice.amount} $
+                      </div>
+                      </div>
+                  </>)
                 })}
               </div>
             </CardContent>

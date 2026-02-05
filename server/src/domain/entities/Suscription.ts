@@ -1,5 +1,6 @@
-import  {  Types } from "mongoose";
-import {IPaymentMethod} from"../../types/subscriptionTypes"
+import { Types } from "mongoose";
+import { IPaymentMethod } from "../../types/subscriptionTypes"
+import { subscriptionHistory } from "../../application/dto/SuscriptionDTOs";
 
 
 export class Subscription {
@@ -18,9 +19,11 @@ export class Subscription {
   createdAt?: Date;
   updatedAt?: Date;
   paymentMethode?: IPaymentMethod;
+  history?: subscriptionHistory[]
+
   constructor(params: {
     user: string | Types.ObjectId;
-    workspace: string | Types.ObjectId ;
+    workspace: string | Types.ObjectId;
     planKey: string;
     status: string;
     startedAt?: Date;
@@ -33,7 +36,8 @@ export class Subscription {
     metadata?: string;
     createdAt?: Date;
     updatedAt?: Date;
-    paymentMethode?: IPaymentMethod
+    paymentMethode?: IPaymentMethod;
+    history?: subscriptionHistory[]
   }) {
     this.user = params.user;
     this.workspace = params.workspace;
@@ -54,6 +58,7 @@ export class Subscription {
 
     this.createdAt = params.createdAt ?? new Date();
     this.updatedAt = params.updatedAt ?? new Date();
-    this.paymentMethode = params.paymentMethode
+    this.paymentMethode = params.paymentMethode;
+    this.history = params.history
   }
 }
