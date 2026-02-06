@@ -137,10 +137,15 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async findTaskByProjectId(projectId: string): Promise<Task | null> {
-    const projectTask = await TaskModel.findOne({ projectId: projectId }).lean().exec()
+async findTaskByProjectId(projectId: string,taskfilter:string|null): Promise<Task[] | null> {
+  const query: Record<string, string> = { projectId };
+  if(taskfilter){
+    query.status = taskfilter;
+  }
+    const projectTask = await TaskModel.find(query).lean().exec()
+   console.log(projectTask,"task")
     if (!projectTask) return null;
-    return new Task({ ...projectTask })
+    return projectTask 
 
   }
   countTask(): Promise<number> {

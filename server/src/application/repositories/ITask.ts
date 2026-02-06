@@ -10,7 +10,7 @@ export interface ITaskUseCase {
     updateTaskStatus(taskId:string,status:string):Promise<void>
     completedTask(workspaceid:string):Promise<CompletedTaskResponseDTO>
     updateApprovalStatus(taskId:string,status:string,msg?:string):Promise<void>;
-    findTaskByProjectId(projectId:string):Promise<Task>;
+    findTaskByProjectId(projectId:string,filter:string):Promise<Task[]>;
     paginationTask(workspaceId:string,page:number,limit:number,skip:number):Promise<{ items: Task[];
       totalItems: number}>
       addComment(taskId:string,comment:commentType):Promise<void>

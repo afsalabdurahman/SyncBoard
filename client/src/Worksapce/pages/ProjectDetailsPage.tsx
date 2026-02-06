@@ -26,17 +26,18 @@ import { useSelector } from "react-redux";
 
 const ProjectDetailsPage = (props: any) => {
   const [myTasks, setMytask] = useState([]);
+  const [taskFilter, setTaskFilter] = useState("all");
   const projectId = props.projectDetails._id;
   useEffect(() => {
-    apiService.get(`task/project/${projectId}`).then((res) => {
+    apiService.get(`task/project/${projectId}?filter=${taskFilter}`).then((res) => {
       console.log(res, "detials+++");
       setMytask(res.data);
     });
-  }, [projectId]);
+  }, [projectId,taskFilter]);
   const [progress, setProgress] = useState();
   console.log(myTasks, "this mytask");
   let total = myTasks.length;
-  let complete = myTasks.filter((data) => data.status == "Completed").length;
+  let complete = "complete";
   console.log(total, complete, "+++++");
   const allTask = useSelector((state) => {
     return state.task.tasks;
@@ -46,7 +47,7 @@ const ProjectDetailsPage = (props: any) => {
   console.log(totalProgress, "%%%%%%");
 
   const [activeTab, setActiveTab] = useState("overview");
-  const [taskFilter, setTaskFilter] = useState("all");
+  
   const [showAddTask, setShowAddTask] = useState(false);
   const [task1, setTask1] = useState(null);
   const [projectAdminName, setProjectAdminName] = useState(null);
@@ -388,14 +389,7 @@ const ProjectDetailsPage = (props: any) => {
                             {/* <p className="text-sm text-gray-600">{member.role}</p> */}
                           </div>
                         </div>
-                        <div className='flex items-center space-x-2'>
-                          <button className='p-2 text-gray-400 hover:text-gray-600'>
-                            <MessageSquare className='h-4 w-4' />
-                          </button>
-                          <button className='p-2 text-gray-400 hover:text-gray-600'>
-                            <MoreVertical className='h-4 w-4' />
-                          </button>
-                        </div>
+                      
                       </div>
                     </div>
                   ))}

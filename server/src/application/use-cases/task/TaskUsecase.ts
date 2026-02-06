@@ -9,6 +9,7 @@ import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { commentType } from "../../../types/taskTypes";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
+import { taskFilter } from "../../../utils/taskFilter";
 @injectable()
 export class TaskUsecase implements ITaskUseCase {
   constructor(
@@ -77,9 +78,10 @@ export class TaskUsecase implements ITaskUseCase {
     await this._taskRepository.updateApprovalStatus(taskId, status, msg);
   }
 
-  async findTaskByProjectId(projectId: string): Promise<Task> {
+  async findTaskByProjectId(projectId: string, filter: string): Promise<Task[]> {
+    const taskfilter = taskFilter(filter) ?? null
     const projectTask =
-      await this._taskRepository.findTaskByProjectId(projectId);
+      await this._taskRepository.findTaskByProjectId(projectId, taskfilter);
     console.log(projectTask, "Task##")
     if (!projectTask) throw new NotFoundError(ResponseMessages.NOT_FOUND)
 

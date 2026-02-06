@@ -51,24 +51,12 @@ setPage(data.currentPage)
 
   const debouncedSearch = useDebounce(searchQuery.trim(), 450);
 
-  // Fetch members when debounced search changes or workspace changes
   const fetchMembers = useCallback(async (query: string) => {
     if (!workspaceSlug) return;
 
     setLoading(true);
     try {
-      // Adjust endpoint & params according to your real API
-      // Examples:
-      //   /api/workspace/member/search?q=...
-      //   /api/members?search=...&workspace=...
-
-      // const response = await apiService.get(`workspace/member/data/${workspaceSlug}`, {
-      //   params: {
-      //     search: query || undefined,     // send only if there's actual search
-      //     // q: query || undefined,       // ← try this if your API uses ?q=
-      //     // name: query || undefined,
-      //   },
-      // });
+      
     const response= await searchUser(workspaceSlug,query)
 
        setMembers(response || []);
@@ -157,7 +145,7 @@ const handleChangePage = (page)=>{
         </div>
 <Pagination 
 component="div"
-count={total/4}
+count={Math.ceil(total/4)}
 page={page}
  onChange={(_, page) => handleChangePage(page)}
 

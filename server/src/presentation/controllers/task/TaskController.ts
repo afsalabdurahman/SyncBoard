@@ -140,8 +140,11 @@ export class TaskController {
   ): Promise<void> {
     try {
       if (!req.params.projectId) throw new NotFoundError("Id is not found");
+      console.log(req.query,"quer112")
+      const filter=req.query.filter as string
       const task = await this._taskUsecase.findTaskByProjectId(
-        req.params.projectId
+        req.params.projectId,
+        filter
       );
       res.status(HttpStatusCode.OK).json(task);
     } catch (error) {
