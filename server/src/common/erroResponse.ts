@@ -7,7 +7,7 @@ export const ResponseMessages = {
   NO_CONTENT: 'No content to return',
   BAD_REQUEST: 'Invalid request data',
   UNAUTHORIZED: 'Unauthorized access',
-  USER_EXIST:'User is Exist',
+  USER_EXIST:'Email already exists',
   FORBIDDEN: 'Forbidden',
   USER_STATUS_BLOCK:"User is blocked",
  USER_STATUS_DELETE:"User is not exist",

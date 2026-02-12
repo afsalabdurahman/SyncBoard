@@ -3,7 +3,7 @@ import { IEmailService } from "../../../domain/interfaces/services/IEmailService
 import { OTP } from "../../../domain/entities/Otp";
 import { IOTP } from "../../repositories/IOTP";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
-import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { NotFoundError, ValidationError,ConflictError } from "../../../utils/errors";
 import { MailRequestDTO } from "../../dto/MailDTO";
 import { AuthMapper } from "../../mappers/AuthMapper";
 import { AdminSignupRequestDTO } from "../../dto/AuthDTOs";
@@ -20,11 +20,14 @@ export class OTPService implements IOTP {
 
   async sendOTP(input: MailRequestDTO): Promise<string> {
 
-    
     const isValid = AuthMapper.registerValidation(input as AdminSignupRequestDTO)
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const user = await this._userRepository.findByEmail(input.email)
-    if (user) throw new ValidationError(ResponseMessages.USER_EXIST)
+    if (user) throw new ConflictError(ResponseMessages.USER_EXIST);
+    const findOTP = await this._otpRepository.findOTPbyEMAIL(input.email);
+    if(findOTP){
+      await this._otpRepository.deleteOTP(input.email)
+    }
     const otp = this._otpRepository.generateOTP();
     await this._emailService.sendOtp(input.email, otp);
 
@@ -40,7 +43,7 @@ export class OTPService implements IOTP {
     if (isOtp && isOtp.otp === input.otp) {
       return true;
     } else {
-      throw new NotFoundError(ResponseMessages.OTP_INVALID);
+      throw new ValidationError(ResponseMessages.OTP_INVALID);
     }
 
   }

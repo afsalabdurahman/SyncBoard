@@ -15,7 +15,7 @@ export const handleApiError = (error: AxiosError): void => {
         break;
       case 401:
         message = "Session expired. Please login again.";
-        localStorage.removeItem("accessToken");
+       
         window.location.href = "/login";
         break;
       case 403:

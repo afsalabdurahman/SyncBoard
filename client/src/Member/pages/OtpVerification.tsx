@@ -1,266 +1,266 @@
 import { useState, useEffect, useRef } from "react";
 import { Check, X } from "lucide-react";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
-import {setUserData} from "../../Redux/feature/user/userSlice"
+import { setUserData } from "../../Redux/feature/user/userSlice";
 import api from "../../Services/apiServices/apiService";
+import { useNavigate } from "react-router-dom";
+import { AxiosResponse } from "axios";
+import { useLayoutEffect } from "react";
+import { signupApi, verifyOTP } from "../apiservice/authApi";
+const OTP_LENGTH = 6;
 
-import { useNavigate } from "react-router";
-import axios, { AxiosResponse } from "axios";
 const OtpVerification = () => {
-  let navigate = useNavigate();
-  let dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const userData = useSelector((state: RootState) => {
-  
-    let email = state?.user?.user?.email;
-    let name = state?.user?.user?.name;
-    let password = state?.user?.user?.password;
-    return { email, name, password };
-  });
-  console.log(userData, "this is user data");
-
-  const [otp, setOtp] = useState([]);
+  const userData = useSelector((state: RootState) => ({
+    email: state?.user?.user?.email,
+    name: state?.user?.user?.name,
+    password:state?.user?.user?.password
+ 
+  }));
+console.log(userData,"dataaa")
+  const [otp, setOtp] = useState<string[]>(
+    Array(OTP_LENGTH).fill("")
+  );
   const [message, setMessage] = useState("");
   const [timer, setTimer] = useState(59);
   const [isValidTrue, setIsValidTrue] = useState(false);
   const [isValidFalse, setIsValidFalse] = useState(false);
-  const inputRefs = useRef([]);
-  console.log(otp);
-  // Set up countdown timer
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  /* ---------------- Redirect if no email ---------------- */
+
+useLayoutEffect(() => {
+  if (!userData?.email) {
+    navigate("/signup", { replace: true });
+  }
+}, [userData, navigate]);
+
+  /* ---------------- Countdown Timer ---------------- */
   useEffect(() => {
-    if (!userData.email) navigate("/signup");
     if (timer > 0) {
-      const timerId = setTimeout(() => setTimer(timer - 1), 1000);
-      return () => clearTimeout(timerId);
+      const id = setTimeout(() => setTimer((prev) => prev - 1), 1000);
+      return () => clearTimeout(id);
     }
   }, [timer]);
 
+  /* ---------------- Auto Verify ---------------- */
   useEffect(() => {
-    if (otp.length === 7) {
-      let sendOtp = async () => {
-        const otpValue = otp.filter((value) => value !== undefined).join("");
-        console.log("Full OTP:", otpValue);
-
-        // show loading or send OTP
-
-        try {
-
-          const response: AxiosResponse<any, any> = await api.post(
-            "auth/user/verifyotp",
-           
-            { email:userData.email, otp: otpValue }
-          );
-          
-          setIsValidTrue(true);
-          
-          setIsValidFalse(false);
-          setMessage("Please wait automatically redirect...");
-          const addUserToDb: AxiosResponse<any, any> = await api.post(
-            "auth/user/register",
-            { name:userData.name, email:userData.email, password:userData.password,role:"Admin" },{withCredentials:true}
-          );
-          console.log(addUserToDb,"response from register$$$")
-          console.log(addUserToDb,"userdata after verifyOtp IMPORTSNT")
-          dispatch(setUserData(addUserToDb.data.user))
-          setTimeout(() => {
-            navigate('/create-workspace')
-          }, 5000);
-        } catch (error) {
-          setIsValidFalse(true);
-          console.log(error, "default");
-        }
-      };
-      sendOtp();
+    if (otp.every((digit) => digit !== "")) {
+      verifyOtp();
     }
   }, [otp]);
-  // Handle input change
-  const handleChange = (index: any | number, value: any) => {
-    if (isNaN(value)) return;
 
-    const newOtp: any = [...otp];
+  /* ---------------- Verify OTP ---------------- */
+  const verifyOtp = async () => {
+    const otpValue = otp.join("");
+
+    try {
+   await verifyOTP(userData?.email,otpValue)
+
+
+      setIsValidTrue(true);
+     
+      setMessage("Please wait automatically redirect...");
+
+      const registerRes: AxiosResponse<any> = await api.post(
+        "auth/user/register",
+        {
+          name: userData.name,
+          email: userData.email,
+          password:userData.password,
+          role: "Admin",
+
+        },
+        { withCredentials: true }
+      );
+
+      dispatch(setUserData(registerRes.data.user));
+
+      setTimeout(() => {
+        navigate("/create-workspace");
+      }, 3000);
+    } catch (error) {
+      setIsValidFalse(true);
+    }
+  };
+
+  /* ---------------- Handle Change ---------------- */
+  const handleChange = (index: number, value: string) => {
+    if (!/^\d?$/.test(value)) return;
+
+    const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto focus next input
-    if (value !== "" && index < 6) {
-      inputRefs.current[index + 1];
-    }
-
-    // Check if OTP is valid
-    // setIsValid(!newOtp.includes(""));
-  };
-
-  // Handle backspace
-  const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && otp[index] === "" && index > 0) {
-      inputRefs.current[index - 1];
+    if (value && index < OTP_LENGTH - 1) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
-  // Handle paste
-  const handlePaste = (e) => {
+  /* ---------------- Handle Backspace ---------------- */
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  /* ---------------- Strong Copy–Paste ---------------- */
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
 
-    if (/^\d+$/.test(pastedData) && pastedData.length <= 7) {
-      const digits = pastedData.split("").slice(0, 7);
-      const newOtp = [...otp];
+    if (!/^\d+$/.test(pastedData)) return;
 
-      digits.forEach((digit: any, index: any) => {
-        if (index < 5) {
-          newOtp[index] = digit;
-        }
-      });
+    const digits = pastedData.slice(0, OTP_LENGTH).split("");
+    const newOtp = Array(OTP_LENGTH).fill("");
 
-      setOtp(newOtp);
+    digits.forEach((digit, index) => {
+      newOtp[index] = digit;
+    });
 
-      // Focus last input with data or first empty input
-      const lastIndex = Math.min(digits.length - 1, 6);
-      inputRefs.current[lastIndex].focus();
+    setOtp(newOtp);
+
+    const lastIndex = digits.length - 1;
+    if (lastIndex >= 0) {
+      inputRefs.current[lastIndex]?.focus();
     }
   };
 
-  // Resend code
+  /* ---------------- Resend OTP ---------------- */
   const resendCode = async () => {
-    const response: AxiosResponse<any, any> = await api.post("/send-otp", {
-     email: userData.email,
-    });
+   const response= await signupApi(userData?.email,userData.name,userData.password)
+if(response){
+ setOtp(Array(OTP_LENGTH).fill(""));
     setTimer(59);
-
-    inputRefs.current[0].focus();
+    setIsValidFalse(false);
+    setIsValidTrue(false);
+    inputRefs.current[0]?.focus();
   };
+}
+   
 
   return (
-    <div className='max-w-lg mx-auto px-4 py-8 flex flex-col items-center'>
-      <h1 className='text-2xl md:text-3xl font-bold text-center text-gray-800 mb-2'>
+    <div className="max-w-lg mx-auto px-4 py-8 flex flex-col items-center">
+      <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-2">
         GrideSync
       </h1>
 
-      <h2 className='text-3xl md:text-4xl font-bold text-center text-gray-800 mt-8 mb-2'>
+      <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mt-8 mb-2">
         Check your email for a code
       </h2>
 
-      <p className='text-gray-600 text-center mb-8'>
-        We've sent a 6-character code to {userData.email}. The code expires shortly
+      <p className="text-gray-600 text-center mb-8">
+        We've sent a 6-digit code to {userData.email}. The code expires shortly
         <br />
         so please enter it soon.
       </p>
 
-      {/* OTP Input Group */}
-      <div className='flex items-center justify-center gap-1 mb-6'>
-        {/* First 3 digits */}
-        {[0, 1, 2].map((index) => (
+      {/* OTP INPUTS */}
+      <div className="flex items-center justify-center gap-2 mb-6">
+        {otp.map((digit, index) => (
           <input
-            key={`otp-${index}`}
+            key={index}
             ref={(el) => (inputRefs.current[index] = el)}
-            type='text'
-            maxLength='1'
-            value={otp[index]}
-            onChange={(e) => handleChange(index, e.target.value)}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) =>
+              handleChange(index, e.target.value)
+            }
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
-            className='w-12 h-16 text-4xl font-bold text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+            className="w-12 h-16 text-3xl font-bold text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         ))}
 
-        {/* Dash separator */}
-        <span className='text-2xl font-bold text-gray-400 mx-1'>-</span>
-
-        {/* Last 3 digits */}
-        {[3, 4, 5].map((index) => (
-          <input
-            key={`otp-${index + 1}`}
-            ref={(el) => (inputRefs.current[index] = el)}
-            type='text'
-            maxLength:any='1'
-            value={otp[index + 1]}
-            onChange={(e) => handleChange(index + 1, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(index + 1, e)}
-            onPaste={handlePaste}
-            className='w-12 h-16 text-4xl font-bold text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
-          />
-        ))}
-
-        {isValidTrue ? (
-          <div className='ml-2'>
-            <Check className='w-8 h-8 text-green-500' />
-          </div>
-        ) : null}
-        {isValidFalse ? (
-          <div className='ml-2'>
-            <X className='w-8 h-8 text-red-500' />
-          </div>
-        ) : null}
+        {isValidTrue && (
+          <Check className="w-8 h-8 text-green-500 ml-2" />
+        )}
+        {isValidFalse && (
+          <X className="w-8 h-8 text-red-500 ml-2" />
+        )}
       </div>
 
-      {/* Timer and Resend */}
+      {/* TIMER */}
       {message ? (
-        message
+        <div className="text-green-600 mb-6">{message}</div>
       ) : (
-        <div className='flex items-center gap-2 mb-8 '>
-          Link :
-          {timer ? (
-            <span className='text-gray-800'>{`${
-              timer < 10 ? "0" : ""
-            }${timer}`}</span>
+        <div className="flex items-center gap-2 mb-8">
+          {timer > 0 ? (
+            <span className="text-gray-800">
+              Resend in 00:{timer < 10 ? `0${timer}` : timer}
+            </span>
           ) : (
             <button
               onClick={resendCode}
-              className='text-gray-500 hover:text-gray-700 cursor-pointer'
+              className="text-gray-600 hover:text-gray-800"
             >
-              Resend Otp
+              Resend OTP
             </button>
           )}
         </div>
       )}
 
-      {/* Email shortcuts */}
-      <div className='flex items-center justify-center gap-4 mb-6'>
+      {/* EMAIL SHORTCUTS */}
+      <div className="flex items-center justify-center gap-6 mb-6">
         <a
-          href='https://mail.google.com'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='flex items-center text-gray-600 hover:text-gray-800'
+          href="https://mail.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center text-gray-600 hover:text-gray-800"
         >
-          <img src='/images/gmail.png' alt='Gmail' className='w-6 h-6 mr-2' />
+          <img
+            src="/images/gmail.png"
+            alt="Gmail"
+            className="w-6 h-6 mr-2"
+          />
           <span>Open Gmail</span>
         </a>
 
         <a
-          href='https://outlook.live.com'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='flex items-center text-gray-600 hover:text-gray-800'
+          href="https://outlook.live.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center text-gray-600 hover:text-gray-800"
         >
           <img
-            src='images/outlook.jpeg'
-            alt='Outlook'
-            className='w-6 h-6 mr-2'
+            src="/images/outlook.jpeg"
+            alt="Outlook"
+            className="w-6 h-6 mr-2"
           />
           <span>Open Outlook</span>
         </a>
       </div>
 
-      {/* Help text */}
-      <div className='text-center mb-6'>
-        <button className='text-gray-600 hover:text-gray-800'>
+      {/* HELP */}
+      <div className="text-center mb-6">
+        <button
+          onClick={resendCode}
+          className="text-gray-600 hover:text-gray-800"
+        >
           Can't find your code? Request a new code.
         </button>
       </div>
 
-      <div className='text-center mb-12'>
-        <button className='text-blue-600 hover:text-blue-800'>
+      <div className="text-center mb-12">
+        <button className="text-blue-600 hover:text-blue-800">
           Sign in a different way
         </button>
       </div>
 
-      {/* Footer */}
-      <div className='flex items-center justify-center gap-4 text-gray-500 text-sm'>
-        <a href='#' className='hover:text-gray-700'>
+      {/* FOOTER */}
+      <div className="flex items-center justify-center gap-4 text-gray-500 text-sm">
+        <a href="#" className="hover:text-gray-700">
           Privacy & Terms
         </a>
-        <a href='#' className='hover:text-gray-700'>
+        <a href="#" className="hover:text-gray-700">
           Contact Us
         </a>
       </div>

@@ -12,7 +12,7 @@ import {
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import api from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { adminSignupSchema, validateSignup } from "../../Utility/formValidator";
 
@@ -82,11 +82,28 @@ console.log(response,"sent otp")
         navigate("/verify-otp");
       }
     } catch (error) {
-      console.log(error,"errorsComponnets")
-      setLoading(false);
-     
-      console.log(error, "error try block");
+      let message = "Signup failed";
+      if(error instanceof Error){
+        
+         message = error.message;
+      }
+      if(message.includes("Name")){
+         setError((prv) => ({
+        ...prv,
+        names: message,
+      }));
+          setLoading(false);
+      }else{
+ setError((prv) => ({
+        ...prv,
+        api: message,
+      }));
+  
+         setLoading(false);
+      console.log(message, "error try block");
     }
+      }
+     
   };
 
   return (

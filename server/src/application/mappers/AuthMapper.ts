@@ -3,6 +3,7 @@ import { AdminSignupRequestDTO, AdminSignupResponseDTO, LoginRequestDTO, Memeber
 import { Workspace } from "../../domain/entities/Workspace";
 import { z ,ZodError} from "zod";
 import { SubscriptionAggregateDTO, SubscriptionSummaryDTO } from "../dto/SuperDTO";
+import { responseUser } from "../../types/userTypes";
 export class AuthMapper {
   static mapUserToEntity(dto: AdminSignupRequestDTO): User {
     return new User({
@@ -40,7 +41,7 @@ export class AuthMapper {
     
     
   }
-  static mapEntityToMember(user:User,workspace:Workspace,token:string,refreshToken:string){
+  static mapEntityToMember(user:responseUser,workspace:Workspace,token:string,refreshToken:string){
    
     return {
       user,

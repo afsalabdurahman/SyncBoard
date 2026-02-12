@@ -4,9 +4,9 @@ import { RootState } from "../../Redux/store";
 import axios, { AxiosResponse } from "axios";
 import LoadingSpinner from '../../Custom/reusecomponents/LoadingSpinner';
 import api from "../../Services/apiServices/apiService";
-import { useParams,useLocation } from 'react-router';
+import { useParams,useLocation } from 'react-router-dom';
 import { current } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../../Worksapce/apis/workspaceapis'; 
 export default function ChangePasswordPage() {
   let naviagte=useNavigate()

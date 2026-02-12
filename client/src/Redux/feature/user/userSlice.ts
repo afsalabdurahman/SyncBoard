@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface User {
-  name?: string;
-  email?: string;
+  name: string;
+  email: string;
   password?: string;
   role?:string;
   superAdmin?:boolean;

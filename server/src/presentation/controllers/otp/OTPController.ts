@@ -25,7 +25,7 @@ export class OTPController {
 
     try {
        await this._otpServiceUsecase.verifyOTP(input)
-      res.status(HttpStatusCode.OK).json({ message: ResponseMessages.OTP_VERIFIED })
+      res.status(HttpStatusCode.CREATED).json({ message: ResponseMessages.OTP_VERIFIED })
     }
     catch (error) {
       next(error)

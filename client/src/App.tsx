@@ -4,7 +4,7 @@ import LoginPage from "./Member/pages/Login";
 import SignupPage from "./Member/pages/SignupPage";
 import PasswordResetPage from "./Member/pages/PasswordResetPage";
 import OtpVerification from "./Member/pages/OtpVerification";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ForgotPasswordOtpPage from "./Member/pages/ForgotPasswordOtpPage";
 import ChangePasswordPage from "./Member/pages/ChangePasswordPage";
 import CreateWorkspacePage from "./Member/pages/CreateWorkspecePage";
@@ -21,6 +21,7 @@ import { Layout } from "./SuperAdmin/Layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
 import PaymentRejected from "./Admin/Pages/PaymentRejected";
+import OtpProtectedRoute from "./Member/components/OtpProtectedRoute";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 
 function App() {
@@ -32,7 +33,11 @@ function App() {
           <Route path='/' element={<LandingPage />}></Route>
           <Route path='/login' element={<LoginPage />}></Route>
           <Route path='/signup' element={<SignupPage />}></Route>
-          <Route path='/verify-otp' element={<OtpVerification />}></Route>
+          <Route path='/verify-otp' element={
+    <OtpProtectedRoute>
+      <OtpVerification />
+    </OtpProtectedRoute>
+  }></Route>
           <Route
             path='/reset-password'
             element={<ForgotPasswordOtpPage />}

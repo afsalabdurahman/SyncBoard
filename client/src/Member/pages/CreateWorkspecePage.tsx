@@ -6,7 +6,7 @@ import { RootState } from "../../Redux/store";
 import { useSelector } from "react-redux";
 import apiService from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {setWorkspace} from "../../Redux/feature/WorkspaceSlice"
 import { setUserRole } from "../../Redux/feature/RegisterSlice";

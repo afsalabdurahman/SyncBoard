@@ -3,7 +3,7 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { ILogger } from "../../../repositories/ilogger/ILogger";
-import { CustomError, ForbiddenError, NotFoundError, ValidationError, } from "../../../../utils/errors";
+import { CustomError, ForbiddenError, NotFoundError, ValidationError,AuthenticationError } from "../../../../utils/errors";
 import { ILogin } from "../../../repositories/iauth/ILogin";
 import { LoginRequestDTO, LoginResponseDTO } from "../../../dto/AuthDTOs";
 import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository";
@@ -28,10 +28,10 @@ export class LoginUsecase implements ILogin {
 
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user) {
-      throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+      throw new AuthenticationError(ResponseMessages.USER_NOT_FOUND);
     }
     if (!user.workspace) {
-      throw new NotFoundError(ResponseMessages.NOT_FOUND + 'Workspace');
+      throw new AuthenticationError(ResponseMessages.NOT_FOUND + 'Workspace');
     }
     if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
     if (user.isDeleted) throw new ForbiddenError(ResponseMessages.USER_STATUS_DELETE);

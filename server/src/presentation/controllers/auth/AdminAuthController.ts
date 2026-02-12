@@ -16,9 +16,9 @@ export class AdminAuthController {
     next: NextFunction
   ): Promise<void> {
 
-    let input:LoginRequestDTO = req.body as LoginRequestDTO;
+    const input:LoginRequestDTO = req.body as LoginRequestDTO;
     try {
-      let response= await this._loginUseCase.execute(input );
+      const response= await this._loginUseCase.execute(input );
 
       if (!response) {
         throw new NotFoundError("User is found");

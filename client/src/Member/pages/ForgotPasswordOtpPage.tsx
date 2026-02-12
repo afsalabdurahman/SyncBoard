@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 
 import api from "../../Services/apiServices/apiService";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import axios, { AxiosResponse } from "axios";
 const ForgotPasswordOtpPage = () => {
   let navigate=useNavigate()

@@ -33,7 +33,7 @@ export class AuthController {
     }
   }
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    let input: LoginRequestDTO = req.body as LoginRequestDTO;
+    const input: LoginRequestDTO = req.body as LoginRequestDTO;
     try {
       console.log("working...")
        const {token,refreshToken,user,workspace} = await this._loginUsecase.loginUser(input);

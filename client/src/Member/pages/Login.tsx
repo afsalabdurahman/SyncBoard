@@ -1,8 +1,8 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { use, useEffect, useState } from "react";
 import api from "../../Services/apiServices/apiService";
 import { AxiosError, AxiosResponse } from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../Redux/store";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
@@ -26,13 +26,13 @@ function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!email) {
+    if (!email.trim()) {
       setError("please enter valid email");
       return false;
     }
     setError("");
     if (password.trim() == "") {
-      setError("please enter valid password");
+      setError("invalidPassword");
 
       return false;
     }
@@ -49,13 +49,13 @@ function Login() {
         navigate("/work-space");
       
     } catch (error) {
-      console.log(error,"err<<<<")
+    
       let message = "Login failed"
        if (error instanceof Error) {
       message = error.message;
     }
        setError(message);
-      console.log(error,"error")
+  
       setLoad(false);
     
     }
@@ -78,29 +78,7 @@ function Login() {
           </div>
           <h2 className='text-2xl font-semibold mb-6'>Log in</h2>
 
-          {/* <div className='space-y-3 mb-6'>
-            <button className='w-full flex items-center justify-center gap-2 border px-4 py-2 rounded'>
-              <img
-                src='https://img.icons8.com/color/16/google-logo.png'
-                alt='Google'
-              />
-              Continue with Google
-            </button>
-            <button className='w-full flex items-center justify-center gap-2 border px-4 py-2 rounded'>
-              <img
-                src='https://img.icons8.com/color/16/facebook.png'
-                alt='Facebook'
-              />
-              Continue with Facebook
-            </button>
-            <button className='w-full flex items-center justify-center gap-2 border px-4 py-2 rounded'>
-              <img
-                src='https://img.icons8.com/ios-filled/16/mac-os.png'
-                alt='Apple'
-              />
-              Continue with Apple
-            </button>
-          </div> */}
+         
           <p style={{ color: "red" }}> {error ? error : null} </p>
           <form onSubmit={handleSubmit}>
             <div className='space-y-4'>

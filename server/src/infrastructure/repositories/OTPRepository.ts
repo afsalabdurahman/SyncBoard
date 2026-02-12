@@ -27,7 +27,13 @@ export class OTPRepository implements IOtpRepository {
    return  new OTP(otp.email,otp.otp)
    
   }
-  // deleteByEmail(email: string): Promise<void> {
-  //   console.log("delete")
-  // }
+async deleteOTP(email: string): Promise<boolean> {
+  const isDeleted=await OTPModel.deleteOne({email:email})
+  if (isDeleted.deletedCount === 1) {
+    return true
+}else{
+  return false
+}
+}
+
 }
