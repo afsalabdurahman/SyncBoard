@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { logout } from "../../Worksapce/apis/workspaceapis";
 import { useUser } from "../../Worksapce/hooks/workspacehooks";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 const SettingsPage = lazy(() => import("../components/SettingsPage"));
 const ProjectsPage = lazy(()=>import("../components/ProjectsPage"));
 export default function AdminDashboard() {

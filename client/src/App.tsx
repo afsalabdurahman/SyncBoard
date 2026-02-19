@@ -21,44 +21,104 @@ import { Layout } from "./SuperAdmin/Layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
 import PaymentRejected from "./Admin/Pages/PaymentRejected";
-import OtpProtectedRoute from "./Member/components/OtpProtectedRoute";
+import OtpProtectedRoute from "./Member/protectedRoutes/OtpProtectedRoute";
+import AuthProtectRoutes from "./Worksapce/protectedRoutes/authProtectRoutes";
+import PublicProtectionRoute from "./Worksapce/protectedRoutes/PublicProtectionRoute";
+import AuthProvider from "./Worksapce/protectedRoutes/AuthProvider"
+import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
+import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 
 function App() {
   return (
     <>
       <BrowserRouter>
+      <AuthProvider>
         <Routes>
-          <Route index element={<LandingPage />} />
-          <Route path='/' element={<LandingPage />}></Route>
-          <Route path='/login' element={<LoginPage />}></Route>
+          <Route index element={
+            
+  <LandingPage />
+
+          
+          
+            
+            } />
+          <Route path='/' element={
+        
+ <LandingPage />
+           
+           
+            
+            }></Route>
+          <Route path='/login' element={
+            <PublicRoute>
+
+           
+<LoginPage />
+           </PublicRoute> 
+ 
+           
+    
+         
+       
+            
+            }></Route>
           <Route path='/signup' element={<SignupPage />}></Route>
-          <Route path='/verify-otp' element={
+          <Route path='/verify/otp' element={
     <OtpProtectedRoute>
       <OtpVerification />
     </OtpProtectedRoute>
   }></Route>
           <Route
-            path='/reset-password'
-            element={<ForgotPasswordOtpPage />}
+            path='/reset/password'
+            element={
+           <OtpProtectedRoute>
+<ForgotPasswordOtpPage />
+           </OtpProtectedRoute>
+              
+          
+          }
           ></Route>
           <Route
-            path='/forgot-password'
+            path='/forgot/password'
             element={<PasswordResetPage />}
           ></Route>
           <Route
-            path='/change-password'
-            element={<ChangePasswordPage />}
+            path='/change/password'
+            element={
+          
+   <ChangePasswordPage />
+          
+           
+          
+          }
           ></Route>
           <Route
-            path='/create-workspace'
+            path='/create/workspace'
             element={<CreateWorkspacePage />}
           ></Route>
-          <Route path='/invite-members' element={<InviteMembers />}></Route>
-          <Route path='/work-space' element={<WorkSpacePage />}></Route>
+          <Route path='/invite/members' element={
+            
+            <InviteMembers />
+            
+            
+            }></Route>
+          <Route path='/workspace' element={
+         <ProtectedRoute>
+ <WorkSpacePage />
+         </ProtectedRoute>
+
+            
+            }></Route>
           <Route
             path='/invite-members/:workspaceSlug'
-            element={<LinkInvitaionPage />}
+            element={
+          
+  <LinkInvitaionPage />
+          
+          
+          
+          }
           ></Route>
           {/* <Route
             path='/multiple-workspace'
@@ -67,7 +127,14 @@ function App() {
           <Route path='/user-profile' element={<Profile />}></Route>
           {/* Admin DashBorad */}
           <Route path='/admin' element={<AdminLogin />}></Route>
-          <Route path='/admin/dashboard' element={<AdminDashboard />}></Route>
+          <Route path='/admin/dashboard' element={
+            <ProtectedRoute>
+  <AdminDashboard />
+
+            </ProtectedRoute>
+          
+            
+            }></Route>
           <Route path='/test' element={<Invite />}></Route>
           <Route path='/payment/success' element={<PaymentCompleted/>}></Route>
           <Route path='/payment/cancel' element={<PaymentRejected/>}></Route>
@@ -77,6 +144,7 @@ function App() {
           <Route path='/platform/login' element={<Login />} />
           <Route path='/platform/admin' element={<Layout />} />
         </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </>
   );

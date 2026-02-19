@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface User {
   name: string;
   email: string;
-  password?: string;
+ password:string;
   role?:string;
   superAdmin?:boolean;
   isAdmin?:boolean;
@@ -19,7 +19,7 @@ interface User {
 }
 
 interface UserState {
-  password: any;
+
   name: any;
   email: any;
   user: User|null;

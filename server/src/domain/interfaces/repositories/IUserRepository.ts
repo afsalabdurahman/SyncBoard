@@ -9,6 +9,7 @@ export interface IUserRepository extends IBaseRepository<User | null> {
   findByEmail(email: string): Promise<User | null>;
 
   findById(id: string | Types.ObjectId): Promise<User | null>;
+  findUser(id: string | Types.ObjectId): Promise<User | null>;
   updateUser(
     id: string | Types.ObjectId,
     updateFieldname: string,

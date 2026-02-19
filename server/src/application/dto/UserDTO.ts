@@ -22,3 +22,17 @@ location:string;
   stripeCustomerId?: string;
   currentSubscription?: Types.ObjectId;
 }
+export interface ProfileUpdateDTO {
+  name: string;
+  role: string;
+  title: string;
+  location: string;
+  status: string;
+  email: string;
+  joinDate: string;
+  address?: string | null;
+  about?: string | null;
+  phone?: string | null;
+  imageUrl?: string | null;
+  skills: string[];
+}

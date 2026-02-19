@@ -3,7 +3,7 @@ import { Workspace } from "../../domain/entities/Workspace";
 
  export interface WorkspaceRequestDTO{
 email:string;
-WorkspaceName:string;
+workspaceName:string;
 slug:string;
 title:string;
 role:string;

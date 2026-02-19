@@ -21,18 +21,19 @@ export class LoginUsecase implements ILogin {
 
   async loginUser(input: LoginRequestDTO): Promise<LoginResponseDTO> {
     if (!input.email || !input.password) throw new ValidationError(ResponseMessages.INVALID_INPUT)
-    const isValid = AuthMapper.loginValidation(input)
+    // const isValid = AuthMapper.loginValidation(input)
 
-    if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
-    const user = await this._userRepository.findByEmail(input.email);
-
+    // if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
+    const isExist = await this._userRepository.findByEmail(input.email);
+    
+    if(!isExist || !isExist?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+    const user = await this._userRepository.findUser(isExist._id )
+console.log(user,"userFOmf usecase")
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user) {
-      throw new AuthenticationError(ResponseMessages.USER_NOT_FOUND);
+      throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     }
-    if (!user.workspace) {
-      throw new AuthenticationError(ResponseMessages.NOT_FOUND + 'Workspace');
-    }
+    
     if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
     if (user.isDeleted) throw new ForbiddenError(ResponseMessages.USER_STATUS_DELETE);
     const isTrue = await this._authService.comparePassword(
@@ -41,7 +42,10 @@ export class LoginUsecase implements ILogin {
     );
 
     if (!isTrue) {
-      throw new CustomError(ResponseMessages.PASSWORD_FAILED, 422);
+      throw new AuthenticationError(ResponseMessages.PASSWORD_FAILED);
+    }
+    if (!user.workspace?.length) {
+      throw new CustomError("Create a new workspace",403,user);
     }
 
     const token = await this._authService.generateToken({

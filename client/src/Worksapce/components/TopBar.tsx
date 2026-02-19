@@ -4,14 +4,21 @@ import { useState } from 'react';
 import { useUser } from '../hooks/workspacehooks';
 import {logout} from "../apis/workspaceapis"
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { logoutUserAuth } from '../../Redux/feature/AuthSlice';
+import { Dispatch } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
+
 const TopBar = () => {
+  const dispacth = useDispatch()
   const navigate = useNavigate()
   const user = useUser()
   console.log(user,"userrrrr")
   const handleLogout =  async()=>{
    logout(user._id).then((res)=>{
-    if(res==204) navigate("/login")
+    if(res==204) {
+      dispacth(logoutUserAuth())
+      navigate("/login")}
    })
    
   }

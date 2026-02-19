@@ -20,9 +20,10 @@ export class ProjectUsecase implements IProjectUsecase {
   ) { }
 
   async excute(dto: ProjectRequstDTO, workspaceId: string): Promise<ProjectResponseDTO> {
-
+console.group(dto,"dto")
     const isValid = ProjectMapper.ValidateProjectData(dto);
-    if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
+    console.log(isValid,"vakid")
+    if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const projectEntity = ProjectMapper.mapProjectToEntity(dto, workspaceId);
     const projectData = await this._projectRepository.create(projectEntity);
     if (!projectData || !projectData.workspaceId) throw new ConflictError("Project" + ResponseMessages.CREATEION_FAILED);

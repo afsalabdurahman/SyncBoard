@@ -5,12 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 import apiService from "../../Services/apiServices/apiService";
 import { RootState } from "../../Redux/store";
 import { AxiosResponse } from "axios";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router-dom";
 import { UseSelector, useDispatch } from "react-redux";
 import { workspace } from "../../Redux/feature/WorkspaceSlice";
-
+        const INVITE_LINK = import.meta.env.VITE_BASE_INVITE_LINK
 import { useSelector } from "react-redux";
 import Loader from "../../Custom/reusecomponents/Loader";
+import { sendInvitaionMail } from "../apiservice/workspaceApi";
+import { email } from "zod";
 
 interface EmailField {
   email: string;
@@ -54,11 +56,14 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
   let workspaceLink: any = useSelector((state: RootState) => {
     return state.workspace.workspace.slug;
   });
+  console.log(INVITE_LINK,"LINKDD",workspaceLink)
+  const link=INVITE_LINK+workspaceLink;
+  console.log(link,"66")
   const [loader, setLoader] = useState(false);
   const [emailss, setEmails] = useState<EmailField[]>(initialEmails);
   const [emails,setSingleEmail]=useState(null)
   const [invitationLink, setInvitationLink] = useState<string>(
-    `http://localhost:5173/invite-members/workspace-${workspaceLink}`
+  link
   );
   const [count, setCount] = useState(0);
   let navigate = useNavigate();
@@ -103,31 +108,34 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
     } else {
       setLoader(true);
       try {
-        const response: AxiosResponse<any, any> = await apiService.post(
-          "workspace/invite",
+        // const response: AxiosResponse<any, any> = await apiService.post(
+        //   "workspace/invite",
 
-          {
+        //   {
             
-            emails,
-            invitationLink,
+        //     emails,
+        //     invitationLink,
             
-          },
-          { withCredentials: true }
-        );
-
+        //   },
+        //   { withCredentials: true }
+        // );
+const response = await sendInvitaionMail(emails,invitationLink)
         if (response) {
           setLoader(false);
           console.log(response, "fromserver after invite");
           toast.success("Invitation send");
           setTimeout(() => {
           
-            navigate("/work-space");
+            navigate("/workspace");
           }, 5000);
         }
       } catch (error) {
         setLoader(false);
-        console.log(error);
-        toast.error("Invitation send failed ");
+      let message = "Login failed"
+       if (error instanceof Error) {
+      message = error.message;
+    }
+        toast.error(message);
       }
     }
   };
@@ -160,7 +168,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
             <input
               type='text'
               className='flex-1 p-2 text-sm'
-              value={`https://www.syncworkspace.co.in/invite-members/workspace-${workspaceLink}`}
+              value={link}
               readOnly
             />
             <button

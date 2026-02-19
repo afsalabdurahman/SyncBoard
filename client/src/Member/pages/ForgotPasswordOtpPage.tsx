@@ -40,13 +40,13 @@ console.log(email,"from reduxxx")
       // show loading or send OTP
 
 try {
-  const response: AxiosResponse<any, unknown> = await api.post("/verify-otp", { email,otp:otpValue });
+  const response: AxiosResponse<any, unknown> = await api.post("/verify/otp", { email,otp:otpValue });
     setIsValidTrue(true)
     setIsValidFalse(false)
     setMessage("Please wait automatically redirect...")
     
     setTimeout(() => {
-      navigate('/change-password ')
+      navigate('/change/password ')
     }, 5000);
    
   

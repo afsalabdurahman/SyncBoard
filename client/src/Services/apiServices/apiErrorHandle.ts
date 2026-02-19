@@ -1,6 +1,8 @@
 
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { store } from "../../Redux/store";
+import { logoutUserAuth } from "../../Redux/feature/AuthSlice";
 
 export const handleApiError = (error: AxiosError): void => {
 
@@ -13,21 +15,54 @@ export const handleApiError = (error: AxiosError): void => {
       case 400:
         message = data?.message || "Invalid request data.";
         break;
-      case 401:
-        message = "Session expired. Please login again.";
-       
-        window.location.href = "/login";
-        break;
-      case 403:
-        message = data?.message || "Access denied.";
-        const url: string = error.response?.config?.url || "";
-    if (url !== "auth/user/login") {
-    window.location.href = "/login";
+     case 401: {
+  console.log(error.config, "from landing");
+  console.log(error?.config?.url, "from landing2222");
+
+  const url = error?.config?.url || "";
+  const protectedRoutes = ["projects", "activities", "invitation", "workspace"];
+
+  const isProtectedRequest = protectedRoutes.some(route =>
+    url.includes(route)
+  );
+
+  const isUserLoggedIn = store.getState().auth?.user; // adjust based on your state
+
+  if (isProtectedRequest && isUserLoggedIn) {
+    toast.error("Session expired. Please login again.");
   }
-     
-        break;
+
+  store.dispatch(logoutUserAuth());
+  break;
+}
+
+
+     case 403: {
+  const message = data?.message || "Access denied.";
+  console.log(message, "403 message");
+
+  const isUserLoggedIn = store.getState().auth?.user;
+
+  if (isUserLoggedIn && message?.toLowerCase().includes("blocked")) {
+    toast.error("Your account has been blocked.");
+    store.dispatch(logoutUserAuth());
+  }else if(isUserLoggedIn && message?.toLowerCase().includes("removed")){
+ toast.error("Your account has been removed.");
+    store.dispatch(logoutUserAuth());
+  }else if(isUserLoggedIn && message?.toLowerCase().includes("Suspended")){
+    toast.error("Workspace is suspended")
+    store.dispatch(logoutUserAuth());
+  }
+  
+  else{
+    store.dispatch(logoutUserAuth());
+  }
+
+  break;
+}
+
       case 404:
-        console.log(error,"data reved otp")
+        console.log(error, "data reved otp")
         message = data?.message || "Requested resource not found.";
         break;
       case 409:

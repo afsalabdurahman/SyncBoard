@@ -33,34 +33,31 @@ const MyProject = () => {
   const [showProjectDetails, setShowProjectDetails] = useState(false);
   const [projectDetails, setProjectDetails] = useState(null);
   
-// const initialProjects=useSelector((state)=>{
-//   return state.projects.list
-// })
+
   let userName = useSelector((state: any) => {
-    console.log(state,"Obejc+++")
+    
     return state.user.user.name;
   });
   const [projects, setProjects] = useState([]);
-  console.log(projects, "newProjects");
+
   const workspaceId=useWorkspaceid()
 
-  useEffect(() => {
-    
-     if (!userName) return;
-    
-    
-//  apiService.get(`/task/mytask/${userName}?count=all`).then((response)=>{
-//   console.log( response, "re000000")
-//  dispatch(setTasks(response.data))
-//       })
-  }, [dispatch,userName]);
+
  
- useEffect(()=>{
- const list= myProjects(workspaceId).then((res)=>{
-console.log(res.data,"loistsssssss")
-setProjects(res.data)
-  })
- },[])
+useEffect(() => {
+  if (!workspaceId) return;   // important guard
+
+  async function fetchProjects() {
+    const res = await myProjects(workspaceId);
+
+    setProjects(res.data);
+  }
+
+  fetchProjects();
+
+}, [workspaceId]);
+
+
 
   console.log(projects, "usestateproje");
 

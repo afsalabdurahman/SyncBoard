@@ -8,6 +8,9 @@ import { IChangePasword } from "../../../application/repositories/IChangePasswor
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 import { MemeberRegisterRequestDTO } from "../../../application/dto/AuthDTOs";
+import { IUserUsecase } from "../../../application/repositories/IUser";
+import { responseUser } from "../../../types/userTypes";
+import { UserMapper } from "../../../application/mappers/UserMapper";
 @injectable()
 export class MemberController {
   constructor(
@@ -15,7 +18,8 @@ export class MemberController {
     private _updateProfileUsecase: IUpdateProfileUsecases,
     @inject("ChangePasswordUsecase") private _changePasswordUsecase: IChangePasword,
     @inject("MemberRegisterUsecase") private _memberRegisterUsecase: IMemberRegister,
-  ) {}
+    @inject("GetUserUsecase") private _getUserUsecase: IUserUsecase
+  ) { }
 
   async updateUserProfile(
     req: Request,
@@ -33,7 +37,7 @@ export class MemberController {
         .status(HttpStatusCode.CREATED)
         .json({ message: ResponseMessages.SUCCESS, updatedData });
     } catch (error) {
-     next(error)
+      next(error)
     }
   }
 
@@ -49,7 +53,7 @@ export class MemberController {
       if (!currentPassword || !newPassword) {
         throw new NotFoundError("filed is emty please enter");
       }
-       await this._changePasswordUsecase.execute(
+      await this._changePasswordUsecase.execute(
         userId,
         currentPassword,
         newPassword
@@ -72,8 +76,9 @@ export class MemberController {
       title: req.body.title,
       slug: req.body.workspaceSlug,
     };
+    console.log(input,"input")
     try {
-      const  response =
+      const response =
         await this._memberRegisterUsecase.execute(input);
 
       setTokensInCookies(res, response.token, response.refreshToken);
@@ -91,4 +96,24 @@ export class MemberController {
       console.log(error);
     }
   }
+  async findUserByEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const email = req.params.email;
+      console.log(req.params.email, "emailsse")
+      const userDocument = await this._getUserUsecase.findUserByEmail(email);;
+      const user = UserMapper.userResponseDTO(userDocument)
+      res.status(HttpStatusCode.OK).json({ user })
+    } catch (error) {
+      next(error)
+    }
+  }
+  // async IsUserExist(req:Request,res:Response,next:NextFunction):Promise<void>{
+  //   try {
+  //     const email = req.params.email;
+  //     const userDocument = await this._getUserUsecase.findUserByEmail(email);
+
+  //   } catch (error) {
+      
+  //   }
+  // }
 }

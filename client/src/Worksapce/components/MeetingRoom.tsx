@@ -31,7 +31,9 @@ const [total,setTotal]=useState()
   const workspaceSlug = useSelector(
     (state: any) => state.workspace.workspace.slug
   );
-
+useSelector((state)=>{
+  console.log(state,"state")
+})
 useEffect(()=>{
  async function fetch(){
 const data=await paginationUser(workspaceSlug,1);

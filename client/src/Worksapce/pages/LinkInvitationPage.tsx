@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../Redux/store";
 
 import Loader from "../../Custom/reusecomponents/Loader";
@@ -14,10 +14,12 @@ import {
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import api from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import { acceptInvitaionLink } from "../apis/workspaceapis";
+import { toast } from "react-toastify";
+import { setUserAuth } from "../../Redux/feature/AuthSlice";
 
 const LinkInvitaionPage = () => {
   let { workspaceSlug } = useParams();
@@ -53,33 +55,33 @@ const LinkInvitaionPage = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (name.trim() == "") {
-      setError((prv) => ({
-        ...prv,
-        names: "Please enter your name",
-      }));
-      return false;
-    } else {
-      setError((prv) => ({
-        ...prv,
-        names: "",
-      }));
-    }
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
-    if (!regex.test(password)) {
-      setError((prv) => ({
-        ...prv,
-        passwords:
-          "The password must have at least six characters and must include a capital letter, a lowercase letter, and a special character.",
-      }));
+    // if (name.trim() == "") {
+    //   setError((prv) => ({
+    //     ...prv,
+    //     names: "Please enter your name",
+    //   }));
+    //   return false;
+    // } else {
+    //   setError((prv) => ({
+    //     ...prv,
+    //     names: "",
+    //   }));
+    // }
+    // const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
+    // if (!regex.test(password)) {
+    //   setError((prv) => ({
+    //     ...prv,
+    //     passwords:
+    //       "The password must have at least six characters and must include a capital letter, a lowercase letter, and a special character.",
+    //   }));
 
-      return false;
-    } else {
-      setError((prv) => ({
-        ...prv,
-        passwords: "",
-      }));
-    }
+    //   return false;
+    // } else {
+    //   setError((prv) => ({
+    //     ...prv,
+    //     passwords: "",
+    //   }));
+    // }
 
     if (conformPassword !== password) {
       setError((prv) => ({
@@ -106,24 +108,22 @@ const LinkInvitaionPage = () => {
 
     try {
       const response = await acceptInvitaionLink(name,email,password,role,title,workspaceSlug)
-      console.log(response,"response+++Invite")
-      if (response.status === 201) {
+console.log(response,"reposeInvitaion")
         setLoading(false);
-        dispatch(setWorkspace(response.data.workspace));
+        dispatch(setWorkspace(response?.workspace));
 
+        dispatch(setUserData(response?.user));
+         dispatch(setUserAuth(response.user));
+        navigate("/workspace");
      
-        
-        dispatch(setUserData(response.data.user));
-        navigate("/work-space");
-      }
     } catch (error) {
-      console.log(error, "reposne error");
+      console.log(error,"errorinpAge")
+        if (error instanceof Error) {
       setLoading(false);
-      setError((prv) => ({
-        ...prv,
-        api: "",
-      }));
-      console.log(error, "error try block");
+    toast.error(error.message)
+    }
+      
+     
     }
   };
 

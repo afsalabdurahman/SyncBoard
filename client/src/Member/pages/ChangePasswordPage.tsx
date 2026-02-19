@@ -1,22 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from "../../Redux/store";
+import { RootState, store } from "../../Redux/store";
 import axios, { AxiosResponse } from "axios";
 import LoadingSpinner from '../../Custom/reusecomponents/LoadingSpinner';
 import api from "../../Services/apiServices/apiService";
 import { useParams,useLocation } from 'react-router-dom';
 import { current } from '@reduxjs/toolkit';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../Worksapce/apis/workspaceapis'; 
-export default function ChangePasswordPage() {
-  let naviagte=useNavigate()
+import {toggleForward} from "../../Redux/feature/ForwardSlice"
 
+import { logout } from '../../Worksapce/apis/workspaceapis'; 
+import { useDispatch } from 'react-redux';
+import { useUser } from '../../Worksapce/hooks/workspacehooks';
+import { changePassword } from '../apiservice/authApi';
+import { toast } from 'react-toastify';
+import { logoutUserAuth } from '../../Redux/feature/AuthSlice';
+export default function ChangePasswordPage() {
+  const navigate=useNavigate()
+
+const dispatch = useDispatch<AppDispatch>();
+dispatch(toggleForward())
+const forward = useSelector((state: RootState) => state.forward);
+
+console.log(forward,"fore")
 const userId=useSelector((state:RootState) =>state?.user?.user?._id);
 console.log(userId,"userId")
   const [user,setUser]=useState(false)
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
      const userStatus = queryParams.get("user");
+    
      useEffect(() => { if(userStatus){
     setUser(true)
    }else{
@@ -122,49 +135,62 @@ console.log(userId,"userId")
     console.log("form data:",formData)
     setLoading(true)
     try {
-  const response: AxiosResponse<any, any> = await api.patch(
-        `member/change/password/${userId}`,
-        { currentPassword:formData.currentPassword, newPassword: formData.confirmPassword }
-      );
-if(response.status){
-   setIsSuccess(true);
-    // Simulate API call to change password
-    setTimeout(() => {
-      console.log('Password changed successfully:', formData);
-      
-      naviagte("/login")
-    }, 5000);
-  
+const response = await changePassword(userId,formData.currentPassword,formData.confirmPassword)
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+if (response) {
+  setIsSuccess(true);
+  setErrors({});
+
+  const handleLogout = async () => {
+    console.log("Password changed successfully:", formData);
+
+    await delay(5000); // waits 5 seconds
+
+    store.dispatch(logoutUserAuth());
+    // navigate("/login");
+  };
+
+  handleLogout();
 }
 
 
 
-if(user){
-  const response1: AxiosResponse<any, any> = await api.post(
-        "/login",
-        { email:email, password:formData.currentPassword }
-      );
-if(response1.status !== 200){
-  console.log("error in current password")
-  throw new Error("Current password is incorrect");
-}
+// if(user){
+//   const response1: AxiosResponse<any, any> = await api.post(
+//         "/login",
+//         { email:email, password:formData.currentPassword }
+//       );
+//         setErrors({});
+// if(response1.status !== 200){
+//   console.log("error in current password")
+//   throw new Error("Current password is incorrect");
+// }
  
-    }else{
-        const response: AxiosResponse<any, any> = await api.post(
-        "/change-password",
-        { email:email, password: formData.confirmPassword }
-      );
-if(response.status){
-   
-    // Simulate API call to change password
-    setTimeout(() => {
-      console.log('Password changed successfully:', formData);
-      setIsSuccess(true);
-    }, 500);
-}}
+//     }else{
+//         const response: AxiosResponse<any, any> = await api.post(
+//         "/change/password",
+//         { email:email, password: formData.confirmPassword }
+//       );
+// if(response.status){
+//      setErrors({});
+//     // Simulate API call to change password
+//     setTimeout(() => {
+      
+//       console.log('Password changed successfully:', formData);
+//       setIsSuccess(true);
+//     }, 500);
+// }}
     } catch (error) {
-      console.log('Error changing password:', error);
-       setErrors({ api: 'Failed to change password. Please try again.' });
+         if (error instanceof Error) {
+     const message = error.message;
+     console.log(message,"message....")
+     setErrors({ api: message });
+     toast.error(message)
+    }
+    console.log(error)
+      // console.log('Error changing password:', error);
+      //  setErrors({ api: 'Failed to change password. Please try again.' });
       
       setLoading(false)
     }

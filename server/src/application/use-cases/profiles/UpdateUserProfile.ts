@@ -1,9 +1,10 @@
 import { injectable, inject } from "tsyringe";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
-import { CustomError } from "../../../utils/errors";
+import { CustomError, ValidationError } from "../../../utils/errors";
 import { IUpdateProfileUsecases } from "../../repositories/IUpdateProfile";
 import { User } from "../../../domain/entities/User";
 import { HttpStatusCode } from "../../../common/errorCodes";
+import { UserMapper } from "../../mappers/UserMapper";
 @injectable()
 export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   constructor(
@@ -15,7 +16,9 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   ): Promise<User> {
 
     const merged = Object.assign({}, ...args);
-
+    console.log(merged,"Merged++++")
+  const isValid = UserMapper.updateProfileValidator(merged.profileData);
+  if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const updatedUser = await this._userRepository.updateProfile(userId, merged);
 
     if (!updatedUser) {

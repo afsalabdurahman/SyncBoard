@@ -12,6 +12,7 @@ import {setWorkspace} from "../../Redux/feature/WorkspaceSlice"
 import { setUserRole } from "../../Redux/feature/RegisterSlice";
 import{updateUserPartial} from "../../Redux/feature/user/userSlice"
 import { setUserData } from "../../Redux/feature/user/userSlice";
+import { createWorkspace } from "../apiservice/workspaceApi";
 
 interface FormField {
   projectName: string;
@@ -24,11 +25,11 @@ const CreateWorkspacePage: React.FC = () => {
   })
   let navigate=useNavigate()
 let dispach=useDispatch()
-  const email = useSelector((state: RootState) => state?.user?.user?.email);
+  const email  = useSelector((state: RootState) => state?.user?.user?.email);
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
 
-  console.log(email,Userrole,ownerId, "emailsss");
+
 
 
   const [formFields, setFormFields] = useState<FormField[]>([
@@ -51,39 +52,31 @@ let dispach=useDispatch()
     setFormFields(newFormFields);
   };
 
-  let handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(formFields, "form");
-    let WorkspaceName = formFields[0].projectName;
-    let title = formFields[0].role;
-    let slug = WorkspaceName + ".com";
+    const WorkspaceName = formFields[0].projectName;
+    const title = formFields[0].role;
+    const slug = WorkspaceName + ".com";
     
 
-    console.log(email,WorkspaceName, title, slug, "datas");
+  
+    if (!email ) {
+      toast.error("Email is not available");
+      return;
+    }
     try {
-      const response: AxiosResponse<any, any> = await apiService.post(
-        "workspace/create",
-        
-        { 
-          email,
-          WorkspaceName,
-          slug,
-          title,
-          role:Userrole,
-          ownerId
-
-        }
-        ,{withCredentials: true}
-      );
-      console.log(response,"responseive axoio+++++++++++++++s");
+      const response: AxiosResponse<any, any> = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId)
       if (response) {
 dispach(setWorkspace(response.data.workspaceResponseDTO.workspace))
 dispach(setUserData(response.data.workspaceResponseDTO.user))
-       navigate('/invite-members')
+       navigate('/invite/members')
       }
     } catch (error) {
-      console.log(error,"eroo  catch block axios")
-      toast.error("Somthing went to wrong")
+     if(error instanceof Error){
+      toast.error(error.message)
+     }
+     
      
    
     }

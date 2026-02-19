@@ -21,7 +21,7 @@ export class OTPController {
     }
   }
   async verifyOtp(req: Request, res: Response, next: NextFunction): Promise<void> {
-    let input: MailRequestDTO = req.body as MailRequestDTO;
+    const input: MailRequestDTO = req.body as MailRequestDTO;
 
     try {
        await this._otpServiceUsecase.verifyOTP(input)
@@ -30,6 +30,15 @@ export class OTPController {
     catch (error) {
       next(error)
 
+    }
+  }
+  async reSendOTP(req:Request,res:Response,next:NextFunction):Promise<void>{
+    try {
+      const email=req.body.email;
+      await this._otpServiceUsecase.reSendOTP(email)
+        res.status(HttpStatusCode.OK).json({ message: ResponseMessages.OTP_SENT })
+    } catch (error) {
+      next(error)
     }
   }
 }

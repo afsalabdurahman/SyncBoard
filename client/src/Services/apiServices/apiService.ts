@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh-token")
     ) {
-      toast.error("Session expired")
+      //  toast.error("Session expired")
   
     }
 

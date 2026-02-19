@@ -7,7 +7,7 @@ import { Input } from "../../Custom/ui/input"
 import { useUser } from "../../Worksapce/hooks/workspacehooks"
 import { logout } from "../../Worksapce/apis/workspaceapis"
 import { toast } from "react-toastify"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 interface HeaderProps {
   sidebarCollapsed: boolean
 }

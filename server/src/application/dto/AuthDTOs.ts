@@ -18,9 +18,9 @@ export interface LoginResponseDTO {
 
 export interface AdminSignupRequestDTO {
   email: string;
-  password: string;
-  name: string;
-  role: 'Admin';
+  password?: string;
+  name?: string;
+  role?: 'Admin';
 
 }
 

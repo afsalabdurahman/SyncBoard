@@ -17,12 +17,14 @@ export class MemberRegisterUsecase implements IMemberRegister {
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private _authService: IAuthService,
     @inject("WorkspaceRepository")
-    private _workspaceRepository: IWorkspaceRepository
+    private _workspaceRepository: IWorkspaceRepository,
+    
   ) {}
 
   async execute(
     dto: MemeberRegisterRequestDTO
   ): Promise<MemberRegisterResposeDTO> {
+    console.log(dto,"dto")
     const isValid= AuthMapper.memberRegisterValidation(dto)
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
     const isFound = await this._userRepository.findByEmail(dto.email);
@@ -76,7 +78,8 @@ export class MemberRegisterUsecase implements IMemberRegister {
         dto.email,
         dto.title
       );
-if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOTFOUND)
+if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOTFOUND);
+console.log(insertToWorkspce,"inserTToWOrkspace")
     const response = AuthMapper.mapEntityToMember(
       createMember,
       insertToWorkspce,

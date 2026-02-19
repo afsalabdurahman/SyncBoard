@@ -2,12 +2,10 @@ import { UserDoument, UserModel } from "../database/models/UserModel";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
 import { BaseRepository } from "./BaseRepository";
-import { injectable, inject } from "tsyringe";
+import { injectable,  } from "tsyringe";
 import { Types, ObjectId, Date } from "mongoose";
-import { ConflictError, ValidationError } from "../../utils/errors";
-import { HttpStatusCode } from "../../common/errorCodes";
+import {  ValidationError } from "../../utils/errors";
 import mongoose from "mongoose";
-import { WorkspaceMembership } from "../../types/workpaceTypes";
 import { UserResponseDTO } from "../../application/dto/SuperDTO";
 @injectable()
 export class UserMongooseRepository extends BaseRepository<User | null> implements IUserRepository {
@@ -17,17 +15,22 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
 
   async findByEmail(email: string): Promise<User | null> {
 
-    const document: UserDoument = await this.model.findOne({ email }).lean().exec()
+    const document: UserDoument = await this.model.findOne({ email }).select("-password").lean().exec()
 
     console.log(document, "deoc++")
 
     if (!document) return null;
-    return new User({ ...document, _id: document._id?.toString() });
+    return new User({ ...document, _id: document._id?.toString()  });
 
 
   }
   async findById(id: string): Promise<User | null> {
-    let document: UserDoument = await this.model.findById(id).lean().exec();
+    const document = await this.model.findById(id).select("-password").lean().exec();
+    if (!document) return null;
+    return new User({ ...document, _id: document._id?.toString() });
+  }
+  async findUser(id: string): Promise<User | null> {
+    const document = await this.model.findById(id).lean().exec();
     if (!document) return null;
     return new User({ ...document, _id: document._id?.toString() });
   }

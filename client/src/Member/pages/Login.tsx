@@ -16,7 +16,16 @@ import { setUserData } from "../../Redux/feature/user/userSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import { setLog } from "../../Redux/feature/logs/LogSlice";
 import { loginApi } from "../apiservice/authApi";
+import { setUserAuth } from "../../Redux/feature/AuthSlice";
 function Login() {
+
+useSelector((state)=>{
+  console.log(state,"LoginState")
+})
+
+   const isforwarToLoginpage=useSelector((state)=>{
+       console.log(state.forward,"Login66666")
+     })
   const [load, setLoad] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,18 +50,28 @@ function Login() {
     try {
       const {workspace,user} = await loginApi(email,password)
      
-
+  dispatch(setUserAuth(user._id));
         dispatch(setWorkspace(workspace));
         //  dispatch(setLog(response.data.logs))
         dispatch(setUserData(user));
         
-        navigate("/work-space");
+        navigate("/workspace",{ replace: true });
       
     } catch (error) {
-    
+    console.log(error,"err")
       let message = "Login failed"
        if (error instanceof Error) {
       message = error.message;
+    }
+    if(message.includes("createdAt")){
+      const parse=JSON.parse(message);
+      console.log(parse,"paser");
+      let id=parse._id;
+      delete parse._id;
+      parse.id=id;
+      console.log(parse,"pase2222r");
+      dispatch(setUserData(parse,));
+      navigate("/create/workspace");
     }
        setError(message);
   
@@ -95,7 +114,7 @@ function Login() {
                 className='w-full px-4 py-2 border rounded'
               />
               <div className='flex justify-between text-sm'>
-                <Link to='/forgot-password' className='text-gray-600'>
+                <Link to='/forgot/password' className='text-gray-600'>
                   forgot password?
                 </Link>
                 <Link to='/signup' className='text-purple-700'>

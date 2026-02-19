@@ -16,9 +16,9 @@ import { UserMongooseRepository } from "../../infrastructure/repositories/UserRe
 export const authMiddelware = () => {
 
  return async  (req:CustomRequest,res:Response,next:NextFunction):Promise<void>=>{
-    let authService= container.resolve(AuthService) 
-    let getUserUseCase=container.resolve(GetUserUseCase)
-    let workspaceUsecse= container.resolve(CreateWorkspaceUsecases)
+    const authService= container.resolve(AuthService) 
+    const getUserUseCase=container.resolve(GetUserUseCase)
+    const workspaceUsecse= container.resolve(CreateWorkspaceUsecases)
     const userRepository=container.resolve(UserMongooseRepository)
     const accessToken = req.cookies.accessToken;
 if (!accessToken) {

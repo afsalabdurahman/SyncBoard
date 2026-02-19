@@ -3,14 +3,15 @@ import { container } from "tsyringe";
 import { MemberController } from "../controllers/member/MemberController";
 import { authMiddelware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";
-
+ 
 const router = express.Router();
 
-let memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin","SuperAdmin"])];
-let memberController = container.resolve(MemberController);
+const memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin","SuperAdmin"])];
+const memberController = container.resolve(MemberController);
 
 router.patch("/profile/update/:id", memberAuth, memberController.updateUserProfile.bind(memberController))
 router.patch("/change/password/:id", memberAuth,memberController.changeUserPassword.bind(memberController));
 router.post("/invite/register",memberController.inviteAndRegister.bind(memberController))
-
+router.get("/find/user/:email",memberAuth,memberController.findUserByEmail.bind(memberController))
+// router.get("/find/user/exist/:email",memberController.)
 export default router;

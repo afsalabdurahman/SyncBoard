@@ -89,7 +89,7 @@ const Invite = () => {
         toast.success("Invitation send");
         setTimeout(() => {
           // dispatch(setLog(response.data.logs))
-          navigate("/work-space");
+          navigate("/workspace");
         }, 5000);
       }
     } catch (error) {

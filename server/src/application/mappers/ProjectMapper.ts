@@ -52,8 +52,24 @@ static mapEntityToProject(
   static ValidateProjectData(input: ProjectRequstDTO) {
 
     const isValid = z.object({
-      name: z.string().min(1, "Project name is required").max(100,"word count is exceed"),
-      description: z.string().min(1, "Description is required").max(1000,"word count is exceed"),
+      name:   z
+    .string()
+    .trim()
+    .min(1, "Project name is required")
+    .max(100, "Word count exceeded")
+    .regex(/^[A-Za-z0-9][A-Za-z0-9 ]*$/, {
+      message:
+        "Name must start with a letter or number and cannot contain special characters",
+    }),
+      description: z
+    .string()
+    .trim()
+    .min(1, "Description is required")
+    .max(1000, "Word count exceeded")
+    .regex(/^[A-Za-z0-9][A-Za-z0-9\s.,!?'"()-]*$/, {
+      message:
+        "Description must start with a letter or number and cannot start with space or special characters",
+    }),
       assignedUsers: z.array(z.string().min(1)).min(1, "At least one user must be assigned"),
       status: StatusTypesSchema,
       priority: PriorityTypesSchema,

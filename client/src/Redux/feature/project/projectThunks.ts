@@ -7,6 +7,7 @@ import { fetchProjects, } from "../../../Admin/apis/projectApi";
 import { ProjectsState } from "./projectSlice";
 import { ProjectFormData } from "../../../Admin/types/projetctTypes"
 import { uploadAttachment } from '../../../Services/Cloudinary';
+import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
 
 export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async ({ workspaceId, page, limit }: {workspaceId:string, page: number, limit: number }) => {
   try {
@@ -88,8 +89,9 @@ export const createProject = createAsyncThunk("adminProjectData/create", async (
     }
 
   } catch (error) {
-    return rejectWithValue("Internal server error");
-
+    // return rejectWithValue("Internal server error");
+ const err: string = catchErrorHandle(error, "Failed to create Project")
+    throw new Error(err)
 
   }
 })

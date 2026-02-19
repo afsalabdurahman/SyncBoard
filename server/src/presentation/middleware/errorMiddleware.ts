@@ -17,6 +17,7 @@ export const errorMiddleware = (
       success: false,
       error: err.name,
       message: err.message,
+      data:err.data
     });
   } else if (err.name === "TokenExpiredError") {
     logger.error(err.name)

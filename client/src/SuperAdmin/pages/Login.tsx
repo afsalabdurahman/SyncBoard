@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../../Services/apiServices/apiService";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { fetchCountData } from "../../Redux/feature/count/countThunks";
 import { useDispatch } from "react-redux";
 import { superLogin, superLoginApi } from "../apis/fetchApi";

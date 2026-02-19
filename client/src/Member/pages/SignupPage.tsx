@@ -79,7 +79,7 @@ console.log(response,"sent otp")
      
       let data={email,password,name,isAdmin:true,superAdmin:true}
         dispatch(setUserData(data))
-        navigate("/verify-otp");
+        navigate("/verify/otp",{replace:true});
       }
     } catch (error) {
       let message = "Signup failed";

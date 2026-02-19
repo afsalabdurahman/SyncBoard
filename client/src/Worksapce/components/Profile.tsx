@@ -16,7 +16,7 @@ import {
   clearUserProfiles,
 } from "../../Redux/feature/RegisterSlice";
 import { toast, ToastContainer } from "react-toastify";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 import {
   Phone,
@@ -49,6 +49,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 import apiService from "../../Services/apiServices/apiService";
+import { profilePartialUpdate } from "../apis/workspaceapis";
 export default function Profile() {
   console.log(CLOUDINARY_URL,"URL")
   //image
@@ -99,7 +100,7 @@ export default function Profile() {
     email: Userdata?.userData?.user?.email || null,
     phone: Userdata?.userData?.user?.phone || null,
     joinDate: Userdata?.joinDate || null,
-    skills: ["NA"],
+   
     about: Userdata?.userData?.user?.about || null,
   });
   // console.log(Userdata?.userData.user.imageUrl,"user img")
@@ -129,31 +130,27 @@ export default function Profile() {
           ...prev,
           imageUrl,
         }));
-        //       const profileDatas = {
-        // imageUrl: response.data.secure_url}
-        //dispatch(addUserProfile({ imageUrl: imageUrl }));
+      
         dispatch(updateUserPartial({ imageUrl: imageUrl }));
-        // Build updated profileData for backend
+      
         const updatedProfile = {
           ...profileData,
           imageUrl,
         };
-        const axiosResponse: AxiosResponse<any> = await api.patch(
-          `member/profile/update/${userId}`,
-          {
-            profileData: updatedProfile,
-          },
-          { withCredentials: true }
-        );
-        console.log(axiosResponse, "from setrver500");
-        // dispatch(setUserName(profileData.));
+    const isUpdated=await profilePartialUpdate(userId,updatedProfile)
       } catch (error) {
-        console.error("Error uploading or updating profile:", error);
+      
+      if(error instanceof Error){
+        
+        const message = error.message;
+         console.log(message,"inMESSAGE  componet")
+         toast.error(message)
+      }
       } finally {
         setLoading(false);
       }
     } else {
-      alert("Please select a valid image file.");
+      toast.error("Please select a valid image file.");
     }
   };
 
@@ -170,30 +167,28 @@ export default function Profile() {
   // Handle saving edits
 
   const changePassword = () => {
-    navigate("/change-password?user=true");
+    navigate("/change/password?user=true");
   };
   const handleSave = async () => {
-    dispatch(updateUserPartial(formData));
+   
 
     const updatedProfile = {
       ...profileData,
       ...formData,
     };
 
-    setProfileData(updatedProfile);
+    
 
     console.log(updatedProfile, "before send to back end");
 
     try {
-      const response: AxiosResponse<any, any> = await api.patch(
-       `member/profile/update/${userId}`,
-        {
-          profileData: updatedProfile, // Use the up-to-date object
-        },
-        { withCredentials: true }
-      );
 
-      if (response.status) {
+       const isUpdated=await profilePartialUpdate(userId,updatedProfile)
+     
+
+      if (isUpdated) {
+         dispatch(updateUserPartial(formData));
+         setProfileData(updatedProfile);
         toast.success("updated");
         setIsEditing(false);
         setEditSection(null);
@@ -202,7 +197,12 @@ export default function Profile() {
         setEditSection(null);
       }
     } catch (error) {
-      console.log(error, "error+");
+    if(error instanceof Error){
+        
+        const message = error.message;
+         console.log(message,"inMESSAGE  componet")
+         toast.error(message)
+      }
     }
   };
 

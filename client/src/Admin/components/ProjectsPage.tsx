@@ -85,25 +85,33 @@ useEffect(() => {
   }
 }, [dispatch, adminId, page, rowPerPage]);
 
-  const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
-      try {
-    
-           setLoader("Creating project ...");
-    await dispatch(createProject({workspaceid,logId,projectData,adminId})).unwrap()
-      dispatch(fetchProjectData({workspaceId:workspaceid, page, limit: rowPerPage }));
-   
-       setTimeout(() => {
-      toast.success("Created project successfully 🎉");
-    }, 100);
-      setLoader("");
-      } catch (error) {
-        console.log(error,"ERRRRRRR")
-         setLoader("");
-         toast.error("Unable to create Project")
-      }
- 
-    
-  };
+ const handleAddProject = async (
+  projectData: Omit<ProjectFormData, "_id">
+) => {
+  try {
+    setLoader("Creating project ...");
+
+    await dispatch(
+      createProject({ workspaceid, logId, projectData, adminId })
+    ).unwrap();
+
+    dispatch(
+      fetchProjectData({
+        workspaceId: workspaceid,
+        page,
+        limit: rowPerPage,
+      })
+    );
+
+    toast.success("Created project successfully 🎉");
+
+  } catch (error: any) {
+    toast.error("sdfjhfklshf"); // error is now string from rejectWithValue
+  } finally {
+    setLoader("");
+  }
+};
+
 
   const handleEditProject = async (projectData: any) => {
    setLoader("Updating project ...");

@@ -1,13 +1,16 @@
 import { HttpStatusCode } from '../common/errorCodes';
 import { ResponseMessages } from '../common/erroResponse';
+import { User } from '../domain/entities/User';
 
 export class CustomError extends Error {
   constructor(
     message: string,
-    public statusCode: HttpStatusCode
+    public statusCode: HttpStatusCode,
+   public data?:User
   ) {
     super(message);
-    this.name = this.constructor.name;
+    this.name = this.constructor.name;;
+    this.data=data
   }
 }
 

@@ -10,6 +10,7 @@ import { removeTokensInCookies, setTokensInCookies } from "../../../utils/Cookie
 import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { ResponseMessages } from "../../../common/erroResponse";
+import { CustomRequest } from "../../types/CustomRequest";
 
 @injectable()
 export class AuthController {
@@ -59,4 +60,15 @@ export class AuthController {
     next(error)
    }
     }
+    async authMe(req:CustomRequest,res:Response,next:NextFunction):Promise<void>{
+     
+    try {
+      console.log(req.user,"acllinf auth666")
+        res.status(200).json({
+    user: req?.user?.id,
+    })
+    } catch (error) {
+      next(error)
+    }
+}
 }

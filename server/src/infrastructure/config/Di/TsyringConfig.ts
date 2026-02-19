@@ -7,10 +7,8 @@ import { IAuthService } from "../../../domain/interfaces/services/IAuthService";
 import { RegisterUseCase } from "../../../application/use-cases/auth/admin/RegisterUsecase";
 // import { EmailService } from '../services/email.service.impl';
 // import { IEmailService } from '../../domain/interfaces/services/email.service';
-import { User } from "../../../domain/entities/User";
 import { ILogger } from "../../../application/repositories/ilogger/ILogger";
 import { WinstonLoggerImpl } from "../../logger/WinstonLoggerImpl";
-import { IEmailService } from "../../../domain/interfaces/services/IEmailServices";
 import { NodemailerService } from "../../services/NodeMailerService";
 import { SentInvitaionUsecase } from "../../../application/use-cases/invitation/SentInvitaion";
 import { IOtpRepository } from "../../../domain/interfaces/repositories/IOtpRepository";
@@ -20,12 +18,10 @@ import { OTPService } from "../../../application/use-cases/otp/SentOtpUsecases";
 import { OTPController } from "../../../presentation/controllers/otp/OTPController";
 import { CreateWorkspaceUsecases } from "../../../application/use-cases/workspace/CreateWorkspaceUsecase";
 import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IWorkspaceRepository";
-import { WorkspaceModel } from "../../database/models/WorkspaceModel";
 //import {LogRepository} from "../../repositories/LogRepository"
 import { WorkspaceRepository } from "../../repositories/WorkspaceRepository";
 import { ChangePasswordUsecase } from "../../../application/use-cases/auth/member/ChangePasswordUsecase";
 import { LoginUsecase } from "../../../application/use-cases/auth/member/LoginUsecase";
-import { AuthController } from "../../../presentation/controllers/auth/UserAuthController";
 import { UpdateUserProfileUsecase } from "../../../application/use-cases/profiles/UpdateUserProfile";
 // Register dependencies
 import { AbuseRepository } from "../../repositories/AbuseRepository";
@@ -54,6 +50,7 @@ import { DatahandleUsecase } from "../../../application/use-cases/super/Datahand
 // container.register("LogUsecases",{useClass:LogUseCases})
 import { RagOrchestrator } from "../../orchestrator/RagOrchestrator";
 // import {XenovaEmbeddingProvider} from "../../services/ragPipeline/EmbbedPipeline";
+import { GetUserUseCase } from "../../../application/use-cases/user/GetUserUsecase";
 import { MongoVectorStore } from "../../services/ragPipeline/VectorSerach";
 import { GroqLLMProvider } from "../../services/ragPipeline/LLMrapper";
 import { RagUseCase } from "../../../application/use-cases/rag/RagUsecase"
@@ -61,6 +58,7 @@ import { AbuseUsecase } from "../../../application/use-cases/workspace/AbuseUsec
 import { TicketRepository } from "../../repositories/TicketRepository";
 import { TicketUsecase } from "../../../application/use-cases/ticket/TicketUsecase";
 container.register("TicketUsecase", { useClass: TicketUsecase })
+container.register("GetUserUsecase",{useClass:GetUserUseCase})
 container.register("TicketRepository", { useClass: TicketRepository })
 container.register("AbuseRepository", { useClass: AbuseRepository })
 container.register("AbuseUsecase", { useClass: AbuseUsecase })

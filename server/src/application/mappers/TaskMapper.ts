@@ -1,4 +1,5 @@
 import { Task } from "../../domain/entities/Task";
+import { taskType } from "../../types/taskTypes";
 import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 import { z } from "zod";
 
@@ -49,10 +50,10 @@ export class TaskMapper {
     return isValid.safeParse(input);
   }
 
-  static MappedCompletdTask(tasks: Task[]): CompletedTaskResponseDTO {
+  static MappedCompletdTask(tasks: taskType[]): CompletedTaskResponseDTO {
     const mappedData = tasks.map((task) => {
       return {
-        id: task.id,
+        id: task._id,
         taskName: task.name,
         project: task.project,
         username: task.assignedUser,

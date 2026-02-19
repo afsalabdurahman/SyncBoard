@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Check, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { setUserData } from "../../Redux/feature/user/userSlice";
+import { setUserData, updateUserPartial } from "../../Redux/feature/user/userSlice";
 import api from "../../Services/apiServices/apiService";
 import { useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
@@ -14,13 +14,21 @@ const OtpVerification = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
+const forward = useSelector((state: RootState) => state.forward);
+
+console.log(forward,"fore")
+
+
+
   const userData = useSelector((state: RootState) => ({
     email: state?.user?.user?.email,
     name: state?.user?.user?.name,
     password:state?.user?.user?.password
+    
  
   }));
-console.log(userData,"dataaa")
+
   const [otp, setOtp] = useState<string[]>(
     Array(OTP_LENGTH).fill("")
   );
@@ -48,9 +56,12 @@ useLayoutEffect(() => {
 
   /* ---------------- Auto Verify ---------------- */
   useEffect(() => {
+   setIsValidFalse(false)
     if (otp.every((digit) => digit !== "")) {
+       
       verifyOtp();
     }
+    
   }, [otp]);
 
   /* ---------------- Verify OTP ---------------- */
@@ -58,14 +69,17 @@ useLayoutEffect(() => {
     const otpValue = otp.join("");
 
     try {
-   await verifyOTP(userData?.email,otpValue)
+   const isValid=await verifyOTP(userData?.email,otpValue)
 
-
+    
       setIsValidTrue(true);
+      
      
       setMessage("Please wait automatically redirect...");
-
-      const registerRes: AxiosResponse<any> = await api.post(
+if(forward){
+  navigate("/change/password")
+}else{
+ const registerRes: AxiosResponse<any> = await api.post(
         "auth/user/register",
         {
           name: userData.name,
@@ -76,12 +90,15 @@ useLayoutEffect(() => {
         },
         { withCredentials: true }
       );
-
+      
       dispatch(setUserData(registerRes.data.user));
-
+  
+      dispatch(updateUserPartial({password:""}))
       setTimeout(() => {
-        navigate("/create-workspace");
+        navigate("/create/workspace",{replace:true});
       }, 3000);
+}
+     
     } catch (error) {
       setIsValidFalse(true);
     }

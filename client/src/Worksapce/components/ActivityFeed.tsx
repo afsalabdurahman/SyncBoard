@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import type { AppDispatch } from "../../Redux/store";
 import { fetchAllLogs } from "../../Redux/feature/logs/logThunks";
 import { Activity, Clock, User, MessageCircle, UserPlus, Mail ,FolderKanban ,FileText, Settings } from 'lucide-react';
@@ -28,7 +28,9 @@ useEffect(() => {
 }, []);
 
 
-
+useSelector((state)=>{
+  console.log(state,"activtyState")
+})
 
   const isBlock = useSelector((state) => {
     console.log(state?.user?.user?.isBlock, "block state");

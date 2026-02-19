@@ -7,7 +7,7 @@ import { io } from "../../../server";
 import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
 import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
-import { commentType } from "../../../types/taskTypes";
+import { commentType, taskType } from "../../../types/taskTypes";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
 import { taskFilter } from "../../../utils/taskFilter";
 @injectable()
@@ -63,11 +63,15 @@ export class TaskUsecase implements ITaskUseCase {
   async completedTask(workspaceid: string): Promise<CompletedTaskResponseDTO> {
     const { completedTasks, taskReject } =
       await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid));
-    const tasks = [
+  
+  console.log(completedTasks,"completed66")
+      const tasks = [
       ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
       ...(Array.isArray(taskReject) ? taskReject : [taskReject]),
-    ];
-    const mappedData = TaskMapper.MappedCompletdTask(tasks)
+    ] as taskType[]
+       console.log(tasks,"Tasked66")
+    const mappedData = TaskMapper.MappedCompletdTask(tasks);
+    console.log(mappedData,"mapped66")
     return mappedData;
   }
   async updateApprovalStatus(
@@ -75,6 +79,7 @@ export class TaskUsecase implements ITaskUseCase {
     status: string,
     msg?: string | null
   ): Promise<void> {
+    console.log(taskId, status, msg,"6666")
     await this._taskRepository.updateApprovalStatus(taskId, status, msg);
   }
 

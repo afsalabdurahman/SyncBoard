@@ -1,45 +1,55 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AxiosResponse } from "axios";
-import {
-
-  setUserEmail,
- 
-} from "../../Redux/feature/RegisterSlice";
-// import api from "../../Services/apiServices/apiService";
-import apiService from "../../Services/apiServices/apiService";
+import {setForward} from "../../Redux/feature/ForwardSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../Redux/store";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
+import { findEmail, reSendOTP } from "../apiservice/authApi";
+import { setUserData } from "../../Redux/feature/user/userSlice";
 export default function PasswordResetPage() {
    const dispatch = useDispatch<AppDispatch>();
+   
+
+
+
+
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading,setLoading]=useState(false)
-  let naviagte = useNavigate();
+  const navigate = useNavigate();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     // Handle password reset logic here
     setLoading(true)
     console.log("Password reset requested for:", email);
     try {
-      const response: AxiosResponse<any, any> = await apiService.post("/user-exist", {
-        email,
-      });
-    
-    } catch (error: any) {
-      if (error.status == 409) {
-        const response: AxiosResponse<any, any> = await apiService.post(
-          "/newotp-send",
-          {
-            email,
-          }
-        );
-         dispatch(setUserEmail(email));
-        naviagte("/reset-password");
+      const user=await findEmail(email);
+      console.log(user,"response")
+        dispatch(setUserData(user));
+        await reSendOTP(email)
+    dispatch(setForward(true));
+
+     navigate("/verify/otp");
+    } catch (error) {
+      if(error instanceof Error){
+console.log(error.message,"in cahctFUnction")
+        setMessage(error.message);
+      }else{
+setMessage("No account found. Please register.");
       }
+      
+      // if (error.status == 409) {
+      //   const response: AxiosResponse<any, any> = await apiService.post(
+      //     "/newotp-send",
+      //     {
+      //       email,
+      //     }
+      //   );
+      //    dispatch(setUserEmail(email));
+      //   naviagte("/reset-password");
+      // }
       setLoading(false)
-      setMessage("No account found. Please register.");
+      // 
       console.log(error, "errorsss");
 
      

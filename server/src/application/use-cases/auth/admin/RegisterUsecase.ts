@@ -23,7 +23,7 @@ export class RegisterUseCase implements IAuth {
     const existingUser = await this._userRepository.findByEmail(input.email);
     if (existingUser) throw new ConflictError  (ResponseMessages.USER_EXIST);
   
-    const hashedPassword = await this._authService.hashPassword(input.password);
+    const hashedPassword = await this._authService.hashPassword(input.password as string);
     input.password = hashedPassword;
     const AdminEntity = AuthMapper.mapUserToEntity(input)
 

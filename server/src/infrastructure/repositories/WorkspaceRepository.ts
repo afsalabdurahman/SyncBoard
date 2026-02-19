@@ -15,7 +15,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
   async findByObjectId(id: Types.ObjectId): Promise<Workspace | null> {
    
-    let workspace = await WorkspaceModel.findById(id).lean().exec();
+    const workspace = await WorkspaceModel.findById(id).lean().exec();
      
            if (!workspace) return null;
            return new Workspace({ ...workspace, _id: workspace._id?.toString() });
@@ -30,10 +30,10 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     title: string
   ): Promise<Workspace | null> {
     const data = { userId: userId, title: title };
-    let updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
+    const updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
       { slug },
       { $push: { members: data } },{new:true}
-    ).exec()
+    ).lean().exec()
      if (!updatedWorkspce) return null;
            return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString() });
 
