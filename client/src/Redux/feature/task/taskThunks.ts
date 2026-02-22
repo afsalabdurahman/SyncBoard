@@ -39,7 +39,7 @@ export const addTaskApi = createAsyncThunk("/adminTaskData/add", async (newTask)
 })
 export const updateTaskApi = createAsyncThunk("adminTaskData/update", async (updatedTask) => {
   try {
-    let id = updatedTask.id
+    const id = updatedTask.id
 
     const response = await apiService.patch(`task/update/${id}`, {
       updatedTask

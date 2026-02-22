@@ -95,14 +95,14 @@ import { useEffect } from "react";
 
 export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
   const planKey=useSelector((state)=>{
-console.log(state,"mystate")
+
    return state.suscription.subscription.planKey ?? "free"
 
 
 })
-  let dispacth = useDispatch<AppDispatch>();
+  const dispacth = useDispatch<AppDispatch>();
 const suscriptionStatus= useSelector((state)=>state.suscription.subscription.status)
-console.log(suscriptionStatus,"status +++")
+
 function getSubscriptionKey(planKey: string) {
   if(suscriptionStatus!=="active"){
     return ( <div className="flex items-center gap-2">

@@ -87,7 +87,6 @@ return new Project({
       const mongoID=stringToMongoObj(id)
       const projects = await ProjectModel.find({projectAdminId:mongoID}).lean<Project[]>().exec()
       
-      console.log(projects,"ADMINIDD+")
       return projects
    }
 }

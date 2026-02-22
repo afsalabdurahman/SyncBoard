@@ -16,7 +16,7 @@ export default function SubscribeButton() {
       const res = await apiService.post("checkout/pay", body, {
         headers: { "Content-Type": "application/json" }
       });
-      console.log(res)
+   
     } catch (error) {
         console.log(error,"error")
     }

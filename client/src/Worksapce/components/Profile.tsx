@@ -51,10 +51,9 @@ const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 import apiService from "../../Services/apiServices/apiService";
 import { profilePartialUpdate } from "../apis/workspaceapis";
 export default function Profile() {
-  console.log(CLOUDINARY_URL,"URL")
   //image
-  let navigate = useNavigate();
-  let dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const fileInputRef = useRef(null);
 
   const handleOverlayClick = () => {
@@ -65,14 +64,13 @@ export default function Profile() {
   // );
 
   const Userdata = useSelector((state: any) => {
-    console.log("State Profile:-", state);
-    let date = new Date(state.workspace.workspace.createdAt);
-    let formateDate = date.toLocaleString("en-US", {
+    const date = new Date(state.workspace.workspace.createdAt);
+    const formateDate = date.toLocaleString("en-US", {
       month: "long",
       year: "numeric",
     });
 
-    let data = {
+    const data = {
       user: state.register,
       workspace: state.workspace,
       joinDate: formateDate,
@@ -81,7 +79,6 @@ export default function Profile() {
     };
     return data;
   });
-  console.log(Userdata.userData, "userdata from profile");
   const userId = Userdata.userData.user._id;
   const isAdmin= Userdata.userData.user.role=="Admin"?true:false;
   const [activeTab, setActiveTab] = useState("about");
@@ -103,13 +100,11 @@ export default function Profile() {
    
     about: Userdata?.userData?.user?.about || null,
   });
-  // console.log(Userdata?.userData.user.imageUrl,"user img")
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    console.log(file, "file updateimageeeeig000000");
     if (file && file.type.startsWith("image/")) {
       const formData = new FormData();
       formData.append("file", file);
@@ -143,7 +138,6 @@ export default function Profile() {
       if(error instanceof Error){
         
         const message = error.message;
-         console.log(message,"inMESSAGE  componet")
          toast.error(message)
       }
       } finally {
@@ -179,7 +173,6 @@ export default function Profile() {
 
     
 
-    console.log(updatedProfile, "before send to back end");
 
     try {
 
@@ -200,7 +193,6 @@ export default function Profile() {
     if(error instanceof Error){
         
         const message = error.message;
-         console.log(message,"inMESSAGE  componet")
          toast.error(message)
       }
     }
@@ -260,14 +252,7 @@ export default function Profile() {
     );
   };
 
-  // useEffect(() => {
-  //   apiService
-  //     .get("/user-data", { email: Userdata?.userData?.user?.email })
-  //     .then((response) => {
-  //       console.log(response.data.userData, "user data from profile0000");
-  //       dispatch(setUserData(response.data.userData));
-  //     });
-  // }, []);
+
 
   return (
     <div className=' mt-[em] overflow-x-auto overflow-y-auto  '>

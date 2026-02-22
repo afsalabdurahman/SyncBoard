@@ -17,7 +17,6 @@ const AuthProtectRoutes = ({ children }: Props) => {
   const email = useSelector(
     (state: RootState) => state?.user?.user?.email
   );
-  console.log(email,"email")
 
   useEffect(() => {
     async function authUser() {
@@ -41,7 +40,6 @@ const AuthProtectRoutes = ({ children }: Props) => {
   }, [email]);
 
   if (loading) return <div>Loading...</div>;
-console.log(user,"userss")
   if (!user) {
     return <Navigate to="/login" replace />;
   }

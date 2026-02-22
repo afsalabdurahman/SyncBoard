@@ -16,8 +16,8 @@ export const handleApiError = (error: AxiosError): void => {
         message = data?.message || "Invalid request data.";
         break;
      case 401: {
-  console.log(error.config, "from landing");
-  console.log(error?.config?.url, "from landing2222");
+
+ 
 
   const url = error?.config?.url || "";
   const protectedRoutes = ["projects", "activities", "invitation", "workspace"];

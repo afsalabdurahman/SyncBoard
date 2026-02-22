@@ -17,7 +17,6 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
 
     const document: UserDoument = await this.model.findOne({ email }).select("-password").lean().exec()
 
-    console.log(document, "deoc++")
 
     if (!document) return null;
     return new User({ ...document, _id: document._id?.toString()  });
@@ -104,7 +103,6 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     const document: UserDoument[] = await this.model.find({
       "workspace.workspaceId": workspaceId,
     }).lean().exec()
-    console.log(document, "document+++")
     if (!document) return null;
     return document
   }
@@ -131,7 +129,6 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
-    console.log(items)
     return { items, totalItems }
 
 

@@ -17,7 +17,6 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace')
       const users = await this.userRepository.findUsersInsameWorkspace(stringToMongoObj(workspceData._id.toString()))
-      console.log(users, "786")
       return users
 
    }
@@ -30,7 +29,6 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
   async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{
           const workspceData = await this.workspaceRepository.findbySlug(slug);
             if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace');
-            console.log(workspceData,"5665Workspace in usecase")
                const users=await this.userRepository.searchUser(stringToMongoObj(workspceData._id.toString()),query);
                return users
    }

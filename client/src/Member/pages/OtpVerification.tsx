@@ -17,9 +17,6 @@ const OtpVerification = () => {
 
 const forward = useSelector((state: RootState) => state.forward);
 
-console.log(forward,"fore")
-
-
 
   const userData = useSelector((state: RootState) => ({
     email: state?.user?.user?.email,

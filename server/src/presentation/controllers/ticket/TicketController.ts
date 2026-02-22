@@ -17,7 +17,6 @@ try {
     await this._ticketUsecases.execute(input)
 res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
 } catch (error) {
-    console.log(error)
     next(error)
 }
 
@@ -29,7 +28,6 @@ async findMyTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
         const responseDTO=await this._ticketUsecases.getMyTickets(workspaceId)
         res.status(HttpStatusCode.OK).json(responseDTO)
     } catch (error) {
-        console.log(error)
         next(error)
     }
 }
@@ -40,7 +38,6 @@ async updateTicketMsg(req:Request,res:Response,next:NextFunction):Promise<void>{
         await this._ticketUsecases.updateMsgs(ticketId,msg)
         res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
     } catch (error) {
-        console.log(error)
         next(error)
     }
 }

@@ -105,7 +105,7 @@ const upgradeStatus = (plan:string) =>{
 
 
 export function RecentActivity({subscription,abuse}:Props) {
-  console.log(subscription,"propbs")
+
   
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

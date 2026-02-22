@@ -95,7 +95,6 @@ refetch()
       setSelectedReport(null)
       refetch()
     } catch (error) {
-      console.log(error,"errr+++")
       toast.error(error.data.message)
     }
 
@@ -119,7 +118,6 @@ refetch()
   };
 
 
-console.log(reports,"sfusefk")
 
   return (
   <div className="min-h-screen bg-gray-50">

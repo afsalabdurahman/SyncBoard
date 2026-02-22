@@ -15,7 +15,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     async function checkAuth() {
       try {
         const res = await apiService.get("/auth/user/me",{},{withCredentials:true});
-        console.log(res,"responseaapi")
+  
         dispatch(setUserAuth(res.data.user));
       } catch {
         console.log("workinggCathc in authProvider")

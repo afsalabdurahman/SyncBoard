@@ -51,7 +51,6 @@ const userId=useSelector((state)=>state.user.user._id)
 const projectCount= useSelector((state)=>state.projects.list.length)
 const userCount = useSelector((state)=>state.alluser.users.length)
 
-console.log(projectCount,"count project++++",userCount)
   const [usageMetrics] = useState<UsageMetrics>(() => {
     const baseMetrics = {
       free: {
@@ -118,15 +117,15 @@ console.log(projectCount,"count project++++",userCount)
     : targetPlan === "Pro"
     ? "$20/month"
     : "$50/month";
-console.log(targetPlan,"targetplan  ++")
+
     const currentDate = new Date().toLocaleDateString()
 
 
-console.log(paymentInfo,"info pay")
+
     apiService.post(`/checkout/payment/${userId}`,{
       plan:targetPlan
     }).then((res)=>{
-      console.log(res,"checkout response")
+    
        window.location.href = res.data
     })
 //  setCheckout(true)

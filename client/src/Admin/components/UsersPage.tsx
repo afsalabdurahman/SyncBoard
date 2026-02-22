@@ -38,7 +38,7 @@ interface User {
 
 export function UsersPage() {
   //axios
-  let users = useUsers()
+  const users = useUsers()
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [userss, setUserss] = useState<User[]>();
@@ -49,14 +49,8 @@ export function UsersPage() {
   const workspaceslug = useSelector(
     (state: RootState) => state.workspace.workspace.slug
   );
-  console.log(workspaceslug, "slugg");
-  useSelector((state) => {
-    console.log(state, "++++++++");
-  });
 
-//   useEffect(()=>{
-// console.log(users)
-//   },[users.length])
+
 
 useEffect(()=>{
  dispatch(fetchAllUsers({page,limit:rowPerPage,workspaceslug}))
@@ -69,27 +63,15 @@ const handleChangePage = (event, newPage) => {
   };
 
 
-  // useEffect(() => {
-  //   if (!workspaceslug) return; // prevent empty request
 
-  //   apiService
-  //     .get(`workspace/member/data/${workspaceslug}`)
-  //     .then((response) => {
-  //       console.log(response.data, "data fetch from api+++");
-  //       dispatch(setUsers(response.data));
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, [userss,refreshKey]);
 
-  console.log(users, "usersssss");
+ 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deleteUser, setDeleteUser] = useState<string>("");
   const [restoreUser,setRestoreUser]=useState("")
-  console.log(editingUser, "edit userFuncion return");
-  console.log(users, "users");
+
+
   const handleAddUser = (userData: Omit<User, "id">) => {
     const newUser = {
       ...userData,
@@ -110,7 +92,7 @@ const handleChangePage = (event, newPage) => {
     }
   };
   const handleUNDeleteUser = (id: string) => {
-    console.log("undelete");
+
     setDeleteUser(id)
         setDialoqMessage({
   title: "Do you want to restore",
@@ -126,7 +108,7 @@ const handleChangePage = (event, newPage) => {
 });
 
     setIsDialogOpen(true);
-    console.log(id, "delete clicked");
+  
     // setUserss(users.filter((user) => user.id !== id));
   };
   const handleConfirm = async (confirm) => {
@@ -134,7 +116,7 @@ const handleChangePage = (event, newPage) => {
 
 
 
-    console.log(confirm,"confir")
+
     if(confirm.includes("remove")){
  
 

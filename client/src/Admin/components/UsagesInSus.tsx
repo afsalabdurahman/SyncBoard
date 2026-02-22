@@ -8,7 +8,7 @@ interface UsageMetricsProps {
 }
 
 export default function UsageMetrics({ usageMetrics }: UsageMetricsProps) {
-  console.log(usageMetrics,"uagemextrxxx")
+
   const formatUsage = (current: number, limit: number, unit?: string) => {
     if (limit === -1) return `${current.toLocaleString()}${unit ? ` ${unit}` : ""} (Unlimited)`
     return `${current.toLocaleString()}${unit ? ` ${unit}` : ""} / ${limit.toLocaleString()}${unit ? ` ${unit}` : ""}`

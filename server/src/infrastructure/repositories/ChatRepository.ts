@@ -11,7 +11,6 @@ import { ChatMessage } from "../../application/dto/ChatDTOs";
 export class ChatRepository implements IChatRepository {
   constructor() {}
   async saveChats(message: Chat): Promise<void> {
- console.log(message,"Chat Message Validation in reposi caht")
 
     const responseDb = await ChatMessageModel.create(message);
 

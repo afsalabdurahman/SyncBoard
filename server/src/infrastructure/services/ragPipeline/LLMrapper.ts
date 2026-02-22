@@ -10,7 +10,7 @@ export class GroqLLMProvider implements ILLMProvider {
 
     async refinePrompt(name: string,prompt:string,INTENT_PROMPT:string): Promise<string> {
     const refineprompt = INTENT_PROMPT.replace("{{QUERY}}", prompt);
-    console.log(refineprompt,"refibed prombt ILLMMM")
+
     const completion = await this.client.chat.completions.create({
         model: envConfig.LLM_MODEL , 
         
@@ -21,7 +21,7 @@ export class GroqLLMProvider implements ILLMProvider {
         temperature: 0.2,
         max_tokens: 100,
     });
-console.log(completion,"completed LLM Model sech")
+
     return completion.choices[0]?.message?.content ?? "";
 };
 
@@ -50,8 +50,8 @@ async responseMessage(userQuery: string, dbResponse: any[],RESPONSE_PROMPT:strin
         temperature: 0.2,
         max_tokens: 200,
     });
-    console.log(completion,"complteion")
-    console.log(completion.choices[0]?.message?.content,"message")
+  
+    
      return completion.choices[0]?.message?.content ?? "";
 }
 

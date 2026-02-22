@@ -45,7 +45,7 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:any) {
 
   
    }
-   let [isDialogOpen,setIsDialogOpen]=useState(false)
+   const [isDialogOpen,setIsDialogOpen]=useState(false)
 //  useEffect(()=>{
 
 //  },[deleteUrl])
@@ -74,7 +74,7 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:any) {
           <div className="grid gap-2">
             <div className="grid grid-cols-[1fr_auto] items-center gap-4">
             {urls.length?null:<p> No attachments</p>}
-              {urls.map((url: string,index:Number) => (
+              {urls.map((url: string,index:number) => (
                 <>
                   <a href={url} className="h-8 text-black truncate cursor-pointer">
                     https://res.cloudinary.com/{index+1}

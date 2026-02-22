@@ -7,7 +7,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-console.log(isAuthenticated,"Protectrourts")
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

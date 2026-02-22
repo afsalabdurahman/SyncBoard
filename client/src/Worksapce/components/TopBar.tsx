@@ -13,7 +13,6 @@ const TopBar = () => {
   const dispacth = useDispatch()
   const navigate = useNavigate()
   const user = useUser()
-  console.log(user,"userrrrr")
   const handleLogout =  async()=>{
    logout(user._id).then((res)=>{
     if(res==204) {

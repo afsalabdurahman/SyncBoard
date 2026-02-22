@@ -11,7 +11,7 @@ export const initSocketServer = (io: Server) => {
     //Room 
 
     socket.on("join-workspace", ({ workspaceId, userId }) => {
-      console.log(workspaceId, userId, "user And WORKOSCEPACE")
+
       socket.join(workspaceId);
     });
     //
@@ -27,7 +27,7 @@ export const initSocketServer = (io: Server) => {
     });
 
     socket.on(`send-message`, async (msgData, worksoaceid) => {
-      console.log(msgData, "send message data...", worksoaceid, "did+++");
+
 
       io.to(worksoaceid).emit("receive-message", msgData);
 
@@ -41,7 +41,7 @@ export const initSocketServer = (io: Server) => {
     //create comment specify connection task or room 
     socket.on("task-join-comment", (taskId) => {
       socket.join(taskId);
-      console.log(`User joined topic: ${taskId}`);
+    
     });
 
     socket.on("leave-task", (taskId) => {
@@ -56,7 +56,6 @@ export const initSocketServer = (io: Server) => {
         uploadedUrls,
         time: new Date(),
       });
-      console.log(taskId, commentName, commentText, uploadedUrls, "SOCKETNOt___IFISCTION")
     });
 
 

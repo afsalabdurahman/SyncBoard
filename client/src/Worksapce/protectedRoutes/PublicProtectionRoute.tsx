@@ -6,7 +6,6 @@ const PublicProtectionRoute = ({ children }: { children: React.ReactNode }) => {
   const email = useSelector(
     (state: RootState) => state?.user?.user?.email
   );
-console.log(email,"Public roytes")
   if (email) {
     return <Navigate to="/workspace" replace />;
   }

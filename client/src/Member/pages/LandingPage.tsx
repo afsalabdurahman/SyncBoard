@@ -3,7 +3,7 @@ import { Link,useNavigate } from "react-router-dom";
 
 function LandingPage() {
 
-  let navigate=useNavigate()
+  const navigate=useNavigate()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   return (
     <div className='min-h-screen bg-white flex flex-col'>

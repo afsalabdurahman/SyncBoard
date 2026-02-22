@@ -1,9 +1,8 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-// import apiService from "../../Services/apiServices/apiService";
+import  { AxiosError, AxiosResponse } from "axios";
 import apiService from "../../Services/apiServices/apiService";
 import { commentType, SignupResponse } from "../types/authType"
-import { ToastContainer, toast } from "react-toastify";
-import { error } from "console";
+
+
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
 export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null | boolean> => {
@@ -12,7 +11,7 @@ export const signupApi = async (email: string, name: string, password: string): 
       "auth/user/sendotp",
       { email, name, password }
     );
-    console.log(response, "response")
+
     if (response.status == 200) {
       return response.data
     }
@@ -20,13 +19,13 @@ export const signupApi = async (email: string, name: string, password: string): 
 
   } catch (err: unknown) {
 
-    console.log(err, "chechERr")
+   
 
     let errorMessage = "Something went wrong";
 
     if (err && typeof err === "object" && "isAxiosError" in err) {
       const axiosError = err as AxiosError<any>;
-      console.log(axiosError, "eros axios")
+    
       errorMessage = axiosError.response?.data?.message || axiosError.message;
     } else if (err instanceof Error) {
       errorMessage = err.message;
@@ -44,7 +43,7 @@ export const loginApi = async (email: string, password: string): Promise<any> =>
       { email, password },
       { withCredentials: true }
     );
-console.log(response,"api++")
+
     if (response.status === 200) {
       return {
         workspace: response.data.workspace,
@@ -54,7 +53,7 @@ console.log(response,"api++")
     }
   } catch (err: unknown) {
 
-    console.log(err, "chechERr")
+
     if(err.status == 403 && err.response.data.message == "Create a new workspace"){
       
       const data=JSON.stringify(err.response.data.data)
@@ -67,7 +66,7 @@ console.log(response,"api++")
 
     if (err && typeof err === "object" && "isAxiosError" in err) {
       const axiosError = err as AxiosError<any>;
-      console.log(axiosError, "eros axios")
+    
       errorMessage = axiosError.response?.data?.message || axiosError.message;
     } else if (err instanceof Error) {
       errorMessage = err.message;
@@ -83,7 +82,7 @@ export const sendComment = async (
   urls: string[] = [] // default to empty array
 ): Promise<boolean> => {
   try {
-    console.log(urls, taskId, name, "in api+++")
+   
     const response = await apiService.post(`/task/send/comment/${taskId}`, {
       name,
       text,
@@ -99,14 +98,14 @@ export const sendComment = async (
     return false;
   } catch (error) {
 
-    console.error('Failed to send comment:', error);
+   
     return false; // or throw error if you prefer
   }
 
 };
 export const fetchComments = async (taskId: string): Promise<commentType[]> => {
   const response = await apiService.get(`/task/comments/${taskId}`);
-  console.log(response, "respeApii");
+
   return response.data.data as commentType[];
 };
 export const verifyOTP = async (

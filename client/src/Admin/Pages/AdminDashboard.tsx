@@ -18,7 +18,7 @@ const ProjectsPage = lazy(()=>import("../components/ProjectsPage"));
 export default function AdminDashboard() {
   const navigate = useNavigate()
   const isForward = useSelector((state) => state.forward);
-  console.log(isForward,"formwsdd")
+ 
   const [currentPage, setCurrentPage] = useState("dashboard");
 const user=useUser()
   useEffect(() => {

@@ -28,12 +28,9 @@ useEffect(() => {
 }, []);
 
 
-useSelector((state)=>{
-  console.log(state,"activtyState")
-})
+
 
   const isBlock = useSelector((state) => {
-    console.log(state?.user?.user?.isBlock, "block state");
     return state?.user?.user.isBlock;
   });
   if (isBlock == true) {
@@ -53,12 +50,8 @@ useSelector((state)=>{
     const date = new Date(timestamp);
     return date.toLocaleString(); // You can customize this format
   };
-  // const workspaceId = useSelector((state) => {
-  //   return state.workspace.workspace._id;
-  // });
-
+ 
   useEffect(() => {
-   // dispatch(fetchAllLogs(workspaceId));
   }, [dispatch]);
 
   return (

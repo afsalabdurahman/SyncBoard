@@ -63,7 +63,7 @@ export const createProject = createAsyncThunk("adminProjectData/create", async (
     const attachedUrl: string[] = [];
     if (projectData.attachment) {
       for (const file of projectData.attachment) {
-        console.log(file,"filesss")
+    
         const result = await uploadAttachment(file.file);
 
         attachedUrl.push(result);
@@ -121,5 +121,5 @@ export const updateProjectApi = createAsyncThunk("adminProjectData/update", asyn
   if (response.status == 200) {
     return response.data.project
   }
-  console.log(response, "updated project reposnse")
+ 
 })

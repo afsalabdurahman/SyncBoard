@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Details{
     workspace:string
 }
-let initialState:Details={
+const initialState:Details={
     workspace:""
 }
 const workspeceSlice = createSlice({

@@ -21,10 +21,10 @@ interface FormField {
 
 const CreateWorkspacePage: React.FC = () => {
   useSelector((state)=>{
-    console.log(state.user.user.id)
+
   })
-  let navigate=useNavigate()
-let dispach=useDispatch()
+  const navigate=useNavigate()
+const dispach=useDispatch()
   const email  = useSelector((state: RootState) => state?.user?.user?.email);
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
@@ -40,7 +40,7 @@ let dispach=useDispatch()
   const addField = (): void => {
     setFormFields([...formFields, { projectName: "", role: "" }]);
   };
-  console.log(formFields, "form filed");
+
 
   const handleInputChange = (
     index: number,
@@ -54,7 +54,7 @@ let dispach=useDispatch()
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(formFields, "form");
+
     const WorkspaceName = formFields[0].projectName;
     const title = formFields[0].role;
     const slug = WorkspaceName + ".com";

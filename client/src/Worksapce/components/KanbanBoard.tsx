@@ -64,7 +64,6 @@ const [notify,setNotify]=useState(false)
     const fetchTasks = async () => {
       try {
         const res = await apiService.get(`task/mytask/${user.name}`);
-        console.log(res,"response")
         const mappedTasks: Task[] = res.data.map((data: any) => ({
           id: data._id.toString(),
           projectName: data.project || "Abcd",
@@ -101,12 +100,10 @@ const [notify,setNotify]=useState(false)
 useEffect(()=>{
 socket.emit("task-join-comment", openCommentId);
 socket.on("comment-notification", (data) => {
-  console.log("Notification received:", data);
   setOpenCommentId(data.taskId)
   setNotify(true)
 });
 },[notify,openCommentId])
-console.log(openCommentId,"CommentId")
 // 
 
   const closeComment = () => setOpenCommentId(null);

@@ -99,14 +99,13 @@ export class WorkspaceController {
   }
   async abuseReport(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      console.log(req.body)
+    
       const input: AbuseRequestDTO = req.body
       const userId = req.params.id
       const workspaceId = req.params.workspaceid
       await this._abuseUsecase.execute(input, userId, workspaceId)
       res.status(HttpStatusCode.CREATED).json(ResponseMessages.CREATED)
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
@@ -148,7 +147,6 @@ export class WorkspaceController {
       const userid = req.params.userid;
       const workspaceid = req.params.workspaceid;
 
-      console.log(page, limit, skip, userid, workspaceid, "checkController");
       const { mappedReponse, docsize } = await this._abuseUsecase.listOfReports(page, limit, skip, userid, workspaceid);
       res.status(HttpStatusCode.OK).json({ data: mappedReponse, count: docsize })
 
@@ -164,13 +162,11 @@ export class WorkspaceController {
       const q = req.query.q as string
       const userid = req.params.userid;
       const workspaceid = req.params.workspaceid;
-      console.log(q, userid, workspaceid, "Checkvalidyipn")
       const result = await this._abuseUsecase.searchReport(q, workspaceid, userid);
-      console.log(result, "resulr")
       res.status(HttpStatusCode.OK).json({ data: result })
     } catch (error) {
-      console.log(error, "wererre")
-    }
+      next(error)
+     }
   }
 
 
@@ -189,16 +185,13 @@ export class WorkspaceController {
       res.setHeader('Content-Length', excelBuffer.length);
       res.send(excelBuffer);
     } catch (error) {
-      console.log(error, "error")
+      next(error)
     }
   }
   async findUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      console.log(req.query, req.params.slug, "BODY+SLUG")
-      console.log(req.query.page, req.query.limit, "")
       const slug = req.params.slug;
       const query = req.query.query as string;
-      console.log(slug, query)
       const user = await this._workspaceUsecase.getMembers(slug, query);
 
         res.status(HttpStatusCode.OK).json(user);

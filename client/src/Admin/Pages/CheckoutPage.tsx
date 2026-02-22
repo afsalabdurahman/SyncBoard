@@ -111,7 +111,7 @@ const success = searchParams.get("success");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(selectedPlan, "Data from");
+
    
   
     setIsProcessing(true);
@@ -184,7 +184,7 @@ const success = searchParams.get("success");
     const res = await apiService.post("checkout/pay", body, {
       headers: { "Content-Type": "application/json" },
     });
-    console.log(res, "response");
+ 
   };
 
   return (

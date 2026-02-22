@@ -1,7 +1,7 @@
 import apiService from "../../Services/apiServices/apiService";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const BASE_URL=import.meta.env.VITE_BASE_API_URL
-console.log(BASE_URL,"baseURLLLLLLL")
+
 export const adminDataHandleApi = createApi({
   reducerPath: 'adminDataHandleApi',
   baseQuery:fetchBaseQuery({

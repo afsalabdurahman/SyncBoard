@@ -6,7 +6,7 @@ export const errorMiddleware: Middleware = () => (next) => (action) => {
 
   const result = next(action);
 
-  console.log("calling.... midle", action, result)
+
   if (action.type.endsWith("/rejected")) {
 
     console.log("calling.... midle", result)

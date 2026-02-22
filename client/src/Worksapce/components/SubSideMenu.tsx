@@ -7,13 +7,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
 import { FlagIcon,Flag } from 'lucide-react';
 const SubSideMenu = () => {
-  let WorkspaceData = useSelector((state: RootState) =>{
-    let user=state.register;
-    let workspaces=state.workspace.workspace
+  const WorkspaceData = useSelector((state: RootState) =>{
+    const user=state.register;
+    const workspaces=state.workspace.workspace
 return{user,workspaces}
   } );
-  console.log(WorkspaceData,"dtaa")
-  let dispatch=useDispatch()
+  const dispatch=useDispatch()
   const [showChannels, setShowChannels] = useState(false);
   const [showDMs, setShowDMs] = useState(true);
   const [bgColor, setBgColor] = useState("activitys");
@@ -62,7 +61,6 @@ const abuses= ()=>{
 dispatch(abuse())
   setBgColor("abuses")
 }
-console.log(bgColor,"bgColor")
   return (
     
     <div className="bg-purple-900 text-white w-64 h-screen flex flex-col">

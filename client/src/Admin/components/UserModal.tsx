@@ -47,7 +47,7 @@ interface UserModalProps {
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispacth:AppDispatch =  useDispatch();
   const userId = user?._id;
-  console.log(userId, "before editing...");
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -55,7 +55,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
     isBlocked: "",
     isAdmin: false,
   });
-  console.log(formData, "before editing2...");
+ 
 
   useEffect(() => {
     if (user) {
@@ -79,7 +79,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData, "handle sumbimit form");
+
 
     const updatedData = {
       ...formData,

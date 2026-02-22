@@ -8,7 +8,7 @@ interface WorkspaceStatsProps {
   monthlyRevenue: number
 }
 
-export let WorkspaceStats = ({ totalWorkspaces, activeWorkspaces, totalUsers, monthlyRevenue }: WorkspaceStatsProps) => {
+export const WorkspaceStats = ({ totalWorkspaces, activeWorkspaces, totalUsers, monthlyRevenue }: WorkspaceStatsProps) => {
   const stats = [
     {
       title: "Total Workspaces",

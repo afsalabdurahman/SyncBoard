@@ -12,22 +12,18 @@ import { dashBordDataApi } from "../apis/fetchApi"
 export default function SuperDashboard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [data,setData] = useState()
-useSelector((state)=>{
-  console.log(state)
-})
+
 
 useEffect(() => {
     const fetchDashboardData = async () => {
       
         const response = await dashBordDataApi(); // wait for the data
-        console.log(response, "final response");
         setData(response); // now response contains actual data
      
     };
 
     fetchDashboardData();
   }, []);
-console.log(data,"data")
 
 
   const metrics = [

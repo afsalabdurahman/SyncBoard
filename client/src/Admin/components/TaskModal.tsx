@@ -104,9 +104,9 @@ const users = new Set(
       });
     }
   }, [task, isOpen]);
-console.log(formData,"Editing+++++++")
-let onSubmitFiles = (data: any) => {
-  console.log(data,"UPlOADDATA.....")
+
+const onSubmitFiles = (data: any) => {
+
     setUploads(data);
   };
   const passURL = (url)=>{
@@ -128,7 +128,7 @@ console.log(selectAttachmanet,"Attched URL+++Delete")
   };
   const [uploads, setUploads] = useState([]);
     const [showUploadPage, setUploadPage] = useState(false);
- let uploadFiles = () => {
+ const uploadFiles = () => {
     setUploadPage(true);
   };
   const closeTaskModel = () =>{
@@ -143,7 +143,7 @@ console.log(selectAttachmanet,"Attched URL+++Delete")
     onClose()
   }
  const setDelete = (url: string) => {
-  console.log(url, "url to delete");
+
 
   setFormData((prev) => ({
     ...prev,

@@ -30,7 +30,7 @@ const workspaceid = useWorkspaceid();
         setError(null);
       } catch (err) {
         setError("Failed to load tasks. Please try again later.");
-        console.error("Error fetching tasks:", err);
+       
       }
     };
     loadTasks();
@@ -45,7 +45,7 @@ const workspaceid = useWorkspaceid();
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       setError("Failed to approve task. Please try again.");
-      console.error("Error approving task:", err);
+     
     }
   };
 
@@ -68,7 +68,7 @@ const workspaceid = useWorkspaceid();
       setRefreshKey(prev => prev + 1);
     } catch (err) {
       setError("Failed to reject task. Please try again.");
-      console.error("Error rejecting task:", err);
+
     }
   };
 

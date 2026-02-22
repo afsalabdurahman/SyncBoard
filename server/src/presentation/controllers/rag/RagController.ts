@@ -16,7 +16,6 @@ export class RagController {
             res.status(HttpStatusCode.OK).json({message:answer})
         } catch (error) {
              res.status(HttpStatusCode.OK).json({message:"please try agin later"})
-            console.log(error,"error")
             next(error)
         }
     }

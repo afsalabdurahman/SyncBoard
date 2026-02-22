@@ -12,7 +12,7 @@ export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 
 export class TaskMapper {
   static mapTaskToEntity(input: TaskRequestDTO, vector: number[]): Task {
-    console.log(input, "TAskMapperINput")
+   
     return new Task({
       name: input.name,
       description: input.description,

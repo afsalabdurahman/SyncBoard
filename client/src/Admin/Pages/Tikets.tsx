@@ -16,7 +16,7 @@ const Tikets = () => {
     const user=useMember()
    const userId=user._id
    const workspaceId=user.workspace[0].workspaceId
-  console.log(user,"uesrsdddddddd",userId,workspaceId)
+
   const [createTickets,] =useCreateTicketsMutation()
   const [updateMsg] = useUpdateMsgMutation()
   const {
@@ -28,7 +28,7 @@ const Tikets = () => {
     refetch,
   } = useGetTicketsQuery(workspaceId ?? skipToken);
 
-  console.log(tickets,"data","66666")
+
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 useEffect(()=>{
 refetch()
@@ -36,7 +36,7 @@ refetch()
 
 
   const handleSendMessage = async (ticketId: string, message: string) => {
-    console.log(ticketId,message)
+   
           const newMessage: Message = {
             sender: "admin",
             content: message,
@@ -56,7 +56,7 @@ try {
 
 } catch (error) {
   toast.error("failed to send")
-  console.log(error)
+ 
 }
 
   };
@@ -68,28 +68,12 @@ try {
       console.log(error)
     }
    
-    // setTickets((prevTickets) =>
-    //   prevTickets.map((ticket) => {
-    //     if (ticket.id === ticketId) {
-    //       const updatedTicket = {
-    //         ...ticket,
-    //         status: "reopened" as TicketStatus,
-    //         updatedAt: new Date(),
-    //       };
 
-    //       if (selectedTicket?.id === ticketId) {
-    //         setSelectedTicket(updatedTicket);
-    //       }
-
-    //       return updatedTicket;
-    //     }
-    //     return ticket;
-    //   })
-    // );
+  
   };
 
   const handleCreateTicket = async (newTicket: Omit<Ticket, "id" | "createdAt" | "updatedAt" | "messages">) => {
-    console.log(newTicket,"newTicke")
+   
     const ticket: Ticket = {
       ...newTicket,
       id: `TKT-${String(tickets.length + 1).padStart(3, "0")}`,
@@ -109,18 +93,17 @@ try {
 
     // setTickets([ticket, ...tickets]);
     try {
-      console.log("Sunmitted")
-      console.log(ticket,"my tiketssss")
+
       
       const data=await createTickets(ticket).unwrap()
       
 
     } catch (error) {
-      console.log(error,"errorr")
+    
 
       toast.error("Unble to Raise tickets")
     }
-    console.log(ticket,"tiket new ")
+
   };
 
   return (

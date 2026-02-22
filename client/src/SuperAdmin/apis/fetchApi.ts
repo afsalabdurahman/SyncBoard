@@ -10,13 +10,13 @@ export const superLoginApi = async (email: string, password: string) => {
     { withCredentials: true }
   )
   if (response.status == 200) {
-    console.log(response, "rsponse")
+    
     return response.data
   }
 }
 export const dashBordDataApi = async () => {
   const response = await apiService.get("super/counts", { withCredentials: true })
-  console.log(response, "api rseponse")
+
   if (response.status == 200) { return response.data.data }
 
 }
@@ -44,9 +44,8 @@ export const downloadExcel = async () => {
     a.remove(); // better than parentNode.removeChild
     window.URL.revokeObjectURL(url);
 
-    console.log('Excel file downloaded successfully');
   } catch (error: any) {
-    console.error('Download error:', error);
+  
 
     // Better error feedback
     if (error.response?.status === 404) {

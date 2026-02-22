@@ -29,7 +29,7 @@ export class PlanUsecase implements IPlanUsecase {
     if (!SuscriptionRepository) throw new NotFoundError("Suscription not found");
     if (!myKey.stripePriceId || !myKey.key) throw new ValidationError("Plan key is undefined");
     const isCreateLink = await this._stripeService.createCheckoutSession(user.name, user.email, myKey.stripePriceId, user._id, myKey.key);
-    console.log(isCreateLink, "LInkesd...")
+
     if (!isCreateLink) throw new ValidationError("Not a valid id")
 
     return isCreateLink

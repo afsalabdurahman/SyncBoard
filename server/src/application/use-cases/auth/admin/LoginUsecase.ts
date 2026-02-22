@@ -22,7 +22,6 @@ export class AdminLoginUseCase implements ILoginUseCase {
     const isExist = await this._userRepository.findByEmail(input.email);
      if (!isExist?._id || !isExist.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     const user = await this._userRepository.findUser(isExist?._id)
-    console.log(user,"uuser+++")
     if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     const workspceId = user.workspace[0].workspaceId
     if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);

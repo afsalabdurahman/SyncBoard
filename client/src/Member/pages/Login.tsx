@@ -19,12 +19,10 @@ import { loginApi } from "../apiservice/authApi";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
 function Login() {
 
-useSelector((state)=>{
-  console.log(state,"LoginState")
-})
+
 
    const isforwarToLoginpage=useSelector((state)=>{
-       console.log(state.forward,"Login66666")
+     
      })
   const [load, setLoad] = useState(false);
   const dispatch = useDispatch();
@@ -58,18 +56,18 @@ useSelector((state)=>{
         navigate("/workspace",{ replace: true });
       
     } catch (error) {
-    console.log(error,"err")
+ 
       let message = "Login failed"
        if (error instanceof Error) {
       message = error.message;
     }
     if(message.includes("createdAt")){
       const parse=JSON.parse(message);
-      console.log(parse,"paser");
-      let id=parse._id;
+  
+      const id=parse._id;
       delete parse._id;
       parse.id=id;
-      console.log(parse,"pase2222r");
+    
       dispatch(setUserData(parse,));
       navigate("/create/workspace");
     }

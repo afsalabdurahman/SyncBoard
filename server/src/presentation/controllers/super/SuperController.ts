@@ -24,12 +24,11 @@ export class SuperController {
         const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
- console.log(page,skip,limit,"++++++++")
+
       const {responseDTO,totalCount} = await this._dataHandleUsecase.fetchDataworkspace(limit,skip);
-      console.log(responseDTO,totalCount,page,skip,limit,"++++++++")
+     
       res.status(HttpStatusCode.OK).json({ responseDTO, currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
     } catch (error) {
-      console.log(error,"err")
       next(error)
     }
   }
@@ -50,7 +49,7 @@ export class SuperController {
       const responseDTO = await this._dataHandleUsecase.fetchAUser(userId);
       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.Fetch_SUCCESS, data: responseDTO })
     } catch (error) {
-      console.log(error)
+next(error)
     }
   }
   async fetchSubscription(req:Request,res:Response,next:NextFunction):Promise<void>{
@@ -59,19 +58,19 @@ export class SuperController {
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
       const {responseDTO,totalDocCounts}=await this._dataHandleUsecase.fetchSubscriptions(limit,skip)
-    console.log(responseDTO,"subscribe+++")
+
       res.status(HttpStatusCode.OK).json({message:"Data feched",data:responseDTO,currentPage: page, totalPages: Math.ceil(totalDocCounts / limit),totalDocCounts })
     } catch (error) {
-      console.log(error)
+      next(error)
     }
   }
 async fetchTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
     const tickets=await this._dataHandleUsecase.fetchTickets();
-    console.log(tickets,"from controller")
+  
 res.status(HttpStatusCode.OK).json(tickets)
   } catch (error) {
-    console.log(error,"erorr")
+   
     next(error)
   }
 }

@@ -34,7 +34,7 @@ const MyProject = () => {
   const [projectDetails, setProjectDetails] = useState(null);
   
 
-  let userName = useSelector((state: any) => {
+  const userName = useSelector((state: any) => {
     
     return state.user.user.name;
   });
@@ -59,7 +59,6 @@ useEffect(() => {
 
 
 
-  console.log(projects, "usestateproje");
 
   const filteredProjects = (projects ?? []).filter(
     (project: { name: string; description: string; status: null }) => {
@@ -71,7 +70,6 @@ useEffect(() => {
       return matchesSearch && matchesFilter;
     }
   );
-  console.log(filteredProjects, "filterd projwcta");
 
   const displayedProjects = filteredProjects.slice(0, displayCount);
   const hasMoreProjects = filteredProjects.length > displayCount;

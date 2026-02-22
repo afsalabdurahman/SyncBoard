@@ -19,7 +19,6 @@ export class DatahandleUsecase implements IDatahandleUsecase {
 
     async fetchDataworkspace(limit: number, skip: number): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }> {
         const result = await this._superAdminRepository.getAllWorkspace(limit, skip)
-        console.log(result, "rest")
         const { totalCount, responseDTO } = await DatahandleMapper.mapSuperWorkspaceToResponse(result)
         return { responseDTO, totalCount }
     }

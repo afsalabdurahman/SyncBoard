@@ -139,7 +139,6 @@ const FormattedMessage = ({ content }: { content: string }) => {
 
 export default function RAG() {
   const member = useMember()
-  console.log(member, "member")
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -191,7 +190,6 @@ export default function RAG() {
     setIsLoading(true)
 
     await sendQuery(member.name, query ?? inputValue).then((res) => {
-      console.log(res, "resDATATACHAT")
       const rspMessage = res.data.message
       const messageAssistant: Message = {
         id: (Date.now() + 1).toString(),

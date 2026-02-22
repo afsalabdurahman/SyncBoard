@@ -77,7 +77,6 @@ async serachReport(query: string,workspaceid:Types.ObjectId,userid:Types.ObjectI
   const result = await AbuseModel.find({workspaceId:workspaceid,userId:userid,
   type: { $regex: query, $options: "i" }
 }).limit(10).lean<listOfAbsuseReposnseDTO[]>()
-console.log(result,"resultssssss")
   return result 
 }
 }

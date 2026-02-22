@@ -15,9 +15,7 @@ async saveMessage(message:ChatRequestDTO):Promise<void>{
 await this._chatuseCase.sendMessage(message)
 }
 async chatHistory(req:Request,res:Response,next:NextFunction):Promise<void>{
-    console.log(req.params)
     const workapaceid=req.params.workspaceid as string;
-    console.log(workapaceid,"idddd")
 const historyData=await this._chatuseCase.history(workapaceid)
 res.status(HttpStatusCode.OK).json(historyData)
 }

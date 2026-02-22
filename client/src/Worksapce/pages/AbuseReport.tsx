@@ -17,7 +17,6 @@ export default function AbuseReportForm() {
   const memeber = useMember();
   const [refresh,setRefresh]=useState(1);
 const [loading, setLoading] = useState(false);
-console.log(memeber,"member++REdux")
   const [formData, setFormData] = useState({
     type: '',
     otherType: '',
@@ -39,7 +38,6 @@ useEffect(() => {
         memeber.workspace[0].workspaceId,
         1
       );
-console.log(response,'Api+++')
       setTickets(response?.data?.data ?? []);
       setCount(response.data.count)
     } catch (error) {
@@ -75,7 +73,6 @@ const handleSerach = (e)=>{
   setSearch(e.target.value);
   if(filteredTickets.length==0){
     setLoading(true)
-   console.log(search,"keywordSSS")
   }
   
 
@@ -93,7 +90,6 @@ const debouncedSearch = debounce(async (searchQuery) => {
       
 
       const response = await searchApi(searchQuery,memeber.workspace[0].workspaceId,memeber._id,)
-      console.log(response,"api++Res")
       setTickets(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -119,7 +115,6 @@ const debouncedSearch = debounce(async (searchQuery) => {
     });
   };
 const handleChangePage =async (page) =>{
-  console.log(page,"pagess");
     const response = await abuseReportList(
         memeber._id,
         memeber.workspace[0].workspaceId,

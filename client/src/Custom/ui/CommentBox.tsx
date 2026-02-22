@@ -65,7 +65,7 @@ const CommentBox = ({ isOpen, onClose, taskId }: CommentBoxProps) => {
 
 
 fetchComments(taskId).then((data)=>{
-  console.log(data,"fetched.....")
+ 
   setComments([...data])
 })
   },[])
@@ -76,7 +76,7 @@ fetchComments(taskId).then((data)=>{
 // 
 
 
-  console.log(taskId,"taskIdd")
+ 
 
    const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
@@ -94,7 +94,7 @@ fetchComments(taskId).then((data)=>{
     if (comments.length > 0) scrollToBottom();
   }, [comments]);
 const user = useUser()
-console.log(user,"user")
+
   const getFileType = (file: File): Attachment["type"] => {
     if (file.type.startsWith("image/")) return "image";
     if (file.type === "application/pdf") return "pdf";
@@ -159,8 +159,7 @@ const handleCommentSubmit = async () => {
   };
 
   
-  // Optimistically add comment to UI
-  console.log(newComment,"frust")
+
   setComments((prev) => [...prev, newComment]);
   setCommentText("");
   setAttachments([]);
@@ -171,7 +170,6 @@ const handleCommentSubmit = async () => {
     const uploadedUrls = await Promise.all(uploadPromises);
   
  
-  console.log(newComment,uploadedUrls,"this transerData")
 //  let transfer={
 //   name:newComment.name,
 //    text: newComment.text,
@@ -189,8 +187,7 @@ const handleCommentSubmit = async () => {
       )
     );
 
-    console.log("Comment updated with URLs:", { ...newComment, urls: uploadedUrls });
-    console.log(newComment,"NewCoometss++")
+
     socket.emit("add-comment", {
     taskId,
    commentName : newComment.name,
@@ -199,7 +196,7 @@ const handleCommentSubmit = async () => {
 
   });
   } catch (error) {
-    console.error("Failed to upload attachments:", error);
+   
     // Optionally: show error to user or mark comment as having failed uploads
     setComments((prev) =>
       prev.map((comment) =>
@@ -211,7 +208,7 @@ const handleCommentSubmit = async () => {
   }
     socket.on("join-comment", (taskId) => {
     socket.join(taskId);
-    console.log(`User joined topic: ${taskId}`);
+ 
   });
 };
 

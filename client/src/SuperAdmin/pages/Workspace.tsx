@@ -23,7 +23,6 @@ export  const  Workspaces =(props)=> {
   const [page,setPage]=useState("")
 
   const [mockWorkspaces,setWorkspace]=useState([])
-  console.log(data,"data frche home")
   useEffect(() => {
     if (data?.responseDTO) {
       setWorkspace(data.responseDTO)
@@ -61,7 +60,6 @@ export  const  Workspaces =(props)=> {
   }
 
   const handleViewWorkspace = (workspace: Workspace) => {
-    console.log("View workspace:", workspace)
     // Implement view workspace logic
     setViewDetails(workspace)
     setDetails(true);
@@ -69,7 +67,6 @@ export  const  Workspaces =(props)=> {
   }
 
   const handleEditWorkspace = (workspace: Workspace) => {
-    console.log("Edit workspace:", workspace)
         setViewDetails(workspace)
       setDetails(true);
       setPage("edit")
@@ -77,17 +74,14 @@ export  const  Workspaces =(props)=> {
   }
 
   const handleSuspendWorkspace = (workspace: Workspace) => {
-    console.log("Suspend workspace:", workspace)
     // Implement suspend workspace logic
   }
 
   const handleDeleteWorkspace = (workspace: Workspace) => {
-    console.log("Delete workspace:", workspace)
     // Implement delete workspace logic
   }
 
   const handleExport = async() => {
-    console.log("Export workspaces")
    const response= await downloadExcel();
  
   }
@@ -99,7 +93,6 @@ const handleChangePage = (page) => {
 
 
   const handleCreateWorkspace = () => {
-    console.log("Create new workspace")
     // Implement create workspace logic
   }
 if(details){

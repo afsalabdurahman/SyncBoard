@@ -28,7 +28,7 @@ export class LoginUsecase implements ILogin {
     
     if(!isExist || !isExist?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const user = await this._userRepository.findUser(isExist._id )
-console.log(user,"userFOmf usecase")
+
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user) {
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);

@@ -51,7 +51,6 @@ interface Message {
 
 export default function GroupChannel() {
   const userData = useUser()
-  console.log(userData,"userdata")
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
@@ -64,7 +63,6 @@ export default function GroupChannel() {
   const user = useSelector((state: any) => state.user.user.name);
   const userId = useSelector((state: any) => state.user.user._id);
 const workspaceid=useWorkspaceid();
-console.log(workspaceid,"iddddd")
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -190,7 +188,6 @@ if(!isAllow) {toast.error("file not supported")
       }
       try {
         
-        console.log(file)
         
         return {
           name: file.name,
@@ -199,7 +196,6 @@ if(!isAllow) {toast.error("file not supported")
           type: getFileType(file)
         } as Attachment;
       } catch (error) {
-        console.error(`Failed to upload ${file.name}:`, error);
         // Return null or a placeholder for failed uploads
         return {
           name: file.name,
@@ -226,11 +222,9 @@ if(!isAllow) {toast.error("file not supported")
       toast.error(`${failedCount} file(s) failed to upload.`);
     }
   } catch (error) {
-    console.error('Unexpected error during upload:', error);
     toast.error('Something went wrong while uploading files.');
   }
 };
-console.log(attachments,"attchements")
   const removeAttachment = (index: number) => {
     setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
@@ -387,7 +381,6 @@ console.log(attachments,"attchements")
     return groups;
   }, []);
 
-  console.log(messages,"message+++")
   return (
     <div className="flex h-screen bg-gray-50 mt-[3em]">
       {/* Sidebar - Members List */}

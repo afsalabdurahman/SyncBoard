@@ -35,7 +35,7 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     // In a real app, this would save to a backend
-    console.log("Settings saved:", settings);
+
   };
 
   const updateNotificationSetting = (key: string, value: boolean) => {

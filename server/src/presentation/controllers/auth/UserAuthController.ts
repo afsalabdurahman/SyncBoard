@@ -36,7 +36,7 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     const input: LoginRequestDTO = req.body as LoginRequestDTO;
     try {
-      console.log("working...")
+  
        const {token,refreshToken,user,workspace} = await this._loginUsecase.loginUser(input);
 
     setTokensInCookies(res, token, refreshToken);
@@ -63,7 +63,7 @@ export class AuthController {
     async authMe(req:CustomRequest,res:Response,next:NextFunction):Promise<void>{
      
     try {
-      console.log(req.user,"acllinf auth666")
+    
         res.status(200).json({
     user: req?.user?.id,
     })

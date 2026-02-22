@@ -123,7 +123,7 @@ const handleSubmit = () =>{
     onSubmit(uploadedFiles)
     onClose()
 }
-let openChange = () =>{
+const openChange = () =>{
 onSubmit(uploadedFiles)
 onClose()
 }

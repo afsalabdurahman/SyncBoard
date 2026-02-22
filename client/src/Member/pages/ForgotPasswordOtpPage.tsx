@@ -7,17 +7,16 @@ import api from "../../Services/apiServices/apiService";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosResponse } from "axios";
 const ForgotPasswordOtpPage = () => {
-  let navigate=useNavigate()
+  const navigate=useNavigate()
   const email = useSelector((state: RootState) => state.register.user_email);
-  
-console.log(email,"from reduxxx")
+
   const [otp, setOtp] = useState([]);
   const [message,setMessage]=useState("")
   const [timer, setTimer] = useState(59);
   const [isValidTrue, setIsValidTrue] = useState(false);
   const [isValidFalse, setIsValidFalse] = useState(false);
   const inputRefs = useRef([]);
-  console.log(otp);
+
 
   useEffect(() => {
 
@@ -29,11 +28,11 @@ console.log(email,"from reduxxx")
 
   useEffect (() => {
     if (otp.length === 7) {
-    let  sendOtp = async() =>{
+    const  sendOtp = async() =>{
 
       
       const otpValue = otp.filter((value) => value !== undefined).join("");
-      console.log("Full OTP:", otpValue);
+  
 
       
 
@@ -53,7 +52,7 @@ try {
 } catch (error) {
  
   setIsValidFalse(true)
-  console.log(error,"default")
+
 }
     }
     sendOtp()

@@ -11,8 +11,8 @@ import {setSubscription} from "../../Redux/feature/subscription/subscriptionSlic
 const AdminLogin = () => {
 
 
-  let dispatch = useDispatch();
- let navigate = useNavigate();
+  const dispatch = useDispatch();
+ const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -20,7 +20,7 @@ const [loading, setLoading] = useState(false);
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Logging in with:", { email, password });
+   
     try {
       const response: AxiosResponse<any, any> = await api.post(
         "auth/admin/login",
@@ -30,12 +30,12 @@ const [loading, setLoading] = useState(false);
         },
         { withCredentials: true }
       );
-      console.log(response,"response++++")
+
       if(response.status !== 200) {
         setLoading(false);
         throw new Error("Login failed");
       }
-      console.log(response,"response")
+  
       // Handle successful login response
        dispatch(setWorkspace(response.data.workspace))
             //  dispatch(setLog(response.data.logs))
@@ -46,7 +46,7 @@ const [loading, setLoading] = useState(false);
     } catch (error) {
       setLoading(false);
       setError(true);
-      console.error("Login failed:", error);
+   
     }
   };
 

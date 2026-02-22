@@ -69,34 +69,15 @@ function fmtDateTime(d: string) {
 }
 
 export default function UserProfilePage({setPage,user}) {
-  console.log(setPage,"Pages")
+  
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-//   const { toast } = useToast()
 
-  // Mock profile - based on your existing dataset structure
-  // const userDefault: User = useMemo(
-  //   () => ({
-  //     id: "usr_2345678901",
-  //     name: "Sarah Johnson",
-  //     email: "sarah@techstart.io",
-  //     avatar: "/user-avatar.jpg",
-  //     role: "admin",
-  //     status: "active",
-  //     workspace: { name: "TechStart Inc", plan: "pro" },
-  //     joinedAt: "2023-03-22",
-  //     lastActivity: new Date().toISOString(),
-  //     loginCount: 156,
-  //     isEmailVerified: true,
-  //     twoFactorEnabled: false,
-  //   }),
-  //   [],
-  // )
 
   const userDefault = user
   const [status, setStatus] = useState<User["status"]>(userDefault.status)
   const [twoFA, setTwoFA] = useState<boolean>(userDefault.twoFactorEnabled)
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(userDefault.isEmailVerified)
-console.log(user,"User documentssssss")
+
   // Memberships across workspaces
   const memberships: {
     id: string
@@ -132,48 +113,7 @@ console.log(user,"User documentssssss")
     },
   ]
 
-  // Activity timeline
-  // const activity = [
-  //   { id: "a1", icon: LogIn, title: "Signed in", detail: "Web", time: new Date().toISOString() },
-  //   {
-  //     id: "a2",
-  //     icon: UserCog,
-  //     title: "Role updated",
-  //     detail: "Member ➝ Admin (TechStart Inc)",
-  //     time: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
-  //   },
-  //   {
-  //     id: "a3",
-  //     icon: MessageSquare,
-  //     title: "Created ticket",
-  //     detail: "Billing charged twice",
-  //     time: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
-  //   },
-  // ]
-
-  // Recent sessions
-  // const sessions = [
-  //   {
-  //     id: "sess_1",
-  //     device: "MacBook Pro",
-  //     os: "macOS",
-  //     browser: "Chrome",
-  //     ip: "104.26.1.45",
-  //     location: "San Francisco, US",
-  //     lastSeen: new Date().toISOString(),
-  //     current: true,
-  //   },
-  //   {
-  //     id: "sess_2",
-  //     device: "iPhone 15",
-  //     os: "iOS",
-  //     browser: "Safari",
-  //     ip: "185.199.110.153",
-  //     location: "San Jose, US",
-  //     lastSeen: new Date(Date.now() - 1000 * 60 * 60 * 28).toISOString(),
-  //     current: false,
-  //   },
-  // ]
+ 
 const dispatch = useDispatch()
   const suspend = async() => {
     setStatus("suspended")

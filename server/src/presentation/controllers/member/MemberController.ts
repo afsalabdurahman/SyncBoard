@@ -3,13 +3,12 @@ import { ResponseMessages } from "../../../common/erroResponse";
 import { injectable, inject } from "tsyringe";
 import { NextFunction, Request, Response } from "express";
 import { IUpdateProfileUsecases } from "../../../application/repositories/IUpdateProfile";
-import { NotFoundError } from "../../../utils/errors";
+import { ConflictError, NotFoundError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 import { MemeberRegisterRequestDTO } from "../../../application/dto/AuthDTOs";
 import { IUserUsecase } from "../../../application/repositories/IUser";
-import { responseUser } from "../../../types/userTypes";
 import { UserMapper } from "../../../application/mappers/UserMapper";
 @injectable()
 export class MemberController {
@@ -76,7 +75,7 @@ export class MemberController {
       title: req.body.title,
       slug: req.body.workspaceSlug,
     };
-    console.log(input,"input")
+  
     try {
       const response =
         await this._memberRegisterUsecase.execute(input);
@@ -92,14 +91,14 @@ export class MemberController {
   async changeOnlinestatus(userId: string): Promise<void> {
     try {
       await this._updateProfileUsecase.updateOnlineStatus(userId);
-    } catch (error) {
-      console.log(error);
+    } catch  {
+      throw new ConflictError("Updation failed")
     }
   }
   async findUserByEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const email = req.params.email;
-      console.log(req.params.email, "emailsse")
+  
       const userDocument = await this._getUserUsecase.findUserByEmail(email);;
       const user = UserMapper.userResponseDTO(userDocument)
       res.status(HttpStatusCode.OK).json({ user })
@@ -107,13 +106,5 @@ export class MemberController {
       next(error)
     }
   }
-  // async IsUserExist(req:Request,res:Response,next:NextFunction):Promise<void>{
-  //   try {
-  //     const email = req.params.email;
-  //     const userDocument = await this._getUserUsecase.findUserByEmail(email);
 
-  //   } catch (error) {
-      
-  //   }
-  // }
 }

@@ -9,9 +9,9 @@ const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
 const Invite = () => {
   const workspaceName = useSelector((state: any) => {
    
-    let isAdmin = state.user.user.role == "Admin";
-    let name = state.workspace.workspace.name;
-    let slug = state.workspace.workspace.slug;
+    const isAdmin = state.user.user.role == "Admin";
+    const name = state.workspace.workspace.name;
+    const slug = state.workspace.workspace.slug;
     return { isAdmin, name, slug };
   });
   if (workspaceName.isAdmin !== true) {
@@ -39,7 +39,6 @@ const Invite = () => {
   const [invitationLink, setInvitationLink] = useState<string>(
     `${INVITE_MEMBER_}${workspaceName.slug}` // Replace with your actual invitation link
   );
-  console.log(invitationLink,"linkes++")
   const addEmail = (email) => {
     if (email && !emails.includes(email) && isValidEmail(email)) {
       setEmails([...emails, email]);
@@ -94,7 +93,6 @@ const Invite = () => {
       }
     } catch (error) {
       setLoad(false);
-      console.log(error);
       toast.error("Invitation send failed ");
     }
   };

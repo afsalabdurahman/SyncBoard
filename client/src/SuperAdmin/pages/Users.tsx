@@ -25,7 +25,6 @@ export const  UsersPage = () => {
   const [user,setUser]=useState()
   const [mockUsers,setMockusers]=useState([])
 
-console.log(data,"Data Users009")
 
 const handleChangePage = (page) => {
   setChangePage(page);
@@ -70,41 +69,34 @@ const handleChangePage = (page) => {
   }
 
   const handleViewUser = (user: User) => {
-    console.log("View user:", user)
     setUser(user)
     setPage("view")
     // Implement view user logic
   }
 
   const handleEditUser = (user: User) => {
-    console.log("Edit user:", user)
       setUser(user)
     setPage("edit")
     // Implement edit user logic
   }
 
   const handleSuspendUser = (user: User) => {
-    console.log("Suspend user:", user)
     // Implement suspend user logic
   }
 
   const handleDeleteUser = (user: User) => {
-    console.log("Delete user:", user)
     // Implement delete user logic
   }
 
   const handleResendInvite = (user: User) => {
-    console.log("Resend invite:", user)
     // Implement resend invite logic
   }
 
   const handleExport = () => {
-    console.log("Export users")
     // Implement export logic
   }
 
   const handleInviteUser = () => {
-    console.log("Invite new user")
     // Implement invite user logic
   }
 

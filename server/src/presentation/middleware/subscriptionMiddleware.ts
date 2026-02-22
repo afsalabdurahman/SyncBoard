@@ -27,11 +27,9 @@ try {
      const taskRepo = container.resolve(TaskRepository);
      const userRepo = container.resolve(UserMongooseRepository)
 const userId=req.user?.id
-console.log(userId,"From susMIDD")
 if(!userId) throw new NotFoundError("NOt found")
   if(req?.user?.role=="Member") return next()
     const project =await projectRepo.findProjectbyAdminId(userId)
-  console.log(project,"project")
  if (!project || project.length === 0) {
   return next();
 }
@@ -64,7 +62,6 @@ throw new ValidationError("Task limit is exceed")
 
 next()
 } catch (error) {
-    console.error(error,"error from mid")
     next(error)
 }
 

@@ -34,7 +34,7 @@ const CreateTicketDialog = ({ open, onOpenChange, onCreateTicket }: CreateTicket
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<Ticket["priority"]>("medium");
    const [category,setCategoty]=useState("technical")
- console.log(category,"categoryyy")
+ 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 

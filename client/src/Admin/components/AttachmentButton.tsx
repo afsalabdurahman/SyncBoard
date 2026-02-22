@@ -120,19 +120,19 @@ const FileCard = ({
 export const AttachmentButton = ({attachedUrl,taskId,passURL}:{attachedUrl:string[],taskId:string,passURL:any}) => {
   const user=useUser();
   const dispatch= useDispatch()
-  console.log(attachedUrl,"attachedUrl",taskId,"taskId")
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
   const [files, setFiles] = useState<string[]>(attachedUrl);
 
   const handleFileClick = (url: string) => {
     setSelectedFile(url);
-    console.log(url)
+
       window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const handleDeleteFile = async (e: React.MouseEvent, url: string) => {
-    console.log(url,"URLSSSSSS")
+   
     e.stopPropagation();
   dispatch(deleteAttachment({ taskId: taskId, url: url }));
     setFiles(files.filter((f) => f !== url));

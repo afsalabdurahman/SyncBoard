@@ -52,13 +52,13 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
     },
   ],
 }) => {
-  let dispatch = useDispatch();
-  let workspaceLink: any = useSelector((state: RootState) => {
+  const dispatch = useDispatch();
+  const workspaceLink: any = useSelector((state: RootState) => {
     return state.workspace.workspace.slug;
   });
-  console.log(INVITE_LINK,"LINKDD",workspaceLink)
+
   const link=INVITE_LINK+workspaceLink;
-  console.log(link,"66")
+
   const [loader, setLoader] = useState(false);
   const [emailss, setEmails] = useState<EmailField[]>(initialEmails);
   const [emails,setSingleEmail]=useState(null)
@@ -66,7 +66,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
   link
   );
   const [count, setCount] = useState(0);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const addEmailField = (): void => {
     //validating invitaion field
@@ -122,7 +122,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
 const response = await sendInvitaionMail(emails,invitationLink)
         if (response) {
           setLoader(false);
-          console.log(response, "fromserver after invite");
+       
           toast.success("Invitation send");
           setTimeout(() => {
           
@@ -209,7 +209,7 @@ const response = await sendInvitaionMail(emails,invitationLink)
 
         <div className='flex justify-between mt-6'>
           <button
-            onClick={() => navigate("/work-space")}
+            onClick={() => navigate("/workspace")}
             className='text-gray-500 font-medium  cursor-pointer'
           >
             Remind me later

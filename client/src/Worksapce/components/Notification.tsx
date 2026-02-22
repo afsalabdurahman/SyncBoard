@@ -21,8 +21,7 @@ interface Notification {
 }
 
 export default function NotificationBell(props: any) {
-  console.log(props.messages, "props++++");
-  console.log(props, "props");
+ 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   // To add a new notification from props.message, use an effect or event handler like below:

@@ -14,7 +14,7 @@ const stripe = new Stripe(envConfig.STRIP_KEY, {
   apiVersion: "2025-08-27.basil"
 })
 const STRIPE_WEBHOOK_SECRET = envConfig.STRIPE_WEBHOOK_SECRET || "";
-console.log(STRIPE_WEBHOOK_SECRET, "secret")
+
 @injectable()
 export class SubscriptionController {
   private stripe: Stripe;
@@ -34,7 +34,7 @@ export class SubscriptionController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body, "bodyyydd")
+    
       const input: SuscriptionRequestDTO = {
         userId: req.params.userid,
         planKey: req.body.plan,
@@ -44,17 +44,17 @@ export class SubscriptionController {
       res.status(HttpStatusCode.OK).json(checkoutLink)
 
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
 
 
   async webHookNotify(req: Request, res: Response, next: NextFunction) {
-    console.log("calleing webHOok")
-    // console.log(req.headers,"heder")
+
+
     const sig = req.headers["stripe-signature"] as string;
-    console.log(sig, "sigggg")
+
     if (!sig) {
       res.status(400).send("Missing Stripe signature");
       return;
@@ -68,7 +68,7 @@ export class SubscriptionController {
         sig,
         STRIPE_WEBHOOK_SECRET
       );
-      console.log(event, "event...")
+
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("❌ Webhook signature verification failed:", err.message);
@@ -81,10 +81,8 @@ export class SubscriptionController {
     switch (event.type) {
       case "checkout.session.completed":
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log("🎉 Checkout completed:5550", session);
 await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString()??"",session.id,new Date(),session?.amount_subtotal??0,session.payment_status)
         if (session.metadata) {
-          console.log(session.metadata, "metaDta os seion...")
           
           await this._suscriptionUsecase.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
         }
@@ -93,7 +91,6 @@ await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString(
 
         //         case "charge.succeeded":
         const invoice = event.data.object as Stripe.Invoice
-        console.log(invoice, "Invoice1010")
         if (invoice.customer_name && invoice.customer_email && invoice.hosted_invoice_url) {
           await this._suscriptionUsecase.sendReceipt(invoice.customer_name, invoice.customer_email, invoice.hosted_invoice_url)
         }

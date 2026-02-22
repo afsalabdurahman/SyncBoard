@@ -87,7 +87,7 @@ export default function UserProfileEditPage({ setPage, user,refetch,setUser }) {
       
   }
 
-console.log(formData,"FormData")
+
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -95,7 +95,7 @@ console.log(formData,"FormData")
         ...formData,
         status, // include current status decision
       })
-      console.log(payload,"Payload sebf")
+     
       await updateUser(user.id, payload)
       await refetch()
       toast.success("User updated successfully")

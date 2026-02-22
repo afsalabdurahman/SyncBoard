@@ -10,9 +10,9 @@ export const addToVectors = async (task: TaskRequestDTO): Promise<number[]> => {
     // Load model only once
      const { pipeline } = await import("@xenova/transformers");
     if (!embedder) {
-      console.log("Loading embedding model...");
+     
       embedder = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
-      console.log("Embedding model loaded");
+
     }
 
     const text = `

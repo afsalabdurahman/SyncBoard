@@ -20,7 +20,6 @@ constructor(@inject("AbuseRepository")private  _abuseRepository:IAbuseRepository
 @inject("IEmailService") private _emailService: IEmailService
 ){}
 async execute(input: AbuseRequestDTO,userId:string,workspaceId:string): Promise<string> {
-   console.log(userId,workspaceId)
     const abuseEntity = new Abuse({description:input.description,otherType:input.otherType,userId:stringToMongoObj(userId),severity:input.severity,type:input.type,workspaceId:stringToMongoObj(workspaceId),status:"Waiting",})
     if(!abuseEntity) throw new ValidationError("Report"+ResponseMessages.CREATEION_FAILED) 
   await this._abuseRepository.create(abuseEntity)

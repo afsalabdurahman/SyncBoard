@@ -21,10 +21,10 @@ export default function PasswordResetPage() {
     e.preventDefault();
     // Handle password reset logic here
     setLoading(true)
-    console.log("Password reset requested for:", email);
+
     try {
       const user=await findEmail(email);
-      console.log(user,"response")
+    
         dispatch(setUserData(user));
         await reSendOTP(email)
     dispatch(setForward(true));
@@ -32,7 +32,7 @@ export default function PasswordResetPage() {
      navigate("/verify/otp");
     } catch (error) {
       if(error instanceof Error){
-console.log(error.message,"in cahctFUnction")
+
         setMessage(error.message);
       }else{
 setMessage("No account found. Please register.");

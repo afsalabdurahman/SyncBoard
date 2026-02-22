@@ -6,18 +6,15 @@ import { useDispatch } from "react-redux";
 import { superLogin, superLoginApi } from "../apis/fetchApi";
 import { setUserData } from "../../Redux/feature/user/userSlice";
 export const Login = () => {
-  let dispacth=useDispatch()
-let navigate=useNavigate()
-useState((state)=>{
-  console.log(state,"State+++")
-})
+  const dispacth=useDispatch()
+const navigate=useNavigate()
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Logging in with:", { email, password });
 // dispacth(fetchCountData(email,password))
 const response=await superLoginApi(email,password)
 dispacth(setUserData(response.data.superAdmin))

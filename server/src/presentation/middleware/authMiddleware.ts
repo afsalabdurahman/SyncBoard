@@ -26,8 +26,7 @@ if (!accessToken) {
     }
 
     try {
-        let decoded=await authService.verifyAccessToken(accessToken)
-        console.log(decoded,"deded")
+        const decoded=await authService.verifyAccessToken(accessToken)
          if (!decoded.userId || !decoded.role) {
         throw new AuthenticationError('Invalid token payload');
       }
@@ -36,7 +35,6 @@ if (!accessToken) {
         throw new AuthenticationError('Invalid user role');
       }
       const user:User | null = await getUserUseCase.execute(decoded.userId);
-      console.log(user,"user+++")
      if(user?.role=="SuperAdmin") {
       req.user = { id: decoded.userId, role };
       return next()

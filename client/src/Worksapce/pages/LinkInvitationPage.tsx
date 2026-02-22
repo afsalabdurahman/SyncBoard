@@ -23,10 +23,9 @@ import { setUserAuth } from "../../Redux/feature/AuthSlice";
 
 const LinkInvitaionPage = () => {
   let { workspaceSlug } = useParams();
-  console.log(workspaceSlug, "slugg");
   workspaceSlug = workspaceSlug?.split("workspace-")[1];
   const dispatch = useDispatch<AppDispatch>();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -48,7 +47,6 @@ const LinkInvitaionPage = () => {
     setShowPassword(!showPassword);
   };
   const togglePasswordVisibility2 = () => {
-    console.log("ckick");
     setShowPassword2(!showPassword2);
   };
 
@@ -97,18 +95,11 @@ const LinkInvitaionPage = () => {
     }
 
     setLoading(true);
-    console.log("invite:", {
-      email,
-      password,
-      role,
-      name,
-      title,
-      workspaceSlug,
-    });
+
 
     try {
       const response = await acceptInvitaionLink(name,email,password,role,title,workspaceSlug)
-console.log(response,"reposeInvitaion")
+
         setLoading(false);
         dispatch(setWorkspace(response?.workspace));
 
@@ -117,7 +108,7 @@ console.log(response,"reposeInvitaion")
         navigate("/workspace");
      
     } catch (error) {
-      console.log(error,"errorinpAge")
+     
         if (error instanceof Error) {
       setLoading(false);
     toast.error(error.message)

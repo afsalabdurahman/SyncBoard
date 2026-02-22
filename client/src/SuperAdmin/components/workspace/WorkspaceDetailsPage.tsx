@@ -175,13 +175,13 @@ function generateSeries(days = 30) {
 }
 
 export default function WorkspaceDetailsPage(props) {
-  console.log(props,"props",)
+
 const [dialogTitle,setDialogTitle]=useState("")
 const [updateWorkspace,   { isLoading: isUpdating } ] = useUpdateWorkspaceMutation();
 const {data,isLoading}=useGetAlluserListQuery({workspaceslug:props.viewDetails?.slug,page:1,limit:5})
 const [suspented,setSuspendId] =useState("")
 const [IsDialogOpen,setIsDialogOpen]=useState(false)
-console.log(data,"data from fetch qury0000")
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const series = useMemo(() => generateSeries(30), [])
 
@@ -207,7 +207,7 @@ console.log(data,"data from fetch qury0000")
     setSuspendId(merge)
     setDialogTitle("suspend")
     setIsDialogOpen(true)
-     console.log("Suspend workspace:", props.viewDetails.id)
+  
   }
   const handleConfirm = async () => {
 
@@ -222,9 +222,9 @@ try {
   ...prev,
   status: dialogTitle,
 }));
-  console.log("deleteconformed",suspented)
+
 } catch (error) {
-  console.log(error,"eee")
+ 
 }
     
  
@@ -237,13 +237,10 @@ const merge = {
     setSuspendId(merge)
        setDialogTitle("Active")
     setIsDialogOpen(true)
-     console.log("Suspend workspace:", props.viewDetails.id)
-    console.log(props.viewDetails,"rectactive")
   }
   const edit = () =>{
     props.setPage("edit")
   }
-  //const messageOwner = () => console.log("Message owner:", workspace.owner.email)
 
   const onViewMember = (m: WorkspaceMember) => console.log("View member", m.id)
   const onChangeRole = (m: WorkspaceMember) => console.log("Change role", m.id)

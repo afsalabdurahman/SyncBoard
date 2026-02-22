@@ -64,7 +64,7 @@ const plankey= usePlankey()
  
 
   const dispatch: AppDispatch = useDispatch();
-  let [suscription, setSuscription] = useState(false);
+  const [suscription, setSuscription] = useState(false);
 
 const logId=useSelector((state)=>{
   return state.workspace.workspace.logId
@@ -117,7 +117,7 @@ useEffect(() => {
    setLoader("Updating project ...");
 
  
-   let id=projectData._id;
+   const id=projectData._id;
   
 await dispatch(updateProjectApi({projectId:id , projectData})).unwrap()
 

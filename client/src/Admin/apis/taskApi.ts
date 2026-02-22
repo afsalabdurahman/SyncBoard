@@ -23,7 +23,7 @@ export const deleteAttchedUrl = async (taskId:string,url:string):Promise<string>
   }
 
  } catch (error) {
-  console.log(error,"error")
+
   throw new Error(error) 
  }
 }

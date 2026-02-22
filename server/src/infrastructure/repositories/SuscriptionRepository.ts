@@ -63,7 +63,6 @@ export class SuscriptionRepository implements ISuscription {
       amount,
       status
     };
-    console.log(historyData, "history Daata")
     await SubscriptionModel.findOneAndUpdate(
       { user: workspaceId },
       {

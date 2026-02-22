@@ -45,10 +45,10 @@ import apiService from "../../Services/apiServices/apiService";
 import { setUsers } from "../../Redux/feature/users/AlluserSlice";
 import { useTasks } from "../hooks/taskhooks";
 export function DashboardPage() {
-  let initialState = useSelector((state: any) => {
-    console.log(state, "state");
-    let countProject = state.projects.list.length;
-    let countMembers = state.workspace.workspace.members.length;
+  const initialState = useSelector((state: any) => {
+
+    const countProject = state.projects.list.length;
+    const countMembers = state.workspace.workspace.members.length;
 
     return {
       countProject: countProject,
@@ -56,9 +56,9 @@ export function DashboardPage() {
     };
   });
     const totalTasks=useTasks()
-    console.log(totalTasks,"appp++++")
+  
   //useEffetc
-    let dispacth = useDispatch<AppDispatch>();
+    const dispacth = useDispatch<AppDispatch>();
 
 
 
@@ -67,9 +67,7 @@ export function DashboardPage() {
     (state: any) => state.workspace.workspace.slug
   );
  
-useEffect(()=>{
-console.log("initial loading+++++++")
-},[])
+
  
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>

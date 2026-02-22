@@ -14,14 +14,12 @@ const SideMenu = () => {
   const [message, setMessage] = useState<string | null>(null);
   useEffect(() => {
     socket.on("new-project", (data) => {
-      console.log(data, "soket iofrom new project...");
       setMessage(data.message);
 
       // Auto clear after 5 seconds
       setTimeout(() => setMessage(null), 5000);
     });
     socket.on("new-task", (data) => {
-      console.log(data, "data from task");
       setMessage(data.message);
     });
     setTimeout(() => setMessage(null), 5000);
@@ -32,14 +30,13 @@ const SideMenu = () => {
     };
   }, []);
 
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [active, setActive] = useState("Home");
-  let WorkspaceData = useSelector((state: RootState) => {
-    let user = state.user.user;
-    let workspaces = state.workspace.workspace;
+  const WorkspaceData = useSelector((state: RootState) => {
+    const user = state.user.user;
+    const workspaces = state.workspace.workspace;
     return { user, workspaces };
   });
-  console.log(WorkspaceData, "darta worspace:3333");
 
   const menuItems = [
     { name: "Home", icon: <FiHome />, key: "home" },
@@ -51,10 +48,9 @@ const SideMenu = () => {
     },
  
   ];
-  let Userprofile = { name: "Profile", key: "profile" };
-  let Handleprofile = () => {
+  const Userprofile = { name: "Profile", key: "profile" };
+  const Handleprofile = () => {
     setActive(Userprofile.name);
-    console.log("working click profile");
     dispatch(deactive());
     dispatch(profile());
   };

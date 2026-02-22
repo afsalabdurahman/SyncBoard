@@ -49,7 +49,6 @@ export default function WorkspaceEditPage({
   refetch,
   setViewDetails,
 }) {
-  console.log(viewDetails,"details")
   const [updateWorkspace, { isLoading }] = useUpdateWorkspaceMutation()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [statusToSet, setStatusToSet] = useState(null)
@@ -83,7 +82,6 @@ export default function WorkspaceEditPage({
   const onSubmit = async (e) => {
     e.preventDefault()
      setViewDetails((prev) => ({ ...prev, name: formData.name }))
-    console.log(formData,"formdata,fsdfsffs")
     try {
       await updateWorkspace({
         id: viewDetails.id,

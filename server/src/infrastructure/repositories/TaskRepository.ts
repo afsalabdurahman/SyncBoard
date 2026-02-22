@@ -143,7 +143,6 @@ async findTaskByProjectId(projectId: string,taskfilter:string|null): Promise<Tas
     query.status = taskfilter;
   }
     const projectTask = await TaskModel.find(query).lean().exec()
-   console.log(projectTask,"task")
     if (!projectTask) return null;
     return projectTask 
 

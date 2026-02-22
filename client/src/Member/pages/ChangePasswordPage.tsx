@@ -22,9 +22,9 @@ const dispatch = useDispatch<AppDispatch>();
 dispatch(toggleForward())
 const forward = useSelector((state: RootState) => state.forward);
 
-console.log(forward,"fore")
+
 const userId=useSelector((state:RootState) =>state?.user?.user?._id);
-console.log(userId,"userId")
+
   const [user,setUser]=useState(false)
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -94,7 +94,7 @@ console.log(userId,"userId")
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name,value)
+   
     setFormData({
       ...formData,
       [name]: value
@@ -132,7 +132,7 @@ console.log(userId,"userId")
     e.preventDefault();
     if(validateForm()){
 
-    console.log("form data:",formData)
+   
     setLoading(true)
     try {
 const response = await changePassword(userId,formData.currentPassword,formData.confirmPassword)
@@ -143,7 +143,7 @@ if (response) {
   setErrors({});
 
   const handleLogout = async () => {
-    console.log("Password changed successfully:", formData);
+  
 
     await delay(5000); // waits 5 seconds
 
@@ -156,41 +156,16 @@ if (response) {
 
 
 
-// if(user){
-//   const response1: AxiosResponse<any, any> = await api.post(
-//         "/login",
-//         { email:email, password:formData.currentPassword }
-//       );
-//         setErrors({});
-// if(response1.status !== 200){
-//   console.log("error in current password")
-//   throw new Error("Current password is incorrect");
-// }
- 
-//     }else{
-//         const response: AxiosResponse<any, any> = await api.post(
-//         "/change/password",
-//         { email:email, password: formData.confirmPassword }
-//       );
-// if(response.status){
-//      setErrors({});
-//     // Simulate API call to change password
-//     setTimeout(() => {
-      
-//       console.log('Password changed successfully:', formData);
-//       setIsSuccess(true);
-//     }, 500);
-// }}
+
     } catch (error) {
          if (error instanceof Error) {
      const message = error.message;
-     console.log(message,"message....")
+    
      setErrors({ api: message });
      toast.error(message)
     }
     console.log(error)
-      // console.log('Error changing password:', error);
-      //  setErrors({ api: 'Failed to change password. Please try again.' });
+ 
       
       setLoading(false)
     }
@@ -202,7 +177,7 @@ if (response) {
 
 // ...existing code...
 const togglePasswordVisibility = (field) => {
-  console.log(field)
+
   if (field === 'password') {
     setShowPassword(!showPassword);
   } else if (field === 'current') {
@@ -211,7 +186,7 @@ const togglePasswordVisibility = (field) => {
     setShowConfirmPassword(!showConfirmPassword);
   }
 };
-console.log(showCurrentPassword)
+
 // ...existing code...
 
   return (

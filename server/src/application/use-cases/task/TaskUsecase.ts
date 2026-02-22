@@ -18,12 +18,12 @@ export class TaskUsecase implements ITaskUseCase {
 
   async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
     const isValid = TaskMapper.validateTask(input);
-    console.log(input)
+   
     if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
     //const vectors= await addToVectors(input)
     const vectors = [1]
     const taskEntity = TaskMapper.mapTaskToEntity(input, vectors);
-    console.log(taskEntity, "taskEntity...")
+  
     const taskData = await this._taskRepository.create(taskEntity);
     if (!taskData) throw new NotFoundError("Task not created");
 
@@ -63,15 +63,14 @@ export class TaskUsecase implements ITaskUseCase {
   async completedTask(workspaceid: string): Promise<CompletedTaskResponseDTO> {
     const { completedTasks, taskReject } =
       await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid));
-  
-  console.log(completedTasks,"completed66")
+
       const tasks = [
       ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
       ...(Array.isArray(taskReject) ? taskReject : [taskReject]),
     ] as taskType[]
-       console.log(tasks,"Tasked66")
+    
     const mappedData = TaskMapper.MappedCompletdTask(tasks);
-    console.log(mappedData,"mapped66")
+  
     return mappedData;
   }
   async updateApprovalStatus(
@@ -79,7 +78,7 @@ export class TaskUsecase implements ITaskUseCase {
     status: string,
     msg?: string | null
   ): Promise<void> {
-    console.log(taskId, status, msg,"6666")
+   
     await this._taskRepository.updateApprovalStatus(taskId, status, msg);
   }
 
@@ -87,7 +86,7 @@ export class TaskUsecase implements ITaskUseCase {
     const taskfilter = taskFilter(filter) ?? null
     const projectTask =
       await this._taskRepository.findTaskByProjectId(projectId, taskfilter);
-    console.log(projectTask, "Task##")
+   
     if (!projectTask) throw new NotFoundError(ResponseMessages.NOT_FOUND)
 
     return projectTask;

@@ -78,7 +78,7 @@ const AlluserSlice = createSlice({
       // SOFT DELETE USER
       .addCase(removeUser.fulfilled, (state, action) => {
         const updatedUser = action.payload;
-        console.log(updatedUser, '112');
+  
 
         state.users = state.users.map((user) =>
           user._id === updatedUser._id ? updatedUser : user

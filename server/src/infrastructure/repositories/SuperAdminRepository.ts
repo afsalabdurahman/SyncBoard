@@ -62,7 +62,6 @@ export class SuperAdminRepository implements ISuperAdminRepository {
     ]).exec();
 
 const abusereportlas= await AbuseModel.find().sort({createdAt:-1}).limit(3)
-console.log(abusereportlas,"consoleAbuseRepo++",data,"Dataa",userCount,"userCount",workspaceCount,"worksceCount")
     return { data, userCount, workspaceCount,abusereportlas }
   }
   async getAllWorkspace(limit:number,skip:number): Promise<WorkspaceAggResponseDTO[]> {
@@ -416,7 +415,6 @@ result.push(totalDocCount)
   { $limit: limit }
 
     ])
- console.log(result,"sub786")
     return {subscriptions:result,totalDocCount:totalDocCount};
   }
   

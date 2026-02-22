@@ -62,9 +62,9 @@ export function TasksPage() {
   const closeComment=()=>{
     setOpenCommentId(null)
   }
-  console.log(openCommentId,"commentId")
+
  
-  let AdminId = useSelector((state: any) => {
+  const AdminId = useSelector((state: any) => {
     return state?.user?.user?.id;
   });
   const [refreshKey, setRefreshKey] = useState(0);
@@ -75,7 +75,7 @@ export function TasksPage() {
   const [loader, setLoader] = useState("");
 const dispatch: AppDispatch = useDispatch();
 useSelector((state)=>{
-  console.log(state,"+++++++++++")
+
 })
 const tasks = useTasks()
 useEffect(()=>{
@@ -89,8 +89,8 @@ const handleChangePage = (event, newPage) => {
   };
 
  
-  let projects = useProjects()
-  let users = new Set(
+  const projects = useProjects()
+  const users = new Set(
     projects
       .map((user: { id: number; name: string; assignedUsers: string[] }) => {
         return user.assignedUsers.map((name: string) => {

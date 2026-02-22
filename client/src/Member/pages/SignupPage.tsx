@@ -18,7 +18,7 @@ import { adminSignupSchema, validateSignup } from "../../Utility/formValidator";
 
 const SignupPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -67,17 +67,17 @@ const SignupPage = () => {
       }));
     }
     setLoading(true);
-    console.log("Signup with:", { email, password });
+   
 
     try {
      
       const response= await signupApi(email,name,password)
-console.log(response,"sent otp")
+
       if (response) {
         setLoading(false);
         
      
-      let data={email,password,name,isAdmin:true,superAdmin:true}
+      const data={email,password,name,isAdmin:true}
         dispatch(setUserData(data))
         navigate("/verify/otp",{replace:true});
       }
@@ -100,7 +100,7 @@ console.log(response,"sent otp")
       }));
   
          setLoading(false);
-      console.log(message, "error try block");
+     
     }
       }
      
@@ -112,27 +112,7 @@ console.log(response,"sent otp")
       <div className='w-full md:w-1/2 md:pr-8'>
         <h1 className='text-3xl font-bold text-gray-800 mb-8'>Sign up</h1>
 
-        {/* Social sign up buttons */}
-        {/* <div className='space-y-4 mb-6'>
-          <button className='flex items-center justify-center w-full border border-gray-300 rounded py-2 px-4 font-medium text-gray-700'>
-            <img
-              src='/images/google.png'
-              alt='Google'
-              className='w-5 h-5 mr-3'
-            />
-            Continue with Google
-          </button>
-
-          <button className='flex items-center justify-center w-full border border-gray-300 rounded py-2 px-4 font-medium text-gray-700'>
-            <img
-              src='/images/facebook.png'
-              alt='Facebook'
-              className='w-5 h-5 mr-3'
-            />
-            Continue with Facebook
-          </button>
-        </div> */}
-
+        
         <form onSubmit={handleSubmit}>
           <div className='mb-4'>
             <label htmlFor='name' className='block text-sm text-gray-700 mb-1'>

@@ -13,14 +13,11 @@ export const fetchSubscription = createAsyncThunk<
       method: "GET",
 
     });
-    console.log(res, "response from ap++ think")
 
-    if (!res.data) {
 
-      console.log("failed")
-    }
+    
     const data = res.data as Subscription;
-    console.log(data, "from sucf++++++++DATA")
+    
     return data;
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err?.message || "fetchSubscription failed");

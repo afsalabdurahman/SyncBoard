@@ -31,9 +31,7 @@ const [total,setTotal]=useState()
   const workspaceSlug = useSelector(
     (state: any) => state.workspace.workspace.slug
   );
-useSelector((state)=>{
-  console.log(state,"state")
-})
+
 useEffect(()=>{
  async function fetch(){
 const data=await paginationUser(workspaceSlug,1);
@@ -75,7 +73,7 @@ setPage(data.currentPage)
     fetchMembers(debouncedSearch);
   }, [fetchMembers, debouncedSearch]);
 const handleChangePage = (page)=>{
-  console.log(page,"pagee")
+
 }
   return (
     <div className="mt-8 w-full bg-slate-50 min-h-screen p-4 max-w-[1000px] mx-auto">

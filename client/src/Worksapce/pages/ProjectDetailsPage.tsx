@@ -30,21 +30,21 @@ const ProjectDetailsPage = (props: any) => {
   const projectId = props.projectDetails._id;
   useEffect(() => {
     apiService.get(`task/project/${projectId}?filter=${taskFilter}`).then((res) => {
-      console.log(res, "detials+++");
+
       setMytask(res.data);
     });
   }, [projectId,taskFilter]);
   const [progress, setProgress] = useState();
-  console.log(myTasks, "this mytask");
-  let total = myTasks.length;
-  let complete = "complete";
-  console.log(total, complete, "+++++");
+
+  const total = myTasks.length;
+  const complete = "complete";
+
   const allTask = useSelector((state) => {
     return state.task.tasks;
   });
   const totalProgress = Math.round((complete / total) * 100);
 
-  console.log(totalProgress, "%%%%%%");
+  
 
   const [activeTab, setActiveTab] = useState("overview");
   
@@ -63,18 +63,18 @@ const ProjectDetailsPage = (props: any) => {
     hasPdf = props?.projectDetails.attachedUrl.some(isPdf);
     hasImage = props?.projectDetails.attachedUrl.some(isImage);
   }
-  let pdfArray = props?.projectDetails.attachedUrl.map((url: string) => {
+  const pdfArray = props?.projectDetails.attachedUrl.map((url: string) => {
     if (url.includes(".pdf")) {
       return url;
     }
   });
 
-  let imageArry = props.projectDetails.attachedUrl?.filter(
+  const imageArry = props.projectDetails.attachedUrl?.filter(
     (url: string) => url.includes(".jpg") || url.includes(".png") ||url.includes(".webp")
   );
-  console.log(imageArry, pdfArray);
+  
   //Define task
-  let tasks = [
+  const tasks = [
     {
       id: 1,
       title: "Design Homepage Layout",
@@ -117,16 +117,9 @@ const ProjectDetailsPage = (props: any) => {
     },
   ];
 
-  //useEffect(()=>{
-  // const completedSize = myProjectTasks.filter((data)=>data.status=="Completed").length * 100 /myProjectTasks.length;
-  // const totalSize=myProjectTasks.length;
-  // let value=Number(completedSize)
-  // // setProgress(value)
-  //   },[])
+ 
 
-  // console.log(completedSize,totalSize,"++++Sizes")
-
-  // Mock project data
+ 
   const projectData = {
     id: "PRJ-001",
     name: "E-Commerce Platform Redesign",
@@ -146,10 +139,10 @@ const ProjectDetailsPage = (props: any) => {
     },
     client: "TechCorp Solutions",
   };
-  console.log(projectAdminName, "Admin name");
+
 
   const getStatusColor = (status: any) => {
-    console.log(status, "my status");
+    
     switch (status) {
       case "completed":
         return "bg-green-100 text-green-800";

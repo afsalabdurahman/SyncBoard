@@ -53,7 +53,6 @@ export class TaskController {
       
       res.status(HttpStatusCode.OK).json(responseDTO);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -111,7 +110,7 @@ export class TaskController {
   }
   async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
     const workspaceid = req.params.workspaceid;
-    console.log(workspaceid,"+++WORKDPACEID")
+
     const task = await this._taskUsecase.completedTask(workspaceid);
     res.status(HttpStatusCode.OK).json(task);
   }
@@ -140,7 +139,6 @@ export class TaskController {
   ): Promise<void> {
     try {
       if (!req.params.projectId) throw new NotFoundError("Id is not found");
-      console.log(req.query,"quer112")
       const filter=req.query.filter as string
       const task = await this._taskUsecase.findTaskByProjectId(
         req.params.projectId,
@@ -153,7 +151,6 @@ export class TaskController {
   }
 async pagination (req:CustomRequest,res:Response):Promise<void> {
  const workspaceId= req.params.workspaceid;
- console.log(workspaceId,"786Works")
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
@@ -169,22 +166,18 @@ async addComment(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
    const taskId=req.params.id;
     const comment = req.body;
-    console.log(req.body,req.params)
 await this._taskUsecase.addComment(taskId,comment)
 res.status(HttpStatusCode.CREATED).json({message:"Comment added"})
   } catch (error) {
-    console.log(error,"error")
     next(error)
   }
 }
 async getCommentsById(req:Request,res:Response,next:NextFunction):Promise<void>{
  try {
    const taskId= req.params.id;
-   console.log(taskId,"taskID")
    const responseDTO = await this._taskUsecase.getTaskComments(taskId)
    res.status(HttpStatusCode.OK).json({data:responseDTO})
  } catch (error) {
-  console.log(error)
   next(error)
  }
 
@@ -193,7 +186,6 @@ async deleteAttachment(req:Request,res:Response,next:NextFunction):Promise<void>
   try {
     const taskId=req.params.taskid;
     const url=req.body.attachment;
-    console.log(taskId,url,req.body,req.params)
    const  deleteMsg=await this._taskUsecase.deleteAttachment(taskId,url)
 res.status(HttpStatusCode.OK).json({message:deleteMsg})
   } catch (error) {

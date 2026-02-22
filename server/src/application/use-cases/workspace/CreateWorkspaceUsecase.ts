@@ -34,9 +34,9 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   async createWorkspace(
     input: WorkspaceRequestDTO
   ): Promise<WorkspaceResponseDTO> {
-    console.log(input)
+
     const isValid = WorkspaceMapper.validateWorkspace(input);
-    console.log(isValid.error)
+ 
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
 
     const user = await this._userRepository.findByEmail(input.email);

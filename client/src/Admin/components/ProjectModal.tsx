@@ -77,12 +77,12 @@ export function ProjectModal({
   const [showUploadPage, setUploadPage] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  let uploadFiles = () => {
+  const uploadFiles = () => {
     setUploadPage(true);
   };
  const [pdfPopup, setPdfPopup] = useState(false)
 const [imagePopup, setImagePopup] = useState(false);
-  let onSubmitFiles = (data: any) => {
+  const onSubmitFiles = (data: any) => {
     setUploads(data);
   };
   //Check Extention...
@@ -125,10 +125,10 @@ const [imagePopup, setImagePopup] = useState(false);
   }, [project, isOpen, refreshKey]);
  
 
-  let imageArry = formData.attachment?.filter(
+  const imageArry = formData.attachment?.filter(
     (url: string) => url.includes(".jpg") || url.includes(".png")
   );
-  let pdfArry = formData.attachment?.filter((url: string) => {
+  const pdfArry = formData.attachment?.filter((url: string) => {
     if (url.includes(".pdf")) return url;
   });
 

@@ -15,7 +15,6 @@ import {AbuseReportsPage} from "../pages/AbuseReport"
 export const Layout = () =>{
  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
  const [currentPage, setCurrentPage] = useState("dashboard");
- console.log(currentPage,"current page")
 const renderPage = () => {
     switch (currentPage) {
       case "Dashboard":

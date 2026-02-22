@@ -11,7 +11,6 @@ export const SubscriptionsPage = () =>{
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
       const [changePage,setChangePage]=useState(1)
 const{data,isLoading,refetch}=useFetchSubscriptionPageQuery(changePage)
-console.log(data,"$$$$$$ss$$")
 
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
@@ -34,7 +33,6 @@ const handleChangePage = (page) => {
   };
 const filtered = useMemo(() => {
   return mockSubs.filter((s) => {
-    console.log(s,"sssss")
     const matchesSearch =
       s.workspace?.name?.toLowerCase().includes(search.toLowerCase()) ||
       s.workspace?.ownerEmail?.toLowerCase().includes(search.toLowerCase()) ||
@@ -69,20 +67,15 @@ if(isLoading){
     setDetailsOpen(true)
   }
   const onChangePlan = (sub: Subscription) => {
-    console.log("Change plan:", sub.id)
   }
   const onCancel = (sub: Subscription) => {
-    console.log("Cancel subscription:", sub.id)
   }
   const onRefund = (sub: Subscription) => {
-    console.log("Refund last payment for:", sub.id)
   }
 
   const onExport = () => {
-    console.log("Export subscriptions")
   }
   const onCreate = () => {
-    console.log("Create new subscription")
   }
 
   return (

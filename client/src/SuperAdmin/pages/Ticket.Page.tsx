@@ -138,7 +138,6 @@ refetch()
   };
 
   const handleSendMessage = async (ticketId: string, message: string) => {
-    console.log(ticketId,message,)
       const newMessage: Message = {
                 sender: "super_admin",
                 content: message,
@@ -146,7 +145,6 @@ refetch()
               };
               try {
                 await await updateMsg({msg:newMessage,id:ticketId});
-                console.log(selectedTicket,"selected ticket")
                   setSelectedTicket(prev =>
   prev
     ? { 
@@ -157,20 +155,16 @@ refetch()
 );
 refetch()
               } catch (error) {
-                console.log(error)
               }
-              console.log(newMessage,ticketId,"iddd")
   };
 
   const handleStatusChange = async (ticketId: string, newStatus: TicketStatus) => {
     try {
-      console.log(ticketId,newStatus,"gfffffffff")
       await updateTicketStatus({ticketId,newStatus})
    refetch()
       toast.success("Updated")
     } catch (error) {
       toast.error("Failed to update")
-      console.log(error,"er")
     }
     // setTickets((prevTickets) =>
     //   prevTickets.map((ticket) => {
