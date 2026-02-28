@@ -6,12 +6,15 @@ import { SubscriptionAggregateDTO } from "../dto/SuperDTO";
 import { responseUser, UserRole } from "../../types/userTypes";
 export class AuthMapper {
   static mapUserToEntity(dto: AdminSignupRequestDTO): User {
+   const verificationExpiresAt = new Date(Date.now() + 10 * 60 * 1000)
     return new User({
       email: dto.email,
       name: dto.name as string,
       password: dto.password,
       role: dto.role as UserRole,
       isAdmin: true,
+      isVerified:false,
+      verificationExpiresAt:verificationExpiresAt
 
     });
   }

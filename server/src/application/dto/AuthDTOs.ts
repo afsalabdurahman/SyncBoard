@@ -21,6 +21,9 @@ export interface AdminSignupRequestDTO {
   password?: string;
   name?: string;
   role?: 'Admin';
+  isVerified?:boolean;
+   verificationExpiresAt?:Date
+
 
 }
 

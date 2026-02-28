@@ -11,6 +11,7 @@ import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { CustomRequest } from "../../types/CustomRequest";
+import { User } from "../../../domain/entities/User";
 
 @injectable()
 export class AuthController {
@@ -24,11 +25,11 @@ export class AuthController {
     next: NextFunction): Promise<void> {
     try {
       const input: AdminSignupRequestDTO = req.body as AdminSignupRequestDTO
-      const { user, token, refreshToken }:AdminSignupResponseDTO = await this._registerUseCase.execute(input);
+      const  user = await this._registerUseCase.execute(input);
 
-      setTokensInCookies(res, token, refreshToken);
+      // setTokensInCookies(res, token, refreshToken);
 
-      res.status(HttpStatusCode.CREATED).json({ user: user, token, refreshToken });
+      res.status(HttpStatusCode.CREATED).json({ user: user });
     } catch (error) {
       next(error);
     }
@@ -36,7 +37,7 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     const input: LoginRequestDTO = req.body as LoginRequestDTO;
     try {
-  
+  console.log(input,"input")
        const {token,refreshToken,user,workspace} = await this._loginUsecase.loginUser(input);
 
     setTokensInCookies(res, token, refreshToken);

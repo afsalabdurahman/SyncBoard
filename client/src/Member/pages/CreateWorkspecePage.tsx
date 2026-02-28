@@ -20,9 +20,7 @@ interface FormField {
 }
 
 const CreateWorkspacePage: React.FC = () => {
-  useSelector((state)=>{
 
-  })
   const navigate=useNavigate()
 const dispach=useDispatch()
   const email  = useSelector((state: RootState) => state?.user?.user?.email);

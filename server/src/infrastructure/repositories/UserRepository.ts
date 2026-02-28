@@ -29,7 +29,7 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     return new User({ ...document, _id: document._id?.toString() });
   }
   async findUser(id: string): Promise<User | null> {
-    const document = await this.model.findById(id).lean().exec();
+    const document = await this.model.findById(id).select("+password").lean().exec();
     if (!document) return null;
     return new User({ ...document, _id: document._id?.toString() });
   }
@@ -153,6 +153,18 @@ async searchUser(workspaceId: Types.ObjectId, query: string): Promise<UserRespon
  return users 
 }
 
+async userVerified(userId: Types.ObjectId, isVerified: boolean, verificationExpiresAt: Date | null): Promise<User | null> {
+const user=await UserModel.findByIdAndUpdate(
+  userId,
+  {
+    isVerified: isVerified,
+    verificationExpiresAt: verificationExpiresAt
+  },
+  { new: true }
+)
+return user as User
+
+}
 
 }
 

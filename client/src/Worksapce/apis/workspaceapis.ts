@@ -1,3 +1,4 @@
+import { handleApiError } from "../../Services/apiServices/apiErrorHandle"
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle"
 
@@ -13,12 +14,17 @@ export const sendQuery = async (userName: string, query: string) => {
     return response
 }
 export const sendAbuse = async (formData: any, userId, workspaceId) => {
-    const response = await apiService.post(`workspace/abuse/${userId}/${workspaceId}`, {
+    try {
+        const response = await apiService.post(`workspace/abuse/${userId}/${workspaceId}`, {
         description: formData.description,
         type: formData.type,
         severity: formData.severity
     })
     return response.status
+    } catch (error) {
+         const err: string = catchErrorHandle(error, "Failed to send report")
+    throw new Error(err)
+    }
 }
 
 export const searchApi = (searchQuery, workspaceid, userid) => {
@@ -30,8 +36,15 @@ export const searchApi = (searchQuery, workspaceid, userid) => {
     }
 }
 export const abuseReportList = async (userId: string, workspaceId: string, page: number) => {
-    const response = await apiService.get(`workspace/abuse/list/${workspaceId}/${userId}?page=${page}&&limit=5`);
-    return response
+   try {
+     const response = await apiService.get(`workspace/abuse/list/${workspaceId}/${userId}?page=${page}&&limit=5`);
+
+     return response
+   } catch (error) {
+    
+    const err: string = catchErrorHandle(error, "Failed to send report")
+    throw new Error(err)
+   }
 }
 
 export const getMyAbuseReports = () => {

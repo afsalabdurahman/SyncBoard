@@ -10,8 +10,7 @@ import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";
 import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
 import { IAbuseUsecase } from "../../../application/repositories/IAbuse";
 import { AbuseRequestDTO, UpdateAbuseStatusDTO } from "../../../application/dto/AbuseDTO";
-import { workerData } from "worker_threads";
-import { request } from "http";
+
 @injectable()
 export class WorkspaceController {
   constructor(
@@ -46,11 +45,12 @@ export class WorkspaceController {
   ): Promise<void> {
 
 
-    const { emails, invitationLink } = req.body;
+    const { email, invitaionLink } = req.body;
+    console.log(email,invitaionLink,"++Contoll",req.body)
     try {
       const isSend = await this._sentInvitaionUsecase.send(
-        emails,
-        invitationLink
+        email,
+        invitaionLink
       );
       res.status(HttpStatusCode.OK).json(ResponseMessages.INVITAION_SEND);
     } catch (error) {

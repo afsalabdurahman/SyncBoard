@@ -31,11 +31,7 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:any) {
         setUrls(prevUrls=>prevUrls.filter(url=>url!==deletedUrl))
                 deletdAUrl(deletedUrl)
  setIsDialogOpen(false)
-        // setTimeout(()=>{
-        
-        
-
-        // },2000)
+    
         
       
   
@@ -46,9 +42,7 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:any) {
   
    }
    const [isDialogOpen,setIsDialogOpen]=useState(false)
-//  useEffect(()=>{
 
-//  },[deleteUrl])
 
    
   return (

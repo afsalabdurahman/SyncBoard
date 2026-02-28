@@ -6,9 +6,9 @@ import {SuperController} from "../controllers/super/SuperController"
 import { roleMiddleware } from "../middleware/roleMiddleware";
 import { authMiddelware } from "../middleware/authMiddleware";
 
-let superAuth = [authMiddelware(), roleMiddleware(["SuperAdmin"])];
-let superController=container.resolve(SuperController);
-let router = express.Router();
+const superAuth = [authMiddelware(), roleMiddleware(["SuperAdmin"])];
+const superController=container.resolve(SuperController);
+const router = express.Router();
 
 router.get("/counts",superAuth,superController.totalCount.bind(superController))
 router.get('/count/workspace',superAuth,superController.totalWorkspaceCount.bind(superController))

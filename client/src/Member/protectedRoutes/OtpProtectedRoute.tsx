@@ -10,7 +10,7 @@ const OtpProtectedRoute = ({ children }: Props) => {
   const email = useSelector(
     (state: RootState) => state?.user?.user?.email
   );
-console.log(email,"emaildss")
+
   if (!email) {
     return <Navigate to="/signup" replace />;
   }

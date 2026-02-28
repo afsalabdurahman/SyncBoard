@@ -41,7 +41,7 @@ export const loginApi = async (email: string, password: string): Promise<any> =>
     const response: AxiosResponse<any> = await apiService.post(
       "auth/user/login",
       { email, password },
-      { withCredentials: true }
+   
     );
 
     if (response.status === 200) {
@@ -111,7 +111,7 @@ export const fetchComments = async (taskId: string): Promise<commentType[]> => {
 export const verifyOTP = async (
   email: string,
   otp: string
-): Promise<boolean | void> => {
+)=> {
   try {
     const response: AxiosResponse = await apiService.post(
       "auth/user/verifyotp",
@@ -120,9 +120,10 @@ export const verifyOTP = async (
         otp,
       }
     );
-    if (response.status === 201) {
-      return true;
-    }
+
+    
+     return  response.data.user
+    
 
   } catch (error: unknown) {
     throw new Error("Invalid OTP");
@@ -157,4 +158,18 @@ export const changePassword = async (userId,currentPassword,newPassword) =>{
     throw new Error(err)
   }
 }
-
+export const registerUser = async (name:string,email:string,password:string,)=>{
+  try{
+    const response = await apiService.post("/auth/user/register",{
+         email,
+          password,
+          name,
+          role:"Admin"
+        })
+    return response.data.user
+    
+  }catch(error){
+ const err: string = catchErrorHandle(error, "Failed to send OTP")
+    throw new Error(err)
+  }
+}

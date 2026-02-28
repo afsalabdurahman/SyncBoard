@@ -4,6 +4,9 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { IOTP } from "../../../application/repositories/IOTP";
 import { MailRequestDTO } from "../../../application/dto/MailDTO";
+import { User } from "../../../domain/entities/User";
+import { setTokensInCookies } from "../../../utils/CookieUtile";
+import { adminResponseDTO, AdminSignupResponseDTO } from "../../../application/dto/AuthDTOs";
 @injectable()
 export class OTPController {
   constructor(
@@ -24,8 +27,9 @@ export class OTPController {
     const input: MailRequestDTO = req.body as MailRequestDTO;
 
     try {
-       await this._otpServiceUsecase.verifyOTP(input)
-      res.status(HttpStatusCode.CREATED).json({ message: ResponseMessages.OTP_VERIFIED })
+     const { user, token, refreshToken }:AdminSignupResponseDTO = await this._otpServiceUsecase.verifyOTP(input)
+      setTokensInCookies(res, token, refreshToken);
+    res.status(HttpStatusCode.CREATED).json({ user: user, token, refreshToken });
     }
     catch (error) {
       next(error)

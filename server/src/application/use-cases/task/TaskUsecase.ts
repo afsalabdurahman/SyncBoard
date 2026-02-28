@@ -19,7 +19,7 @@ export class TaskUsecase implements ITaskUseCase {
   async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
     const isValid = TaskMapper.validateTask(input);
    
-    if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
+    if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     //const vectors= await addToVectors(input)
     const vectors = [1]
     const taskEntity = TaskMapper.mapTaskToEntity(input, vectors);

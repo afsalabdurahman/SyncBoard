@@ -26,33 +26,6 @@ export  function Upload({isOpen,onClose,onSubmit}:any) {
     ".docx"]
   
 
-//   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const files = Array.from(event.target.files || [])
-
-//     files.forEach((file) => {
-//       const id = Math.random().toString(36).substr(2, 9)
-//       const uploadedFile: UploadedFile = {
-//         file,
-//         id,
-//       }
-// console.log(file.type,"files0000")
-//       // Create preview for images
-//       if (file.type.startsWith("image/")) {
-//         const reader = new FileReader()
-//         reader.onload = (e) => {
-//           setUploadedFiles((prev) => prev.map((f) => (f.id === id ? { ...f, preview: e.target?.result as string } : f)))
-//         }
-//         reader.readAsDataURL(file)
-//       }
-
-//       setUploadedFiles((prev) => [...prev, uploadedFile])
-//     })
-
-//     // Reset input
-//     if (fileInputRef.current) {
-//       fileInputRef.current.value = ""
-//     }
-//   }
 const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
   const files = Array.from(event.target.files || []);
 
@@ -63,7 +36,6 @@ const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
       file,
       id,
     };
-    console.log(file,"file",file.type,file.name)
    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
 if(!acceptedTypes.includes(ext)) {
   toast.error(`${ext} Not Support`)
@@ -114,12 +86,10 @@ if(!acceptedTypes.includes(ext)) {
     return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 const handleSubmit = () =>{
-    console.log("111working subl=mit burtton")
     if(uploadedFiles.length>5){
          toast.error("Limit exceed");
         return false
     }
-    console.log(uploadedFiles,"filess")
     onSubmit(uploadedFiles)
     onClose()
 }

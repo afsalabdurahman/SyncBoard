@@ -52,7 +52,6 @@ const countSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCountData.fulfilled, (state, action: PayloadAction<Count>) => {
-        console.log("Fetched payload:", action.payload);
 
         const data = action.payload || {};
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import {signupApi} from "../apiservice/authApi"
+import {registerUser, signupApi} from "../apiservice/authApi"
 import { RootState, AppDispatch } from "../../Redux/store";
 import {
   setUserName,
@@ -9,12 +9,11 @@ import {
   setUserPassword,
   
 } from "../../Redux/feature/RegisterSlice";
-import { setUserData } from "../../Redux/feature/user/userSlice";
+import { setUserData, updateUserPartial } from "../../Redux/feature/user/userSlice";
 import api from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
-import { adminSignupSchema, validateSignup } from "../../Utility/formValidator";
 
 const SignupPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,16 +70,20 @@ const SignupPage = () => {
 
     try {
      
-      const response= await signupApi(email,name,password)
-
-      if (response) {
-        setLoading(false);
+      const user= await registerUser(name,email,password)
+      dispatch(setUserData({email:user.email}))
+      navigate("/verify/otp",{replace:true});
+//    if(response){
+//  setLoading(false);
         
      
-      const data={email,password,name,isAdmin:true}
-        dispatch(setUserData(data))
-        navigate("/verify/otp",{replace:true});
-      }
+//        const data={email,name,isAdmin:true}
+//         dispatch(setUserData(response))
+//         // dispatch(updateUserPartial(email))
+//       //  navigate("/verify/otp",{replace:true});
+//    }
+       
+    
     } catch (error) {
       let message = "Signup failed";
       if(error instanceof Error){

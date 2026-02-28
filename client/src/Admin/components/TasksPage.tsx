@@ -127,24 +127,37 @@ const handleChangePage = (event, newPage) => {
 
 //  dispatch(fetchTaskData({page,limit:rowPerPage}))
  await dispatch(fetchTaskData({workspaceid,  page,limit:rowPerPage}))
-  setTimeout(() => {
-      toast.success("Created project successfully 🎉");
-    }, 100);
+
+      toast.success("Created task successfully 🎉");
+ 
       setLoader("");
+setIsModalOpen(false);
 
   }catch (error) {
     setLoader("");
-  toast.error("Task is not created")
+
+   let message=error.message
+    toast.error(message)
  }
 
 };
   const handleEditTask = async (taskData) => {
    
     const id = taskData.id;
-  
-  
+  try {
+    
    await  dispatch(updateTaskApi(taskData)).unwrap()
  await dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
+ 
+      toast.success("Updated task successfully 🎉");
+ 
+      setLoader("");
+setIsModalOpen(false);
+  } catch (error) {
+    let message=error.message
+    toast.error(message)
+  }
+  
   };
 
   const handleDeleteTask = (id: string) => {
@@ -155,6 +168,7 @@ const handleChangePage = (event, newPage) => {
   
     await dispatch(deleteTaskApi(deleteTaskId)).unwrap()
     await dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
+    toast.success("Task is deleted")
   };
 
   const openAddModal = () => {

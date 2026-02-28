@@ -41,7 +41,13 @@ useEffect(() => {
       setTickets(response?.data?.data ?? []);
       setCount(response.data.count)
     } catch (error) {
-      console.error("Failed to fetch abuse reports", error);
+  
+         if (error instanceof Error) {
+      const message = error.message;
+      toast.error(message)
+    }else{
+      toast.error("Failed to send report")
+    }
     }
   };
 
@@ -56,8 +62,21 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await sendAbuse(formData, memeber._id, memeber.workspace[0].workspaceId);
-    toast.success('Report Sent');
+ try {
+  await sendAbuse(formData, memeber._id, memeber.workspace[0].workspaceId);
+   toast.success('Report Sent');
+ } catch (error) {
+  
+         if (error instanceof Error) {
+      const message = error.message;
+      toast.error(message)
+    }else{
+      toast.error("Failed to send report")
+    }
+    }
+
+    
+   
 
     setFormData({
       type: '',

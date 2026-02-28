@@ -7,7 +7,7 @@ import api from "../../Services/apiServices/apiService";
 import { useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
 import { useLayoutEffect } from "react";
-import { signupApi, verifyOTP } from "../apiservice/authApi";
+import { reSendOTP, signupApi, verifyOTP } from "../apiservice/authApi";
 const OTP_LENGTH = 6;
 
 const OtpVerification = () => {
@@ -25,6 +25,7 @@ const forward = useSelector((state: RootState) => state.forward);
     
  
   }));
+
 
   const [otp, setOtp] = useState<string[]>(
     Array(OTP_LENGTH).fill("")
@@ -66,34 +67,36 @@ useLayoutEffect(() => {
     const otpValue = otp.join("");
 
     try {
-   const isValid=await verifyOTP(userData?.email,otpValue)
-
-    
+   const data=await verifyOTP(userData?.email,otpValue)
       setIsValidTrue(true);
-      
-     
-      setMessage("Please wait automatically redirect...");
-if(forward){
-  navigate("/change/password")
-}else{
- const registerRes: AxiosResponse<any> = await api.post(
-        "auth/user/register",
-        {
-          name: userData.name,
-          email: userData.email,
-          password:userData.password,
-          role: "Admin",
-
-        },
-        { withCredentials: true }
-      );
-      
-      dispatch(setUserData(registerRes.data.user));
-  
-      dispatch(updateUserPartial({password:""}))
+       const datavalue={email:data.email,name:data.name,isAdmin:true,id:data.id}
+   
+     dispatch( setUserData(datavalue))
       setTimeout(() => {
         navigate("/create/workspace",{replace:true});
       }, 3000);
+      setMessage("Please wait automatically redirect...");
+if(forward){
+  navigate("/change/password")
+// }else{
+//  const registerRes: AxiosResponse<any> = await api.post(
+//         "auth/user/register",
+//         {
+//           name: userData.name,
+//           email: userData.email,
+//           password:userData.password,
+//           role: "Admin",
+
+//         },
+//         { withCredentials: true }
+//       );
+      
+//       dispatch(setUserData(registerRes.data.user));
+  
+//       dispatch(updateUserPartial({password:""}))
+//       setTimeout(() => {
+//         navigate("/create/workspace",{replace:true});
+//       }, 3000);
 }
      
     } catch (error) {
@@ -148,14 +151,14 @@ if(forward){
 
   /* ---------------- Resend OTP ---------------- */
   const resendCode = async () => {
-   const response= await signupApi(userData?.email,userData.name,userData.password)
-if(response){
+   const response= await reSendOTP(userData?.email)
+
  setOtp(Array(OTP_LENGTH).fill(""));
     setTimer(59);
     setIsValidFalse(false);
     setIsValidTrue(false);
     inputRefs.current[0]?.focus();
-  };
+  
 }
    
 
@@ -212,9 +215,9 @@ if(response){
               Resend in 00:{timer < 10 ? `0${timer}` : timer}
             </span>
           ) : (
-            <button
+            <button 
               onClick={resendCode}
-              className="text-gray-600 hover:text-gray-800"
+              className="text-gray-600 hover:text-gray-800 cursor-pointer"
             >
               Resend OTP
             </button>

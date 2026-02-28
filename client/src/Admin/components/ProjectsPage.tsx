@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../Redux/store";
-import { toast, ToastContainer } from "react-toastify";
+// import { toast, ToastContainer } from "react-toastify";
 import { Suscription } from "../Pages/Suscription";
 import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
 import { fetchProjectData,deleteProject,createProject,updateProjectApi } from "../../Redux/feature/project/projectThunks";
@@ -42,6 +42,7 @@ import { useAdminId, useAdminName, usePagination, usePlankey,useProjects } from 
 import { ProjectFormData } from "../types/projetctTypes";
 import { setPage } from "../../Redux/feature/project/projectSlice";
 import { useWorkspace, useWorkspaceid, useWorkspaceSlug } from "../../Worksapce/hooks/workspacehooks";
+import { toast } from "react-toastify";
 
 
 export default function ProjectsPage() {
@@ -104,9 +105,11 @@ useEffect(() => {
     );
 
     toast.success("Created project successfully 🎉");
-
+setIsModalOpen(false);
   } catch (error: any) {
-    toast.error("sdfjhfklshf"); // error is now string from rejectWithValue
+
+    let message=error.message
+    toast.error(message); 
   } finally {
     setLoader("");
   }
@@ -118,11 +121,19 @@ useEffect(() => {
 
  
    const id=projectData._id;
-  
-await dispatch(updateProjectApi({projectId:id , projectData})).unwrap()
-
-setLoader("")
+  try {
+    await dispatch(updateProjectApi({projectId:id , projectData})).unwrap()
+    setLoader("")
 toast.success("Project updated successfully");
+setIsModalOpen(false);
+  } catch (error) {
+      
+    let message=error.message
+    toast.error(message); 
+  }
+
+
+
 
   };
   const handleDeleteProject = async (id: string) => {
@@ -186,7 +197,7 @@ dispatch(fetchProjectData({workspaceId:workspaceid, page, limit: rowPerPage }));
           Add Project
         </Button>
       </div>
-      <ToastContainer position='top-center' autoClose={5000} />
+      {/* <ToastContainer position='top-center' autoClose={5000} /> */}
       <Card>
         <CardHeader>
           <CardTitle>Active Projects</CardTitle>

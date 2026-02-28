@@ -23,6 +23,7 @@ export interface IUserRepository extends IBaseRepository<User | null> {
     role: string,
     joinDate?: Date
   ): Promise<User | null>;
+  userVerified(userId:Types.ObjectId,isVerified:boolean,verificationExpiresAt:Date|null):Promise<User|null>
   findUsersInsameWorkspace(worspaceId: Types.ObjectId): Promise<UserDoument[] | null>;
   updateOnlineStatus(userId: string): Promise<void>;
   countUser(): Promise<number | Types.ObjectId>

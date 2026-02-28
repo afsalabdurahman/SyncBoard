@@ -2,6 +2,7 @@ import mongoose, { Schema, model, Document,Types } from "mongoose";
 import { WorkspaceMembership } from "../../../types/workpaceTypes";
 import { UserRole } from "../../../types/userTypes";
 import { workspaceMembershipSchema } from "./WorkspaceMemberModel";
+import { boolean } from "zod";
 
 
 export interface UserDoument extends Document {
@@ -27,13 +28,15 @@ export interface UserDoument extends Document {
   isOnline:boolean;
   stripeCustomerId?: string;
   currentSubscription?: Types.ObjectId;
+   isVerified?:boolean;
+   verificationExpiresAt:Date
   
 }
 
 const userSchema = new Schema<UserDoument>(
   {
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true,select:false },
     name: { type: String, required: true },
     role: {
       type: String,
@@ -55,8 +58,14 @@ const userSchema = new Schema<UserDoument>(
     isOnline:{type:Boolean,default:false},
      stripeCustomerId: {type:String},
   currentSubscription: { type: Schema.Types.ObjectId, ref: 'Subscription' },
+   isVerified:{type:Boolean,default:false},
+   verificationExpiresAt:{type:Date}
+
   },
   { timestamps: true }
 );
-
+userSchema.index(
+  { verificationExpiresAt: 1 },
+  { expireAfterSeconds: 0 }
+);
 export const UserModel = model<UserDoument>("User", userSchema);

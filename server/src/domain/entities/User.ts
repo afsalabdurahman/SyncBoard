@@ -24,6 +24,8 @@ export class User {
   isOnline?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  isVerified?: boolean;
+  verificationExpiresAt?: Date;
 
   constructor(params: {
     email: string;
@@ -47,7 +49,8 @@ export class User {
     updatedAt?: Date;
     stripeCustomerId?: string;
     currentSubscription?: Types.ObjectId
-
+ isVerified?: boolean;                 
+  verificationExpiresAt?: Date; 
   }) {
     this.email = params.email;
     this.password = params.password;
@@ -72,6 +75,8 @@ export class User {
     this.createdAt = params.createdAt ?? new Date();
     this.updatedAt = params.updatedAt ?? new Date();
     this.stripeCustomerId = params.stripeCustomerId;
-    this.currentSubscription = params.currentSubscription
+    this.currentSubscription = params.currentSubscription;
+    this.isVerified = params.isVerified ?? false;
+    this.verificationExpiresAt = params.verificationExpiresAt;
   }
 }

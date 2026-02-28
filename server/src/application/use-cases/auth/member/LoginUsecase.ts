@@ -20,15 +20,16 @@ export class LoginUsecase implements ILogin {
   ) { }
 
   async loginUser(input: LoginRequestDTO): Promise<LoginResponseDTO> {
+   
     if (!input.email || !input.password) throw new ValidationError(ResponseMessages.INVALID_INPUT)
     // const isValid = AuthMapper.loginValidation(input)
 
     // if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const isExist = await this._userRepository.findByEmail(input.email);
-    
+     console.log(isExist,"exist")
     if(!isExist || !isExist?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const user = await this._userRepository.findUser(isExist._id )
-
+console.log(user,"user")
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user) {
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
@@ -40,7 +41,7 @@ export class LoginUsecase implements ILogin {
       input.password,
       user.password!
     );
-
+console.log(isTrue)
     if (!isTrue) {
       throw new AuthenticationError(ResponseMessages.PASSWORD_FAILED);
     }

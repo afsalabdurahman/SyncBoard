@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiService from "../../../Services/apiServices/apiService";
+import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
 
 
 
@@ -34,7 +35,8 @@ export const addTaskApi = createAsyncThunk("/adminTaskData/add", async (newTask)
 
 
   } catch (error) {
-    console.log(error)
+   const err: string = catchErrorHandle(error, "Failed to create Task")
+      throw new Error(err)
   }
 })
 export const updateTaskApi = createAsyncThunk("adminTaskData/update", async (updatedTask) => {
@@ -47,7 +49,8 @@ export const updateTaskApi = createAsyncThunk("adminTaskData/update", async (upd
 
     return response.data.task
   } catch (error) {
-    console.log(error)
+  const err: string = catchErrorHandle(error, "Failed to create Task")
+      throw new Error(err)
   }
 })
 export const deleteTaskApi = createAsyncThunk("adminTaskData/delete", async (deleteTaskId: string) => {

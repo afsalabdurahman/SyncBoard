@@ -120,7 +120,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
         //   { withCredentials: true }
         // );
 const response = await sendInvitaionMail(emails,invitationLink)
-        if (response) {
+        if (response.status==200) {
           setLoader(false);
        
           toast.success("Invitation send");

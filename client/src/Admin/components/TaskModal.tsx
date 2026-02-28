@@ -112,7 +112,6 @@ const onSubmitFiles = (data: any) => {
   const passURL = (url)=>{
 setAttachements(url)
   }
-console.log(selectAttachmanet,"Attched URL+++Delete")
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     if(uploads.length>0){
@@ -124,7 +123,7 @@ console.log(selectAttachmanet,"Attched URL+++Delete")
       onSubmit(formData);
     }
 
-    onClose();
+    // onClose();
   };
   const [uploads, setUploads] = useState([]);
     const [showUploadPage, setUploadPage] = useState(false);

@@ -14,7 +14,7 @@ import {
 import { Input } from "../../Custom/ui/input";
 import { Label } from "../../Custom/ui/label";
 import { Textarea } from "../../Custom/ui/textarea";
-import {  ToastContainer } from "react-toastify";
+
 import {
   Select,
   SelectContent,
@@ -152,8 +152,8 @@ const [imagePopup, setImagePopup] = useState(false);
       attachment: uploads,
       url:formData.attachment
     };
-    onSubmit(updatedData);
-    onClose();
+  await  onSubmit(updatedData);
+    // onClose();
   };
 
   const handleUserToggle = (user: string, checked: boolean) => {
@@ -186,7 +186,7 @@ dispatch(deleteImage(deleteUrl))
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='sm:max-w-[525px]'>
         <DialogHeader>
-           <ToastContainer position='top-center' autoClose={5000} />
+         {/* //  <ToastContainer position='top-center' autoClose={5000} /> */}
           <DialogTitle>
             {project ? "Edit Project" : "Add New Project"}
           </DialogTitle>
@@ -280,21 +280,22 @@ dispatch(deleteImage(deleteUrl))
                 ))}
               </div>
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='deadline' className='text-right'>
-                Deadline
-              </Label>
-              <Input
-                id='deadline'
-                type='date'
-                value={formData.deadline}
-                onChange={(e) =>
-                  setFormData({ ...formData, deadline: e.target.value })
-                }
-                className='col-span-3'
-                required
-              />
-            </div>
+          <div className='grid grid-cols-4 items-center gap-4'>
+  <Label htmlFor='deadline' className='text-right'>
+    Deadline
+  </Label>
+  <Input
+    id='deadline'
+    type='date'
+    value={formData.deadline}
+    min={new Date().toISOString().split("T")[0]}  // ✅ Prevent past dates
+    onChange={(e) =>
+      setFormData({ ...formData, deadline: e.target.value })
+    }
+    className='col-span-3'
+    required
+  />
+</div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='status' className='text-right'>
                 Status
