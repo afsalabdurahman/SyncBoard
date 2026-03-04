@@ -37,7 +37,6 @@ export  const  Workspaces =(props)=> {
   }
 
 
-  // Filter workspaces based on search and filters
   const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
     const matchesSearch =
       workspace.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

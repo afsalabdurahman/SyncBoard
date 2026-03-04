@@ -7,6 +7,7 @@ import { commentType } from "../../types/taskTypes";
 import { commentsDTO } from "../../application/dto/TaskDTOs";
 import { ProjectModel } from "../database/models/ProjectModel";
 import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs";
+import { ConflictError } from "openai";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -74,43 +75,20 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async allCompletedTasks(workspaceid: Types.ObjectId): Promise<{ completedTasks: Task[], taskReject: Task[] }> {
+  async allCompletedTasks(workspaceid: Types.ObjectId,page?:number,limit?:number,skip?:number): Promise<{ completedTasks: Task[], taskReject: Task[] ,totalItems:number}> {
+console.log(page,limit,skip,"Reposi layer")
 
+    if(!limit ) throw new NotFoundError("not found")
+    const completedTasks = await TaskModel.find({ status: "Completed" }).skip(skip??0).limit(Math.ceil(limit/2)).sort({createdAt:-1}).lean().exec()
+    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip??0).limit(Math.ceil(limit/2)).sort({createdAt:-1}).lean().exec()
+ const totalItems = await TaskModel.countDocuments();
+    // const items = await TaskModel.find()
+    //   .skip(skip)
+    //   .limit(limit)
+    //   .sort({ createdAt: -1 });
+    console.log(completedTasks,"tdak com",taskReject,"reje",totalItems,"itesms")
 
-    // const tasksCompleted = await ProjectModel.aggregate([{
-    //   $match: {
-    //     workspaceId: workspaceid
-    //   }
-    // }, {
-    //   $lookup: {
-    //     from: "Task",
-    //     localField: "projectId",
-    //     foreignField: "_id",
-    //     as: "tasks"
-    //   }
-    // },
-
-    // {
-    //   $unwind: "$tasks"
-    // },
-    // {
-    //   $match: {
-    //     "tasks.isCompleted": true
-    //   }
-    // },
-    // {
-    //   $replaceRoot: {
-    //     newRoot: "$tasks"
-    //   }
-    // }
-
-    // ])
-
-
-    const completedTasks = await TaskModel.find({ status: "Completed" }).lean().exec()
-    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).lean().exec()
-
-    return { completedTasks, taskReject };
+    return { completedTasks, taskReject,totalItems };
   }
   async updateApprovalStatus(
     taskId: string,

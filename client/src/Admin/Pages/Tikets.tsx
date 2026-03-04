@@ -95,13 +95,11 @@ try {
     try {
 
       
-      const data=await createTickets(ticket).unwrap()
-      
-
+    await createTickets(ticket).unwrap()
+  toast.success("Ticket created successfully");
     } catch (error) {
     
-
-      toast.error("Unble to Raise tickets")
+  toast.error(error?.data?.message || "Failed to create ticket");
     }
 
   };

@@ -170,12 +170,7 @@ const handleCommentSubmit = async () => {
     const uploadedUrls = await Promise.all(uploadPromises);
   
  
-//  let transfer={
-//   name:newComment.name,
-//    text: newComment.text,
-//    urls:[...uploadedUrls]
 
-//  }
  const isUpadted=await sendComment(taskId,newComment.name,newComment.text,uploadedUrls)
  if(!isUpadted) toast.error("comment not added")
     // Now update the comment with the real URLs

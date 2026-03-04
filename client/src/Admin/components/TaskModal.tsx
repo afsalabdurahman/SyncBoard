@@ -118,9 +118,9 @@ setAttachements(url)
   const uploadPromises = uploads.map((file:File) =>  uploadAttachment(file.file));
     const uploadedUrls = await Promise.all(uploadPromises);
     formData.attachedURLs=uploadedUrls
-    onSubmit(formData);
+    await onSubmit(formData);
     }else{
-      onSubmit(formData);
+      await onSubmit(formData);
     }
 
     // onClose();

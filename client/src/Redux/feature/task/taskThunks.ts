@@ -35,6 +35,7 @@ export const addTaskApi = createAsyncThunk("/adminTaskData/add", async (newTask)
 
 
   } catch (error) {
+    console.log(error,"error")
    const err: string = catchErrorHandle(error, "Failed to create Task")
       throw new Error(err)
   }

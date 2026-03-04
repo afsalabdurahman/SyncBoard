@@ -17,11 +17,11 @@ export const createWorkspace = async(email:string,workspaceName:string,slug:stri
             throw new Error(err)
     }
 }
-export const sendInvitaionMail = async(email:string|null,invitaionLink:string)=>{
+export const sendInvitaionMail = async(emails:string|null,invitationLink:string)=>{
      try {
          const response = await apiService.post(  "workspace/invite",{
-            email,
-            invitaionLink
+            emails,
+            invitationLink
          })
          console.log(response,"responseINVITElink")
          return response

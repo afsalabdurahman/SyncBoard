@@ -13,7 +13,7 @@ export class TicketUsecase implements ITicketUsecase{
     constructor(@inject("TicketRepository")private _ticketRepository:ITicketRepository ){}
     async execute(input: ticketRequestDTO): Promise<void> {
         const isValid=TicketMapper.validateTicket(input);
-         if (!isValid.success) throw new ValidationError(ResponseMessages.INVALID_INPUT);
+         if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
          const TicketEntity= TicketMapper.ticketToEntity(input)
         await this._ticketRepository.create(TicketEntity)
        

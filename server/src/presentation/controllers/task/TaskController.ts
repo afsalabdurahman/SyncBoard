@@ -109,10 +109,19 @@ export class TaskController {
     }
   }
   async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
-    const workspaceid = req.params.workspaceid;
 
-    const task = await this._taskUsecase.completedTask(workspaceid);
-    res.status(HttpStatusCode.OK).json(task);
+    const workspaceid = req.params.workspaceid;
+ const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+    const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+    const skip = (page - 1) * limit;
+console.log("calling... ",page,limit,skip)
+    const {items,totalItems} = await this._taskUsecase.completedTask(workspaceid,page,limit,skip);
+    res.status(HttpStatusCode.OK).json({
+       items,
+  currentPage: page,
+      totalPages: Math.ceil(totalItems / limit),
+      totalItems,
+    });
   }
   async controllApprovalSatatus(
     req: Request,

@@ -16,7 +16,7 @@ export const errorMiddleware: Middleware = () => (next) => (action) => {
       "Something went wrong. Please try again.";
 
     // toast.dismiss(); 
-    // toast.error(message);
+    //  toast.error(message);
   }
 
   return result;

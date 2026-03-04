@@ -57,7 +57,8 @@ export default function KanbanBoard() {
   const [popup, setPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
-const [notify,setNotify]=useState(false)
+// const [notify,setNotify]=useState(false)
+const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
   const user = useSelector((state: any) => state.user.user);
 
   useEffect(() => {
@@ -90,22 +91,49 @@ const [notify,setNotify]=useState(false)
     };
 
     if (user?.name) fetchTasks();
-  }, [user?.name]);
+  }, [user?.name,openCommentId]);
 
   const toggleComment = (taskId: string) => {
     setOpenCommentId((prev) => (prev === taskId ? null : taskId));
+      setNotifyTaskIds((prev) =>
+    prev.filter((id) => id !== taskId)
+  );
   };
 
 // socketNotify
-useEffect(()=>{
-socket.emit("task-join-comment", openCommentId);
-socket.on("comment-notification", (data) => {
-  setOpenCommentId(data.taskId)
-  setNotify(true)
-});
-},[notify,openCommentId])
-// 
+// useEffect(()=>{
+//  socket.emit("task-join-comment", openCommentId);
+// socket.on("comment-notification", (data) => {
+//   console.log(data,"recevd from commt notfocat")
+//   setOpenCommentId(data.taskId)
+//    setNotify(true)
+// });
+// },[notify,openCommentId])
+// // 
+useEffect(() => {
+  if (!tasks.length) return;
 
+  // Join all task rooms
+  tasks.forEach((task) => {
+    socket.emit("task-join-comment", task.id);
+  });
+
+  const handleNotification = (data: any) => {
+    console.log("Notification received:", data);
+
+    setNotifyTaskIds((prev) =>
+      prev.includes(data.taskId)
+        ? prev
+        : [...prev, data.taskId]
+    );
+  };
+
+  socket.on("comment-notification", handleNotification);
+
+  return () => {
+    socket.off("comment-notification", handleNotification);
+  };
+}, [tasks]);
   const closeComment = () => setOpenCommentId(null);
 
   const handleDragStart = (e: React.DragEvent, task: Task) => {
@@ -277,11 +305,10 @@ return (
                       {/* Bottom Bar: Comments + Status */}
                       <div className="flex items-center justify-between gap-4 pt-2 border-t border-gray-100">
                         <CommentButton
-                         
-                          isOpen={openCommentId === task.id}
-                          onClick={() => toggleComment(task.id)}
-                          notify={notify}
-                        />
+  isOpen={openCommentId === task.id}
+  onClick={() => toggleComment(task.id)}
+  notify={notifyTaskIds.includes(task.id)}
+/>
 
                         <div className="flex items-center gap-3 flex-wrap justify-end">
                           {task.status === "completed" && (

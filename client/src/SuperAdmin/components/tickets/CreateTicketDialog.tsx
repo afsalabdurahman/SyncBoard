@@ -58,7 +58,6 @@ const CreateTicketDialog = ({ open, onOpenChange, onCreateTicket }: CreateTicket
     setWorkspace("");
     setCompany("");
 
-    toast.success( "Support ticket created successfully",)
 
     onOpenChange(false);
   };

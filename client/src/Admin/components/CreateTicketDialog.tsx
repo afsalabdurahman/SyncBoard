@@ -57,7 +57,6 @@ const CreateTicketDialog = ({ open, onOpenChange, onCreateTicket }: CreateTicket
     setCategoty("")
 
 
-    toast.success("Support ticket created successfully");
 
     onOpenChange(false);
   };

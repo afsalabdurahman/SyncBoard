@@ -9,6 +9,8 @@ import { Check, X, Clock, CheckCircle } from 'lucide-react';
 import {  fetchTasks,updateTaskStatus } from "../apis/taskApi";
 import { Task } from "../types/taskTypes";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
+import { TablePagination } from "@mui/material";
+import { previousDay } from "date-fns";
 
 
 interface TaskApprovalProps {}
@@ -21,12 +23,24 @@ export const TaskApproval: React.FC<TaskApprovalProps> = () => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [error, setError] = useState<string | null>(null);
 const workspaceid = useWorkspaceid();
+const [pagination,setPagination]=useState({
+  page:1, //currenytpage
+  rowPerpage:5,
+  totalItems:0,
+  totalPages:0
 
+})
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        const fetchedTasks = await fetchTasks(workspaceid);
-        setTasks(fetchedTasks);
+        const fetchedTasks = await fetchTasks(workspaceid,pagination.page,pagination.rowPerpage);
+        setTasks(fetchedTasks.items);
+        setPagination((prev) => ({
+  ...prev,
+  page:fetchedTasks.currentPage,
+  totalItems: fetchedTasks.totalItems,
+  totalPages: fetchedTasks.totalPages
+}));
         setError(null);
       } catch (err) {
         setError("Failed to load tasks. Please try again later.");
@@ -35,7 +49,18 @@ const workspaceid = useWorkspaceid();
     };
     loadTasks();
   }, [refreshKey]);
+console.log(tasks,"taskkk")
+const handleChangePage = async(event,newPage) =>{
+  const fetchedTasks=await fetchTasks(workspaceid,newPage+1,pagination.rowPerpage)
+     setTasks(fetchedTasks.items);
+        setPagination((prev) => ({
+  ...prev,
+  page:fetchedTasks.currentPage,
+  totalItems: fetchedTasks.totalItems,
+  totalPages: fetchedTasks.totalPages
+}));
 
+}
   const handleApprove = async (taskId: string) => {
     try {
       await updateTaskStatus(taskId, "Approved", null);
@@ -185,11 +210,24 @@ const workspaceid = useWorkspaceid();
                     <X className="w-4 h-4 mr-2" />
                     Reject
                   </Button>
+               
                 </div>
               )}
             </CardContent>
           </Card>
         ))}
+        <TablePagination
+         component="div"
+       count={pagination.totalItems} 
+        rowsPerPage={pagination.rowPerpage||0}
+       page={pagination.page-1}
+          onPageChange={handleChangePage}
+           
+        rowsPerPageOptions={[]}
+    
+       
+         
+      />
       </div>
 
       <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>

@@ -26,11 +26,11 @@ export class TaskUsecase implements ITaskUseCase {
   
     const taskData = await this._taskRepository.create(taskEntity);
     if (!taskData) throw new NotFoundError("Task not created");
-
+console.log(taskData,"task Fdata")
     const responseDTO = await TaskMapper.mapEntityToTask("Task is created", taskData);
     io.emit("new-task", {
-      name: taskData.name,
-      message: `🚀 New task "${taskData.name}" has been added!`,
+      name: input.name,
+      message: `🚀 New task "${input.name}" has been added!`,
     });
 
     return responseDTO;
@@ -60,10 +60,12 @@ export class TaskUsecase implements ITaskUseCase {
   async updateTaskStatus(taskId: string, status: string): Promise<void> {
     await this._taskRepository.updateTaskStatus(taskId, status);
   }
-  async completedTask(workspaceid: string): Promise<CompletedTaskResponseDTO> {
-    const { completedTasks, taskReject } =
-      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid));
-
+  async completedTask(workspaceid: string,page:number,limit?:number,skip?:number): Promise<{items:CompletedTaskResponseDTO,totalItems:number}> {
+   console.log(page,limit,skip,"usecase layer")
+   
+    const { completedTasks, taskReject,totalItems } =
+      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid),page,limit,skip);
+console.log(completedTasks,taskReject,totalItems ,"usecase layer")
       const tasks = [
       ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
       ...(Array.isArray(taskReject) ? taskReject : [taskReject]),
@@ -71,7 +73,7 @@ export class TaskUsecase implements ITaskUseCase {
     
     const mappedData = TaskMapper.MappedCompletdTask(tasks);
   
-    return mappedData;
+    return {items:mappedData,totalItems}
   }
   async updateApprovalStatus(
     taskId: string,
@@ -99,7 +101,8 @@ export class TaskUsecase implements ITaskUseCase {
     return { items: items, totalItems }
   }
   async addComment(taskId: string, comment: commentType): Promise<void> {
-    await this._taskRepository.addComments(taskId, comment)
+    await this._taskRepository.addComments(taskId, comment);
+
   }
   async getTaskComments(taskId: string): Promise<commentsDTO[] | null> {
     const task = await this._taskRepository.getTaskbyId(taskId)

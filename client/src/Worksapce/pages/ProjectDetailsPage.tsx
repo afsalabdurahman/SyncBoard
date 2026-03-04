@@ -35,14 +35,16 @@ const ProjectDetailsPage = (props: any) => {
     });
   }, [projectId,taskFilter]);
   const [progress, setProgress] = useState();
-
+console.log(myTasks,"taskss")
   const total = myTasks.length;
-  const complete = "complete";
-
+ const completed = myTasks.filter(
+  (task) => task.status === "Completed"
+);
+console.log(completed,"completed")
   const allTask = useSelector((state) => {
     return state.task.tasks;
   });
-  const totalProgress = Math.round((complete / total) * 100);
+  const totalProgress = Math.round((completed.length / total) * 100);
 
   
 
@@ -315,46 +317,85 @@ const ProjectDetailsPage = (props: any) => {
                   </div>
                 </div>
 
-                <div className='divide-y'>
-                  {myTasks.map((task, index) => (
-                    <div key={index} className='p-6 hover:bg-gray-50'>
-                      <div className='flex items-center justify-between'>
-                        <div className='flex-1'>
-                          <h4 className='font-medium text-gray-900'>
-                            {task.name}
-                          </h4>
-                          <div className='flex items-center space-x-4 mt-2'>
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                                task.status
-                              )}`}
-                            >
-                              {task.status.replace("-", " ")}
-                            </span>
-                            <span
-                              className={`text-sm font-medium ${getPriorityColor(
-                                task.priority
-                              )}`}
-                            >
-                              {task.priority} priority
-                            </span>
-                            <span className='text-sm text-gray-500'>
-                              Due: {task.deadline}
-                            </span>
-                          </div>
-                        </div>
-                        <div className='flex items-center space-x-3'>
-                          <span className='text-sm text-gray-600'>
-                            {task.assignedUser}
-                          </span>
-                          <button className='p-1 text-gray-400 hover:text-gray-600'>
-                            <MoreVertical className='h-4 w-4' />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <div className="border rounded-lg bg-white">
+
+  {/* Header */}
+  <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
+    <h3 className="font-semibold text-gray-800">
+      My Tasks ({myTasks.length})
+    </h3>
+  </div>
+
+  {/* Scrollable Container */}
+  <div className="max-h-[500px] overflow-y-auto divide-y">
+
+    {myTasks.length === 0 && (
+      <div className="p-8 text-center text-gray-500">
+        No tasks available
+      </div>
+    )}
+
+    {myTasks.map((task) => (
+      <div
+        key={task.id}   // ⚠️ Use unique id instead of index
+        className="p-5 hover:bg-gray-50 transition"
+      >
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+          {/* Left Section */}
+          <div className="flex-1 min-w-0">
+            
+            {/* Task Name */}
+            <h4 className="font-medium text-gray-900 truncate">
+              {task.name}
+            </h4>
+
+            {/* Meta Info */}
+            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm">
+
+              {/* Status */}
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  task.status
+                )}`}
+              >
+                {task.status.replace("-", " ")}
+              </span>
+
+              {/* Priority */}
+              <span
+                className={`font-medium ${getPriorityColor(
+                  task.priority
+                )}`}
+              >
+                {task.priority} Priority
+              </span>
+
+              {/* Deadline */}
+              <span className="text-gray-500">
+                Due: {task.deadline}
+              </span>
+
+            </div>
+          </div>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-4 shrink-0">
+
+            <span className="text-sm text-gray-600 truncate max-w-[120px]">
+              {task.assignedUser}
+            </span>
+
+            <button className="p-2 rounded-md hover:bg-gray-200 transition">
+              <MoreVertical className="h-4 w-4 text-gray-600" />
+            </button>
+
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
               </div>
             )}
 
@@ -365,28 +406,54 @@ const ProjectDetailsPage = (props: any) => {
                     Team Members
                   </h3>
                 </div>
-                <div className='divide-y'>
-                  {props.projectDetails.assignedUsers.map((member) => (
-                    <div className='p-6 hover:bg-gray-50'>
-                      <div className='flex items-center justify-between'>
-                        <div className='flex items-center space-x-4'>
-                          <div className='relative'>
-                            <div className='h-12 w-12 bg-gray-300 rounded-full flex items-center justify-center'>
-                              <User className='h-6 w-6 text-gray-600' />
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className='font-medium text-gray-900'>
-                              {member}
-                            </h4>
-                            {/* <p className="text-sm text-gray-600">{member.role}</p> */}
-                          </div>
-                        </div>
-                      
-                      </div>
-                    </div>
-                  ))}
-                </div>
+               <div className="border rounded-lg">
+  <div className="p-4 border-b bg-gray-50">
+    <h3 className="font-semibold text-gray-800">
+      Assigned Members ({props.projectDetails.assignedUsers.length})
+    </h3>
+  </div>
+
+  <div className="max-h-[350px] overflow-y-auto divide-y">
+    {props.projectDetails.assignedUsers.map((member: string, index: number) => {
+      
+      const initials = member
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase();
+
+      return (
+        <div
+          key={`${member}-${index}`}
+          className="p-4 hover:bg-gray-50 transition"
+        >
+          <div className="flex items-center justify-between">
+            
+            <div className="flex items-center space-x-4">
+              
+              {/* Avatar */}
+              <div className="h-10 w-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
+                {initials}
+              </div>
+
+              {/* User Info */}
+              <div>
+                <h4 className="font-medium text-gray-900">
+                  {member}
+                </h4>
+                <p className="text-sm text-gray-500">
+                  Team Member
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
               </div>
             )}
 
@@ -399,53 +466,76 @@ const ProjectDetailsPage = (props: any) => {
                     </h3>
                   </div>
                 </div>
-                <div className='p-6'>
-                  {/* pdf */}
-                  {props.projectDetails.attachedUrl ? (
-                    <div className='flex flex-col gap-4'>
-                      {/* PDF Icon */}
-                      {pdfArray &&
-                        pdfArray
-                          .filter(Boolean)
-                          .map((pdfUrl: string, idx: number) => (
-                            <div
-                              key={`pdf-${idx}`}
-                              className='flex items-center gap-1 text-red-600'
-                            >
-                              <a
-                                href={pdfUrl}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                              >
-                                {" "}
-                                <FileText size={28} strokeWidth={1.5} />
-                              </a>
+              <div className="p-6">
+  {props.projectDetails.attachedUrl && (
+    <div className="space-y-8">
 
-                              <span className='text-sm'>pdf</span>
-                            </div>
-                          ))}
-                      {/* Image Icon */}
-                      {imageArry &&
-                        imageArry.map((imageUrl: string, idx: number) => (
-                          <div
-                            key={`img-${idx}`}
-                            className='flex items-center gap-1 text-blue-500'
-                          >
-                            <a
-                              href={imageUrl}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                            >
-                              {" "}
-                              <FileImage size={28} strokeWidth={1.5} />
-                            </a>
+      {/* 📄 PDF Section */}
+      {pdfArray?.filter(Boolean).length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-3">
+            PDF Files ({pdfArray.length})
+          </h3>
 
-                            <span className='text-sm'>image</span>
-                          </div>
-                        ))}
-                    </div>
-                  ) : null}
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
+            {pdfArray
+              .filter(Boolean)
+              .map((pdfUrl: string, index: number) => (
+                <a
+                  key={`pdf-${index}`}
+                  href={pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="min-w-[140px] flex-shrink-0 flex flex-col items-center justify-center p-4 border rounded-lg hover:bg-gray-50 transition"
+                >
+                  <FileText
+                    size={40}
+                    strokeWidth={1.5}
+                    className="text-red-500"
+                  />
+                  <span className="mt-2 text-sm font-medium">
+                    PDF {index + 1}
+                  </span>
+                </a>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* 🖼 Image Section */}
+      {imageArry?.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-3">
+            Images ({imageArry.length})
+          </h3>
+
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
+            {imageArry.map((imageUrl: string, index: number) => (
+              <a
+                key={`img-${index}`}
+                href={imageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-w-[200px] flex-shrink-0 group"
+              >
+                <div className="relative overflow-hidden rounded-lg border">
+                  <img
+                    src={imageUrl}
+                    alt={`Project Image ${index + 1}`}
+                    className="w-[200px] h-[150px] object-cover group-hover:scale-105 transition duration-300"
+                  />
                 </div>
+                <p className="mt-2 text-sm text-center font-medium">
+                  Image {index + 1}
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+</div>
               </div>
             )}
 
@@ -516,24 +606,7 @@ const ProjectDetailsPage = (props: any) => {
               </div>
             </div>
 
-            {/* Quick Actions */}
-            {/* <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Start Discussion
-                </button>
-                <button className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <GitBranch className="h-4 w-4 mr-2" />
-                  Create Branch
-                </button>
-                <button className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export Data
-                </button>
-              </div>
-            </div> */}
+        
           </div>
         </div>
       </div>

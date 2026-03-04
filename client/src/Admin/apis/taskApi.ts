@@ -5,9 +5,11 @@ import apiService from "../../Services/apiServices/apiService";
 import { Task } from "../types/taskTypes";
 
 
-export const fetchTasks = async (workspaceid): Promise<Task[]> => {
-  const response = await apiService.get(`task/completed/${workspaceid}`);
-  return response.data;
+export const fetchTasks = async (workspaceid,page,rowPerpage) => {
+
+  const response = await apiService.get(`task/completed/${workspaceid}?page=${page}&limit=${rowPerpage}`);
+ console.log(response,"api+++")
+  return response.data
 };
 
 export const updateTaskStatus = async (taskId: string, status: "Approved" | "Rejected", msg: string | null): Promise<void> => {

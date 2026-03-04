@@ -21,14 +21,12 @@ const CommentButton = ({isOpen, onClick,notify}: CommentButtonProps) => {
       >
         {/* 👈 FIXED: Pulse ring animation */}
         {!isOpen && (
-          <>
-          {
-            notify? <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping w-10 h-10" />:
-             <span className="absolute inset-0 rounded-full bg-primary/20  w-10 h-10" />
-          }
-            <span className="absolute inset-0 rounded-full bg-primary/30 animate-pulse w-10 h-10" />
-          </>
-        )}
+  <>
+    {notify && (
+      <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping w-10 h-10" />
+    )}
+  </>
+)}
         
         {/* Icon */}
         <div className="relative z-10 transition-transform duration-300">
