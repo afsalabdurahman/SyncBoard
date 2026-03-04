@@ -17,9 +17,12 @@ export class DatahandleUsecase implements IDatahandleUsecase {
         return responseDTO as CountResponseDTO
     }
 
-    async fetchDataworkspace(limit: number, skip: number): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }> {
+    async fetchDataworkspace(limit: number, skip: number,search:string): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }> {
+       console.log(limit,skip,search,"search")
         const result = await this._superAdminRepository.getAllWorkspace(limit, skip)
-        const { totalCount, responseDTO } = await DatahandleMapper.mapSuperWorkspaceToResponse(result)
+        console.log(result,"result")
+        const { totalCount, responseDTO } = await DatahandleMapper.mapSuperWorkspaceToResponse(result,search)
+       console.log(totalCount,responseDTO,"+++DTO")
         return { responseDTO, totalCount }
     }
     async fetchAllUsers(limit: number, skip: number): Promise<{ responseDTO: UserResponseDTO[], totalCount: number }> {

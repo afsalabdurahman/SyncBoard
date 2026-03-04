@@ -65,7 +65,7 @@ export const workspaceDataApi = createApi({
   tagTypes: ['Workspace', 'Members', 'Tickets'],
   endpoints: (builder) => ({
     getWorkspaceCount: builder.query({
-      query: (page) => `super/count/workspace?page=${page}&&limit=${5}`,
+      query: ({page=1,query=""}) => `super/count/workspace?search=${query}&page=${page}&limit=${5}`,
       invalidatesTags: ['Workspace',]
     }),
     getAlluserList: builder.query({

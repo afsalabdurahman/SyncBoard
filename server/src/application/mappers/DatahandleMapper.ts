@@ -20,39 +20,52 @@ export class DatahandleMapper {
       Abuse: Abuse
     }
   }
-  static async mapSuperWorkspaceToResponse(
-    results: WorkspaceAggResponseDTO[]
-  ): Promise<{ responseDTO: CountWorkspaceReponseDTO[]; totalCount: number }> {
+ static async mapSuperWorkspaceToResponse(
+  results: WorkspaceAggResponseDTO[],
+  search: string
+): Promise<{ responseDTO: CountWorkspaceReponseDTO[]; totalCount: number }> {
+console.log(search,"inMap")
+  const totalCount = results.pop()?.totalDocCount ?? 0;
 
-    const totalCount = results.pop()?.totalDocCount ?? 0;
+  let filteredResults = results;
 
-    const responseDTO: CountWorkspaceReponseDTO[] = results.map((result) => ({
-      id: result.workspaceId,
-      name: result.workspaceName,
-      slug: result.workspaceSlug,
+  // Filter only if search exists
+  if (search && search.trim() !== "") {
+    const query = search.toLowerCase();
 
-      owner: {
-        name: result.ownerName,
-        email: result.ownerEmail,
-        avatar: result.ownerImageUrl,
-      },
-
-      plan: result.subscriptionPlan,
-      status: result.workspaceStatus,
-      members: result.memberCount,
-
-      createdAt: formatDate(result.workspaceCreatedDate),
-      lastActivity: formatDate(result.lastProjectUpdatedDate),
-
-      monthlyRevenue: result.monthlyRevenue / 100,
-      storage: { used: result.workspaceStorage ?? 0, limit: 10 },
-    }));
-
-    return {
-      responseDTO,
-      totalCount,
-    };
+    filteredResults = results.filter((result) =>
+      result.workspaceName?.toLowerCase().includes(query) ||
+      result.ownerName?.toLowerCase().includes(query)
+    );
   }
+
+  const responseDTO: CountWorkspaceReponseDTO[] = filteredResults.map((result) => ({
+    id: result.workspaceId,
+    name: result.workspaceName,
+    slug: result.workspaceSlug,
+
+    owner: {
+      name: result.ownerName,
+      email: result.ownerEmail,
+      avatar: result.ownerImageUrl,
+    },
+
+    plan: result.subscriptionPlan,
+    status: result.workspaceStatus,
+    members: result.memberCount,
+
+    createdAt: formatDate(result.workspaceCreatedDate),
+    lastActivity: formatDate(result.lastProjectUpdatedDate),
+
+    monthlyRevenue: result.monthlyRevenue / 100,
+    storage: { used: result.workspaceStorage ?? 0, limit: 10 },
+  }));
+
+  return {
+    responseDTO,
+    totalCount,
+  };
+}
 
   static mapAllUserToResponse(result: UserAggResponseDTO) {
     const totalCount = result.totalCount

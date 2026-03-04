@@ -8,26 +8,34 @@ import WorkSapceDetails from "../components/workspace/WorkspaceDetailsPage"
 import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
 import { downloadExcel, useGetWorkspaceCountQuery } from "../apis/fetchApi"
 import { Pagination } from "@mui/material"
+import { useDebounce } from "../../Custom/hooks/useDebounce"
 // Mock data
 
 export  const  Workspaces =(props)=> {
+    const [searchTerm, setSearchTerm] = useState("")
     const [changePage,setChangePage]=useState(1)
-  const {data,isLoading,refetch} = useGetWorkspaceCountQuery(changePage)
-
+    const debouncedSearch = useDebounce(searchTerm, 500);
+    console.log(debouncedSearch,"debounce")
+const { data, isLoading } = useGetWorkspaceCountQuery({
+  page: changePage,
+  query: debouncedSearch
+})
   const [details,setDetails] =useState(false)
   const [viewDetails,setViewDetails] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
+
   const [statusFilter, setStatusFilter] = useState("all")
   const [planFilter, setPlanFilter] = useState("all")
   const [page,setPage]=useState("")
 
+
+
   const [mockWorkspaces,setWorkspace]=useState([])
-  useEffect(() => {
-    if (data?.responseDTO) {
-      setWorkspace(data.responseDTO)
-    }
-  }, [data,page])
+ useEffect(() => {
+  if (data?.responseDTO) {
+    setWorkspace(data.responseDTO)
+  }
+}, [data])
    if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -37,19 +45,27 @@ export  const  Workspaces =(props)=> {
   }
 
 
-  const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
-    const matchesSearch =
-      workspace.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      workspace.owner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      workspace.owner.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
+  //   const matchesSearch =
+  //     workspace.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     workspace.owner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     workspace.owner.email.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesStatus = statusFilter === "all" || workspace.status === statusFilter
-    const matchesPlan = planFilter === "all" || workspace.plan === planFilter
+  //   const matchesStatus = statusFilter === "all" || workspace.status === statusFilter
+  //   const matchesPlan = planFilter === "all" || workspace.plan === planFilter
 
-    return matchesSearch && matchesStatus && matchesPlan
-  })
+  //   return matchesSearch && matchesStatus && matchesPlan
+  // })
 
+const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
+  const matchesStatus =
+    statusFilter === "all" || workspace.status === statusFilter
 
+  const matchesPlan =
+    planFilter === "all" || workspace.plan === planFilter
+
+  return matchesStatus && matchesPlan
+})
   // Calculate stats
   const stats = {
     totalWorkspaces: mockWorkspaces.length,
@@ -142,13 +158,13 @@ if(details){
           </div>
 
           {/* Workspaces Table */}
-          <WorkspaceTable
+          {filteredWorkspaces.length?<WorkspaceTable
             workspaces={filteredWorkspaces}
             onViewWorkspace={handleViewWorkspace}
             onEditWorkspace={handleEditWorkspace}
             onSuspendWorkspace={handleSuspendWorkspace}
             onDeleteWorkspace={handleDeleteWorkspace}
-          />
+          />:null}
         </div>
         <Pagination
            component="div"
