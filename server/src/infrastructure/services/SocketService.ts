@@ -49,7 +49,6 @@ export const initSocketServer = (io: Server) => {
     });
 
     socket.on("add-comment", ({ taskId, commentName, commentText, uploadedUrls }) => {
-      console.log(taskId, commentName, commentText, uploadedUrls,"comments")
       io.to(taskId).emit("comment-notification", {
         taskId,
         commentName,

@@ -18,7 +18,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   
         dispatch(setUserAuth(res.data.user));
       } catch {
-        console.log("workinggCathc in authProvider")
         
         dispatch(logoutUserAuth());
       } finally {

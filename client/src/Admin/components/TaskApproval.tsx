@@ -49,7 +49,6 @@ const [pagination,setPagination]=useState({
     };
     loadTasks();
   }, [refreshKey]);
-console.log(tasks,"taskkk")
 const handleChangePage = async(event,newPage) =>{
   const fetchedTasks=await fetchTasks(workspaceid,newPage+1,pagination.rowPerpage)
      setTasks(fetchedTasks.items);

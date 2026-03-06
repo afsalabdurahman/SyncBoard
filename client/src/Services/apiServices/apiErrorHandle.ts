@@ -15,51 +15,51 @@ export const handleApiError = (error: AxiosError): void => {
       case 400:
         message = data?.message || "Invalid request data.";
         break;
-     case 401: {
-
- 
-
-  const url = error?.config?.url || "";
-  const protectedRoutes = ["projects", "activities", "invitation", "workspace"];
-
-  const isProtectedRequest = protectedRoutes.some(route =>
-    url.includes(route)
-  );
-
-  const isUserLoggedIn = store.getState().auth?.user; // adjust based on your state
-
-  if (isProtectedRequest && isUserLoggedIn) {
-    toast.error("Session expired. Please login again.");
-  }
-
-  store.dispatch(logoutUserAuth());
-  break;
-}
+      case 401: {
 
 
-     case 403: {
-  const message = data?.message || "Access denied.";
-  console.log(message, "403 message");
 
-  const isUserLoggedIn = store.getState().auth?.user;
+        const url = error?.config?.url || "";
+        const protectedRoutes = ["projects", "activities", "invitation", "workspace"];
 
-  if (isUserLoggedIn && message?.toLowerCase().includes("blocked")) {
-    toast.error("Your account has been blocked.");
-    store.dispatch(logoutUserAuth());
-  }else if(isUserLoggedIn && message?.toLowerCase().includes("removed")){
- toast.error("Your account has been removed.");
-    store.dispatch(logoutUserAuth());
-  }else if(isUserLoggedIn && message?.toLowerCase().includes("Suspended")){
-    toast.error("Workspace is suspended")
-    store.dispatch(logoutUserAuth());
-  }
-  
-  else{
-    store.dispatch(logoutUserAuth());
-  }
+        const isProtectedRequest = protectedRoutes.some(route =>
+          url.includes(route)
+        );
 
-  break;
-}
+        const isUserLoggedIn = store.getState().auth?.user; // adjust based on your state
+
+        if (isProtectedRequest && isUserLoggedIn) {
+          toast.error("Session expired. Please login again.");
+        }
+
+        store.dispatch(logoutUserAuth());
+        break;
+      }
+
+
+      case 403: {
+        const message = data?.message || "Access denied.";
+        console.log(message, "403 message");
+
+        const isUserLoggedIn = store.getState().auth?.user;
+
+        if (isUserLoggedIn && message?.toLowerCase().includes("blocked")) {
+          toast.error("Your account has been blocked.");
+          store.dispatch(logoutUserAuth());
+        } else if (isUserLoggedIn && message?.toLowerCase().includes("removed")) {
+          toast.error("Your account has been removed.");
+          store.dispatch(logoutUserAuth());
+        } else if (isUserLoggedIn && message?.toLowerCase().includes("Suspended")) {
+          toast.error("Workspace is suspended")
+          store.dispatch(logoutUserAuth());
+        }
+
+        else {
+          store.dispatch(logoutUserAuth());
+        }
+
+        break;
+      }
 
       case 404:
         console.log(error, "data reved otp")

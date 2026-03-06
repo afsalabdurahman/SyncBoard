@@ -23,7 +23,7 @@ export const  UsersPage = () => {
   const [planFilter, setPlanFilter] = useState("all");
   const [page,setPage] = useState("")
   const [user,setUser]=useState()
-  const [mockUsers,setMockusers]=useState([])
+  const [users,setUsers]=useState([])
 
 
 const handleChangePage = (page) => {
@@ -34,7 +34,7 @@ const handleChangePage = (page) => {
   useEffect(() => {
     if (data?.data) {
    // refetch()
-      setMockusers(data.data)
+      setUsers(data.data)
     }
   }, [data,page])
    if (isLoading) {
@@ -47,7 +47,7 @@ const handleChangePage = (page) => {
 
 
   // Filter users based on search and filters
-  const filteredUsers = mockUsers.filter((user) => {
+  const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -62,10 +62,10 @@ const handleChangePage = (page) => {
 
   // Calculate stats
   const stats = {
-    totalUsers: mockUsers.length,
-    activeUsers: mockUsers.filter((u) => u.status === "active").length,
-    suspendedUsers: mockUsers.filter((u) => u.status === "inactive").length,
-    // pendingUsers: mockUsers.filter((u) => u.status === "pending").length,
+    totalUsers: users.length,
+    activeUsers: users.filter((u) => u.status === "active").length,
+    suspendedUsers: users.filter((u) => u.status === "inactive").length,
+    // pendingUsers: users.filter((u) => u.status === "pending").length,
   }
 
   const handleViewUser = (user: User) => {
@@ -143,7 +143,7 @@ if(page){
             onPlanFilterChange={setPlanFilter}
             onExport={handleExport}
             onInviteUser={handleInviteUser}
-            totalUsers={mockUsers.length}
+            totalUsers={users.length}
             filteredCount={filteredUsers.length}
           />
 

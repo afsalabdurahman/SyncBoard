@@ -7,7 +7,6 @@ export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async
   try {
 
     const response = await apiService.get(`workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}`);
-    console.log(response, "thung repos")
     if (response.status == 200) {
 
       return response.data;

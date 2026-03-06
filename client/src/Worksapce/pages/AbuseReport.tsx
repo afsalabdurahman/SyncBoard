@@ -12,9 +12,11 @@ import { useMember } from '../../Member/hooks/memeberhooks';
 import { ToastContainer, toast } from 'react-toastify';
 import apiService from '../../Services/apiServices/apiService';
 import Tikets from '../../Admin/Pages/Tikets';
+import { useWorkspaceid } from '../hooks/workspacehooks';
 
 export default function AbuseReportForm() {
   const memeber = useMember();
+  const workspace = useWorkspaceid()
   const [refresh,setRefresh]=useState(1);
 const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,7 +37,7 @@ useEffect(() => {
     try {
       const response = await abuseReportList(
         memeber._id,
-        memeber.workspace[0].workspaceId,
+        workspace,
         1
       );
       setTickets(response?.data?.data ?? []);
@@ -63,7 +65,7 @@ useEffect(() => {
   const handleSubmit = async (e) => {
     e.preventDefault();
  try {
-  await sendAbuse(formData, memeber._id, memeber.workspace[0].workspaceId);
+  await sendAbuse(formData, memeber._id, workspace);
    toast.success('Report Sent');
  } catch (error) {
   

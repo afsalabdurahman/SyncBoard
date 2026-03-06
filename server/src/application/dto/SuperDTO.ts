@@ -124,9 +124,9 @@ export interface AllUserDTO {
     name:string,
     plan:string
   };
-subscriptionDetails:{
+subscriptionDetails:[{
   planKey:string
-}
+}]
   joinedAt: string;
   lastActivity: string;
 

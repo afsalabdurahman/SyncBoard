@@ -97,8 +97,8 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
       // dispatch(clearUsers());
       onSubmit(formData);
     } catch (error) {
-      console.log(error, "from axioss");
-    }
+
+throw Error(error)    }
 
     setTimeout(() => {
       onClose();

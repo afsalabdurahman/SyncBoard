@@ -9,33 +9,39 @@ import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
 import { downloadExcel, useGetWorkspaceCountQuery } from "../apis/fetchApi"
 import { Pagination } from "@mui/material"
 import { useDebounce } from "../../Custom/hooks/useDebounce"
+import { toast } from "react-toastify"
 // Mock data
 
 export  const  Workspaces =(props)=> {
     const [searchTerm, setSearchTerm] = useState("")
     const [changePage,setChangePage]=useState(1)
     const debouncedSearch = useDebounce(searchTerm, 500);
-    console.log(debouncedSearch,"debounce")
-const { data, isLoading } = useGetWorkspaceCountQuery({
+     const [statusFilter, setStatusFilter] = useState("all")
+     const [planFilter, setPlanFilter] = useState("all")
+const { data, isLoading,refetch  } = useGetWorkspaceCountQuery({
   page: changePage,
-  query: debouncedSearch
+  query: debouncedSearch,
+  filter:statusFilter,
+  plan:planFilter
 })
   const [details,setDetails] =useState(false)
   const [viewDetails,setViewDetails] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [planFilter, setPlanFilter] = useState("all")
+ 
+  
   const [page,setPage]=useState("")
 
 
-
-  const [mockWorkspaces,setWorkspace]=useState([])
+  const [Workspaces,setWorkspace]=useState([])
  useEffect(() => {
   if (data?.responseDTO) {
     setWorkspace(data.responseDTO)
   }
-}, [data])
+}, [data,statusFilter])
+useEffect(() => {
+  setChangePage(1)
+}, [debouncedSearch, statusFilter, planFilter])
    if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -45,33 +51,14 @@ const { data, isLoading } = useGetWorkspaceCountQuery({
   }
 
 
-  // const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
-  //   const matchesSearch =
-  //     workspace.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     workspace.owner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     workspace.owner.email.toLowerCase().includes(searchTerm.toLowerCase())
-
-  //   const matchesStatus = statusFilter === "all" || workspace.status === statusFilter
-  //   const matchesPlan = planFilter === "all" || workspace.plan === planFilter
-
-  //   return matchesSearch && matchesStatus && matchesPlan
-  // })
-
-const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
-  const matchesStatus =
-    statusFilter === "all" || workspace.status === statusFilter
-
-  const matchesPlan =
-    planFilter === "all" || workspace.plan === planFilter
-
-  return matchesStatus && matchesPlan
-})
+  
+console.log(Workspaces,"Mocle ResponseData")
   // Calculate stats
   const stats = {
-    totalWorkspaces: mockWorkspaces.length,
-    activeWorkspaces: mockWorkspaces.filter((w) => w.status === "active").length,
-    totalUsers: mockWorkspaces.reduce((sum, w) => sum + w.members, 0),
-    monthlyRevenue: mockWorkspaces.reduce((sum, w) => sum + w.monthlyRevenue, 0),
+    totalWorkspaces: Workspaces.length,
+    activeWorkspaces: Workspaces.filter((w) => w.status === "Active").length,
+    totalUsers: Workspaces.reduce((sum, w) => sum + w.members, 0),
+    monthlyRevenue: Workspaces.reduce((sum, w) => sum + w.monthlyRevenue, 0),
   }
 
   const handleViewWorkspace = (workspace: Workspace) => {
@@ -84,7 +71,8 @@ const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
   const handleEditWorkspace = (workspace: Workspace) => {
         setViewDetails(workspace)
       setDetails(true);
-      setPage("edit")
+      setPage("edit");
+    
     // Implement edit workspace logic
   }
 
@@ -103,7 +91,7 @@ const filteredWorkspaces = mockWorkspaces.filter((workspace) => {
 
 const handleChangePage = (page) => {
   setChangePage(page);
-  refetch()
+   refetch()
   };
 
 
@@ -153,13 +141,13 @@ if(details){
           {/* Results count */}
           <div className="mb-4">
             <p className="text-sm text-gray-600">
-              Showing {filteredWorkspaces.length} of {mockWorkspaces.length} workspaces
+              Showing {Workspaces.length} of {Workspaces.length} workspaces
             </p>
           </div>
 
           {/* Workspaces Table */}
-          {filteredWorkspaces.length?<WorkspaceTable
-            workspaces={filteredWorkspaces}
+          {Workspaces.length?<WorkspaceTable
+            workspaces={Workspaces}
             onViewWorkspace={handleViewWorkspace}
             onEditWorkspace={handleEditWorkspace}
             onSuspendWorkspace={handleSuspendWorkspace}

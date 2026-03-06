@@ -70,6 +70,7 @@ export const acceptInvitaionLink = async (name,
         const response = await apiService.post("member/invite/register", {
             name, email, password, role, title, workspaceSlug
         })
+        console.log(response,"response")
         return response.data
     } catch (error) {
         const err: string = catchErrorHandle(error, "Invalid input feild")

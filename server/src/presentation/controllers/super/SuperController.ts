@@ -21,12 +21,13 @@ export class SuperController {
 
   async totalWorkspaceCount(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      console.log(req.query,"qyeyysss")
         const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
-   const query = req.query.search as string
-      const {responseDTO,totalCount} = await this._dataHandleUsecase.fetchDataworkspace(limit,skip,query);
+   const query = req.query.search as string;
+   const filter = req.query.filter as string;
+   const plan = req.query.plan as string
+      const {responseDTO,totalCount} = await this._dataHandleUsecase.fetchDataworkspace(limit,skip,query,filter,plan);
      
       res.status(HttpStatusCode.OK).json({ responseDTO, currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
     } catch (error) {

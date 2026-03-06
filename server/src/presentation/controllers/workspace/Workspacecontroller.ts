@@ -90,7 +90,8 @@ export class WorkspaceController {
   async updateWorkspace(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const workspaceId = req.params.id
-      const merge = req.body
+      const merge = req.body;
+   
       await this._createWorkspceUsecases.updateWorkspaceData(workspaceId, merge)
       res.status(HttpStatusCode.OK).json({ message: "Updated" })
     } catch (error) {

@@ -26,22 +26,22 @@ export class LoginUsecase implements ILogin {
 
     // if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const isExist = await this._userRepository.findByEmail(input.email);
-     console.log(isExist,"exist")
     if(!isExist || !isExist?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const user = await this._userRepository.findUser(isExist._id )
-console.log(user,"user")
     this._logger.info(`Login attempt for email: ${input.email}`);
-    if (!user) {
+    if (!user||!user.workspace) {
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     }
-    
-    if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
+const workspaceId =user?.workspace[0]?.workspaceId;
+const workspaceStatus = await this._workspaceRepository.findByObjectId(workspaceId);
+if(workspaceStatus && workspaceStatus.status === "suspend")
+  throw new ForbiddenError(ResponseMessages.WORKSPACE_NOTFOUND);
+if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_STATUS_BLOCK);
     if (user.isDeleted) throw new ForbiddenError(ResponseMessages.USER_STATUS_DELETE);
     const isTrue = await this._authService.comparePassword(
       input.password,
       user.password!
     );
-console.log(isTrue)
     if (!isTrue) {
       throw new AuthenticationError(ResponseMessages.PASSWORD_FAILED);
     }

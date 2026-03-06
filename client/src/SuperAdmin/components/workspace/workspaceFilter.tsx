@@ -50,8 +50,7 @@ export const WorkspaceFilters=({
               <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="suspended">Suspended</SelectItem>
-              <SelectItem value="trial">Trial</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
+             
             </SelectContent>
           </Select>
 

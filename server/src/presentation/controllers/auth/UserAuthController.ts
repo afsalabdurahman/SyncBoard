@@ -37,7 +37,6 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     const input: LoginRequestDTO = req.body as LoginRequestDTO;
     try {
-  console.log(input,"input")
        const {token,refreshToken,user,workspace} = await this._loginUsecase.loginUser(input);
 
     setTokensInCookies(res, token, refreshToken);
@@ -46,6 +45,7 @@ export class AuthController {
       .json({ workspace: workspace, user: user });
   
     } catch (error) {
+      console.log(error,"errr")
       next(error)
     }
    

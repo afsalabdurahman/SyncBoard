@@ -29,7 +29,7 @@ export class UserMapper{
    static updateProfileValidator(
   merge: Partial<ProfileUpdateDTO>
 ) {
-
+console.log(merge,"merge")
   const onlyLettersWithSpace = z
   .string()
 
@@ -54,7 +54,7 @@ export class UserMapper{
     name: onlyLettersWithSpace,
     role: onlyLettersWithSpace,
     title: onlyLettersWithSpace,
-    location: onlyLettersWithSpace,
+    location: addressValidation,
     status: onlyLettersWithSpace,
 
     email: z.string().email({ message: "Invalid email format" }),

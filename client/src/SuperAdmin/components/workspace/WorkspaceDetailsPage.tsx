@@ -232,7 +232,7 @@ try {
   }
   const reactivate = async() => {
 const merge = {
-    status:"Active"
+    status:"active"
   }
     setSuspendId(merge)
        setDialogTitle("Active")
@@ -242,10 +242,10 @@ const merge = {
     props.setPage("edit")
   }
 
-  const onViewMember = (m: WorkspaceMember) => console.log("View member", m.id)
-  const onChangeRole = (m: WorkspaceMember) => console.log("Change role", m.id)
-  const onSuspendMember = (m: WorkspaceMember) => console.log("Suspend member", m.id)
-  const onRemoveMember = (m: WorkspaceMember) => console.log("Remove member", m.id)
+  // const onViewMember = (m: WorkspaceMember) => console.log("View member", m.id)
+  // const onChangeRole = (m: WorkspaceMember) => console.log("Change role", m.id)
+  // const onSuspendMember = (m: WorkspaceMember) => console.log("Suspend member", m.id)
+  // const onRemoveMember = (m: WorkspaceMember) => console.log("Remove member", m.id)
 if(isLoading){
   return(<>loading....</>)
 }
@@ -297,10 +297,7 @@ if(isLoading){
                       <Calendar className="h-3.5 w-3.5" />
                       Created {new Date(props.viewDetails.createdAt).toLocaleDateString("en-US")}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5" />
-                      Last active {new Date(props.viewDetails.lastActivity).toLocaleDateString("en-US")}
-                    </span>
+                 
                   </div>
                 </div>
               </div>
@@ -352,7 +349,7 @@ if(isLoading){
           </div>
 
           {/* Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4">
             <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
@@ -401,7 +398,7 @@ if(isLoading){
               </CardContent>
             </Card> */}
 
-            <Card className="hover:shadow-md transition-shadow">
+            {/* <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -415,7 +412,7 @@ if(isLoading){
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Charts + Billing */}

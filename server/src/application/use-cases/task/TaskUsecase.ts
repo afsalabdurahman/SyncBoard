@@ -26,7 +26,6 @@ export class TaskUsecase implements ITaskUseCase {
   
     const taskData = await this._taskRepository.create(taskEntity);
     if (!taskData) throw new NotFoundError("Task not created");
-console.log(taskData,"task Fdata")
     const responseDTO = await TaskMapper.mapEntityToTask("Task is created", taskData);
     io.emit("new-task", {
       name: input.name,
@@ -61,11 +60,9 @@ console.log(taskData,"task Fdata")
     await this._taskRepository.updateTaskStatus(taskId, status);
   }
   async completedTask(workspaceid: string,page:number,limit?:number,skip?:number): Promise<{items:CompletedTaskResponseDTO,totalItems:number}> {
-   console.log(page,limit,skip,"usecase layer")
    
     const { completedTasks, taskReject,totalItems } =
       await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid),page,limit,skip);
-console.log(completedTasks,taskReject,totalItems ,"usecase layer")
       const tasks = [
       ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
       ...(Array.isArray(taskReject) ? taskReject : [taskReject]),

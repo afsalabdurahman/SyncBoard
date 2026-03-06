@@ -223,7 +223,7 @@ const togglePasswordVisibility = (field) => {
             
             Please enter your new password below.
             <br />
-           <p className='text-red-500 text-sm mt-1'> {errors?errors.api:null}</p> 
+          
           </p>
           
           
@@ -329,7 +329,9 @@ const togglePasswordVisibility = (field) => {
                 </button>
               </div>
               {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
+           <p className='text-red-500 text-sm mt-1'> {errors?errors.api:null}</p> 
             </div>
+             
            {loading? <LoadingSpinner/>:null}
             <button
               type="submit"
@@ -338,6 +340,7 @@ const togglePasswordVisibility = (field) => {
             >
               {isSuccess ? 'Password Changed' : 'Reset my password'}
             </button>
+            
           </form>
           
           <div className="mt-6 text-center">

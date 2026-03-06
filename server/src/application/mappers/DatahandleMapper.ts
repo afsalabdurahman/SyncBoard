@@ -20,24 +20,37 @@ export class DatahandleMapper {
       Abuse: Abuse
     }
   }
- static async mapSuperWorkspaceToResponse(
+static async mapSuperWorkspaceToResponse(
   results: WorkspaceAggResponseDTO[],
-  search: string
+  search: string,
+  filterStatus: string,
+  plan: string
 ): Promise<{ responseDTO: CountWorkspaceReponseDTO[]; totalCount: number }> {
-console.log(search,"inMap")
+
   const totalCount = results.pop()?.totalDocCount ?? 0;
 
-  let filteredResults = results;
+  const searchQuery = search?.trim().toLowerCase();
 
-  // Filter only if search exists
-  if (search && search.trim() !== "") {
-    const query = search.toLowerCase();
+  const filteredResults = results.filter((result) => {
 
-    filteredResults = results.filter((result) =>
-      result.workspaceName?.toLowerCase().includes(query) ||
-      result.ownerName?.toLowerCase().includes(query)
-    );
-  }
+    // SEARCH
+    const matchesSearch =
+      !searchQuery ||
+      result.workspaceName?.toLowerCase().includes(searchQuery) ||
+      result.ownerName?.toLowerCase().includes(searchQuery) ||
+      result.ownerEmail?.toLowerCase().includes(searchQuery);
+
+    // STATUS
+    const matchesStatus =
+      filterStatus === "all" ||
+      result.workspaceStatus?.toLowerCase() === filterStatus.toLowerCase();
+    // PLAN
+    const matchesPlan =
+      plan === "all" ||
+      result.subscriptionPlan?.toLowerCase() === plan.toLowerCase();
+
+    return matchesSearch && matchesStatus && matchesPlan;
+  });
 
   const responseDTO: CountWorkspaceReponseDTO[] = filteredResults.map((result) => ({
     id: result.workspaceId,
@@ -80,7 +93,7 @@ console.log(search,"inMap")
 
       workspace: {
         name: u.workspaceDetails.name || "",
-        plan: u.subscriptionDetails.planKey || null,
+        plan: u.subscriptionDetails[0].planKey || "free",
       },
 
       joinedAt: u.createdAt?.toISOString() || "",

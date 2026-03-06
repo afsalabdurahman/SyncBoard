@@ -100,16 +100,7 @@ const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
   );
   };
 
-// socketNotify
-// useEffect(()=>{
-//  socket.emit("task-join-comment", openCommentId);
-// socket.on("comment-notification", (data) => {
-//   console.log(data,"recevd from commt notfocat")
-//   setOpenCommentId(data.taskId)
-//    setNotify(true)
-// });
-// },[notify,openCommentId])
-// // 
+ 
 useEffect(() => {
   if (!tasks.length) return;
 
@@ -119,7 +110,6 @@ useEffect(() => {
   });
 
   const handleNotification = (data: any) => {
-    console.log("Notification received:", data);
 
     setNotifyTaskIds((prev) =>
       prev.includes(data.taskId)

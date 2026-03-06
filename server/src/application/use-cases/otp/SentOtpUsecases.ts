@@ -44,7 +44,6 @@ export class OTPService implements IOTP {
   async verifyOTP(input: MailRequestDTO): Promise<AdminSignupResponseDTO> {
     const isOtp = await this._otpRepository.findOTPbyEMAIL(input.email);
     const user = await this._userRepository.findByEmail(input.email);
-    console.log(user,"user in verify otp")
     if (!user?._id ) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
 
 
@@ -70,7 +69,6 @@ export class OTPService implements IOTP {
 
   }
   async reSendOTP(email: string): Promise<void> {
-    console.log(email,"emails")
     const isValid = AuthMapper.emailValidator(email)
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
 

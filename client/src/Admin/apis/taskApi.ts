@@ -8,7 +8,6 @@ import { Task } from "../types/taskTypes";
 export const fetchTasks = async (workspaceid,page,rowPerpage) => {
 
   const response = await apiService.get(`task/completed/${workspaceid}?page=${page}&limit=${rowPerpage}`);
- console.log(response,"api+++")
   return response.data
 };
 

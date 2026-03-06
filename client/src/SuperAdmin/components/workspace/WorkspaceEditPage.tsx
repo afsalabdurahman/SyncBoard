@@ -1,6 +1,6 @@
 // WorkspaceEditPage.tsx
 import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
+import { toast,ToastContainer } from "react-toastify"
 import { format } from "date-fns" // ← add this dependency if not present
 
 import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton"
@@ -49,7 +49,7 @@ export default function WorkspaceEditPage({
   refetch,
   setViewDetails,
 }) {
-  const [updateWorkspace, { isLoading }] = useUpdateWorkspaceMutation()
+  const [updateWorkspace, { isLoading,isError,error }] = useUpdateWorkspaceMutation()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [statusToSet, setStatusToSet] = useState(null)
 
@@ -81,22 +81,28 @@ export default function WorkspaceEditPage({
 
   const onSubmit = async (e) => {
     e.preventDefault()
-     setViewDetails((prev) => ({ ...prev, name: formData.name }))
+    
+     toast.success("Workspace updated");
+ 
     try {
       await updateWorkspace({
         id: viewDetails.id,
         merge: formData,
       }).unwrap()
+       toast.success("Workspace updated");
+       setViewDetails((prev) => ({ ...prev, name: formData.name }))
+       toast.success("Workspace updated");
       if(!dialogOpen){
 toast.success("Workspace updated");
       }
     
-      // setDetails(null)
+    
      
       refetch()
     } catch (err) {
       
-      toast.error("Update failed")
+     
+      toast.error(err.data.message??"Update failed")
     }
   }
 
@@ -108,15 +114,16 @@ toast.success("Workspace updated");
   const confirmStatusChange = async () => {
     try {
 
-       setViewDetails((prev) => ({ ...prev, status: statusToSet }))
+      
       
       await updateWorkspace({
         id: viewDetails.id,
         merge: { status: statusToSet },
       }).unwrap()
-      setViewDetails((prev) => ({ ...prev, status: statusToSet }))
-      refetch()
-      toast.success(`Workspace ${statusToSet === "Active" ? "reactivated" : "suspended"}`)
+      // setViewDetails((prev) => ({ ...prev, status: statusToSet }))
+     refetch()
+      toast.success(`Workspace ${statusToSet === "active" ? "reactivated" : "suspended"}`)
+     setViewDetails((prev) => ({ ...prev, status: statusToSet }))
     } catch {
       toast.error("Status update failed")
      
@@ -126,7 +133,7 @@ toast.success("Workspace updated");
   }
 
   if (!viewDetails) return <div className="p-10 text-center">Loading...</div>
-
+ if (isLoading) return <div className="p-10 text-center">Loading...</div>
   const isFree = formData.plan === "free"
   const storageUsed = viewDetails.storage?.used ?? 0
   const storageLimit = viewDetails.storage?.limit ?? 10
@@ -134,6 +141,7 @@ toast.success("Workspace updated");
   return (
     <div className="min-h-screen bg-gray-50/70 pb-24 ml-[15em]">
       <form onSubmit={onSubmit} className="mx-auto max-w-6xl px-5 py-18 space-y-8 ">
+ <ToastContainer position='top-center' autoClose={5000} />
 
         {/* ─── Sticky Header ─── */}
         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b px-6 py-4 -mx-5 md:-mx-0 flex items-center justify-between">
@@ -146,6 +154,7 @@ toast.success("Workspace updated");
             </Avatar>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">{viewDetails.name}</h1>
+        
               <div className="flex items-center gap-3 mt-1">
                 <Badge
                   variant="outline"
@@ -185,12 +194,12 @@ toast.success("Workspace updated");
             value={format(new Date(viewDetails.createdAt), "MMM d, yyyy")}
             color="purple"
           />
-          <QuickStatCard
+          {/* <QuickStatCard
             icon={Activity}
             label="Last Activity"
             value={format(new Date(viewDetails.lastActivity), "MMM d, yyyy")}
             color="green"
-          />
+          /> */}
           {/* <QuickStatCard
             icon={HardDrive}
             label="Storage"
@@ -211,6 +220,7 @@ toast.success("Workspace updated");
             <div className="space-y-2">
               <Label>Workspace Name</Label>
               <Input name="name" value={formData.name} onChange={handleChange} />
+                 <p style={{color:"red"}}>{isError?error.data.message:null}</p>
             </div>
             <div className="space-y-2">
               <Label>Slug (read-only)</Label>
@@ -272,14 +282,14 @@ toast.success("Workspace updated");
             {viewDetails.status === "active" ? (
               <Button
                 variant="destructive"
-                onClick={() => requestStatusChange("suspended")}
+                onClick={() => requestStatusChange("suspend")}
               >
                 Suspend Workspace
               </Button>
             ) : (
               <Button
                 className="bg-green-600 hover:bg-green-700"
-                onClick={() => requestStatusChange("Active")}
+                onClick={() => requestStatusChange("active")}
               >
                 Reactivate Workspace
               </Button>
@@ -292,7 +302,7 @@ toast.success("Workspace updated");
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={confirmStatusChange}
-        title={statusToSet === "suspended" ? "Suspend Workspace?" : "Reactivate Workspace?"}
+        title={statusToSet === "suspend" ? "Suspend Workspace?" : "Reactivate Workspace?"}
         description="This action can be reversed later, but may affect users immediately."
       />
     </div>

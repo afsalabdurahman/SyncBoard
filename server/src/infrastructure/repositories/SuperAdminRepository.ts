@@ -324,12 +324,12 @@ result.push(totalDocCount)
           
     
       from: "users",
-      let: { ownerIdStr: "$ownerId" },   // define a variable from local string field
+      let: { ownerIdStr: "$ownerId" },  
       pipeline: [
         {
           $match: {
             $expr: {
-              $eq: ["$_id", { $toObjectId: "$$ownerIdStr" }]  // convert string to ObjectId
+              $eq: ["$_id", { $toObjectId: "$$ownerIdStr" }]  
             }
           }
         }

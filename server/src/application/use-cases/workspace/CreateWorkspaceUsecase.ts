@@ -81,13 +81,15 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   }
 
   async updateWorkspaceData(id: string, merge: Record<string, string>): Promise<void> {
+const isValid=WorkspaceMapper.workspaceUpdateValidator(merge);
+    if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
 
-    if (merge.plan) {
-      await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name, merge.plan);
+    // if (merge.plan) {
+    //   await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name, merge.plan);
 
-    } else {
+    // } else {
       await this._workspaceRepository.updateWorkspaceDate(id, merge)
-    }
+   
 
 
   }

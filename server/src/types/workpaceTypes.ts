@@ -14,7 +14,7 @@ export interface IMember {
   title: string;
   name:string;
 }
-export type workspaceStatus = "Active"|"InActive"|"Suspended"|"Deleted"
+export type workspaceStatus = "active"|"InActive"|"suspend"|"Deleted"
 export interface WorkspaceProps {
   name: string;
   slug: string;

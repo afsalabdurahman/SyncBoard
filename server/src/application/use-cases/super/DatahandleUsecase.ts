@@ -17,16 +17,14 @@ export class DatahandleUsecase implements IDatahandleUsecase {
         return responseDTO as CountResponseDTO
     }
 
-    async fetchDataworkspace(limit: number, skip: number,search:string): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }> {
-       console.log(limit,skip,search,"search")
+    async fetchDataworkspace(limit: number, skip: number,search:string,filter:string,plan:string): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }> {
         const result = await this._superAdminRepository.getAllWorkspace(limit, skip)
-        console.log(result,"result")
-        const { totalCount, responseDTO } = await DatahandleMapper.mapSuperWorkspaceToResponse(result,search)
-       console.log(totalCount,responseDTO,"+++DTO")
+        const { totalCount, responseDTO } = await DatahandleMapper.mapSuperWorkspaceToResponse(result,search,filter,plan)
         return { responseDTO, totalCount }
     }
     async fetchAllUsers(limit: number, skip: number): Promise<{ responseDTO: UserResponseDTO[], totalCount: number }> {
         const response = await this._superAdminRepository.getAllUsers(limit, skip);
+     
         const { responseDTO, totalCount } = DatahandleMapper.mapAllUserToResponse(response);
         return { responseDTO, totalCount }
     }
@@ -37,7 +35,9 @@ export class DatahandleUsecase implements IDatahandleUsecase {
     }
     async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[], totalDocCounts: number }> {
         const { subscriptions, totalDocCount } = await this._superAdminRepository.getSubscription(limit, skip)
+        console.log(subscriptions[0].history)
         const { responseDTO, totalDocCounts } = DatahandleMapper.mapSubscriptionToResponse(subscriptions, totalDocCount)
+       console.log(responseDTO,"resfPoseDTO")
         return { responseDTO, totalDocCounts }
     }
     async fetchTickets(): Promise<Ticket[]> {

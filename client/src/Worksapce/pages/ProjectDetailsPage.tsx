@@ -35,12 +35,10 @@ const ProjectDetailsPage = (props: any) => {
     });
   }, [projectId,taskFilter]);
   const [progress, setProgress] = useState();
-console.log(myTasks,"taskss")
   const total = myTasks.length;
  const completed = myTasks.filter(
   (task) => task.status === "Completed"
 );
-console.log(completed,"completed")
   const allTask = useSelector((state) => {
     return state.task.tasks;
   });

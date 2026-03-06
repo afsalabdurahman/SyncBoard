@@ -79,6 +79,9 @@ export const WorkspaceTable = ({
       isNearLimit: percentage > 80,
     }
   }
+const uniqueWorkspaces = workspaces.filter((workspace, index, arr) =>
+  index === arr.findIndex(w => w.id === workspace.id)
+)
 
   return (
     <Card>
@@ -93,12 +96,12 @@ export const WorkspaceTable = ({
               <TableHead>Members</TableHead>
               <TableHead>Revenue</TableHead>
               <TableHead>Storage</TableHead>
-              <TableHead>Last Activity</TableHead>
+             
               <TableHead className="w-12"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {workspaces.map((workspace) => {
+            {uniqueWorkspaces.map((workspace) => {
               const storage = formatStorage(workspace.storage.used, workspace.storage.limit)
               return (
                 <TableRow key={workspace.id} className="hover:bg-gray-50">
@@ -169,12 +172,7 @@ export const WorkspaceTable = ({
                       ></div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{formatDate(workspace.lastActivity)}</span>
-                    </div>
-                  </TableCell>
+                
  <TableCell className="text-right w-20">
   <div className="flex items-center justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
     <Button

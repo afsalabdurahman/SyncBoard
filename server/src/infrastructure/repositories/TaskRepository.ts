@@ -76,7 +76,6 @@ export class TaskRepository implements ITaskRepository {
     }
   }
   async allCompletedTasks(workspaceid: Types.ObjectId,page?:number,limit?:number,skip?:number): Promise<{ completedTasks: Task[], taskReject: Task[] ,totalItems:number}> {
-console.log(page,limit,skip,"Reposi layer")
 
     if(!limit ) throw new NotFoundError("not found")
     const completedTasks = await TaskModel.find({ status: "Completed" }).skip(skip??0).limit(Math.ceil(limit/2)).sort({createdAt:-1}).lean().exec()
@@ -86,7 +85,6 @@ console.log(page,limit,skip,"Reposi layer")
     //   .skip(skip)
     //   .limit(limit)
     //   .sort({ createdAt: -1 });
-    console.log(completedTasks,"tdak com",taskReject,"reje",totalItems,"itesms")
 
     return { completedTasks, taskReject,totalItems };
   }

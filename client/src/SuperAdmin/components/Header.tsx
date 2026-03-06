@@ -17,7 +17,6 @@ interface HeaderProps {
 export function Header({ sidebarCollapsed }: HeaderProps) {
 const user = useUser()
 const navigate = useNavigate()
-console.log(user,"user isss")
 
 const handleLogout = () =>{
   logout(user?._id).then((res)=>{

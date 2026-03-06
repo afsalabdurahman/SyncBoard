@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
     }
 
     // Handle other known errors
-     console.log(error,"error1111")
+    
     handleApiError(error);
    
     return Promise.reject(error);

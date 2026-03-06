@@ -54,7 +54,7 @@ export default function CurrentPlanOverview({
           <div className='flex items-center justify-center gap-2'>
             <CheckCircle className='h-5 w-5 text-green-500' />
             <span className='text-lg font-semibold'>
-              {currentPlan} Plan Active
+             {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan Active
             </span>
             <Badge variant='secondary' className='ml-2'>
               {planDetails[currentPlan].price}

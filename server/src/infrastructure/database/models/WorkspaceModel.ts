@@ -66,7 +66,7 @@ type:String
   },
   status:{
     type:String,
-    default:"Active"
+    default:"active"
   },
   storage:{
     type:Number,

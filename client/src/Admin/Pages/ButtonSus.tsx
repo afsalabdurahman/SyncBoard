@@ -18,7 +18,6 @@ export default function SubscribeButton() {
       });
    
     } catch (error) {
-        console.log(error,"error")
     }
   
 }

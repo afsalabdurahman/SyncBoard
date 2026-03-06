@@ -17,7 +17,9 @@ export function SubscriptionDetails({
   sub: Subscription | null
 }) {
   if (!sub) return null
-console.log(sub,"subc++++")
+
+const seen = new Set();
+  
   const fmtDate = (d: string) =>
     new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
 
@@ -138,19 +140,28 @@ console.log(sub,"subc++++")
                     </div>
                   )
                 })} */}
-                {sub.history.map((invoice,i)=>{
-                  return(<>
-                   <div key={i} className="flex items-center justify-between text-sm">
-                      <div className="text-gray-700">
-                        INV-{invoice.id.slice(5,15)}
-                      </div>
-                      <div className="text-gray-500">25-01-2029</div>
-                      <div className="font-medium text-gray-900">
-                        ${invoice.amount} $
-                      </div>
-                      </div>
-                  </>)
-                })}
+               
+{sub.history
+  .filter((invoice) => {
+    if (seen.has(invoice.id)) return false;
+    seen.add(invoice.id);
+    return true;
+  })
+  .map((invoice, i) => {
+    return (
+      <div key={i} className="flex items-center justify-between text-sm">
+        <div className="text-gray-700">
+          INV-{invoice.id.slice(5, 15)}
+        </div>
+
+        <div className="text-gray-500">25-01-2029</div>
+
+        <div className="font-medium text-gray-900">
+          ${invoice.amount / 100} $
+        </div>
+      </div>
+    );
+  })}
               </div>
             </CardContent>
           </Card>

@@ -13,7 +13,6 @@ export class SentInvitaionUsecase implements ISentInvitaion {
 
    async send(emails: string[], invitaionLink: string): Promise<boolean> {
 
-console.log(emails,"email",invitaionLink,"invitaion")
  for (const email of emails) {
 const isValid= AuthMapper.emailValidator(email);
  if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
