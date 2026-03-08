@@ -12,7 +12,7 @@ export class NodemailerService implements IEmailService {
   }
 
   async sendOtp(email: string, otp: string): Promise<void> {
-     const mailOptions = {
+    const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "🔐 Your OTP Code",
@@ -66,12 +66,12 @@ export class NodemailerService implements IEmailService {
     };
     await this.transporter.sendMail(mailOptions);
   }
-  async sentRecipt(customerEmail:string,pdfPath:string):Promise<void>{
- const mailOptions = {
+  async sentRecipt(customerEmail: string, pdfPath: string): Promise<void> {
+    const mailOptions = {
       from: process.env.EMAIL_USER || "your-email@gmail.com",
       to: customerEmail,
       subject: "Your Payment Receipt",
-     html: `
+      html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2>Payment Successful</h2>
         <p>Thank you for your payment. Please find your receipt attached.</p>
@@ -79,22 +79,22 @@ export class NodemailerService implements IEmailService {
         ${pdfPath}
       </div>
     `,
-    // attachments: [
-    //   {
-    //     filename: "receipt.pdf",
-    //     path: pdfPath,
-    //   },
-    // ],  
-    
+      // attachments: [
+      //   {
+      //     filename: "receipt.pdf",
+      //     path: pdfPath,
+      //   },
+      // ],  
+
     };
-      await this.transporter.sendMail(mailOptions);
+    await this.transporter.sendMail(mailOptions);
   }
- async sendAbuseStatus(email: string, message: string, status:string,name:string): Promise<void> {
-     const mailOptions = {
+  async sendAbuseStatus(email: string, message: string, status: string, name: string): Promise<void> {
+    const mailOptions = {
       from: process.env.EMAIL_USER || "your-email@gmail.com",
       to: email,
       subject: `Report ${status} Status updation`,
-     html: `
+      html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2>Dear ${name}</h2>
         <p> I hope you are doing well</p>
@@ -105,14 +105,14 @@ export class NodemailerService implements IEmailService {
       </div>
     `,
     };
-     await this.transporter.sendMail(mailOptions);
+    await this.transporter.sendMail(mailOptions);
   }
-  async sendReceipts(name:string,email: string, receiptLink: string): Promise<void> {
-   const mailOptions = {
-  from: process.env.EMAIL_USER || "no-reply@gridesync.com",
-  to: email,
-  subject: "Your Plan Upgrade Confirmation & Receipt",
-  html: `
+  async sendReceipts(name: string, email: string, receiptLink: string): Promise<void> {
+    const mailOptions = {
+      from: process.env.EMAIL_USER || "no-reply@gridesync.com",
+      to: email,
+      subject: "Your Plan Upgrade Confirmation & Receipt",
+      html: `
     <div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #333;">
       <h2 style="color: #222;">Hello ${name},</h2>
 
@@ -158,7 +158,7 @@ export class NodemailerService implements IEmailService {
       </p>
     </div>
   `,
-};
-  await this.transporter.sendMail(mailOptions);
+    };
+    await this.transporter.sendMail(mailOptions);
   }
 }

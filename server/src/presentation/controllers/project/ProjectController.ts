@@ -20,6 +20,7 @@ export class ProjectController {
     try {
       const input: ProjectRequstDTO = req.body.newProject as ProjectRequstDTO;
       const workspaceId = req.params.workspaceid;
+      
       const ResponseDTO = await this._projectUsecase.excute(input,workspaceId);
       res.status(HttpStatusCode.CREATED).json({ message: ResponseDTO });
     } catch (error) {

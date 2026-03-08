@@ -1,47 +1,36 @@
 // WorkspaceEditPage.tsx
-import { useEffect, useState } from "react"
-import { toast,ToastContainer } from "react-toastify"
-import { format } from "date-fns" // ← add this dependency if not present
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { format } from "date-fns";
 
-import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton"
-import { useUpdateWorkspaceMutation } from "../../apis/fetchApi"
-import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon"
+import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton";
+import { useUpdateWorkspaceMutation } from "../../apis/fetchApi";
+import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../Custom/ui/card"
-import { Input } from "../../../Custom/ui/input"
-import { Label } from "../../../Custom/ui/label"
-import { Textarea } from "../../../Custom/ui/textarea"
-import { Button } from "../../../Custom/ui/button"
-import { Switch } from "../../../Custom/ui/switch"
-import { Badge } from "../../../Custom/ui/badge"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../../Custom/ui/avatar"
+} from "../../../Custom/ui/card";
+import { Input } from "../../../Custom/ui/input";
+import { Label } from "../../../Custom/ui/label";
+import { Button } from "../../../Custom/ui/button";
+import { Badge } from "../../../Custom/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar";
 
 import {
   Building2,
-  Mail,
   Calendar,
-  Activity,
   Users,
-  HardDrive,
   Crown,
   Infinity,
   AlertTriangle,
   Save,
-  RefreshCw,
   CheckCircle,
-} from "lucide-react"
+} from "lucide-react";
 
-import { cn } from "../../../Utility/utils"
+import { cn } from "../../../Utility/utils";
 
 export default function WorkspaceEditPage({
   viewDetails,
@@ -49,130 +38,150 @@ export default function WorkspaceEditPage({
   refetch,
   setViewDetails,
 }) {
-  const [updateWorkspace, { isLoading,isError,error }] = useUpdateWorkspaceMutation()
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [statusToSet, setStatusToSet] = useState(null)
+  const [updateWorkspace, { isLoading }] = useUpdateWorkspaceMutation();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [statusToSet, setStatusToSet] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
-    description: "", // assuming you may have it
+    description: "",
     plan: "free",
-    // Add only fields you actually allow editing
-  })
+  });
 
   useEffect(() => {
-    if (!viewDetails) return
+    if (!viewDetails) return;
 
     setFormData({
       name: viewDetails.name || "",
       description: viewDetails.description || "",
       plan: viewDetails.plan || "free",
-    })
-  }, [viewDetails])
+    });
+  }, [viewDetails]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handlePlanChange = (newPlan) => {
-    setFormData((prev) => ({ ...prev, plan: newPlan }))
-  }
+    setFormData((prev) => ({ ...prev, plan: newPlan }));
+  };
 
   const onSubmit = async (e) => {
-    e.preventDefault()
-    
-     toast.success("Workspace updated");
- 
+    e.preventDefault();
+
     try {
       await updateWorkspace({
         id: viewDetails.id,
         merge: formData,
-      }).unwrap()
-       toast.success("Workspace updated");
-       setViewDetails((prev) => ({ ...prev, name: formData.name }))
-       toast.success("Workspace updated");
-      if(!dialogOpen){
-toast.success("Workspace updated");
-      }
-    
-    
-     
-      refetch()
+      }).unwrap();
+
+      toast.success("Workspace updated successfully");
+      setViewDetails((prev) => ({ ...prev, name: formData.name, plan: formData.plan }));
+      refetch?.();
     } catch (err) {
-      
-     
-      toast.error(err.data.message??"Update failed")
+      console.error("Workspace update failed:", err);
+      const errorMsg =
+        err?.data?.message ||
+        err?.error ||
+        "Failed to update workspace. Please try again.";
+      toast.error(errorMsg);
     }
-  }
+  };
 
   const requestStatusChange = (newStatus) => {
-    setStatusToSet(newStatus)
-    setDialogOpen(true)
-  }
+    setStatusToSet(newStatus);
+    setDialogOpen(true);
+  };
 
   const confirmStatusChange = async () => {
     try {
-
-      
-      
       await updateWorkspace({
         id: viewDetails.id,
         merge: { status: statusToSet },
-      }).unwrap()
-      // setViewDetails((prev) => ({ ...prev, status: statusToSet }))
-     refetch()
-      toast.success(`Workspace ${statusToSet === "active" ? "reactivated" : "suspended"}`)
-     setViewDetails((prev) => ({ ...prev, status: statusToSet }))
-    } catch {
-      toast.error("Status update failed")
-     
-    }
-    setDialogOpen(false)
-    setStatusToSet(null)
-  }
+      }).unwrap();
 
-  if (!viewDetails) return <div className="p-10 text-center">Loading...</div>
- if (isLoading) return <div className="p-10 text-center">Loading...</div>
-  const isFree = formData.plan === "free"
-  const storageUsed = viewDetails.storage?.used ?? 0
-  const storageLimit = viewDetails.storage?.limit ?? 10
+      toast.success(
+        `Workspace ${statusToSet === "active" ? "reactivated" : "suspended"} successfully`
+      );
+
+      setViewDetails((prev) => ({ ...prev, status: statusToSet }));
+      refetch?.();
+
+      // ← Important fix: delay dialog close so toast has time to appear
+      setTimeout(() => {
+        setDialogOpen(false);
+        setStatusToSet(null);
+      }, 600); // 600ms is usually enough — can try 400–800ms
+
+    } catch (err) {
+      console.error("Status change failed:", err);
+      const errorMsg = err?.data?.message || "Failed to update workspace status";
+      toast.error(errorMsg);
+
+      // Close dialog immediately on error
+      setDialogOpen(false);
+      setStatusToSet(null);
+    }
+  };
+
+  if (!viewDetails) return <div className="p-10 text-center">Loading workspace...</div>;
+
+  const isFree = formData.plan === "free";
 
   return (
     <div className="min-h-screen bg-gray-50/70 pb-24 ml-[15em]">
-      <form onSubmit={onSubmit} className="mx-auto max-w-6xl px-5 py-18 space-y-8 ">
- <ToastContainer position='top-center' autoClose={5000} />
+      <form onSubmit={onSubmit} className="mx-auto max-w-6xl px-5 py-18 space-y-8">
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
 
-        {/* ─── Sticky Header ─── */}
+        {/* Sticky Header */}
         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b px-6 py-4 -mx-5 md:-mx-0 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-12 w-12 ring-1 ring-gray-200">
               <AvatarImage src={viewDetails.avatar} />
               <AvatarFallback className="bg-blue-100 text-blue-800 text-xl font-semibold">
-                {viewDetails.name?.[0]?.toUpperCase()}
+                {viewDetails.name?.[0]?.toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">{viewDetails.name}</h1>
-        
               <div className="flex items-center gap-3 mt-1">
                 <Badge
                   variant="outline"
                   className={cn(
                     "text-xs font-medium px-3 py-1",
-                    isFree ? "bg-green-50 text-green-700 border-green-200" : "bg-amber-50 text-amber-700 border-amber-200"
+                    isFree
+                      ? "bg-green-50 text-green-700 border-green-200"
+                      : "bg-amber-50 text-amber-700 border-amber-200"
                   )}
                 >
-                  {viewDetails.plan.toUpperCase()}
+                  {viewDetails.plan?.toUpperCase() || "FREE"}
                 </Badge>
-                <span className="text-sm text-muted-foreground">ID: {viewDetails.id.slice(-8)}</span>
+                <span className="text-sm text-muted-foreground">
+                  ID: {viewDetails.id?.slice(-8)}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            
-            <Button type="submit" disabled={isLoading} className="gap-1.5">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="gap-1.5 min-w-[180px]"
+            >
               <Save className="h-4 w-4" />
               {isLoading ? "Saving..." : "Update Workspace"}
             </Button>
@@ -185,27 +194,19 @@ toast.success("Workspace updated");
           <QuickStatCard
             icon={Users}
             label="Members"
-            value={viewDetails.members}
+            value={viewDetails.members ?? 0}
             color="blue"
           />
           <QuickStatCard
             icon={Calendar}
             label="Created"
-            value={format(new Date(viewDetails.createdAt), "MMM d, yyyy")}
+            value={
+              viewDetails.createdAt
+                ? format(new Date(viewDetails.createdAt), "MMM d, yyyy")
+                : "—"
+            }
             color="purple"
           />
-          {/* <QuickStatCard
-            icon={Activity}
-            label="Last Activity"
-            value={format(new Date(viewDetails.lastActivity), "MMM d, yyyy")}
-            color="green"
-          /> */}
-          {/* <QuickStatCard
-            icon={HardDrive}
-            label="Storage"
-            value={`${storageUsed} / ${storageLimit} GB`}
-            color="orange"
-          /> */}
         </div>
 
         {/* General */}
@@ -219,14 +220,21 @@ toast.success("Workspace updated");
           <CardContent className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label>Workspace Name</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} />
-                 <p style={{color:"red"}}>{isError?error.data.message:null}</p>
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter workspace name"
+              />
             </div>
             <div className="space-y-2">
               <Label>Slug (read-only)</Label>
-              <Input value={viewDetails.slug} disabled className="bg-gray-50" />
+              <Input
+                value={viewDetails.slug || ""}
+                disabled
+                className="bg-gray-50"
+              />
             </div>
-          
           </CardContent>
         </Card>
 
@@ -244,7 +252,12 @@ toast.success("Workspace updated");
                 { id: "free", label: "Free", icon: Infinity, color: "gray" },
                 { id: "basic", label: "Basic", icon: CheckCircle, color: "blue" },
                 { id: "pro", label: "Pro", icon: Crown, color: "amber" },
-                { id: "enterprise", label: "Enterprise", icon: Users, color: "violet" },
+                {
+                  id: "enterprise",
+                  label: "Enterprise",
+                  icon: Users,
+                  color: "violet",
+                },
               ].map((p) => (
                 <button
                   key={p.id}
@@ -257,7 +270,9 @@ toast.success("Workspace updated");
                       : "border-gray-200 hover:border-gray-300"
                   )}
                 >
-                  <p.icon className={cn("h-10 w-10 mb-3", `text-${p.color}-600`)} />
+                  <p.icon
+                    className={cn("h-10 w-10 mb-3", `text-${p.color}-600`)}
+                  />
                   <span className="font-semibold text-lg">{p.label}</span>
                   {formData.plan === p.id && (
                     <div className="absolute -top-2 -right-2 bg-green-600 text-white text-xs px-2.5 py-1 rounded-full font-medium">
@@ -300,13 +315,20 @@ toast.success("Workspace updated");
 
       <ConfirmDialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={() => {
+          setDialogOpen(false);
+          setStatusToSet(null);
+        }}
         onConfirm={confirmStatusChange}
-        title={statusToSet === "suspend" ? "Suspend Workspace?" : "Reactivate Workspace?"}
+        title={
+          statusToSet === "suspend"
+            ? "Suspend Workspace?"
+            : "Reactivate Workspace?"
+        }
         description="This action can be reversed later, but may affect users immediately."
       />
     </div>
-  )
+  );
 }
 
 function QuickStatCard({ icon: Icon, label, value, color }) {
@@ -322,5 +344,5 @@ function QuickStatCard({ icon: Icon, label, value, color }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

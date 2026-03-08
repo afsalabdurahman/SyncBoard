@@ -34,7 +34,7 @@ interface CollabInterfaceProps {
 
 const InviteMembers: React.FC<CollabInterfaceProps> = ({
   initialEmails = [{ email: "", role: "member" }],
-  inviteLink = `http://localhost:5173/invite-members/workspace-"$"`,
+  inviteLink = INVITE_LINK ,
   teamMembers = [
     {
       name: "Vanessa",

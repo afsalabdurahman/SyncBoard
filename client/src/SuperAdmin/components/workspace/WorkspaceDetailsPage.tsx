@@ -1,278 +1,138 @@
-import { toast,ToastContainer } from "react-toastify"
-import { useMemo, useState } from "react"
-import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton"
-import { Card, CardContent } from "../../../Custom/ui/card"
-import { Badge } from "../../../Custom/ui/badge"
-import { Button } from "../../../Custom/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
-import { Building2, Users, MessageSquare, HardDrive, Calendar, Edit, PauseCircle, PlayCircle, Mail, X } from "lucide-react"
-import { WorkspaceMembersTable, type WorkspaceMember } from "./workspaceMembers"
-import { WorkspaceActivityTimeline, type ActivityItem } from "./workspaceActivity"
-import { WorkspaceBillingCard } from "./workspaceBilling"
-import { cn } from "../../../Utility/utils"
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, AreaChart, Area } from "recharts"
-import { useGetAlluserListQuery,useUpdateWorkspaceMutation } from "../../apis/fetchApi"
-import {CloseIcon} from "../../../Custom/reusecomponents/CloseIcon"
-
-type Plan = "basic" | "pro" | "enterprise"
-type Status = "active" | "suspended" | "trial"
-
-interface WorkspaceDetails {
-  id: string
-  name: string
-  avatar?: string
-  owner: { name: string; email: string; avatar?: string }
-  plan: Plan
-  status: Status
-  createdAt: string
-  lastActive: string
-  storage: { usedGB: number; limitGB: number }
-  monthlyMessages: number
-  membersCount: number
-  billing: {
-    amount: number
-    currency: "USD"
-    interval: "month" | "year"
-    nextRenewal: string
-    paymentMethod: {
-      brand: "visa" | "mastercard" | "amex" | "discover"
-      last4: string
-      expMonth: number
-      expYear: number
-    }
-    status: "active" | "trialing" | "past_due" | "canceled"
-    cancelAtPeriodEnd: boolean
-  }
-}
-
-// Mock workspace data
-const workspace: WorkspaceDetails = {
-  id: "ws_1234567890",
-  name: "Acme Corporation",
-  avatar: "/workspace-logo.jpg",
-  owner: { name: "John Smith", email: "john../../..acme.com", avatar: "/person-holding-keys.png" },
-  plan: "enterprise",
-  status: "active",
-  createdAt: "2023-01-15",
-  lastActive: "2025-10-12",
-  storage: { usedGB: 85, limitGB: 100 },
-  monthlyMessages: 182340,
-  membersCount: 245,
-  billing: {
-    amount: 2499,
-    currency: "USD",
-    interval: "month",
-    nextRenewal: "2025-11-10",
-    paymentMethod: { brand: "visa", last4: "4242", expMonth: 4, expYear: 2027 },
-    status: "active",
-    cancelAtPeriodEnd: false,
-  },
-}
-
-// Mock members
-// const mockMembers: WorkspaceMember[] = [
-//   {
-//     id: "m1",
-//     name: "John Smith",
-//     email: "john../../..acme.com",
-//     role: "owner",
-//     status: "active",
-//     joinedAt: "2023-01-15",
-//     lastActive: "2025-10-12",
-//     twoFactorEnabled: true,
-//     isEmailVerified: true,
-//   },
-//   {
-//     id: "m2",
-//     name: "Sarah Johnson",
-//     email: "sarah../../..acme.com",
-//     role: "admin",
-//     status: "active",
-//     joinedAt: "2023-03-10",
-//     lastActive: "2025-10-12",
-//     twoFactorEnabled: false,
-//     isEmailVerified: true,
-//   },
-//   {
-//     id: "m3",
-//     name: "Mike Chen",
-//     email: "mike../../..acme.com",
-//     role: "member",
-//     status: "active",
-//     joinedAt: "2023-06-01",
-//     lastActive: "2025-10-11",
-//     twoFactorEnabled: false,
-//     isEmailVerified: false,
-//   },
-//   {
-//     id: "m4",
-//     name: "Emily Davis",
-//     email: "emily../../..acme.com",
-//     role: "admin",
-//     status: "suspended",
-//     joinedAt: "2023-07-20",
-//     lastActive: "2025-10-02",
-//     twoFactorEnabled: true,
-//     isEmailVerified: true,
-//   },
-//   {
-//     id: "m5",
-//     name: "David Wilson",
-//     email: "david../../..acme.com",
-//     role: "member",
-//     status: "pending",
-//     joinedAt: "2025-10-10",
-//     lastActive: "2025-10-10",
-//     twoFactorEnabled: false,
-//     isEmailVerified: false,
-//   },
-// ]
-
-// Mock activity
-// const activity: ActivityItem[] = [
-//   {
-//     id: "a1",
-//     type: "member_added",
-//     title: "Added Lisa Thompson to Acme Corporation",
-//     description: "Role: Member",
-//     time: "2025-10-12T09:30:00Z",
-//   },
-//   {
-//     id: "a2",
-//     type: "billing",
-//     title: "Monthly invoice paid",
-//     description: "Amount: $2,499 USD",
-//     time: "2025-10-10T02:10:00Z",
-//   },
-//   {
-//     id: "a3",
-//     type: "setting_change",
-//     title: "File uploads enabled",
-//     description: "Max file size: 50MB",
-//     time: "2025-10-08T11:20:00Z",
-//   },
-//   {
-//     id: "a4",
-//     type: "message",
-//     title: "Peak daily messages reached",
-//     description: "87,540 messages sent",
-//     time: "2025-10-07T18:05:00Z",
-//   },
-// ]
-
-function generateSeries(days = 30) {
-  const now = new Date()
-  const out: { label: string; messages: number; dau: number }[] = []
-  for (let i = days; i >= 0; i--) {
-    const d = new Date(now)
-    d.setDate(d.getDate() - i)
-    const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-    const messages = Math.max(2000, Math.floor(6000 + Math.sin(i / 5) * 1800 + Math.random() * 1400))
-    const dau = Math.max(200, Math.floor(800 + Math.cos(i / 7) * 220 + Math.random() * 120))
-    out.push({ label, messages, dau })
-  }
-  return out
-}
+import { toast, ToastContainer } from "react-toastify";
+import { useMemo, useState } from "react";
+import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton";
+import { Card, CardContent } from "../../../Custom/ui/card";
+import { Badge } from "../../../Custom/ui/badge";
+import { Button } from "../../../Custom/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar";
+import {
+  Building2,
+  Users,
+  Calendar,
+  PauseCircle,
+  PlayCircle,
+} from "lucide-react";
+import { WorkspaceMembersTable } from "./workspaceMembers";
+import { cn } from "../../../Utility/utils";
+import { useGetAlluserListQuery, useUpdateWorkspaceMutation } from "../../apis/fetchApi";
+import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
 
 export default function WorkspaceDetailsPage(props) {
+  const [updateWorkspace, { isLoading: isUpdating }] = useUpdateWorkspaceMutation();
+  const { data, isLoading } = useGetAlluserListQuery(
+    { workspaceslug: props.viewDetails?.slug, page: 1, limit: 5 },
+    { skip: !props.viewDetails?.slug }
+  );
 
-const [dialogTitle,setDialogTitle]=useState("")
-const [updateWorkspace,   { isLoading: isUpdating } ] = useUpdateWorkspaceMutation();
-const {data,isLoading}=useGetAlluserListQuery({workspaceslug:props.viewDetails?.slug,page:1,limit:5})
-const [suspented,setSuspendId] =useState("")
-const [IsDialogOpen,setIsDialogOpen]=useState(false)
+  const [statusToSet, setStatusToSet] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const series = useMemo(() => generateSeries(30), [])
+  const [sidebarCollapsed] = useState(false);
 
   const planColors = {
-    free:"bg-gray-100 text-gray-800",
+    free: "bg-gray-100 text-gray-800",
     basic: "bg-gray-100 text-gray-800",
     pro: "bg-purple-100 text-purple-800",
     enterprise: "bg-orange-100 text-orange-800",
-  } as const
+  };
 
   const statusColors = {
     active: "bg-green-100 text-green-800",
     suspended: "bg-red-100 text-red-800",
+    suspend: "bg-red-100 text-red-800", // in case backend uses "suspend"
     trial: "bg-blue-100 text-blue-800",
-  } as const
+  };
 
-  const storagePct = Math.min(100, Math.round((workspace.storage.usedGB / workspace.storage.limitGB) * 100))
+  const suspend = () => {
+    setStatusToSet("suspend"); // or "suspend" — match what your backend expects
+    setIsDialogOpen(true);
+  };
 
-  const suspend = () =>{
-  const merge = {
-    status:"suspend"
-  }
-    setSuspendId(merge)
-    setDialogTitle("suspend")
-    setIsDialogOpen(true)
-  
-  }
+  const reactivate = () => {
+    setStatusToSet("active");
+    setIsDialogOpen(true);
+  };
+
   const handleConfirm = async () => {
+    if (!statusToSet) return;
 
-try {
-   await updateWorkspace({
+    try {
+      await updateWorkspace({
         id: props.viewDetails.id,
-        merge: suspented,
+        merge: { status: statusToSet },
       }).unwrap();
-          props.refetch()
-     toast.success("Updated...")
-    props.setViewDetails((prev) => ({
-  ...prev,
-  status: dialogTitle,
-}));
 
-} catch (error) {
- 
-}
-    
- 
- 
-  }
-  const reactivate = async() => {
-const merge = {
-    status:"active"
-  }
-    setSuspendId(merge)
-       setDialogTitle("Active")
-    setIsDialogOpen(true)
-  }
-  const edit = () =>{
-    props.setPage("edit")
+      toast.success(
+        `Workspace ${statusToSet === "active" ? "reactivated" : "suspend"} successfully`
+      );
+
+      // Update local viewDetails state
+      props.setViewDetails((prev) => ({
+        ...prev,
+        status: statusToSet,
+      }));
+
+      props.refetch?.();
+
+      // Give toast time to appear before closing dialog
+      setTimeout(() => {
+        setIsDialogOpen(false);
+        setStatusToSet(null);
+      }, 600);
+
+    } catch (err) {
+      console.error("Workspace status update failed:", err);
+
+      const errorMessage =
+        err?.data?.message ||
+        err?.error ||
+        "Failed to update workspace status. Please try again.";
+
+      toast.error(errorMessage);
+
+      // Close dialog immediately on error
+      setIsDialogOpen(false);
+      setStatusToSet(null);
+    }
+  };
+
+  if (isLoading || !props.viewDetails) {
+    return <div className="p-10 text-center">Loading workspace details...</div>;
   }
 
-  // const onViewMember = (m: WorkspaceMember) => console.log("View member", m.id)
-  // const onChangeRole = (m: WorkspaceMember) => console.log("Change role", m.id)
-  // const onSuspendMember = (m: WorkspaceMember) => console.log("Suspend member", m.id)
-  // const onRemoveMember = (m: WorkspaceMember) => console.log("Remove member", m.id)
-if(isLoading){
-  return(<>loading....</>)
-}
+  const currentStatus = props.viewDetails.status?.toLowerCase() || "active";
 
   return (
     <div className="min-h-screen bg-gray-50">
-  
- <ToastContainer position='top-center' autoClose={5000} />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
-        <div className="p-6 space-y-3">
-        <div className="flex justify-end">
-     
-   <div className="flex justify-end">
-        
-        <CloseIcon onClose={() => props.setDetails(null)} />
-      </div>
-    </div>
-          {/* Header section */}
-          <div className="rounded-xl bg-white border p-5 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="p-6 space-y-6">
+          <div className="flex justify-end">
+            <CloseIcon onClose={() => props.setDetails(null)} />
+          </div>
+
+          {/* Header */}
+          <div className="rounded-xl bg-white border p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex items-center gap-4 min-w-0">
-                <Avatar className="h-12 w-12 rounded-lg">
+                <Avatar className="h-14 w-14 rounded-lg">
                   <AvatarImage
-                    src={workspace.avatar || "/placeholder.svg?height=48&width=48&query=workspace-logo"}
-                    alt={workspace.name}
+                    src={props.viewDetails.avatar || "/placeholder.svg?height=56&width=56"}
+                    alt={props.viewDetails.name}
                   />
-                  <AvatarFallback>
+                  <AvatarFallback className="text-xl">
                     {props.viewDetails.name
                       .split(" ")
                       .map((n) => n[0])
@@ -281,225 +141,118 @@ if(isLoading){
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-xl font-semibold text-gray-900 truncate">{props.viewDetails.name}</h1>
-                    <Badge variant="secondary" className={planColors[props.viewDetails.plan]}>
-                      {props.viewDetails.plan.charAt(0).toUpperCase() + props.viewDetails.plan.slice(1)}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-2xl font-bold text-gray-900 truncate">
+                      {props.viewDetails.name}
+                    </h1>
+                    <Badge
+                      variant="outline"
+                      className={planColors[props.viewDetails.plan] || "bg-gray-100"}
+                    >
+                      {props.viewDetails.plan?.toUpperCase() || "UNKNOWN"}
                     </Badge>
-                    <Badge variant="secondary" className={statusColors[props.viewDetails.status]}>
-                      {props.viewDetails.status.charAt(0).toUpperCase() + props.viewDetails.status.slice(1)}
+                    <Badge
+                      variant="outline"
+                      className={statusColors[currentStatus] || "bg-gray-100"}
+                    >
+                      {currentStatus.toUpperCase()}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600 mt-1 flex-wrap">
-                    <span className="text-xs rounded bg-gray-100 px-2 py-0.5">ID: {props.viewDetails.id}</span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5" />
+
+                  <div className="flex items-center gap-4 text-sm text-gray-600 mt-2 flex-wrap">
+                    <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">
+                      ID: {props.viewDetails.id?.slice(-8)}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="h-4 w-4" />
                       Created {new Date(props.viewDetails.createdAt).toLocaleDateString("en-US")}
                     </span>
-                 
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {props.viewDetails.status === "suspend" ? (
-                  <Button variant="outline" onClick={reactivate} className="gap-2 bg-transparent">
-                    <PlayCircle className="h-4 w-4" />
-                    Reactivate
+              <div className="flex items-center gap-3 flex-wrap">
+                {currentStatus === "active" || currentStatus === "trial" ? (
+                  <Button
+                    variant="outline"
+                    className="border-red-200 text-red-700 hover:bg-red-50 gap-2"
+                    onClick={suspend}
+                    disabled={isUpdating}
+                  >
+                    <PauseCircle className="h-4 w-4" />
+                    Suspend Workspace
                   </Button>
                 ) : (
-                  <Button variant="outline" onClick={suspend} className="gap-2 bg-transparent">
-                    <PauseCircle className="h-4 w-4" />
-                    Suspend
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 gap-2"
+                    onClick={reactivate}
+                    disabled={isUpdating}
+                  >
+                    <PlayCircle className="h-4 w-4" />
+                    Reactivate Workspace
                   </Button>
                 )}
-                {/* <Button variant="outline" onClick={messageOwner} className="gap-2 bg-transparent">
-                  <Mail className="h-4 w-4" />
-                  Message Owner
-                </Button> */}
-                {/* <Button onClick={edit} className="gap-2">
-                  <Edit className="h-4 w-4" />
-                  Edit Workspace
-                </Button> */}
-              </div>
-            </div>
-
-            {/* Owner */}
-            <div className="mt-4 flex items-center gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage
-                  src={workspace.owner.avatar || "/placeholder.svg?height=32&width=32&query=owner"}
-                  alt={workspace.owner.name}
-                />
-                <AvatarFallback>
-                  {props.viewDetails.owner.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-sm">
-                <div className="font-medium text-gray-900">{props.viewDetails.owner.name}</div>
-                <div className="text-gray-600">{props.viewDetails.owner.email}</div>
               </div>
             </div>
           </div>
 
-          {/* Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">Members</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{props.viewDetails.members}</p>
+                    <p className="text-3xl font-bold mt-1">{props.viewDetails.members ?? 0}</p>
                   </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center">
                     <Users className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Monthly Messages</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">
-                      {workspace.monthlyMessages.toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <MessageSquare className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card> */}
-
-            {/* <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Storage Used</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{workspace.storage.usedGB}GB</p>
-                    <div className="text-sm text-gray-600">of {workspace.storage.limitGB}GB</div>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <HardDrive className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-                  <div className="h-2 rounded-full bg-blue-500" style={{ width: `${storagePct}%` }} />
-                </div>
-              </CardContent>
-            </Card> */}
-
-            {/* <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Last Active</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-1">
-                      {new Date(props.viewDetails.lastActivity).toLocaleDateString("en-US")}
-                    </p>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card> */}
+            {/* Add more cards if needed */}
           </div>
 
-          {/* Charts + Billing */}
-          {/* <div className="grid grid-cols-1 2xl:grid-cols-3 gap-6">
-            <div className="space-y-6 2xl:col-span-2">
-              <Card>
-                <CardContent className="p-5">
-                  <div className="text-lg font-semibold text-gray-900 mb-3">Messages Over Time</div>
-                  <div className="h-[260px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={series} margin={{ top: 10, right: 16, bottom: 0, left: -10 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                        <YAxis tick={{ fontSize: 12 }} />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="messages" stroke="#2563eb" strokeWidth={2} dot={false} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-5">
-                  <div className="text-lg font-semibold text-gray-900 mb-3">Daily Active Users</div>
-                  <div className="h-[260px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={series} margin={{ top: 10, right: 16, bottom: 0, left: -10 }}>
-                        <defs>
-                          <linearGradient id="fillDau" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
-                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.05} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                        <YAxis tick={{ fontSize: 12 }} />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="dau" stroke="#10b981" fill="url(#fillDau)" strokeWidth={2} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="space-y-6">
-              <WorkspaceBillingCard
-                plan={workspace.plan}
-                amount={workspace.billing.amount}
-                currency={workspace.billing.currency}
-                interval={workspace.billing.interval}
-                nextRenewal={workspace.billing.nextRenewal}
-                paymentMethod={workspace.billing.paymentMethod}
-                status={workspace.billing.status}
-                cancelAtPeriodEnd={workspace.billing.cancelAtPeriodEnd}
-              />
-
-              <WorkspaceActivityTimeline items={activity} />
-            </div>
-          </div> */}
-
-          {/* Members */}
-          <div className="space-y-3">
+          {/* Members Table */}
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Members</h2>
-              <div className="flex gap-2">
-                {/* <Button variant="outline">Invite Member</Button> */}
-                {/* <Button>Manage Roles</Button> */}
-              </div>
+              <h2 className="text-xl font-semibold text-gray-900">Members</h2>
             </div>
+
             <WorkspaceMembersTable
-              members={data.items??mockMembers}
-              onView={onViewMember}
-              onChangeRole={onChangeRole}
-              onSuspend={onSuspendMember}
-              onRemove={onRemoveMember}
+              members={data?.items ?? []}
+              onView={(m) => console.log("View member", m.id)}
+              onChangeRole={(m) => console.log("Change role", m.id)}
+              onSuspend={(m) => console.log("Suspend member", m.id)}
+              onRemove={(m) => console.log("Remove member", m.id)}
             />
           </div>
-           <ConfirmDialog
-                  open={IsDialogOpen}
-                  onClose={() => setIsDialogOpen(false)}
-                  onConfirm={handleConfirm}
-                  description='This  will be  Confirm Action.'
-                />
+
+          {/* Confirmation Dialog */}
+          <ConfirmDialog
+            open={isDialogOpen}
+            onClose={() => {
+              setIsDialogOpen(false);
+              setStatusToSet(null);
+            }}
+            onConfirm={handleConfirm}
+            title={
+              statusToSet === "active"
+                ? "Reactivate Workspace?"
+                : "Suspend Workspace?"
+            }
+            description={
+              statusToSet === "active"
+                ? "This will allow users to access the workspace again."
+                : "This will immediately prevent access for all members."
+            }
+          />
         </div>
       </main>
     </div>
-  )
+  );
 }

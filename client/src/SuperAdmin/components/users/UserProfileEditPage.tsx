@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
-import { format } from "date-fns"
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
-import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon"
+import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../Custom/ui/card"
-import { Input } from "../../../Custom/ui/input"
-import { Label } from "../../../Custom/ui/label"
-import { Textarea } from "../../../Custom/ui/textarea"
-import { Button } from "../../../Custom/ui/button"
+} from "../../../Custom/ui/card";
+import { Input } from "../../../Custom/ui/input";
+import { Label } from "../../../Custom/ui/label";
+import { Textarea } from "../../../Custom/ui/textarea";
+import { Button } from "../../../Custom/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../Custom/ui/select"
-import { Badge } from "../../../Custom/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
-import { Separator } from "../../../Custom/ui/separator"
+} from "../../../Custom/ui/select";
+import { Badge } from "../../../Custom/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar";
+import { Separator } from "../../../Custom/ui/separator";
 
 import {
   User,
@@ -43,16 +43,14 @@ import {
   Ban,
   PlayCircle,
   CheckCircle2,
-} from "lucide-react"
+} from "lucide-react";
 
-import { cn } from "../../../Utility/utils"
-import { updateUser } from "../../apis/updateApi"
-import { useFetchUserPageQuery } from "../../apis/fetchApi"
-import { dataMap } from "../../types/mapData"
+import { cn } from "../../../Utility/utils";
+import { updateUser } from "../../apis/updateApi";
+import { useFetchUserPageQuery } from "../../apis/fetchApi";
+import { dataMap } from "../../types/mapData";
 
-export default function UserProfileEditPage({ setPage, user,refetch,setUser }) {
-  // const { refetch } = useFetchUserPageQuery()
-
+export default function UserProfileEditPage({ setPage, user, refetch, setUser }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -61,12 +59,12 @@ export default function UserProfileEditPage({ setPage, user,refetch,setUser }) {
     role: "member",
     timezone: "UTC",
     locale: "en-US",
-  })
+  });
 
-  const [status, setStatus] = useState("active") // separate so we can style differently
+  const [status, setStatus] = useState("active");
 
   useEffect(() => {
-    if (!user) return
+    if (!user) return;
 
     setFormData({
       name: user.name ?? "",
@@ -76,34 +74,37 @@ export default function UserProfileEditPage({ setPage, user,refetch,setUser }) {
       role: user.role ?? "member",
       timezone: user.timezone ?? "UTC",
       locale: user.locale ?? "en-US",
-    })
+    });
 
-    setStatus(user.status ?? "active")
-  }, [user])
+    setStatus(user.status ?? "active");
+  }, [user]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-      
-  }
-
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const onSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const payload = dataMap({
         ...formData,
-        status, // include current status decision
-      })
-     
-      await updateUser(user.id, payload)
-      await refetch()
-      toast.success("User updated successfully")
-      setPage(null)
+        status,
+      });
+
+      await updateUser(user.id, payload);
+      await refetch?.();
+      toast.success("User profile updated successfully");
+      setPage(null);
     } catch (err) {
-      toast.error("Failed to update user")
+      console.error("Profile update failed:", err);
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to update user profile. Please check your connection.";
+      toast.error(errorMessage);
     }
-  }
+  };
 
   const onReset = () => {
     setFormData({
@@ -114,27 +115,44 @@ export default function UserProfileEditPage({ setPage, user,refetch,setUser }) {
       role: user.role ?? "member",
       timezone: user.timezone ?? "UTC",
       locale: user.locale ?? "en-US",
-    })
-    setStatus(user.status ?? "active")
-    toast.info("Form reset")
-  }
+    });
+    setStatus(user.status ?? "active");
+    toast.info("Form has been reset");
+  };
 
-  if (!user) return <div className="p-10 text-center text-muted-foreground">Loading user...</div>
+  const changeStatus = async (newStatus) => {
+    setStatus(newStatus);
 
-  const isActive = status === "active"
-  const joinedDate = user.joinedAt ? format(new Date(user.joinedAt), "MMM d, yyyy") : "—"
-  const lastActive = user.lastActivity ? format(new Date(user.lastActivity), "MMM d, yyyy HH:mm") : "—"
-const changeStatus = async(status) =>{
-  setStatus(status);
-   const stat= status=="inactive"?true:false
-    await updateUser(user.id, {isDeleted:stat});
-    refetch()
-   toast.success("User updated successfully")
-}
+    // Correct logic: inactive → isDeleted = true, active → isDeleted = false
+    const isDeleted = newStatus === "inactive";
+
+    try {
+      await updateUser(user.id, { isDeleted });
+      await refetch?.();
+      toast.success(`User has been ${newStatus === "active" ? "reactivated" : "suspended"}`);
+    } catch (err) {
+      console.error("Status change failed:", err);
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to update user status";
+      toast.error(errorMessage);
+      // Revert UI state on failure
+      setStatus(newStatus === "active" ? "inactive" : "active");
+    }
+  };
+
+  if (!user) return <div className="p-10 text-center text-muted-foreground">Loading user...</div>;
+
+  const isActive = status === "active";
+  const joinedDate = user.joinedAt ? format(new Date(user.joinedAt), "MMM d, yyyy") : "—";
+  const lastActive = user.lastActivity
+    ? format(new Date(user.lastActivity), "MMM d, yyyy HH:mm")
+    : "—";
+
   return (
     <div className="min-h-screen bg-gray-50/60 pb-24 ml-[15em]">
       <form onSubmit={onSubmit} className="mx-auto max-w-5xl px-5 py-18 space-y-8">
-
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b -mx-5 px-5 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -187,13 +205,6 @@ const changeStatus = async(status) =>{
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
           <StatCard icon={Calendar} label="Joined" value={joinedDate} color="violet" />
           <StatCard icon={Activity} label="Last Active" value={lastActive} color="green" />
-          {/* <StatCard icon={LogIn} label="Logins" value={user.loginCount ?? 0} color="blue" /> */}
-          {/* <StatCard
-            icon={user.twoFactorEnabled ? ShieldCheck : ShieldOff}
-            label="2FA"
-            value={user.twoFactorEnabled ? "Enabled" : "Disabled"}
-            color={user.twoFactorEnabled ? "emerald" : "amber"}
-          /> */}
           <StatCard
             icon={Building2}
             label="Workspace"
@@ -292,7 +303,7 @@ const changeStatus = async(status) =>{
                     type="button"
                     variant="outline"
                     className="border-red-200 text-red-700 hover:bg-red-50"
-                    onClick={() => changeStatus('inactive')}
+                    onClick={() => changeStatus("inactive")}
                   >
                     <Ban className="h-4 w-4 mr-1.5" />
                     Suspend User
@@ -339,7 +350,6 @@ const changeStatus = async(status) =>{
                   <SelectItem value="UTC">UTC</SelectItem>
                   <SelectItem value="Asia/Kolkata">Asia/Kolkata (IST)</SelectItem>
                   <SelectItem value="America/New_York">America/New_York (EST)</SelectItem>
-                  {/* Add more as needed */}
                 </SelectContent>
               </Select>
             </div>
@@ -356,7 +366,6 @@ const changeStatus = async(status) =>{
                   <SelectItem value="en-US">English (United States)</SelectItem>
                   <SelectItem value="en-GB">English (United Kingdom)</SelectItem>
                   <SelectItem value="fr-FR">French (France)</SelectItem>
-                  {/* Add more */}
                 </SelectContent>
               </Select>
             </div>
@@ -364,7 +373,7 @@ const changeStatus = async(status) =>{
         </Card>
       </form>
     </div>
-  )
+  );
 }
 
 function StatCard({ icon: Icon, label, value, color }) {
@@ -380,5 +389,5 @@ function StatCard({ icon: Icon, label, value, color }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
