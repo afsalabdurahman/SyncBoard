@@ -3,7 +3,7 @@ import { FeatureExtractionPipeline } from "@xenova/transformers";
 import { TaskRequestDTO } from "../../../application/dto/TaskDTOs";
 
 // Global embedder instance (lazy loaded once)
-let embedder: FeatureExtractionPipeline | ((arg0: string, arg1: { pooling: string; normalize: boolean; }) => any) | null = null;
+let embedder: FeatureExtractionPipeline | ((arg0: string, arg1: { pooling: string; normalize: boolean; }) => number[]) | null = null;
 
 export const addToVectors = async (task: TaskRequestDTO): Promise<number[]> => {
   try {
