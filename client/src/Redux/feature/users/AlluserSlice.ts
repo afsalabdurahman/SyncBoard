@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from "../../../Admin/types/userTypes"
-import { fetchAllUsers, removeUser, softDeleteUser, updateUser } from './AlluserThunks';
-import { Action } from '@radix-ui/react-alert-dialog';
+import { fetchAllUsers, removeUser, updateUser } from './AlluserThunks';
 import { taskResponse } from '../../../Admin/types/taskTypes';
 
 

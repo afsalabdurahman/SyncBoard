@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 export const Pagination = ({ 
@@ -103,39 +103,3 @@ export const Pagination = ({
   );
 };
 
-// Demo Component
-// const PaginationDemo = () => {
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const totalPages = 20;
-//   const itemsPerPage = 10;
-
-//   const handlePageChange = (page) => {
-//     setCurrentPage(page);
-//   };
-
-//   const startItem = (currentPage - 1) * itemsPerPage + 1;
-//   const endItem = Math.min(currentPage * itemsPerPage, totalPages * itemsPerPage);
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-8">
-//       <div className="max-w-4xl mx-auto">
-       
-
-//         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        
-//           <Pagination
-//             currentPage={currentPage}
-//             totalPages={totalPages}
-//             onPageChange={handlePageChange}
-//             maxVisible={5}
-//             showFirstLast={true}
-//           />
-//         </div>
-
-       
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PaginationDemo;

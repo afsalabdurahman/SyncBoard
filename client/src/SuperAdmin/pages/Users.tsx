@@ -25,7 +25,7 @@ export const  UsersPage = () => {
   const [user,setUser]=useState()
   const [users,setUsers]=useState([])
 
-
+console.log(data,"dataaa")
 const handleChangePage = (page) => {
   setChangePage(page);
   refetch()

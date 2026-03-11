@@ -1,13 +1,9 @@
-import { Ticket } from "../types/TiketTypes";
+import { Ticket, TicketCardProps } from "../types/TiketTypes";
 import { Badge } from "../../Custom/ui/badge";
 import { Building2, Users, Clock, MessageSquare,Rotate3DIcon,Grid } from "lucide-react";
 import { cn } from "../../Utility/cn";
 import {formatDate} from "../../Utility/dateConverter"
-interface TicketCardProps {
-  ticket: Ticket;
-  onClick: () => void;
-  isSelected: boolean;
-}
+
 
 const TicketCard = ({ ticket, onClick, isSelected }: TicketCardProps) => {
   const getStatusVariant = (status: Ticket["status"]) => {

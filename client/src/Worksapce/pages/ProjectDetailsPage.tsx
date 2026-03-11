@@ -3,37 +3,43 @@ import { formatDate } from "../../Utility/dateformate";
 import {
   Calendar,
   Users,
-  Clock,
-  FileImage,
   CheckCircle2,
-  AlertCircle,
   User,
-  MessageSquare,
   FileText,
   MoreVertical,
-  Plus,
   Filter,
-  Search,
-  Upload,
-  Download,
-  Star,
   X,
-  GitBranch,
+
 } from "lucide-react";
-import apiService from "../../Services/apiServices/apiService";
-import { setUserData } from "../../Redux/feature/user/userSlice";
+
 import { useSelector } from "react-redux";
 
-const ProjectDetailsPage = (props: any) => {
+import { ProjectType } from "../../Admin/types/projetctTypes";
+import { tasksInProjectDetails } from "../apis/workspaceapis";
+import { toast } from "react-toastify";
+
+const ProjectDetailsPage = (props: ProjectType) => {
   const [myTasks, setMytask] = useState([]);
   const [taskFilter, setTaskFilter] = useState("all");
   const projectId = props.projectDetails._id;
-  useEffect(() => {
-    apiService.get(`task/project/${projectId}?filter=${taskFilter}`).then((res) => {
+useEffect(() => {
+  const fetchTasks = async () => {
+    try {
+
+      const res = await tasksInProjectDetails(projectId,taskFilter)
+     
 
       setMytask(res.data);
-    });
-  }, [projectId,taskFilter]);
+    } catch (error) {
+       if (error instanceof Error) {
+              toast.error(error.message);
+         
+            }
+    }
+  };
+
+  fetchTasks();
+}, [projectId, taskFilter]);
   const [progress, setProgress] = useState();
   const total = myTasks.length;
  const completed = myTasks.filter(
@@ -43,7 +49,7 @@ const ProjectDetailsPage = (props: any) => {
     return state.task.tasks;
   });
   const totalProgress = Math.round((completed.length / total) * 100);
-
+console.log(props,"pross")
   
 
   const [activeTab, setActiveTab] = useState("overview");
@@ -141,7 +147,7 @@ const ProjectDetailsPage = (props: any) => {
   };
 
 
-  const getStatusColor = (status: any) => {
+  const getStatusColor = (status: string) => {
     
     switch (status) {
       case "completed":
@@ -161,7 +167,7 @@ const ProjectDetailsPage = (props: any) => {
         return "text-red-600";
       case "medium":
         return "text-yellow-600";
-      case "Low":
+      case "low":
         return "text-green-600";
       default:
         return "text-gray-600";
@@ -184,7 +190,7 @@ const ProjectDetailsPage = (props: any) => {
                 {props.projectDetails.name}
               </h1>
               <span className='px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800'>
-                {projectData.status}
+                {props.projectDetails.status}
               </span>
             </div>
             <div className='flex items-center space-x-3'>
@@ -595,10 +601,10 @@ const ProjectDetailsPage = (props: any) => {
                   <p className='text-sm font-medium text-gray-600'>Priority</p>
                   <span
                     className={`text-sm font-medium ${getPriorityColor(
-                      projectData.priority.toLowerCase()
+                      props.projectDetails.priority.toLowerCase()
                     )}`}
                   >
-                    {props.projectDetails.preiority}
+                    {props.projectDetails.priority}
                   </span>
                 </div>
               </div>

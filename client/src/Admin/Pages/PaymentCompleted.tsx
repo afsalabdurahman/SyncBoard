@@ -12,7 +12,7 @@ const PaymentCompleted: React.FC = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to homepage
-         window.location.href = ADMIN_URL;
+         window.location.href = ADMIN_URL
 
           //window.location.href = '/';
           return 0;

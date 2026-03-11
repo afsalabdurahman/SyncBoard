@@ -3,17 +3,14 @@ import { useState } from "react"
 import CurrentPlanOverview from "../components/CurrentPlanSus"
 import UsageMetricsComponent from "../components/UsagesInSus"
 import PaymentInfoComponent from "../components/PaymentInfoSus"
-import BillingHistory from "../components/BillSuscription"
-import ButtonSus from "./ButtonSus"
-import { useSearchParams, useNavigate } from "react-router-dom";
 // import CheckoutPage from "./CheckoutPage"
-import apiService from "../../Services/apiServices/apiService";
 import { useSelector } from "react-redux"
-import { stat } from "fs"
+import { checkoutapi } from "../apis/checkoutApi"
+import { RootState } from "../../Redux/store"
 export type Plan = "Free" | "Pro" | "Enterprise"
 
 export interface PaymentInfo {
-  plan:Plan
+  plan: Plan
   amount: string
   date: string
   status: "Success" | "Failed" | "Pending"
@@ -35,21 +32,21 @@ export interface UsageMetrics {
 }
 
 export default function SubscriptionPage() {
-    const myPlan=useSelector((state)=>{
-   return state.suscription.subscription.planKey ?? "free"
-})
-const planStatus = useSelector((state)=>{
-  return state.suscription.subscription.status
-})
+  const myPlan = useSelector((state: RootState) => {
+    return state.subscriptions.subscription?.planKey ?? "free"
+  })
+  const planStatus = useSelector((state) => {
+    return state.subscriptions.subscription.status
+  })
 
 
   const [currentPlan, setCurrentPlan] = useState<Plan>(myPlan)
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-const [checkout,setCheckout]=useState(false)
-const userId=useSelector((state)=>state.user.user._id)
-const projectCount= useSelector((state)=>state.projects.list.length)
-const userCount = useSelector((state)=>state.alluser.users.length)
+  const [checkout, setCheckout] = useState(false)
+  const userId = useSelector((state: RootState) => state.user.user?._id)
+  const projectCount = useSelector((state: RootState) => state.projects.list.length)
+  const userCount = useSelector((state: RootState) => state.alluser.users.length)
 
   const [usageMetrics] = useState<UsageMetrics>(() => {
     const baseMetrics = {
@@ -59,7 +56,7 @@ const userCount = useSelector((state)=>state.alluser.users.length)
         storage: { current: 0.5, limit: 1, unit: "GB" },
         apiCalls: { current: 850, limit: 1000 },
       },
-        basic: {
+      basic: {
         projects: { current: projectCount, limit: 3 },
         users: { current: userCount, limit: 15 },
         storage: { current: 0.5, limit: 1, unit: "GB" },
@@ -111,31 +108,20 @@ const userCount = useSelector((state)=>state.alluser.users.length)
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
- const amount =
-  targetPlan === "Basic"
-    ? "$10/month"
-    : targetPlan === "Pro"
-    ? "$20/month"
-    : "$50/month";
+    const amount =
+      targetPlan === "Basic"
+        ? "$10/month"
+        : targetPlan === "Pro"
+          ? "$20/month"
+          : "$50/month";
 
     const currentDate = new Date().toLocaleDateString()
 
-
-
-    apiService.post(`/checkout/payment/${userId}`,{
-      plan:targetPlan
-    }).then((res)=>{
-    
-       window.location.href = res.data
+    await checkoutapi(userId, targetPlan).then((res) => {
+      window.location.href = res.data
     })
-//  setCheckout(true)
-    // setCurrentPlan(targetPlan)
-    // setIsProcessing(false)
-  }
 
-// if(checkout){
-//   return(<CheckoutPage setCheckout={setCheckout} payamentInfo={paymentInfo}/>)
-// }
+  }
 
 
 
@@ -146,7 +132,7 @@ const userCount = useSelector((state)=>state.alluser.users.length)
       <UsageMetricsComponent usageMetrics={usageMetrics} />
 
       {paymentInfo && <PaymentInfoComponent paymentInfo={paymentInfo} />}
-{/* 
+      {/* 
       <BillingHistory billingHistory={billingHistory} /> */}
       {/* <ButtonSus/> */}
     </div>

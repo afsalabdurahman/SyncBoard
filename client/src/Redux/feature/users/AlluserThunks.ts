@@ -2,6 +2,7 @@ import { User } from "../../../Admin/types/userTypes";
 import apiService from "../../../Services/apiServices/apiService";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
 
 export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async ({ page, limit, workspaceslug }: { page: number, limit: number, workspaceslug: string }, { rejectWithValue }) => {
   try {
@@ -17,7 +18,8 @@ export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async
 
 
   } catch (error) {
-    console.log(error)
+   const err: string = catchErrorHandle(error, "Failed to fetch users")
+      throw new Error(err)
   }
 });
 export const removeUser = createAsyncThunk('/adminUserData/removeuser', async ({ deleteUser, updatedProfile }: { deleteUser: string, updatedProfile: { isDelete: true } }, { rejectWithValue }) => {
@@ -39,7 +41,8 @@ export const removeUser = createAsyncThunk('/adminUserData/removeuser', async ({
 
 
   } catch (error) {
-    console.log(error)
+    const err: string = catchErrorHandle(error, "Failed to delete")
+      throw new Error(err)
   }
 });
 export const softDeleteUser = createAsyncThunk("/adminUserData/undelete", async (deleteUser, updatedProfile) => {
@@ -54,7 +57,8 @@ export const softDeleteUser = createAsyncThunk("/adminUserData/undelete", async 
 
     return response.data.updatedData
   } catch (error) {
-    console.log(error, "errr")
+     const err: string = catchErrorHandle(error, "Failed to update")
+        throw new Error(err)
   }
 })
 export const updateUser = createAsyncThunk("/adminUserData/update", async ({ userId, updatedData }: { userId: string | number | undefined; updatedData: User }) => {
@@ -71,7 +75,8 @@ export const updateUser = createAsyncThunk("/adminUserData/update", async ({ use
 
     return response.data.updatedData
   } catch (error) {
-    console.log(error)
+     const err: string = catchErrorHandle(error, "Failed to update")
+      throw new Error(err)
   }
 
 })

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Ticket, TicketStatus } from "../types/TiketTypes";
+import { Ticket, TicketDashboardProps, TicketStatus } from "../types/TiketTypes";
 import { Button } from "../../Custom/ui/button";
 import { Input } from "../../Custom/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "../../Custom/ui/tabs";
@@ -7,12 +7,7 @@ import { Plus, Search } from "lucide-react";
 import TicketCard from "./TicketCard";
 import CreateTicketDialog from "./CreateTicketDialog";
 
-interface TicketDashboardProps {
-  tickets: Ticket[];
-  onSelectTicket: (ticket: Ticket) => void;
-  selectedTicketId?: string;
-  onCreateTicket: (ticket: Omit<Ticket, "id" | "createdAt" | "updatedAt" | "messages">) => void;
-}
+
 
 const TicketDashboard = ({ tickets, onSelectTicket, selectedTicketId, onCreateTicket }: TicketDashboardProps) => {
   const [searchQuery, setSearchQuery] = useState("");

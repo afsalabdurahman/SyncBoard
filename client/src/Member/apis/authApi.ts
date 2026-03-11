@@ -1,11 +1,15 @@
 import  { AxiosError, AxiosResponse } from "axios";
 import apiService from "../../Services/apiServices/apiService";
 import { commentType, SignupResponse } from "../types/authType"
-
-
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
+import { AdminLoginResponse, User, Workspace } from "../../Admin/types/adminTypes";
 
-export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null | boolean> => {
+interface ErrorResponse {
+  message: string;
+}
+
+
+export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null > => {
   try {
     const response: AxiosResponse<SignupResponse | null> = await apiService.post(
       "auth/user/sendotp",
@@ -24,7 +28,7 @@ export const signupApi = async (email: string, name: string, password: string): 
     let errorMessage = "Something went wrong";
 
     if (err && typeof err === "object" && "isAxiosError" in err) {
-      const axiosError = err as AxiosError<any>;
+      const axiosError = err as AxiosError<ErrorResponse>;
     
       errorMessage = axiosError.response?.data?.message || axiosError.message;
     } else if (err instanceof Error) {
@@ -36,9 +40,9 @@ export const signupApi = async (email: string, name: string, password: string): 
 }
 
 
-export const loginApi = async (email: string, password: string): Promise<any> => {
+export const loginApi = async (email: string, password: string): Promise<{workspace:Workspace,user:User}|null> => {
   try {
-    const response: AxiosResponse<any> = await apiService.post(
+    const response: AxiosResponse<AdminLoginResponse> = await apiService.post(
       "auth/user/login",
       { email, password },
    
@@ -65,7 +69,7 @@ export const loginApi = async (email: string, password: string): Promise<any> =>
     let errorMessage = "Failed to login";
 
     if (err && typeof err === "object" && "isAxiosError" in err) {
-      const axiosError = err as AxiosError<any>;
+      const axiosError = err as AxiosError<ErrorResponse>;
     
       errorMessage = axiosError.response?.data?.message || axiosError.message;
     } else if (err instanceof Error) {
@@ -74,6 +78,7 @@ export const loginApi = async (email: string, password: string): Promise<any> =>
 
     throw new Error(errorMessage);
   }}
+  return null;
 };
 export const sendComment = async (
   taskId: string,
@@ -170,6 +175,18 @@ export const registerUser = async (name:string,email:string,password:string,)=>{
     
   }catch(error){
  const err: string = catchErrorHandle(error, "Failed to send OTP")
+    throw new Error(err)
+  }
+
+
+}
+export const resetPassword  = (userId:string,password:string)=>{
+  try {
+    apiService.post(`/member/reset/password/${userId}`,{
+      password
+    })
+  } catch (error) {
+     const err: string = catchErrorHandle(error, "Failed to send OTP")
     throw new Error(err)
   }
 }

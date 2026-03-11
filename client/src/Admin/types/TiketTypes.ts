@@ -20,3 +20,14 @@ export interface Ticket {
   workspaceId:string;
   userId:string;
 }
+export interface TicketCardProps {
+  ticket: Ticket;
+  onClick: () => void;
+  isSelected: boolean;
+}
+export interface TicketDashboardProps {
+  tickets: Ticket[];
+  onSelectTicket: (ticket: Ticket) => void;
+  selectedTicketId?: string;
+  onCreateTicket: (ticket: Omit<Ticket, "id" | "createdAt" | "updatedAt" | "messages">) => void;
+}

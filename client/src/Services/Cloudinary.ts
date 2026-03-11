@@ -1,8 +1,9 @@
 import axios from "axios";
+import { catchErrorHandle } from "../Utility/catchErrorHandle";
 const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 const CLOUDINARY_URL_VIDEO = import.meta.env.VITE_BASE_CLOUDINARY_VIDEO;
 export const uploadAttachment = async (file: File): Promise<string> => {
-console.log(file,"filFromUpload")
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "My_frist_cloud");
@@ -39,7 +40,8 @@ try {
         const audioUrl = response.data.secure_url;
         return audioUrl;
 } catch (error) {
-    console.log(error)
+    const err: string = catchErrorHandle(error, "Failed to upload")
+       throw new Error(err)
 }
 
   

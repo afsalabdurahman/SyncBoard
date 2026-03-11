@@ -5,13 +5,14 @@ import apiService from "../../Services/apiServices/apiService";
 import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
 const Invite = () => {
-  const workspaceName = useSelector((state: any) => {
+  const workspaceName = useSelector((state: RootState) => {
    
-    const isAdmin = state.user.user.role == "Admin";
-    const name = state.workspace.workspace.name;
-    const slug = state.workspace.workspace.slug;
+    const isAdmin = state.user.user?.role == "Admin";
+    const name = state.workspace.workspace?.name
+    const slug = state.workspace.workspace?.slug
     return { isAdmin, name, slug };
   });
   if (workspaceName.isAdmin !== true) {
@@ -72,7 +73,7 @@ const Invite = () => {
       return false;
     }
     try {
-      const response: AxiosResponse<any, any> = await apiService.post(
+      const response: AxiosResponse<boolean> = await apiService.post(
         "workspace/invite",
 
         {

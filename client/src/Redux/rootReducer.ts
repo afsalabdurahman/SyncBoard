@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   alluser: alluserReducer,
   task: taskReducer,
   logs: logsliceReducer,
-  suscription: subscriptionReducer,
+  subscriptions: subscriptionReducer,
   forward: forwardReducer,
   Supercount: countReducer,
   auth:authReducer,

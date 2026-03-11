@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
-import { setLog } from "../../Redux/feature/logs/LogSlice";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import {setSubscription} from "../../Redux/feature/subscription/subscriptionSlice";
+import { adminLogin } from "../apis/authApi";
 const AdminLogin = () => {
 
 
@@ -22,25 +22,15 @@ const [loading, setLoading] = useState(false);
     setLoading(true);
    
     try {
-      const response: AxiosResponse<any, any> = await api.post(
-        "auth/admin/login",
-        {
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
+      const response = await adminLogin(email,password)
 
-      if(response.status !== 200) {
-        setLoading(false);
-        throw new Error("Login failed");
-      }
+     
   
       // Handle successful login response
-       dispatch(setWorkspace(response.data.workspace))
+       dispatch(setWorkspace(response.workspace))
             //  dispatch(setLog(response.data.logs))
-             dispatch(setSubscription(response.data.suscribe))
-            dispatch(setUserData(response.data.user))
+             dispatch(setSubscription(response.suscribe))
+            dispatch(setUserData(response.user))
       navigate("/admin/dashboard");
    
     } catch (error) {

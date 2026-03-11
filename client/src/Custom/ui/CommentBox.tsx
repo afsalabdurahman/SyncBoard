@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { uploadAttachment } from "../../Services/Cloudinary";
 import { getFileTypeFromUrl } from "../../Utility/extesionFinder";
-import { fetchComments, sendComment } from "../../Member/apiservice/authApi";
+import { fetchComments, sendComment } from "../../Member/apis/authApi";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../reusecomponents/LoadingSpinner";
 import { formatTime } from "../../Utility/dateformate";

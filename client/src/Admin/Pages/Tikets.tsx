@@ -1,84 +1,84 @@
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import TicketDashboard from "../components/TicketDashboard";
 import TicketDetail from "../components/TicketDetail";
-import {Ticket,Message,TicketStatus} from "../types/TiketTypes"
-import { useCreateTicketsMutation, useGetTicketsQuery,useUpdateMsgMutation } from "../apis/rtqApi";
-import { toast } from "react-toastify";
-import { useMember } from "../../Member/hooks/memeberhooks";
-import { skipToken } from "@reduxjs/toolkit/query/react";
+import { Ticket, Message } from "../types/TiketTypes";
+
+import {
+  useCreateTicketsMutation,
+  useGetTicketsQuery,
+  useUpdateMsgMutation,
+} from "../apis/rtqApi";
+
 import { useUpdateTicketStatusMutation } from "../../SuperAdmin/apis/fetchApi";
+import { useMember } from "../../Member/hooks/memeberhooks";
 
+import { toast } from "react-toastify";
+import { skipToken } from "@reduxjs/toolkit/query/react";
 
+const Tickets = () => {
+  const user = useMember();
 
+  const userId = user._id;
+  const workspaceId = user.workspace[0]?.workspaceId;
 
-const Tikets = () => {
-  const [updateTicketStatus]=useUpdateTicketStatusMutation()
-    const user=useMember()
-   const userId=user._id
-   const workspaceId=user.workspace[0].workspaceId
+  const [createTicket] = useCreateTicketsMutation();
+  const [updateMsg] = useUpdateMsgMutation();
+  const [updateTicketStatus] = useUpdateTicketStatusMutation();
 
-  const [createTickets,] =useCreateTicketsMutation()
-  const [updateMsg] = useUpdateMsgMutation()
-  const {
-    data: tickets = [],
-  
-    isLoading,
-    
-    isError,
-    refetch,
-  } = useGetTicketsQuery(workspaceId ?? skipToken);
-
+  const { data: tickets = [] } = useGetTicketsQuery(workspaceId ?? skipToken);
 
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-useEffect(()=>{
-refetch()
-},[refetch])
 
+  /* ---------------- SEND MESSAGE ---------------- */
 
   const handleSendMessage = async (ticketId: string, message: string) => {
-   
-          const newMessage: Message = {
-            sender: "admin",
-            content: message,
-            timestamp: new Date(),
-          };
+    const newMessage: Message = {
+      sender: "admin",
+      content: message,
+      timestamp: new Date(),
+    };
 
-try {
-  await updateMsg({msg:newMessage,id:ticketId})
-  setSelectedTicket(prev =>
-  prev
-    ? { 
-        ...prev, 
-        messages: [...prev.messages, newMessage] 
-      }
-    : prev
-);
-
-} catch (error) {
-  toast.error("failed to send")
- 
-}
-
-  };
-
-  const handleReopenTicket = async(ticketId: string) => {
     try {
-       await updateTicketStatus({ticketId,newStatus:"in_progress"})
-    } catch (error) {
-      console.log(error)
-    }
-   
+      await updateMsg({ msg: newMessage, id: ticketId }).unwrap();
 
-  
+      setSelectedTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              messages: [...prev.messages, newMessage],
+            }
+          : prev
+      );
+    } catch {
+      toast.error("Failed to send message");
+    }
   };
 
-  const handleCreateTicket = async (newTicket: Omit<Ticket, "id" | "createdAt" | "updatedAt" | "messages">) => {
-   
+  /* ---------------- REOPEN TICKET ---------------- */
+
+  const handleReopenTicket = async (ticketId: string) => {
+    try {
+      await updateTicketStatus({
+        ticketId,
+        newStatus: "in_progress",
+      }).unwrap();
+    } catch {
+      toast.error("Failed to reopen ticket");
+    }
+  };
+
+  /* ---------------- CREATE TICKET ---------------- */
+
+  const handleCreateTicket = async (
+    newTicket: Omit<Ticket, "id" | "createdAt" | "updatedAt" | "messages">
+  ) => {
     const ticket: Ticket = {
       ...newTicket,
       id: `TKT-${String(tickets.length + 1).padStart(3, "0")}`,
       createdAt: new Date(),
       updatedAt: new Date(),
+      workspaceId,
+      userId,
       messages: [
         {
           id: `msg-${Date.now()}`,
@@ -87,26 +87,31 @@ try {
           timestamp: new Date(),
         },
       ],
-      workspaceId:workspaceId,
-      userId:userId,
     };
 
-    // setTickets([ticket, ...tickets]);
     try {
+      await createTicket(ticket).unwrap();
+      toast.success("Ticket created successfully");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to create ticket";
 
-      
-    await createTickets(ticket).unwrap()
-  toast.success("Ticket created successfully");
-    } catch (error) {
-    
-  toast.error(error?.data?.message || "Failed to create ticket");
+      toast.error(message);
     }
-
   };
+
+  /* ---------------- UI ---------------- */
 
   return (
     <div className="flex h-screen bg-background">
-      <div className={`flex-1 transition-all duration-300 ${selectedTicket ? "lg:w-1/2" : "w-full"}`}>
+
+      {/* Ticket List */}
+
+      <div
+        className={`flex-1 transition-all duration-300 ${
+          selectedTicket ? "lg:w-1/2" : "w-full"
+        }`}
+      >
         <TicketDashboard
           tickets={tickets}
           onSelectTicket={setSelectedTicket}
@@ -114,7 +119,9 @@ try {
           onCreateTicket={handleCreateTicket}
         />
       </div>
-      
+
+      {/* Desktop Ticket Detail */}
+
       {selectedTicket && (
         <div className="hidden lg:block lg:w-1/2 border-l border-border">
           <TicketDetail
@@ -126,7 +133,8 @@ try {
         </div>
       )}
 
-      {/* Mobile ticket detail */}
+      {/* Mobile Ticket Detail */}
+
       {selectedTicket && (
         <div className="lg:hidden fixed inset-0 bg-background z-50">
           <TicketDetail
@@ -137,8 +145,9 @@ try {
           />
         </div>
       )}
+
     </div>
   );
 };
 
-export default Tikets;
+export default Tickets;

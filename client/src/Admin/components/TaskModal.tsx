@@ -105,10 +105,11 @@ const users = new Set(
     }
   }, [task, isOpen]);
 
-const onSubmitFiles = (data: any) => {
 
-    setUploads(data);
+  const onSubmitFiles = (files: File[]) => {
+    setUploads(files);
   };
+
   const passURL = (url)=>{
 setAttachements(url)
   }

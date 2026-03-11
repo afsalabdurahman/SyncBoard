@@ -1,20 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiService from "../../../Services/apiServices/apiService";
-
-
-import { ProjectType } from "../../../Admin/types/projetctTypes"
-import { fetchProjects, } from "../../../Admin/apis/projectApi";
-import { ProjectsState } from "./projectSlice";
 import { ProjectFormData } from "../../../Admin/types/projetctTypes"
-import { uploadAttachment } from '../../../Services/Cloudinary';
+import { uploadAttachment } from '../../../services/Cloudinary';
 import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
 
 export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async ({ workspaceId, page, limit }: {workspaceId:string, page: number, limit: number }) => {
   try {
 
-
     const response = await apiService.get(`project/myprojects/${workspaceId}?page=${page}&limit=${limit}`);
-
     return {
       list: response.data.items,
       totalPages: response.data.totalPages,
@@ -24,7 +17,8 @@ export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProject
 
 
   } catch (error) {
-    console.log(error)
+   const err: string = catchErrorHandle(error, "Failed to fetch")
+    throw new Error(err)
   }
 });
 export const deleteProject = createAsyncThunk("adminProjectData/delete", async (projectId: string, { rejectWithValue }) => {

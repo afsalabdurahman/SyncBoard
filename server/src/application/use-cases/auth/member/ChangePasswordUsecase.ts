@@ -20,7 +20,7 @@ export class ChangePasswordUsecase implements IChangePasword {
     userId: string,
     currentPassword: string,
     newPassword: string): Promise<boolean> {
-
+console.log(userId,currentPassword,newPassword,"passwore")
     const user = await this._userRepository.findUser(userId);
     if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const isValid = AuthMapper.PasswordValidator(newPassword);
@@ -37,4 +37,17 @@ export class ChangePasswordUsecase implements IChangePasword {
     if (!result) throw new NotFoundError(ResponseMessages.NOT_FOUND)
     return result
   }
+
+async resetPassword(userId:string,password:string):Promise<boolean>{
+      const user = await this._userRepository.findUser(userId);
+    if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+    const isValid = AuthMapper.PasswordValidator(password);
+      if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
+    const hashedNewPassword = await this._userService.hashPassword(password)
+      const isUpdated = this._userRepository.changePassword(userId,hashedNewPassword);
+     if(!isUpdated) throw new ValidationError("Password updation failed");
+     return true
 }
+
+}
+

@@ -83,6 +83,7 @@ static async mapSuperWorkspaceToResponse(
   static mapAllUserToResponse(result: UserAggResponseDTO) {
     const totalCount = result.totalCount
     const responseDTO = result.userList.map((u) => ({
+     
       id: u._id?.toString() || "",
       name: u.name || "",
       email: u.email || "",

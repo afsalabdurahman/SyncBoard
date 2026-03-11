@@ -27,7 +27,7 @@ export const downloadExcel = async () => {
       responseType: 'arraybuffer',     // ← Change to 'arraybuffer' (more reliable)
       withCredentials: true,
       // Optional: still add this to be extra safe
-      transformResponse: [(data: any) => data],
+      transformResponse: [(data: unknown) => data],
     });
 
     // Create Blob from ArrayBuffer
@@ -44,7 +44,7 @@ export const downloadExcel = async () => {
     a.remove(); // better than parentNode.removeChild
     window.URL.revokeObjectURL(url);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
   
 
     // Better error feedback
@@ -80,11 +80,11 @@ export const workspaceDataApi = createApi({
       invalidatesTags: ['Workspace'], // auto refetch if needed
     }),
     fetchUserPage: builder.query({
-      query: (page) => `super/count/users?page=${page}&&limit=${5}`,
+      query: (page) => `super/count/users?page=${page}&limit=${5}`,
       providesTags: (result, error, id) => [{ type: "User", id }]
     }),
     fetchSubscriptionPage: builder.query({
-      query: (page) => `super/count/subscription?page=${page}&&limit=${5}`
+      query: (page) => `super/count/subscription?page=${page}&limit=${5}`
     }),
     fetchAbuseReportPage: builder.query({
       query: ({ page, limit }) => `workspace/abuse/reports?page=${page}&limit=${limit}`

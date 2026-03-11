@@ -40,7 +40,7 @@ export class RegisterUseCase implements IAuth {
       await this._otpRepository.deleteOTP(input.email)
     }
   const otp = this._otpRepository.generateOTP();
-    await this._emailService.sendOtp(input.email, otp);
+    // await this._emailService.sendOtp(input.email, otp);
 
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);

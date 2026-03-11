@@ -6,17 +6,24 @@ import { Input } from '../../Custom/ui/input'
 import {sendQuery} from "../apis/workspaceapis"
 import { useMember } from '../../Member/hooks/memeberhooks'
 
-interface Message {
+export interface Message {
   id: string
   type: 'user' | 'assistant'
   content: string
   timestamp: Date
 }
 
+interface TaskData {
+  type: "task";
+  title: string;
+  dueDate: string | null;
+  status: string;
+  project: string;
+}
 // Parser function to format the message
 const parseMessage = (message: string) => {
   const lines = message.split('\n');
-  const parsed: any[] = [];
+  const parsed: TaskData[] = [];
   
   lines.forEach((line) => {
     if (line.startsWith('→')) {

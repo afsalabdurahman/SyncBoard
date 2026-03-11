@@ -16,12 +16,13 @@ import Abuse from "../pages/AbuseReport"
 import { useDispatch } from "react-redux";
 import {Sparkles } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../Custom/ui/tooltip"; // Add this import
+import { RootState } from "../../Redux/store";
 
 function WorkSpacePage() {
   const [profileStatus, setProfileStatus] = useState(false);
   const [isRagOpen, setIsRagOpen] = useState(false);
 
-  const currentStatusKey = useSelector((state: any) => {
+  const currentStatusKey = useSelector((state: RootState) => {
     const trueKeys = Object.keys(state.status).filter(
       (key) => state.status[key]
     );

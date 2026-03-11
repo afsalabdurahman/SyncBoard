@@ -50,6 +50,7 @@ import { useDispatch } from "react-redux";
 const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 import apiService from "../../Services/apiServices/apiService";
 import { profilePartialUpdate } from "../apis/workspaceapis";
+import { RootState } from "../../Redux/store";
 export default function Profile() {
   //image
   const navigate = useNavigate();
@@ -59,11 +60,9 @@ export default function Profile() {
   const handleOverlayClick = () => {
     fileInputRef.current.click();
   };
-  // const currentProfile = useSelector(
-  //   (state: any) => state.register.user_profile
-  // );
 
-  const Userdata = useSelector((state: any) => {
+
+  const Userdata = useSelector((state: RootState) => {
     const date = new Date(state.workspace.workspace.createdAt);
     const formateDate = date.toLocaleString("en-US", {
       month: "long",

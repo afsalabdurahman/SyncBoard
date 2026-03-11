@@ -1,18 +1,14 @@
-import React, { useState,useEffect } from "react";
-import { PlusCircle, Check } from "lucide-react";
-import axios from "axios";
+import React, { useState, ChangeEvent } from "react";
+import {  Check } from "lucide-react";
+
 import { toast, ToastContainer } from "react-toastify";
 import { RootState } from "../../Redux/store";
 import { useSelector } from "react-redux";
-import apiService from "../../Services/apiServices/apiService";
-import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {setWorkspace} from "../../Redux/feature/WorkspaceSlice"
-import { setUserRole } from "../../Redux/feature/RegisterSlice";
-import{updateUserPartial} from "../../Redux/feature/user/userSlice"
 import { setUserData } from "../../Redux/feature/user/userSlice";
-import { createWorkspace } from "../apiservice/workspaceApi";
+import { createWorkspace } from "../apis/workspaceApi";
 
 interface FormField {
   projectName: string;
@@ -22,7 +18,7 @@ interface FormField {
 const CreateWorkspacePage: React.FC = () => {
 
   const navigate=useNavigate()
-const dispach=useDispatch()
+const dispatch =useDispatch()
   const email  = useSelector((state: RootState) => state?.user?.user?.email);
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
@@ -35,9 +31,7 @@ const dispach=useDispatch()
   ]);
   const [allowAutoSignups, setAllowAutoSignups] = useState<boolean>(true);
 
-  const addField = (): void => {
-    setFormFields([...formFields, { projectName: "", role: "" }]);
-  };
+
 
 
   const handleInputChange = (
@@ -50,7 +44,7 @@ const dispach=useDispatch()
     setFormFields(newFormFields);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const WorkspaceName = formFields[0].projectName;
@@ -64,10 +58,10 @@ const dispach=useDispatch()
       return;
     }
     try {
-      const response: AxiosResponse<any, any> = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId)
+      const response = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId)
       if (response) {
-dispach(setWorkspace(response.data.workspaceResponseDTO.workspace))
-dispach(setUserData(response.data.workspaceResponseDTO.user))
+dispatch (setWorkspace(response.data.workspaceResponseDTO.workspace))
+dispatch (setUserData(response.data.workspaceResponseDTO.user))
        navigate('/invite/members')
       }
     } catch (error) {

@@ -2,12 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { Check, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { setUserData, updateUserPartial } from "../../Redux/feature/user/userSlice";
-import api from "../../Services/apiServices/apiService";
+import { setUserData } from "../../Redux/feature/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { AxiosResponse } from "axios";
 import { useLayoutEffect } from "react";
-import { reSendOTP, signupApi, verifyOTP } from "../apiservice/authApi";
+import { reSendOTP, verifyOTP } from "../apis/authApi";
 const OTP_LENGTH = 6;
 
 const OtpVerification = () => {
@@ -65,39 +63,22 @@ useLayoutEffect(() => {
   /* ---------------- Verify OTP ---------------- */
   const verifyOtp = async () => {
     const otpValue = otp.join("");
-
     try {
    const data=await verifyOTP(userData?.email,otpValue)
       setIsValidTrue(true);
-       const datavalue={email:data.email,name:data.name,isAdmin:true,id:data.id}
+      if(forward){
+  navigate("/change/password")
+}else{
+ const datavalue={email:data.email,name:data.name,isAdmin:true,id:data.id}
    
      dispatch( setUserData(datavalue))
       setTimeout(() => {
         navigate("/create/workspace",{replace:true});
       }, 3000);
       setMessage("Please wait automatically redirect...");
-if(forward){
-  navigate("/change/password")
-// }else{
-//  const registerRes: AxiosResponse<any> = await api.post(
-//         "auth/user/register",
-//         {
-//           name: userData.name,
-//           email: userData.email,
-//           password:userData.password,
-//           role: "Admin",
-
-//         },
-//         { withCredentials: true }
-//       );
-      
-//       dispatch(setUserData(registerRes.data.user));
-  
-//       dispatch(updateUserPartial({password:""}))
-//       setTimeout(() => {
-//         navigate("/create/workspace",{replace:true});
-//       }, 3000);
 }
+      
+
      
     } catch (error) {
       setIsValidFalse(true);

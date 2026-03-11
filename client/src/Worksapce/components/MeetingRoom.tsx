@@ -6,6 +6,7 @@ import { fetchAllUsers } from "../../Redux/feature/users/AlluserThunks";
 import { allMembers, paginationUser, searchUser } from "../apis/workspaceapis";
 import { Pagination } from "@mui/material";
 import { setPage } from "../../Redux/feature/project/projectSlice";
+import { RootState } from "../../Redux/store";
 
 
 function useDebounce<T>(value: T, delay: number = 450): T {
@@ -29,7 +30,7 @@ export default function MeetingRoom() {
   const [page,setPage]=useState();
 const [total,setTotal]=useState()
   const workspaceSlug = useSelector(
-    (state: any) => state.workspace.workspace.slug
+    (state: RootState) => state.workspace.workspace?.slug
   );
 
 useEffect(()=>{
@@ -46,7 +47,7 @@ setPage(data.currentPage)
 
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [members, setMembers] = useState<any[]>([]);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const debouncedSearch = useDebounce(searchQuery.trim(), 450);

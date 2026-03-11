@@ -13,3 +13,9 @@ export interface taskResponse{
 currentPage:number|string,
 totalItems:number|string
 }
+export interface PaginationState {
+  page: number;
+  rowPerpage: number;
+  totalItems: number;
+  totalPages: number;
+}

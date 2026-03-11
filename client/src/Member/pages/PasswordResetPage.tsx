@@ -1,30 +1,24 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {setForward} from "../../Redux/feature/ForwardSlice"
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../Redux/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../Redux/store";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
-import { findEmail, reSendOTP } from "../apiservice/authApi";
+import { findEmail, reSendOTP } from "../apis/authApi";
 import { setUserData } from "../../Redux/feature/user/userSlice";
 export default function PasswordResetPage() {
    const dispatch = useDispatch<AppDispatch>();
-   
-
-
-
-
-  const [email, setEmail] = useState("");
+   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading,setLoading]=useState(false)
   const navigate = useNavigate();
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     // Handle password reset logic here
     setLoading(true)
 
     try {
       const user=await findEmail(email);
-    
         dispatch(setUserData(user));
         await reSendOTP(email)
     dispatch(setForward(true));
@@ -32,27 +26,11 @@ export default function PasswordResetPage() {
      navigate("/verify/otp");
     } catch (error) {
       if(error instanceof Error){
-
-        setMessage(error.message);
+     setMessage(error.message);
       }else{
 setMessage("No account found. Please register.");
       }
-      
-      // if (error.status == 409) {
-      //   const response: AxiosResponse<any, any> = await apiService.post(
-      //     "/newotp-send",
-      //     {
-      //       email,
-      //     }
-      //   );
-      //    dispatch(setUserEmail(email));
-      //   naviagte("/reset-password");
-      // }
-      setLoading(false)
-      // 
-      console.log(error, "errorsss");
-
-     
+          setLoading(false)    
     }
   };
 

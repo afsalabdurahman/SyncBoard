@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Button } from "../../Custom/ui/button";
 import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 import {TablePagination} from"@mui/material"
-import { AppDispatch } from "../../Redux/store";
+import { AppDispatch, RootState } from "../../Redux/store";
 import CommentBox from "../../Custom/ui/CommentBox";
 import {
   Card,
@@ -64,11 +64,11 @@ export function TasksPage() {
   }
 
  
-  const AdminId = useSelector((state: any) => {
+  const AdminId = useSelector((state: RootState) => {
     return state?.user?.user?.id;
   });
   const [refreshKey, setRefreshKey] = useState(0);
-  // const [tasks, setTasks] = useState<any>(initialTasks);
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<string>("");
   const workspaceid = useWorkspaceid()

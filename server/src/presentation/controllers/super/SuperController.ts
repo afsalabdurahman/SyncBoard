@@ -40,7 +40,8 @@ export class SuperController {
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
        const {responseDTO,totalCount}  = await this._dataHandleUsecase.fetchAllUsers(limit,skip);
-      res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS, data: responseDTO,currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
+     
+       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS, data: responseDTO,currentPage: page, totalPages: Math.ceil(totalCount / limit),totalCount })
     } catch (error) {
       next(error)
     }

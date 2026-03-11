@@ -24,6 +24,7 @@ import {setTasks} from "../../Redux/feature/task/taskSlice"
 import { fetchProjectData } from "../../Redux/feature/project/projectThunks";
 import { myProjects } from "../apis/workspaceapis";
 import { useWorkspaceid } from "../hooks/workspacehooks";
+import { RootState } from "../../Redux/store";
 
 const MyProject = () => {
   const dispatch = useDispatch();
@@ -34,9 +35,9 @@ const MyProject = () => {
   const [projectDetails, setProjectDetails] = useState(null);
   
 
-  const userName = useSelector((state: any) => {
+  const userName = useSelector((state: RootState) => {
     
-    return state.user.user.name;
+    return state.user.name;
   });
   const [projects, setProjects] = useState([]);
 

@@ -5,7 +5,7 @@ import SignupPage from "./Member/pages/SignupPage";
 import PasswordResetPage from "./Member/pages/PasswordResetPage";
 import OtpVerification from "./Member/pages/OtpVerification";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ForgotPasswordOtpPage from "./Member/pages/ForgotPasswordOtpPage";
+// import ForgotPasswordOtpPage from "./Member/pages/ForgotPasswordOtpPage";
 import ChangePasswordPage from "./Member/pages/ChangePasswordPage";
 import CreateWorkspacePage from "./Member/pages/CreateWorkspecePage";
 import InviteMembers from "./Member/pages/InviteMembers";
@@ -21,19 +21,25 @@ import { Layout } from "./SuperAdmin/Layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
 import PaymentRejected from "./Admin/Pages/PaymentRejected";
-import OtpProtectedRoute from "./Member/protectedRoutes/OtpProtectedRoute";
+// import OtpProtectedRoute from "./Member/protectedRoutes/OtpProtectedRoute";
 import AuthProtectRoutes from "./Worksapce/protectedRoutes/authProtectRoutes";
 import PublicProtectionRoute from "./Worksapce/protectedRoutes/PublicProtectionRoute";
 import AuthProvider from "./Worksapce/protectedRoutes/AuthProvider"
 import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
+import { useSelector } from "react-redux";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 
 function App() {
+  useSelector((state)=>{
+    console.log(state,"APP STate")
+  })
   return (
     <>
+    
       <BrowserRouter>
       <AuthProvider>
+        
         <Routes>
           <Route index element={
             
@@ -65,11 +71,11 @@ function App() {
             }></Route>
           <Route path='/signup' element={<SignupPage />}></Route>
           <Route path='/verify/otp' element={
-    <OtpProtectedRoute>
+    // <OtpProtectedRoute>
       <OtpVerification />
-    </OtpProtectedRoute>
+    // </OtpProtectedRoute>
   }></Route>
-          <Route
+          {/* <Route
             path='/reset/password'
             element={
            <OtpProtectedRoute>
@@ -78,10 +84,18 @@ function App() {
               
           
           }
-          ></Route>
+          ></Route> */}
           <Route
             path='/forgot/password'
-            element={<PasswordResetPage />}
+            
+            element={
+                   <PublicRoute>
+
+  <PasswordResetPage />
+                   </PublicRoute>
+          
+          
+          }
           ></Route>
           <Route
             path='/change/password'

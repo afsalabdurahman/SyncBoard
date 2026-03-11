@@ -20,7 +20,7 @@ interface Notification {
   read?: boolean;
 }
 
-export default function NotificationBell(props: any) {
+export default function NotificationBell(props) {
  
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);

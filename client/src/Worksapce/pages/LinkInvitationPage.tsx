@@ -50,36 +50,9 @@ const LinkInvitaionPage = () => {
     setShowPassword2(!showPassword2);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // if (name.trim() == "") {
-    //   setError((prv) => ({
-    //     ...prv,
-    //     names: "Please enter your name",
-    //   }));
-    //   return false;
-    // } else {
-    //   setError((prv) => ({
-    //     ...prv,
-    //     names: "",
-    //   }));
-    // }
-    // const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
-    // if (!regex.test(password)) {
-    //   setError((prv) => ({
-    //     ...prv,
-    //     passwords:
-    //       "The password must have at least six characters and must include a capital letter, a lowercase letter, and a special character.",
-    //   }));
-
-    //   return false;
-    // } else {
-    //   setError((prv) => ({
-    //     ...prv,
-    //     passwords: "",
-    //   }));
-    // }
 
     if (conformPassword !== password) {
       setError((prv) => ({

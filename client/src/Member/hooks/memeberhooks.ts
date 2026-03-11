@@ -1,2 +1,3 @@
 import { useSelector } from "react-redux";
-export   const useMember=()=> useSelector((state: RootState) => state?.user?.user);
+import type { RootState } from "../../Redux/store";
+export const useMember = () => useSelector((state: RootState) => state?.user?.user);

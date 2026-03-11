@@ -21,6 +21,7 @@ import SimpleAlert from "../../Custom/ui/alertBox";
 import CommentBox from "../../Custom/ui/CommentBox";
 import { AttachmentButton } from "../../Admin/components/AttachmentButton";
 import { socket } from "../../Services/socket";
+import { RootState } from "../../Redux/store";
 
 interface Attachment {
   id: string;
@@ -45,12 +46,23 @@ interface Task {
   dueDate: string;
   priority: "low" | "medium" | "high";
   status: "todo" | "progress" | "completed";
-  approvalStatus: any;
+  approvalStatus: string;
   rejectionMsg: string | null;
   comments: Comment[];
   attachments:string[];
 }
-
+interface ApiTask {
+  _id: string;
+  project?: string;
+  name?: string;
+  description?: string;
+  dueDate?: string;
+  approvalStatus?: string;
+  rejectionMsg?: string;
+  priority?: string;
+  status?: string;
+  attachedURLs?: string[];
+}
 export default function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [openCommentId, setOpenCommentId] = useState<string | null>(null);
@@ -59,13 +71,13 @@ export default function KanbanBoard() {
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
 // const [notify,setNotify]=useState(false)
 const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
-  const user = useSelector((state: any) => state.user.user);
+  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         const res = await apiService.get(`task/mytask/${user.name}`);
-        const mappedTasks: Task[] = res.data.map((data: any) => ({
+        const mappedTasks: Task[] = res.data.map((data: ApiTask) => ({
           id: data._id.toString(),
           projectName: data.project || "Abcd",
           taskName: data.name || "Untitled Task",
@@ -109,14 +121,13 @@ useEffect(() => {
     socket.emit("task-join-comment", task.id);
   });
 
-  const handleNotification = (data: any) => {
-
-    setNotifyTaskIds((prev) =>
-      prev.includes(data.taskId)
-        ? prev
-        : [...prev, data.taskId]
-    );
-  };
+const handleNotification = (data: { taskId: string }) => {
+  setNotifyTaskIds((prev) =>
+    prev.includes(data.taskId)
+      ? prev
+      : [...prev, data.taskId]
+  );
+};
 
   socket.on("comment-notification", handleNotification);
 

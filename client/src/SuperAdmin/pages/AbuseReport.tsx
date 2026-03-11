@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, CheckCircle, XCircle, Eye, Search, Clock, User, FileText } from 'lucide-react';
 import { useFetchAbuseReportPageQuery, useUpdateAbuseReportStatusMutation } from '../apis/fetchApi';
-import {Pagination} from "../../Custom/reusecomponents/Pagination"
 import { toast } from 'react-toastify';
 export  const AbuseReportsPage =()=> {
    const [page,setPage] = useState(1);
@@ -11,7 +10,7 @@ export  const AbuseReportsPage =()=> {
   const [filterSeverity, setFilterSeverity] = useState('All');
   const [filterStatus, setFilterStatus] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-      const [change,Setchange]=useState(1)
+  
 
   const {data:reports,refetch,isLoading,error}=useFetchAbuseReportPageQuery({ page, limit: 5 })
   const  [updateReportStatus,   { isLoading: isUpdating } ] = useUpdateAbuseReportStatusMutation()
@@ -23,44 +22,24 @@ refetch()
   if (error) return <div>Error loadoooing posts</div>;
   
 
-  // Mock data based on your structure
- 
-    
-  //  const [reports,setReports]=useState([]);
 
-
-   const count = Math.ceil((reports?.Data?.count ?? 0) / 5);
- 
-  // const [reports, setReports] = useState([
-  //   {
-  //     _id: '6924560d09e9a459517858a1',
-  //     description: 'gdrdrgdr',
-  //     type: 'Spam',
-  //     userId: '692037f73049499ebf75a1b0',
-  //     workspaceId: '692038083049499ebf75a1b4',
-  //     severity: 'Critical',
-  //     status: 'Waiting',
-  //     createdAt: '2025-11-24T12:56:45.970+00:00',
-  //     reportedBy: 'John Doe',
-  //     reportedUserName: 'user_abc123'
-  //   },
-   
-//   // ]);
-// useEffect(() => {
-//   refetch()
-//   console.log(data.Data.reports,"reports")
-//    setReports(data.Data.reports)
-// }, [])
-// //  setReports(data.Data.reports)
-  
-
- 
+ interface AbuseReport {
+  _id: string
+  description: string
+  type: string
+  userId: string
+  workspaceId: string
+  severity: "Low" | "Medium" | "High" | "Critical"
+  status: "Waiting" | "Under Review" | "Resolved" | "Dismissed" | "Rejected"
+  createdAt: string
+  userName: string
+}
 
   const types = ['All', 'Spam', 'Harassment', 'Inappropriate Content', 'Other'];
   const severities = ['All', 'Low', 'Medium', 'High', 'Critical'];
   const statuses = ['All', 'Waiting', 'Under Review', 'Resolved', 'Dismissed','Rejected'];
 
-  const getSeverityColor = (severity) => {
+  const getSeverityColor = (severity:string) => {
     const colors = {
       Low: 'bg-blue-50 text-blue-700 border-blue-200',
       Medium: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -70,7 +49,7 @@ refetch()
     return colors[severity] || 'bg-slate-50 text-slate-700';
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status:string) => {
     const colors = {
       Waiting: 'bg-amber-50 text-amber-700 border-amber-200',
       UnderReview: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -80,32 +59,41 @@ refetch()
     return colors[status] || 'bg-slate-50 text-slate-700';
   };
 
-  const filteredReports = reports.Data.reports.filter(report => {
-    const matchesType = filterType === 'All' || report.type === filterType;
-    const matchesSeverity = filterSeverity === 'All' || report.severity === filterSeverity;
-    const matchesStatus = filterStatus === 'All' || report.status === filterStatus;
-    const matchesSearch = report.description.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesType && matchesSeverity && matchesStatus && matchesSearch;
-  });
+const filteredReports =
+  reports?.Data?.reports?.filter((report: AbuseReport) => {
+    const matchesType = filterType === "All" || report.type === filterType
+    const matchesSeverity =
+      filterSeverity === "All" || report.severity === filterSeverity
+    const matchesStatus =
+      filterStatus === "All" || report.status === filterStatus
 
-  const handleStatusChange = async(reportId, report) => {
-    try {
-      await  updateReportStatus({reportId,report}).unwrap()
-      toast.success("Report Updated")
-      setSelectedReport(null)
-      refetch()
-    } catch (error) {
-      toast.error(error.data.message)
-    }
+    const matchesSearch = report.description
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
 
-    setReports(reports.Data.reports.map(report => 
-      report._id === reportId ? { ...report, status: newStatus } : report
-    ));
-    if (selectedReport && selectedReport._id === reportId) {
-      setSelectedReport({ ...selectedReport, status: newStatus });
+    return matchesType && matchesSeverity && matchesStatus && matchesSearch
+  }) ?? []
+
+const handleStatusChange = async (
+  reportId: string,
+  report: {
+    status: string
+    userId: string
+    workspaceId: string
+    description: string
+  }
+) => {
+  try {
+    await updateReportStatus({ reportId, report }).unwrap()
+    toast.success("Report Updated")
+    setSelectedReport(null)
+    refetch()
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error(error.message)
     }
-    
-  };
+  }
+}
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('en-US', {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Paperclip, X, Image, FileText, File, Trash2 } from "lucide-react";
+import { Paperclip, Image, FileText, File, Trash2 } from "lucide-react";
 import { cn } from "../../Utility/cn";
 import {
   Dialog,
@@ -10,26 +10,16 @@ import {
 } from "../../Custom/ui/dialog";
 import { getFileTypeFromUrl } from "../../Utility/extesionFinder";
 import { useUser } from "../../Worksapce/hooks/workspacehooks";
-import { deleteAttchedUrl } from "../apis/taskApi";
+import { deleteAttachmentUrl } from "../apis/taskApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { deleteAttachment } from "../../Redux/feature/task/taskSlice";
+import { AppDispatch } from "../../Redux/store";
+import { AttachmentButtonProps, FileCardProps, FileItem } from "../types/AttachmentTypes";
 
-interface FileItem {
-  urls:string[]
-}
 
-// Sample files for demonstration
-const sampleFiles: FileItem[] = [
-  {
-    id: "1",
-    name: "vacation-photo.jpg",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-  },
 
-];
+
 
 const FileIcon = ({ type }: { type: FileItem["type"] }) => {
   switch (type) {
@@ -44,15 +34,11 @@ const FileIcon = ({ type }: { type: FileItem["type"] }) => {
   }
 };
 
-const FileCard = ({ 
-  file, 
-  onClick, 
-  onDelete 
-}: { 
-  file: string; 
-  onClick: () => void; 
-  onDelete: (e: React.MouseEvent) => void;
-}) => {
+
+
+const FileCard = ({ file, onClick, onDelete }: FileCardProps) => {
+  const fileType = getFileTypeFromUrl(file);
+
   return (
     <div
       className={cn(
@@ -65,12 +51,12 @@ const FileCard = ({
     >
       <button
         onClick={onClick}
-        className=" flex flex-col items-center justify-center focus:outline-none"
+        className="flex flex-col items-center justify-center focus:outline-none w-full h-full"
       >
-        {getFileTypeFromUrl(file)== "image"? (
+        {fileType === "image" ? (
           <img
             src={file}
-            alt={file.slice(0,5)}
+            alt={file.slice(0, 5)}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -78,21 +64,21 @@ const FileCard = ({
             <div
               className={cn(
                 "w-12 h-12 rounded-lg flex items-center justify-center",
-                getFileTypeFromUrl(file) === "pdf" && "bg-file-pdf/10",
-                getFileTypeFromUrl(file) === "doc" && "bg-file-doc/10",
-                getFileTypeFromUrl(file) === "image" && "bg-file-image/10"
+                fileType === "pdf" && "bg-file-pdf/10",
+                fileType === "doc" && "bg-file-doc/10",
+                fileType === "image" && "bg-file-image/10"
               )}
             >
-              <FileIcon type={getFileTypeFromUrl(file)} />
+              <FileIcon type={fileType} />
             </div>
+
             <span className="text-xs text-muted-foreground text-center truncate w-full px-2">
-              {file.slice(0,5)}
+              {file.slice(0, 5)}
             </span>
           </div>
         )}
       </button>
-      
-      {/* Delete button */}
+
       <button
         onClick={onDelete}
         className={cn(
@@ -106,20 +92,25 @@ const FileCard = ({
       >
         <Trash2 className="w-3 h-3" />
       </button>
-      
-      {/* Hover overlay for images */}
-      {getFileTypeFromUrl(file) === "image" && (
+
+      {fileType === "image" && (
         <div className="absolute inset-0 bg-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
-          <span className="text-primary-foreground text-sm font-medium">View</span>
+          <span className="text-primary-foreground text-sm font-medium">
+            View
+          </span>
         </div>
       )}
     </div>
   );
 };
 
-export const AttachmentButton = ({attachedUrl,taskId,passURL}:{attachedUrl:string[],taskId:string,passURL:any}) => {
-  const user=useUser();
-  const dispatch= useDispatch()
+export const AttachmentButton = ({
+  attachedUrl,
+  taskId,
+  passURL,
+}: AttachmentButtonProps) => {
+  const user = useUser();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string>("");
@@ -127,23 +118,27 @@ export const AttachmentButton = ({attachedUrl,taskId,passURL}:{attachedUrl:strin
 
   const handleFileClick = (url: string) => {
     setSelectedFile(url);
-
-      window.open(url, "_blank", "noopener,noreferrer");
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const handleDeleteFile = async (e: React.MouseEvent, url: string) => {
-   
+  const handleDeleteFile = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    url: string
+  ) => {
     e.stopPropagation();
-  dispatch(deleteAttachment({ taskId: taskId, url: url }));
-    setFiles(files.filter((f) => f !== url));
-    if (selectedFile?.url === url) {
+
+    dispatch(deleteAttachment({ taskId, url }));
+
+    setFiles((prev) => prev.filter((f) => f !== url));
+
+    if (selectedFile === url) {
       setSelectedFile("");
     }
-    // dispatch(deleteAttachment({taskId,url}))
-   
-    const msg= await deleteAttchedUrl(taskId,url);
-    toast.success(msg)
-  passURL(url)
+
+    const msg = await deleteAttachmentUrl(taskId, url);
+    toast.success(msg);
+
+    passURL(url);
   };
 
   return (
@@ -156,28 +151,26 @@ export const AttachmentButton = ({attachedUrl,taskId,passURL}:{attachedUrl:strin
               "bg-primary text-primary-foreground font-medium",
               "shadow-soft hover:shadow-hover",
               "transition-all duration-200 ease-out",
-              "hover:scale-[1.02] active:scale-[0.98]",
-              ""
+              "hover:scale-[1.02] active:scale-[0.98]"
             )}
           >
             <Paperclip className="w-5 h-5" />
-            
+
             <span className="ml-1 px-2 py-0.5 text-xs bg-primary-foreground/20 rounded-full">
               {files.length}
             </span>
           </button>
         </DialogTrigger>
-        
+
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Files Gallery</DialogTitle>
           </DialogHeader>
-          
-          {/* File Grid */}
+
           <div className="overflow-y-auto max-h-70">
             {files.length > 0 ? (
               <div className="grid grid-cols-3 gap-2">
-                {files.map((file,index) => (
+                {files.map((file, index) => (
                   <FileCard
                     key={index}
                     file={file}
@@ -194,7 +187,6 @@ export const AttachmentButton = ({attachedUrl,taskId,passURL}:{attachedUrl:strin
             )}
           </div>
 
-          {/* Footer */}
           <div className="pt-3 border-t border-border">
             <p className="text-xs text-muted-foreground text-center">
               Click on a file to preview
@@ -202,10 +194,6 @@ export const AttachmentButton = ({attachedUrl,taskId,passURL}:{attachedUrl:strin
           </div>
         </DialogContent>
       </Dialog>
-
-   
     </>
   );
 };
-
-

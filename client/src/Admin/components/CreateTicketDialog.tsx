@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Ticket } from "../types/TiketTypes";
-import { toast } from "react-toastify";
 import {
   Dialog,
   DialogContent,
@@ -47,7 +46,9 @@ const CreateTicketDialog = ({ open, onOpenChange, onCreateTicket }: CreateTicket
       priority,
       category,
       workspaceId: "",
-      userId: ""
+      userId: "",
+      _id: "",
+      SLno: ""
     });
 
     // Reset form

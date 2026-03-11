@@ -23,6 +23,7 @@ import { useUser, useWorkspaceid } from "../hooks/workspacehooks";
 import { audioUpload, uploadAttachment, uploadVideo } from "../../Services/Cloudinary";
 import { toast } from "react-toastify";
 import { channelAttachement } from "../../Utility/attachmentValidation";
+import { RootState } from "../../Redux/store";
 
 interface Attachment {
   name: string;
@@ -60,8 +61,8 @@ export default function GroupChannel() {
   const [isRecording, setIsRecording] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
-  const user = useSelector((state: any) => state.user.user.name);
-  const userId = useSelector((state: any) => state.user.user._id);
+  const user = useSelector((state: RootState) => state.user.user?.name);
+  const userId = useSelector((state: RootState) => state.user.user?._id);
 const workspaceid=useWorkspaceid();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,6 +74,11 @@ const workspaceid=useWorkspaceid();
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  interface IncomingMessage {
+  sender: string;
+  content?: string;
+  attachments?: string[];
+}
 
   useEffect(() => {
     scrollToBottom();
@@ -93,14 +99,14 @@ const workspaceid=useWorkspaceid();
     // Fetch online users
     apiService.get(`chat/online/${workspaceid}`).then((res) => {
       const users = res.data
-        .map((u: any) => u.name)
+        .map((u) => u.name)
         .filter((name: string) => name && name !== user);
       setOnlineUsers(users);
     });
 
     // Fetch chat history
     apiService.get(`chat/history/${workspaceid}`).then((resp) => {
-      const formatted: Message[] = resp.data.map((msg: any) => ({
+      const formatted: Message[] = resp.data.map((msg) => ({
         id: msg._id || Date.now().toString(),
         sender: msg.senderName === user ? "You" : msg.senderName,
         content: msg.content || "",
@@ -120,7 +126,7 @@ const workspaceid=useWorkspaceid();
 });
     socket.emit("UserId", userId);
 
-    const handleReceiveMessage = (msg: any) => {
+    const handleReceiveMessage = (msg: IncomingMessage) => {
       const newMsg: Message = {
         id: Date.now().toString(),
         sender: msg.sender === user ? "You" : msg.sender,
@@ -311,7 +317,7 @@ if(!isAllow) {toast.error("file not supported")
     }
   };
 
-  const onEmojiClick = (emojiObject: any) => {
+  const onEmojiClick = (emojiObject: unknown) => {
     setInput((prev) => prev + emojiObject.emoji);
     setShowEmojiPicker(false);
   };

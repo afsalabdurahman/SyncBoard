@@ -15,7 +15,7 @@ import apiService from "../../Services/apiServices/apiService";
 
 // import {type} from "../../Redux/workspace/admin/ProjectSlice"
 
-export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:any) {
+export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:void) {
  
      const [urls,setUrls]=useState<string[]>(Url)
      const [deletedUrl,setDeletedUrl]=useState<string>("")

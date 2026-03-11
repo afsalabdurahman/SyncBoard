@@ -3,8 +3,6 @@ import { useDispatch } from "react-redux";
 
 import { logoutUserAuth,setUserAuth } from "../../Redux/feature/AuthSlice";
 import apiService from "../../Services/apiServices/apiService";
-import { findEmail } from "../../Member/apiservice/authApi";
-import { toast } from "react-toastify";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -15,7 +13,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     async function checkAuth() {
       try {
         const res = await apiService.get("/auth/user/me",{},{withCredentials:true});
-  
+  console.log(res,"consol.elog(ressssssAUTHPROTECTION")
         dispatch(setUserAuth(res.data.user));
       } catch {
         

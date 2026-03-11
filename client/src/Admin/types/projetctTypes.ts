@@ -11,6 +11,7 @@ export interface ProjectType {
 
 }
 
+
 export type ProjectStatus = "Completed" | "In Progress" | "Planning" | "On Hold";
 export interface ProjectFormData {
 
@@ -38,4 +39,26 @@ currentPage:number|string,
 totalItems:number|string
 
 
+}
+
+
+export type Priority = "High" | "Medium" | "Low";
+export interface Project {
+  _id: string;
+  name: string;
+  clientName: string;
+  description: string;
+  assignedUsers: string[];
+  deadline: string;
+  status: ProjectStatus;
+  priority?: Priority;
+  attachment?: string[];
+  attachedUrl?: string[];
+}
+export interface ProjectModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (project: Project) => void;
+  project?: Project | null;
+  setEditproject: React.Dispatch<React.SetStateAction<Project>>;
 }

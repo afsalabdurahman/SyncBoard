@@ -1,18 +1,16 @@
 import React, { useState } from "react";
-import { Copy, ChevronDown, Plus, X } from "lucide-react";
+import { Copy, Plus, X } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import apiService from "../../Services/apiServices/apiService";
 import { RootState } from "../../Redux/store";
-import { AxiosResponse } from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
-import { UseSelector, useDispatch } from "react-redux";
-import { workspace } from "../../Redux/feature/WorkspaceSlice";
+import {  useNavigate } from "react-router-dom";
+import {  useDispatch } from "react-redux";
         const INVITE_LINK = import.meta.env.VITE_BASE_INVITE_LINK
 import { useSelector } from "react-redux";
 import Loader from "../../Custom/reusecomponents/Loader";
-import { sendInvitaionMail } from "../apiservice/workspaceApi";
-import { email } from "zod";
+import { sendInvitaionMail } from "../apis/workspaceApi";
+import { setUserAuth } from "../../Redux/feature/AuthSlice";
+import { useUser } from "../../Worksapce/hooks/workspacehooks";
 
 interface EmailField {
   email: string;
@@ -59,6 +57,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
 
   const link=INVITE_LINK+workspaceLink;
 
+
   const [loader, setLoader] = useState(false);
   const [emailss, setEmails] = useState<EmailField[]>(initialEmails);
   const [emails,setSingleEmail]=useState(null)
@@ -67,7 +66,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
   );
   const [count, setCount] = useState(0);
   const navigate = useNavigate();
-
+const user = useUser()
   const addEmailField = (): void => {
     //validating invitaion field
     if (emailss.length < 4) {
@@ -97,6 +96,13 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
     
   };
 
+dispatch(setUserAuth(user))
+const remaindLater = () =>{
+  setTimeout(() => {
+    navigate("/workspace");
+  }, 100);
+}
+
   const copyInviteLink = (): void => {
     navigator.clipboard.writeText(invitationLink);
     toast.success("copy");
@@ -108,17 +114,6 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
     } else {
       setLoader(true);
       try {
-        // const response: AxiosResponse<any, any> = await apiService.post(
-        //   "workspace/invite",
-
-        //   {
-            
-        //     emails,
-        //     invitationLink,
-            
-        //   },
-        //   { withCredentials: true }
-        // );
 const response = await sendInvitaionMail(emails,invitationLink)
         if (response.status==200) {
           setLoader(false);
@@ -209,7 +204,7 @@ const response = await sendInvitaionMail(emails,invitationLink)
 
         <div className='flex justify-between mt-6'>
           <button
-            onClick={() => navigate("/workspace")}
+            onClick={remaindLater}
             className='text-gray-500 font-medium  cursor-pointer'
           >
             Remind me later

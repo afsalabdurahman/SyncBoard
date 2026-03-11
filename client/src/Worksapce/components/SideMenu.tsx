@@ -54,7 +54,7 @@ const SideMenu = () => {
     dispatch(deactive());
     dispatch(profile());
   };
-  const home = (name: any) => {
+  const home = (name: string) => {
     setActive(name);
     if (name == "Home") {
       dispatch(deactive());

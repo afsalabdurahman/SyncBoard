@@ -3,7 +3,6 @@ import {
   Building2,
   Users,
   CreditCard,
-  BarChart3,
   Shield,
   Headphones,
   Settings,
@@ -14,11 +13,11 @@ import {
 } from "lucide-react";
 
 import { cn } from "../../Utility/cn"
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface SidebarProps {
-  currentPage: any;
-  setCurrentPage: any;
+  currentPage: number;
+  setCurrentPage: number;
   collapsed: boolean;
   onToggle: () => void;
 }
@@ -41,7 +40,7 @@ export function Sidebar({
  
 
   ]);
-  const handleClick = (clickedName: any) => {
+  const handleClick = (clickedName: ChangeEvent<HTMLInputElement>) => {
     const updatedItems = navigationItems.map((item) => ({
       ...item,
       active: item.name === clickedName,

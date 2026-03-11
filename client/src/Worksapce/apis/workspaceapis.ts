@@ -13,7 +13,7 @@ export const sendQuery = async (userName: string, query: string) => {
     })
     return response
 }
-export const sendAbuse = async (formData: any, userId, workspaceId) => {
+export const sendAbuse = async (formData, userId, workspaceId) => {
     try {
         const response = await apiService.post(`workspace/abuse/${userId}/${workspaceId}`, {
         description: formData.description,
@@ -97,9 +97,9 @@ export const searchUser = async (slug: string, q: string) => {
     }
 }
 
-export const profilePartialUpdate = async (userId: string, updatedProfile: any) => {
+export const profilePartialUpdate = async (userId: string, updatedProfile: string[]) => {
     try {
-        const axiosResponse: AxiosResponse<any> = await apiService.patch(
+        const axiosResponse: AxiosResponse<boolean> = await apiService.patch(
             `member/profile/update/${userId}`,
             {
                 profileData: updatedProfile,
@@ -110,6 +110,17 @@ export const profilePartialUpdate = async (userId: string, updatedProfile: any) 
         return true
     } catch (error) {
         const err: string = catchErrorHandle(error, "Updation failed")
+    throw new Error(err)   
+    }
+}
+export const tasksInProjectDetails = async(projectId:string,taskFilter:string) =>{
+    try {
+         const response = await apiService.get(`task/project/${projectId}`, {
+        filter: taskFilter
+      });
+      return response
+    } catch (error) {
+              const err: string = catchErrorHandle(error, "Task not found")
     throw new Error(err)   
     }
 }

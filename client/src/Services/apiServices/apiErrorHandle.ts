@@ -39,7 +39,7 @@ export const handleApiError = (error: AxiosError): void => {
 
       case 403: {
         const message = data?.message || "Access denied.";
-        console.log(message, "403 message");
+  
 
         const isUserLoggedIn = store.getState().auth?.user;
 
@@ -62,7 +62,7 @@ export const handleApiError = (error: AxiosError): void => {
       }
 
       case 404:
-        console.log(error, "data reved otp")
+        
         message = data?.message || "Requested resource not found.";
         break;
       case 409:

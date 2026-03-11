@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { fetchSubscription,updateSubscription } from "./subscriptionTunks";
+import { RootState } from "../../store";
 
 export type SubscriptionStatus =
   | "trialing"
@@ -64,7 +65,7 @@ export interface SubscriptionState {
 export const cancelSubscription = createAsyncThunk<
   Subscription,
   { id: string; atPeriodEnd?: boolean },
-  { rejectValue: string; state: any }
+  { rejectValue: string; state: RootState }
 >("subscription/cancel", async ({ id, atPeriodEnd = true }, thunkAPI) => {
   try {
     const token = thunkAPI.getState()?.auth?.token;
@@ -109,14 +110,14 @@ export const cancelSubscription = createAsyncThunk<
 
     const data = (await res.json()) as Subscription;
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     return thunkAPI.rejectWithValue(err?.message || "cancelSubscription failed");
   }
 });
 export const resumeSubscription = createAsyncThunk<
   Subscription,
   { id: string },
-  { rejectValue: string; state: any }
+  { rejectValue: string; state: RootState }
 >("subscription/resume", async ({ id }, thunkAPI) => {
   try {
     const token = thunkAPI.getState()?.auth?.token;
@@ -152,7 +153,7 @@ export const resumeSubscription = createAsyncThunk<
 
     const data = (await res.json()) as Subscription;
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     return thunkAPI.rejectWithValue(err?.message || "resumeSubscription failed");
   }
 });
@@ -190,7 +191,7 @@ const subscriptionSlice = createSlice({
     // update any single field; defensive - only if subscription exists
     updateField(
       state,
-      action: PayloadAction<{ field: keyof Subscription; value: any }>
+      action: PayloadAction<{ field: keyof Subscription; value: string|number }>
     ) {
       const { field, value } = action.payload;
       if (!state.subscription) return;
@@ -326,18 +327,18 @@ export const {
 
 export default subscriptionSlice.reducer;
  
-export const selectSubscription = (state: any): Subscription | null =>
-  state.subscription?.subscription ?? null;
+export const selectSubscription = (state: RootState): Subscription | null =>
+  state.subscriptions?.subscription ?? null;
 
-export const selectIsTrialing = (state: any): boolean =>
-  (state.subscription?.subscription?.status ?? null) === "trialing";
+export const selectIsTrialing = (state: RootState): boolean =>
+  (state.subscriptions?.subscription?.status ?? null) === "trialing";
 
 /**
  * selectIsActive:
  * - True if status is in active-like set and not canceled at period end.
  * - Conservative: treat 'trialing' as active.
  */
-export const selectIsActive = (state: any): boolean => {
+export const selectIsActive = (state: RootState): boolean => {
   const sub: Subscription | null = selectSubscription(state);
   if (!sub) return false;
   const activeStatuses: SubscriptionStatus[] = ["active", "trialing"];
@@ -347,7 +348,7 @@ export const selectIsActive = (state: any): boolean => {
 /**
  * Returns a JS Date or null. Defensive parsing.
  */
-export const selectCurrentPeriodEndDate = (state: any): Date | null => {
+export const selectCurrentPeriodEndDate = (state: RootState): Date | null => {
   const iso = selectSubscription(state)?.currentPeriodEnd ?? null;
   if (!iso) return null;
   try {

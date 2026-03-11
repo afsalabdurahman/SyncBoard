@@ -1,50 +1,50 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
-import { Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { findEmail } from "../../Member/apiservice/authApi";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../../Redux/store";
+// import { Navigate } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import { findEmail } from "../../Member/apis/authApi";
 
 
 
-interface Props {
-  children: React.ReactNode;
-}
+// interface Props {
+//   children: React.ReactNode;
+// }
 
-const AuthProtectRoutes = ({ children }: Props) => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+// const AuthProtectRoutes = ({ children }: Props) => {
+//   const [user, setUser] = useState<any>(null);
+//   const [loading, setLoading] = useState(true);
 
-  const email = useSelector(
-    (state: RootState) => state?.user?.user?.email
-  );
+//   const email = useSelector(
+//     (state: RootState) => state?.user?.user?.email
+//   );
 
-  useEffect(() => {
-    async function authUser() {
-      try {
-        const foundUser = await findEmail(email);
-        if (foundUser) {
-          setUser(foundUser);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    }
+//   useEffect(() => {
+//     async function authUser() {
+//       try {
+//         const foundUser = await findEmail(email);
+//         if (foundUser) {
+//           setUser(foundUser);
+//         }
+//       } catch (error) {
+//         console.log(error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
 
-    if (email) {
-      authUser();
-    } else {
-      setLoading(false);
-    }
-  }, [email]);
+//     if (email) {
+//       authUser();
+//     } else {
+//       setLoading(false);
+//     }
+//   }, [email]);
 
-  if (loading) return <div>Loading...</div>;
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+//   if (loading) return <div>Loading...</div>;
+//   if (!user) {
+//     return <Navigate to="/login" replace />;
+//   }
 
-  return <>{children}</>;
-};
+//   return <>{children}</>;
+// };
 
-export default AuthProtectRoutes;
+// export default AuthProtectRoutes;

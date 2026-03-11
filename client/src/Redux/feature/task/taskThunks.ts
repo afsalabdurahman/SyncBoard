@@ -23,7 +23,8 @@ export const fetchTaskData = createAsyncThunk('/adminTaskData/fetchTasks', async
 
 
   } catch (error) {
-    console.log(error)
+     const err: string = catchErrorHandle(error, "Failed to create Task")
+      throw new Error(err)
   }
 });
 
@@ -35,7 +36,7 @@ export const addTaskApi = createAsyncThunk("/adminTaskData/add", async (newTask)
 
 
   } catch (error) {
-    console.log(error,"error")
+   
    const err: string = catchErrorHandle(error, "Failed to create Task")
       throw new Error(err)
   }
@@ -62,7 +63,8 @@ export const deleteTaskApi = createAsyncThunk("adminTaskData/delete", async (del
       return deleteTaskId
     }
   } catch (error) {
-    console.log(error)
+       const err: string = catchErrorHandle(error, "Task is Deleted")
+      throw new Error(err)
   }
 })
 

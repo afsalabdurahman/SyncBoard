@@ -6,7 +6,6 @@ import axios, {
   
 } from "axios";
 import { handleApiError } from "./apiErrorHandle";
-import { toast } from "react-toastify";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 
@@ -40,7 +39,6 @@ axiosInstance.interceptors.response.use(
   
     }
 
-    // Handle other known errors
     
     handleApiError(error);
    
@@ -50,31 +48,31 @@ axiosInstance.interceptors.response.use(
 
 // ✅ Generic service methods
 const apiService = {
-  get: <T = any>(
+  get: <T = unknown>(
     url: string,
     params = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse<T>> => axiosInstance.get<T>(url, { params, ...config }),
 
-  post: <T = any>(
+  post: <T = unknown>(
     url: string,
     data = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse<T>> => axiosInstance.post<T>(url, data, config),
 
-  put: <T = any>(
+  put: <T = unknown>(
     url: string,
     data = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse<T>> => axiosInstance.put<T>(url, data, config),
 
-  patch: <T = any>(
+  patch: <T = unknown>(
     url: string,
     data = {},
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse<T>> => axiosInstance.patch<T>(url, data, config),
 
-  delete: <T = any>(
+  delete: <T = unknown>(
     url: string,
     config: AxiosRequestConfig = {}
   ): Promise<AxiosResponse<T>> => axiosInstance.delete<T>(url, config),

@@ -23,7 +23,7 @@ export const sendInvitaionMail = async(emails:string|null,invitationLink:string)
             emails,
             invitationLink
          })
-         console.log(response,"responseINVITElink")
+        
          return response
      } catch (error) {
         const err: string = catchErrorHandle(error, "Failed to send")

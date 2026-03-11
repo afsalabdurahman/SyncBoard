@@ -107,4 +107,15 @@ export class MemberController {
     }
   }
 
+  async resetPassword(req:Request,res:Response,next:NextFunction):Promise<void>{
+   try {
+       const userId = req.params.id;
+      const password = req.body.password;
+      await this._changePasswordUsecase.resetPassword(userId,password)
+   } catch (error) {
+    next(error)
+   }
+
+  }
+
 }

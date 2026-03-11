@@ -64,7 +64,7 @@ export class AuthController {
     async authMe(req:CustomRequest,res:Response,next:NextFunction):Promise<void>{
      
     try {
-    
+    console.log(req.user,"auth USER calling....")
         res.status(200).json({
     user: req?.user?.id,
     })

@@ -9,7 +9,7 @@ import { UserMapper } from "../../mappers/UserMapper";
 export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   constructor(
     @inject("UserRepository") private _userRepository: IUserRepository
-  ) {}
+  ) { }
   async execute(
     userId: string,
     ...args: string[]
@@ -17,8 +17,8 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
 
     const merged = Object.assign({}, ...args);
 
-  const isValid = UserMapper.updateProfileValidator(merged.profileData);
-  if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
+    const isValid = UserMapper.updateProfileValidator(merged.profileData);
+    if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const updatedUser = await this._userRepository.updateProfile(userId, merged);
 
     if (!updatedUser) {
@@ -32,6 +32,6 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
   async logoutUser(userId: string): Promise<boolean> {
     await this._userRepository.updateOnlineStatus(userId)
     return true
-    
+
   }
 }

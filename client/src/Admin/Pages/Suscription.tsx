@@ -7,7 +7,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "../../Custom/ui/badge"
 import {setForward} from "../../Redux/feature/ForwardSlice"
 import { useDispatch } from "react-redux"
-export const Suscription = (props:any) => {
+interface ModalProps {
+  isOpen: () => void;
+}
+
+export const Suscription = (props:ModalProps) => {
 
   const dispacth = useDispatch()
   const [isOpen, setIsOpen] = useState(true)

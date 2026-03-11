@@ -24,13 +24,16 @@ export class DatahandleUsecase implements IDatahandleUsecase {
     }
     async fetchAllUsers(limit: number, skip: number): Promise<{ responseDTO: UserResponseDTO[], totalCount: number }> {
         const response = await this._superAdminRepository.getAllUsers(limit, skip);
-     
+     console.log(response,"response")
         const { responseDTO, totalCount } = DatahandleMapper.mapAllUserToResponse(response);
+       console.log(responseDTO,totalCount,"count+++")
+       
         return { responseDTO, totalCount }
     }
     async fetchAUser(userId: string): Promise<UserDetailsResponseDTO> {
         const result = await this._superAdminRepository.getUserDetails(userId)
-        const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result)
+        const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result);
+
         return responseDTO
     }
     async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[], totalDocCounts: number }> {

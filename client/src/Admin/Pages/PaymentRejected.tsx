@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { XCircle } from 'lucide-react';
-
+const ADMIN_URL = import.meta.env.VITE_BASE_ADMIN_DASHBOARD;
 const PaymentRejected: React.FC = () => {
   const [seconds, setSeconds] = useState(5);
 
@@ -10,7 +10,7 @@ const PaymentRejected: React.FC = () => {
         if (prev <= 1) {
           clearInterval(timer);
           // Redirect to homepage
-          window.location.href = "https://www.syncworkspace.co.in/admin/dashboard";
+          window.location.href = ADMIN_URL
           return 0;
         }
         return prev - 1;
