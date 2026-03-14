@@ -109,5 +109,14 @@ console.log(event,"envents")
 
     res.status(HttpStatusCode.OK).json(subscription)
   }
+  async getActivePlans(req:Request,res:Response,next:NextFunction){
+  try {
+      const plans = await this._planUsecase.findActivePlan();
+       res.status(HttpStatusCode.OK).json(plans)
+  } catch (error) {
+    next(error)
+  }
+
+  }
   
 }

@@ -9,17 +9,22 @@ export class Plan {
   features?: string[];
   stripePriceId?: string;
   description?: string;
+  status?:string;
+  stripeProductId?:string;
 
   constructor(
-    _id?: string ,
+    _id?: string | Types.ObjectId,
     key?: string,
     name?: string,
     priceCents?: number,
     billingInterval?: string,
     features?: string[],
     stripePriceId?: string,
-    description?: string
+    description?: string,
+    status?:string,
+    stripeProductId?:string
   ) {
+    this._id =_id;
     this.key = key;
     this.name = name;
     this.priceCents = priceCents;
@@ -27,5 +32,7 @@ export class Plan {
     this.features = features;
     this.stripePriceId = stripePriceId;
     this.description = description;
+    this.status = status;
+    this.stripeProductId = stripeProductId
   }
 }

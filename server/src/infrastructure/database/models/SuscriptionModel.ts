@@ -61,4 +61,6 @@ const SubscriptionSchema = new Schema<SubscriptionDocument>({
   paymentMethode: PaymentMethodSchema
 }, { timestamps: true });
 
+
+
 export const SubscriptionModel = model<SubscriptionDocument>('Subscription', SubscriptionSchema);

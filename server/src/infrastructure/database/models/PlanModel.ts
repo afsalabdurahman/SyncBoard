@@ -9,6 +9,8 @@ export interface PlanDocument extends Document {
   features: string[]; 
   stripePriceId?: string; 
   description?: string;
+  status:"Active" | "Inactive";
+  stripeProductId?:string
 }
 
 const PlanSchema = new Schema<PlanDocument>({
@@ -19,6 +21,8 @@ const PlanSchema = new Schema<PlanDocument>({
   features: [String],
   stripePriceId: String,
   description: String,
+  status:{type:String,default:"Active"},
+  stripeProductId:String
 });
 
 export const PlanModel = model<PlanDocument>('Plan', PlanSchema);

@@ -33,7 +33,7 @@ export function Sidebar({
     { name: "Workspaces", icon: Building2, active: false },
     { name: "Users", icon: Users, active: false },
     { name: "Subscriptions", icon: CreditCard, active: false },
-  
+    {name:"PlanManagementPage",icon:CreditCard,active:false},
     { name: "Abuse Reports", icon: Shield, active: false },
     { name: "Support Tickets", icon: Headphones, active: false },
  

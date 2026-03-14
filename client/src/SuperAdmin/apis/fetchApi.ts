@@ -1,6 +1,7 @@
 
 import apiService from "../../Services/apiServices/apiService";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 export const superLoginApi = async (email: string, password: string) => {
   const response = await apiService.post("auth/super/login", {
@@ -56,6 +57,41 @@ export const downloadExcel = async () => {
   }
 };
 
+export const createPlan = async (form) =>{
+try {
+  await apiService.post("super/create/plan",{form})
+} catch (error) {
+      const err: string = catchErrorHandle(error, "Failed to create plan")
+              throw new Error(err)
+}
+}
+
+export const  updatePlan = async (form,id) =>{
+  try {
+    await apiService.post(`super/update/plan/${id}`,{form})
+  } catch (error) {
+     const err: string = catchErrorHandle(error, "Failed to update plan")
+              throw new Error(err)
+  }
+}
+export const removePlan = async (id)=>{
+  try {
+    await apiService.patch(`super/plan/remove/${id}`)
+  } catch (error) {
+     const err: string = catchErrorHandle(error, "Failed to change plan")
+              throw new Error(err)
+  }
+}
+
+export const deletePlan =async(id)=>{
+  try {
+    await apiService.delete(`super/plan/delete/${id}`)
+  } catch (error) {
+     const err: string = catchErrorHandle(error, "Failed to change plan")
+              throw new Error(err)
+  }
+}
+
 export const workspaceDataApi = createApi({
   reducerPath: 'workspaceDataApi',
   baseQuery: fetchBaseQuery({
@@ -106,16 +142,20 @@ export const workspaceDataApi = createApi({
         method: 'PATCH',
       }),
       invalidatesTags: ["Tickets"],
-    })
+    }),
+ 
 
-
+         fetchAllPlans:builder.query({
+query: () => `super/plans`
+    }),
 
   }),
+
 });
 
 
 export const { useGetWorkspaceCountQuery, useGetAlluserListQuery, useUpdateWorkspaceMutation, useFetchUserPageQuery, useFetchSubscriptionPageQuery, useFetchAbuseReportPageQuery,
-  useUpdateAbuseReportStatusMutation, useFetchAllTicketsPageQuery, useUpdateTicketStatusMutation
+  useUpdateAbuseReportStatusMutation, useFetchAllTicketsPageQuery, useUpdateTicketStatusMutation,useFetchAllPlansQuery
 } = workspaceDataApi;
 
 

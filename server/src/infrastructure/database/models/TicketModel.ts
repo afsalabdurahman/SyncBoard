@@ -59,4 +59,8 @@ const TicketSchema = new Schema<TicketDocument>(
 
   { timestamps: true }
 );
+
+
+
+
 export const TicketModel = model<TicketDocument>("Ticket", TicketSchema);

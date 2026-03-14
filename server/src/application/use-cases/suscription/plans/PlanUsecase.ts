@@ -8,6 +8,7 @@ import { IStripeService } from "../../../../domain/interfaces/services/IStripSer
 import { ISuscription } from "../../../../domain/interfaces/repositories/ISuscriptionRepository";
 import { SuscriptionRepository } from "../../../../infrastructure/repositories/SuscriptionRepository";
 import { ResponseMessages } from "../../../../common/erroResponse";
+import { Plan } from "../../../../domain/entities/Plan";
 @injectable()
 export class PlanUsecase implements IPlanUsecase {
   constructor(@inject('PlanRepository') private _planRepository: IPlanRepository,
@@ -33,6 +34,11 @@ export class PlanUsecase implements IPlanUsecase {
     if (!isCreateLink) throw new ValidationError("Not a valid id")
 
     return isCreateLink
+  }
+ async findActivePlan(): Promise<Plan[]> {
+    const plans = await this._planRepository.findActivePlans();
+    console.log(plans,"in usecacasnPLAN")
+  return plans
   }
 
 }

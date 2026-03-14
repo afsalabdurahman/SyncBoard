@@ -3,6 +3,7 @@ import { injectable, inject } from "tsyringe";
 import { IDatahandleUsecase } from "../../../application/repositories/IDatahandle";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
+import { PlanRequestDTO } from "../../../application/dto/PlanDTO";
 
 @injectable()
 
@@ -74,6 +75,57 @@ async fetchTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
 res.status(HttpStatusCode.OK).json(tickets)
   } catch (error) {
    
+    next(error)
+  }
+}
+
+async fetchAllPlans(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+   const plan = await this._dataHandleUsecase.fetchPlans();
+
+   res.status(HttpStatusCode.OK).json(plan)
+  } catch (error) {
+    next(error)
+  }
+}
+async createNewPlan(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+
+    await this._dataHandleUsecase.createPlan(req.body.form);
+    res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
+  } catch (error) {
+    next(error)
+  }
+}
+
+async updatePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    console.log(req.body,"BODY",req.params,"Parmsssss")
+    const id  = req.params.id;
+    await this._dataHandleUsecase.updatePlan(req.body.form,id);
+    res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
+  } catch (error) {
+    console.log(error,"erorr")
+    next(error)
+  }
+}
+async removePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    const id = req.params.id;
+
+    await this._dataHandleUsecase.removePlan(id);
+    res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
+  } catch (error) {
+    next(error)
+  }
+}
+async deletePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    const id = req.params.id;
+
+    await this._dataHandleUsecase.deletePlan(id);
+    res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
+  } catch (error) {
     next(error)
   }
 }

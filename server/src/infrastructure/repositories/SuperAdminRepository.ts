@@ -2,11 +2,13 @@ import { ISuperAdminRepository } from "../../domain/interfaces/repositories/ISup
 import { UserModel } from "../database/models/UserModel";
 import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { TicketDocument, TicketModel } from "../database/models/TicketModel";
 import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
 import { AbuseModel } from "../database/models/AbuseModel";
 import { Ticket } from "../../domain/entities/Ticket";
+import { PlanDocument, PlanModel } from "../database/models/PlanModel";
+import { PlanRequestDTO } from "../../application/dto/PlanDTO";
 export class SuperAdminRepository implements ISuperAdminRepository {
 
   async getAllCount(): Promise<GetAllCountResponseDTO> {
@@ -422,6 +424,32 @@ async getAllTickets(): Promise<TicketDocument[]> {
   const result= await TicketModel.find().lean().exec()
 
   return result
+}
+
+async getAllPlans(): Promise<PlanDocument[]> {
+   const plans = await PlanModel.find().lean().exec();
+   return plans
+}
+async createPlan(input: PlanRequestDTO): Promise<void> {
+  await PlanModel.create(input)
+}
+async updatePlan(input: PlanRequestDTO,id:Types.ObjectId): Promise<void> {
+  await PlanModel.findByIdAndUpdate(id,{
+    $set:{
+      name:input.name,
+      key:input.key,
+      priceCents:input.priceCents,
+      billingInterval:input.billingInterval,
+      features:input.features,
+      stripePriceId:input.stripePriceId,
+      description:input.description,
+      status:input.status,
+    },
+  },
+    {
+      new:true
+    }
+  )
 }
 
 }

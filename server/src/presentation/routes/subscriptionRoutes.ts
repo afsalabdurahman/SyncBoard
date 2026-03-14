@@ -6,10 +6,10 @@ import { roleMiddleware } from "../middleware/roleMiddleware";
 
 const adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
 
-let suscriptionController = container.resolve(SubscriptionController)
-let router = express.Router();
+const subscriptionController = container.resolve(SubscriptionController)
+const router = express.Router();
 
-router.get("/mysubscription/:userid",adminAuth,suscriptionController.getSuscription.bind(suscriptionController))
-
+router.get("/mysubscription/:userid",adminAuth,subscriptionController.getSuscription.bind(subscriptionController))
+router.get("/active/plans",adminAuth,subscriptionController.getActivePlans.bind(subscriptionController))
 
 export default router;
