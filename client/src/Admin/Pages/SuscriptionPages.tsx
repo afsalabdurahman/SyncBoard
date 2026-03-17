@@ -103,7 +103,7 @@ export default function SubscriptionPage() {
   ])
 
   const handleUpgrade = async (targetPlan: Plan) => {
-
+    console.log(targetPlan, "PlanTArget")
     setIsProcessing(true)
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -118,7 +118,8 @@ export default function SubscriptionPage() {
     const currentDate = new Date().toLocaleDateString()
 
     await checkoutapi(userId, targetPlan).then((res) => {
-      window.location.href = res.data
+    
+       window.location.href = res
     })
 
   }

@@ -24,6 +24,7 @@ export class TaskMapper {
       projectId: input.projectId,
       embedding: vector,
       attachedURLs: input.attachedURLs,
+      subTask:input.subTask
 
     })
   }

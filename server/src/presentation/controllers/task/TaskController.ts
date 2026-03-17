@@ -17,6 +17,7 @@ export class TaskController {
     next: NextFunction
   ): Promise<void> {
     try {
+      console.log(req.body.newTask,"NEW+++TASK")
       const input: TaskRequestDTO = req.body.newTask as TaskRequestDTO
 
       const resposeDTO = await this._taskUsecase.execute(input);
@@ -196,6 +197,30 @@ async deleteAttachment(req:Request,res:Response,next:NextFunction):Promise<void>
     const url=req.body.attachment;
    const  deleteMsg=await this._taskUsecase.deleteAttachment(taskId,url)
 res.status(HttpStatusCode.OK).json({message:deleteMsg})
+  } catch (error) {
+    next(error)
+  }
+}
+async deleteSubTask(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+    const taskId = req.params.taskid;
+    const subTask=req.body.subTask;
+
+    await this._taskUsecase.deleteSubTask(taskId,subTask);
+    res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
+  } catch (error) {
+    next(error)
+  }
+}
+async updateSubtask(req:Request,res:Response,next:NextFunction):Promise<void>{
+  try {
+
+      const taskId = req.params.taskid;
+       const title=req.body.title;
+
+       console.log(req.body,"dsBODYYYY",taskId,"IDDD")
+       await this._taskUsecase.updateSubtask(taskId,title);
+       res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
   } catch (error) {
     next(error)
   }

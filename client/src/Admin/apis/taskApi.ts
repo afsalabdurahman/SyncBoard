@@ -1,4 +1,5 @@
 import apiService from "../../Services/apiServices/apiService";
+import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 import { Task } from "../types/taskTypes";
 
 /* ---------------- TYPES ---------------- */
@@ -68,3 +69,12 @@ export const deleteAttachmentUrl = async (
     throw new Error("Failed to delete attachment");
   }
 };
+
+export const deleteSubTaskApi = async(taskId,subTask) =>{
+try {
+  await apiService.patch(`task/delete/subtask/${taskId}`,{subTask})
+} catch (error) {
+      const err: string = catchErrorHandle(error, "Updation failed")
+      throw new Error(err)   
+      }
+}

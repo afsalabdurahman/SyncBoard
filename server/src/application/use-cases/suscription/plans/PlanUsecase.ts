@@ -32,7 +32,7 @@ export class PlanUsecase implements IPlanUsecase {
     const isCreateLink = await this._stripeService.createCheckoutSession(user.name, user.email, myKey.stripePriceId, user._id, myKey.key);
 
     if (!isCreateLink) throw new ValidationError("Not a valid id")
-
+console.log(isCreateLink,"URL IN PLAN USECSE")
     return isCreateLink
   }
  async findActivePlan(): Promise<Plan[]> {

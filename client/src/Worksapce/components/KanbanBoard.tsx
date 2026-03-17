@@ -22,6 +22,9 @@ import CommentBox from "../../Custom/ui/CommentBox";
 import { AttachmentButton } from "../../Admin/components/AttachmentButton";
 import { socket } from "../../Services/socket";
 import { RootState } from "../../Redux/store";
+import {SubtaskButton} from "../components/Subtask"
+import {SubtaskPage} from "../pages/SubtaskPage";
+import { toast } from "react-toastify";
 
 interface Attachment {
   id: string;
@@ -50,6 +53,7 @@ interface Task {
   rejectionMsg: string | null;
   comments: Comment[];
   attachments:string[];
+  subTask?: { title: string; status: "Pending" | "Completed" }[];
 }
 interface ApiTask {
   _id: string;
@@ -62,6 +66,7 @@ interface ApiTask {
   priority?: string;
   status?: string;
   attachedURLs?: string[];
+  subTask?: { title: string; status: "Pending" | "Completed" }[];
 }
 export default function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -71,8 +76,13 @@ export default function KanbanBoard() {
   const [draggedTask, setDraggedTask] = useState<Task | null>(null);
 // const [notify,setNotify]=useState(false)
 const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
+const [isOpensub,setOpensub] =useState<string | null>(null);
   const user = useSelector((state: RootState) => state.user.user);
-
+console.log(tasks,"Taslkkss")
+const areAllSubtasksCompleted = (task: Task): boolean => {
+  if (!task.subTask || task.subTask.length === 0) return true;
+  return task.subTask.every((sub) => sub.status === "Completed");
+};
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -85,6 +95,7 @@ const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
           dueDate: data.dueDate || "2024-01-20",
           approvalStatus: data.approvalStatus,
           rejectionMsg: data.rejectionMsg,
+          subTask:data.subTask,
           priority: (data.priority?.toLowerCase?.() || "medium") as Task["priority"],
           status: (() => {
             const s = data.status;
@@ -103,7 +114,7 @@ const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
     };
 
     if (user?.name) fetchTasks();
-  }, [user?.name,openCommentId]);
+  }, [user?.name,openCommentId,isOpensub]);
 
   const toggleComment = (taskId: string) => {
     setOpenCommentId((prev) => (prev === taskId ? null : taskId));
@@ -158,6 +169,18 @@ const handleNotification = (data: { taskId: string }) => {
   };
 
   const handleDrop = async (e: React.DragEvent, newStatus: Task["status"]) => {
+    console.log(newStatus,"Status",draggedTask,"DRAGGED");
+
+ if(newStatus =="completed"){
+ const isFound=draggedTask?.subTask?.filter((task)=>{
+    return task.status!=="Completed"
+  })
+  if(isFound.length>0){
+    toast.info("Complete all subtask then move")
+    return false
+  }
+ }
+
     e.preventDefault();
     if (!draggedTask || draggedTask.status === newStatus) return;
 
@@ -217,7 +240,9 @@ const handleNotification = (data: { taskId: string }) => {
     { id: "progress", title: "In Progress", status: "progress" as const },
     { id: "completed", title: "Completed", status: "completed" as const },
   ];
+const onTogglesub = () =>{
 
+}
 return (
   <div className="p-6 bg-gray-50 min-h-screen" style={{ marginTop: "1.5em" }}>
     <div className="max-w-7xl mx-auto">
@@ -287,7 +312,7 @@ return (
 
                       {/* Attachments */}
                       <AttachmentButton taskId={task.id} attachedUrl={task.attachments} />
-
+ 
                       {/* Date & Priority Row */}
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center text-gray-500">
@@ -334,7 +359,13 @@ return (
                             </div>
                           )}
                         </div>
-                      </div>
+<SubtaskPage
+  isOpensub={isOpensub}
+  setOpensub={setOpensub}
+  completed={task.subTask?.filter((s) => s.status === "Completed").length}
+  total={task.subTask?.length}
+  taskId={task.id}
+/>                      </div>
 
                       {/* Comment Box - appears below content when open */}
                       {openCommentId === task.id && (
@@ -344,6 +375,12 @@ return (
                             onClose={closeComment}
                             taskId={openCommentId}
                           />
+                        </div>
+                      )}
+
+                      {isOpensub === task.id&&(
+                        <div className="mt-4 -mx-4 px-4 pb-4 border-t border-gray-100">
+                           <SubtaskButton setOpensub={setOpensub} task={task}/>
                         </div>
                       )}
                     </CardContent>
@@ -363,7 +400,12 @@ return (
           </div>
         ))}
       </div>
+    {/* {isOpensub==tasks.id
+    <div className="mt-4 -mx-4 px-4 pb-4 border-t border-gray-100">
 
+    <SubtaskButton setOpensub={setOpensub}/>
+    </div>
+    :""} */}
       {/* Global Popup */}
       {popup && <SimpleAlert message={message} onclose={() => setPopup(false)} />}
     </div>

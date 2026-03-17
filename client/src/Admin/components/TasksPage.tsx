@@ -113,7 +113,7 @@ const handleChangePage = (event, newPage) => {
   const handleAddTask = async (taskData: Omit<Task, "id">) => {
    
  try {
-  
+  console.log(taskData,"TAskDta")
  
 
  setLoader("Creating new task ...");

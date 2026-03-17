@@ -16,7 +16,8 @@ interface Task {
   completedAt?: string;
   createdAt: string;
   updatedAt: string;
- attachedURLs:string[]
+ attachedURLs:string[];
+ subTask :[]
 }
 
 interface TaskState {
@@ -68,6 +69,14 @@ const TaskSlice = createSlice({
     },
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
+    },
+    deleteSubTaskRedux(state,action:PayloadAction<any>){
+state.tasks = state.tasks.map((task) => ({
+  ...task,
+  subTask: task.subTask?.filter(
+    (subt) => subt.title !== action.payload
+  )
+}));
     },
 deleteAttachment: (
   state,
@@ -131,7 +140,8 @@ export const {
   setLoading,
   setError,
   setTaskPage,
-  deleteAttachment
+  deleteAttachment,
+  deleteSubTaskRedux
 } = TaskSlice.actions;
 
 export default TaskSlice.reducer;

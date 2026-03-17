@@ -75,18 +75,18 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async allCompletedTasks(workspaceid: Types.ObjectId,page?:number,limit?:number,skip?:number): Promise<{ completedTasks: Task[], taskReject: Task[] ,totalItems:number}> {
+  async allCompletedTasks(workspaceid: Types.ObjectId, page?: number, limit?: number, skip?: number): Promise<{ completedTasks: Task[], taskReject: Task[], totalItems: number }> {
 
-    if(!limit ) throw new NotFoundError("not found")
-    const completedTasks = await TaskModel.find({ status: "Completed" }).skip(skip??0).limit(Math.ceil(limit/2)).sort({createdAt:-1}).lean().exec()
-    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip??0).limit(Math.ceil(limit/2)).sort({createdAt:-1}).lean().exec()
- const totalItems = await TaskModel.countDocuments();
+    if (!limit) throw new NotFoundError("not found")
+    const completedTasks = await TaskModel.find({ status: "Completed" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
+    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
+    const totalItems = await TaskModel.countDocuments();
     // const items = await TaskModel.find()
     //   .skip(skip)
     //   .limit(limit)
     //   .sort({ createdAt: -1 });
 
-    return { completedTasks, taskReject,totalItems };
+    return { completedTasks, taskReject, totalItems };
   }
   async updateApprovalStatus(
     taskId: string,
@@ -113,14 +113,14 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-async findTaskByProjectId(projectId: string,taskfilter:string|null): Promise<Task[] | null> {
-  const query: Record<string, string> = { projectId };
-  if(taskfilter){
-    query.status = taskfilter;
-  }
+  async findTaskByProjectId(projectId: string, taskfilter: string | null): Promise<Task[] | null> {
+    const query: Record<string, string> = { projectId };
+    if (taskfilter) {
+      query.status = taskfilter;
+    }
     const projectTask = await TaskModel.find(query).lean().exec()
     if (!projectTask) return null;
-    return projectTask 
+    return projectTask
 
   }
   countTask(): Promise<number> {
@@ -178,6 +178,47 @@ async findTaskByProjectId(projectId: string,taskfilter:string|null): Promise<Tas
   }
 
 
-
-
+  async deleteSubTask(taskId: Types.ObjectId, subTask: string): Promise<void> {
+    await TaskModel.findByIdAndUpdate(
+      taskId,
+      {
+        $pull: {
+          subTask: { title: subTask }
+        }
+      }
+    );
+  }
+  async updateSubTask(taskId: Types.ObjectId, title: string): Promise<void> {
+    await TaskModel.updateOne(
+      { _id: taskId, "subTask.title": title },
+      [
+        {
+          $set: {
+            subTask: {
+              $map: {
+                input: "$subTask",
+                as: "st",
+                in: {
+                  $cond: [
+                    { $eq: ["$$st.title", title] },
+                    {
+                      title: "$$st.title",
+                      status: {
+                        $cond: [
+                          { $eq: ["$$st.status", "Completed"] },
+                          "Pending",
+                          "Completed"
+                        ]
+                      }
+                    },
+                    "$$st"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    );
+  }
 }

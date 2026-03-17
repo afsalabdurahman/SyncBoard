@@ -113,5 +113,10 @@ export class TaskUsecase implements ITaskUseCase {
     if (!task) throw new NotFoundError(ResponseMessages.NOT_FOUND);
     return ResponseMessages.DELETE
   }
-
+  async deleteSubTask(taskId: string, subTask: string): Promise<void> {
+    await this._taskRepository.deleteSubTask(stringToMongoObj(taskId),subTask);
+  }
+async updateSubtask(taskId: string, title: string): Promise<void> {
+  await this._taskRepository.updateSubTask(stringToMongoObj(taskId),title)
+}
 }

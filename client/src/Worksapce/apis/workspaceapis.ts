@@ -16,14 +16,14 @@ export const sendQuery = async (userName: string, query: string) => {
 export const sendAbuse = async (formData, userId, workspaceId) => {
     try {
         const response = await apiService.post(`workspace/abuse/${userId}/${workspaceId}`, {
-        description: formData.description,
-        type: formData.type,
-        severity: formData.severity
-    })
-    return response.status
+            description: formData.description,
+            type: formData.type,
+            severity: formData.severity
+        })
+        return response.status
     } catch (error) {
-         const err: string = catchErrorHandle(error, "Failed to send report")
-    throw new Error(err)
+        const err: string = catchErrorHandle(error, "Failed to send report")
+        throw new Error(err)
     }
 }
 
@@ -36,15 +36,15 @@ export const searchApi = (searchQuery, workspaceid, userid) => {
     }
 }
 export const abuseReportList = async (userId: string, workspaceId: string, page: number) => {
-   try {
-     const response = await apiService.get(`workspace/abuse/list/${workspaceId}/${userId}?page=${page}&&limit=5`);
+    try {
+        const response = await apiService.get(`workspace/abuse/list/${workspaceId}/${userId}?page=${page}&&limit=5`);
 
-     return response
-   } catch (error) {
-    
-    const err: string = catchErrorHandle(error, "Failed to send report")
-    throw new Error(err)
-   }
+        return response
+    } catch (error) {
+
+        const err: string = catchErrorHandle(error, "Failed to send report")
+        throw new Error(err)
+    }
 }
 
 export const getMyAbuseReports = () => {
@@ -70,7 +70,7 @@ export const acceptInvitaionLink = async (name,
         const response = await apiService.post("member/invite/register", {
             name, email, password, role, title, workspaceSlug
         })
-        console.log(response,"response")
+        console.log(response, "response")
         return response.data
     } catch (error) {
         const err: string = catchErrorHandle(error, "Invalid input feild")
@@ -104,23 +104,35 @@ export const profilePartialUpdate = async (userId: string, updatedProfile: strin
             {
                 profileData: updatedProfile,
             },
-           
+
         );
 
         return true
     } catch (error) {
         const err: string = catchErrorHandle(error, "Updation failed")
-    throw new Error(err)   
+        throw new Error(err)
     }
 }
-export const tasksInProjectDetails = async(projectId:string,taskFilter:string) =>{
+export const tasksInProjectDetails = async (projectId: string, taskFilter: string) => {
     try {
-         const response = await apiService.get(`task/project/${projectId}`, {
-        filter: taskFilter
-      });
-      return response
+        const response = await apiService.get(`task/project/${projectId}`, {
+            filter: taskFilter
+        });
+        return response
     } catch (error) {
-              const err: string = catchErrorHandle(error, "Task not found")
-    throw new Error(err)   
+        const err: string = catchErrorHandle(error, "Task not found")
+        throw new Error(err)
+    }
+}
+
+export const updateSubTaskStatus = async (taskId, title) => {
+    try {
+        await apiService.patch(`task/update/subtask/status/${taskId}`, {
+            title
+        })
+    } catch (error) {
+        const err: string = catchErrorHandle(error, "Task not found")
+        throw new Error(err)
+
     }
 }

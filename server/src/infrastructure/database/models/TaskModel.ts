@@ -16,6 +16,7 @@ export interface TaskDocument extends Document {
   embedding?: number[];   // ← 384-dim vector
   comments:commentType[];
   attachedURLs:string[];
+   subTask?: { title: string; status: "Pending" | "Completed" }[];
 }
 
 const TaskSchema = new Schema<TaskDocument>(
@@ -41,6 +42,17 @@ const TaskSchema = new Schema<TaskDocument>(
       },
     ],
    attachedURLs: { type: [String] },
+subTask: [
+  {
+      _id: false,
+    title: { type: String },
+    status: { 
+      type: String,
+      enum: ["Pending", "Completed"],
+      default: "Pending"
+    }
+  }
+]
   },
   { timestamps: true, collection: "Task" }
 );

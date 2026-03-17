@@ -17,6 +17,7 @@ export class Task {
   embedding?:number[];
   comments?:commentType[];
   attachedURLs?:string[];
+   subTask?: { title: string; status: "Pending" | "Completed" }[];
   updatedAt?:string
 
   constructor({
@@ -34,6 +35,7 @@ export class Task {
     embedding,
     comments,
     attachedURLs,
+    subTask,
     updatedAt
   }: {
     id?: ObjectId | string;
@@ -50,6 +52,7 @@ export class Task {
     embedding?:number[];
     comments?:commentType[],
     attachedURLs?:string[],
+     subTask?: { title: string; status: "Pending" | "Completed" }[];
     updatedAt?:string
   }) {
     this.id = id;
@@ -66,6 +69,7 @@ export class Task {
     this.embedding=embedding;
     this.comments=comments;
     this.attachedURLs=attachedURLs;
-    this.updatedAt = updatedAt
+    this.updatedAt = updatedAt;
+    this.subTask =subTask;
   }
 }

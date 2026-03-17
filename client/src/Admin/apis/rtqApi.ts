@@ -27,7 +27,8 @@ export const adminDataHandleApi = createApi({
       method:'POST',
       body:msg
     }),invalidatesTags:["Tickets"]
-  })
+  }),
+ 
 })
 })
 export const {useCreateTicketsMutation,useGetTicketsQuery,useUpdateMsgMutation}=adminDataHandleApi

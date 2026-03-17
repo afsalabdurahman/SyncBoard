@@ -11,7 +11,8 @@ export interface TaskRequestDTO {
   priority?: TaskPriority;
   projectId?: string;
   project?: string;
-  attachedURLs?:string[]
+  attachedURLs?:string[];
+ subTask?: { title: string; status: "Pending" | "Completed" }[];
 }
 
 export interface TaskResponseDTO{

@@ -16,4 +16,6 @@ export interface ITaskUseCase {
       addComment(taskId:string,comment:commentType):Promise<void>
       getTaskComments(taskId:string):Promise<commentsDTO[]|null>
       deleteAttachment(taskId:string,url:string):Promise<string>;
+      deleteSubTask(taskId:string,subTask:string):Promise<void>;
+      updateSubtask(taskId:string,title:string):Promise<void>
 }

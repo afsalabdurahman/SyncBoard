@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { ProjectType } from "../../Admin/types/projetctTypes";
 import { tasksInProjectDetails } from "../apis/workspaceapis";
 import { toast } from "react-toastify";
+import TaskDetailPopup from "./SubTaskDetails";
 
 const ProjectDetailsPage = (props: ProjectType) => {
   const [myTasks, setMytask] = useState([]);
@@ -393,11 +394,12 @@ console.log(props,"pross")
             <button className="p-2 rounded-md hover:bg-gray-200 transition">
               <MoreVertical className="h-4 w-4 text-gray-600" />
             </button>
-
+{/* <TaskDetailPopup/> */}
           </div>
         </div>
       </div>
     ))}
+    
   </div>
 </div>
               </div>

@@ -41,6 +41,7 @@ export class SubscriptionController {
 
       }
       const checkoutLink = await this._planUsecase.excute(input);
+      console.log(checkoutLink,"in controller link")
       res.status(HttpStatusCode.OK).json(checkoutLink)
 
     } catch (error) {
