@@ -12,7 +12,7 @@ export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 
 export class TaskMapper {
   static mapTaskToEntity(input: TaskRequestDTO, vector: number[]): Task {
-   
+
     return new Task({
       name: input.name,
       description: input.description,
@@ -24,7 +24,7 @@ export class TaskMapper {
       projectId: input.projectId,
       embedding: vector,
       attachedURLs: input.attachedURLs,
-      subTask:input.subTask
+      subTask: input.subTask
 
     })
   }
@@ -38,24 +38,24 @@ export class TaskMapper {
   static validateTask(input: TaskRequestDTO) {
     const isValid = z.object({
 
-       name:   z
-    .string()
-    .trim()
-    .min(1, "Task name is required")
-    .max(100, "Word count exceeded")
-    .regex(/^[A-Za-z0-9][A-Za-z0-9 ]*$/, {
-      message:
-        "Name must start with a letter or number and cannot contain special characters",
-    }),
-       description: z
-         .string()
-         .trim()
-         .min(1, "Description is required")
-         .max(1000, "Word count exceeded")
-         .regex(/^[A-Za-z0-9][A-Za-z0-9\s.,!?'"()-]*$/, {
-           message:
-             "Description must start with a letter or number and cannot start with space or special characters",
-         }),
+      name: z
+        .string()
+        .trim()
+        .min(1, "Task name is required")
+        .max(100, "Word count exceeded")
+        .regex(/^[A-Za-z0-9][A-Za-z0-9 ]*$/, {
+          message:
+            "Name must start with a letter or number and cannot contain special characters",
+        }),
+      description: z
+        .string()
+        .trim()
+        .min(1, "Description is required")
+        .max(1000, "Word count exceeded")
+        .regex(/^[A-Za-z0-9][A-Za-z0-9\s.,!?'"()-]*$/, {
+          message:
+            "Description must start with a letter or number and cannot start with space or special characters",
+        }),
       project: z.string().min(1, "Project is required"),
       assignedUser: z.string().min(1, "Assigned user is required"),
       status: TaskStatusSchema,

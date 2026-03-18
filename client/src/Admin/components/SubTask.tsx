@@ -5,14 +5,16 @@ import { deleteSubTaskApi } from "../apis/taskApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { deleteSubTaskRedux } from "../../Redux/feature/task/taskSlice";
+import { formatEstimateShort } from "../../Utility/dateformate";
 /* ─── Types ─────────────────────────────────────────── */
 interface Subtask {
   // id: string;
   title: string;
+  estimate: number|null;
   // description: string;
   // priority: "Low" | "Medium" | "High";
   // completed: boolean;
-   status:"Pending"|"Completed"
+  status: "Pending" | "Completed"
 }
 
 // const PRIORITY_META = {
@@ -30,6 +32,7 @@ function SubtaskPopup({
   onClose: () => void;
 }) {
   const [title, setTitle] = useState("");
+  const [estimate, setEst] = useState<number>(null)
   // const [description, setDesc] = useState("");
   // const [priority, setPriority] = useState<Subtask["priority"]>("Medium");
   const titleRef = useRef<HTMLInputElement>(null);
@@ -38,7 +41,7 @@ function SubtaskPopup({
 
   const submit = () => {
     if (!title.trim()) return;
-    onAdd({ title: title.trim(),status:"Pending"});
+    onAdd({ title: title.trim(), status: "Pending", estimate: estimate });
     onClose();
   };
 
@@ -89,18 +92,18 @@ function SubtaskPopup({
           </div>
 
           {/* Description */}
-          {/* <div>
+          <div>
             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
-              Description
+              Estimate time
             </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDesc(e.target.value)}
-              rows={2}
-              placeholder="Optional notes…"
+            <input
+              value={estimate}
+              onChange={(e) => setEst(Number(e.target.value))}
+             type="number"
+              placeholder="eg:1"
               className="w-full resize-none border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-400/25 focus:border-violet-400 placeholder-gray-300 transition-all"
             />
-          </div> */}
+          </div>
 
           {/* Priority */}
           {/* <div>
@@ -151,13 +154,13 @@ function SubtaskPopup({
 }
 
 /* ─── SubtaskSection — drop this inside your form ───── */
-export const SubtaskSection = ({setSubTask,subTask,taskId}) => {
-  const [subtasks, setSubtasks] = useState<Subtask[]>(subTask||[]);
+export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
+  const [subtasks, setSubtasks] = useState<Subtask[]>(subTask || []);
   const [showPopup, setShowPopup] = useState(false);
-  
+
   const dispacth = useDispatch()
-console.log(subTask,"Subataksa99999")
-//  setSubtasks(subTask??[])
+  console.log(subTask, "Subataksa99999")
+  //  setSubtasks(subTask??[])
   const addSubtask = (data: Omit<Subtask, "id" | "completed">) =>
     setSubtasks((p) => [...p, { ...data }]);
   setSubTask(subtasks)
@@ -168,21 +171,21 @@ console.log(subTask,"Subataksa99999")
     setSubtasks((p) => p.filter((s) => s.id !== id));
 
   const completed = subtasks.filter((s) => s.status).length;
-const deleteSubTask = async(subTask) =>{
+  const deleteSubTask = async (subTask) => {
 
-try {
- await deleteSubTaskApi(taskId,subTask);
- dispacth(deleteSubTaskRedux(subTask))
- setSubtasks((p) => p.filter((s) => s.title !== subTask));
- toast.success("Delete success")
-} catch (error) {
-  toast.info("try again later")
-}
+    try {
+      await deleteSubTaskApi(taskId, subTask);
+      
+      setSubtasks((p) => p.filter((s) => s.title !== subTask));
+      dispacth(deleteSubTaskRedux(subTask))
+      toast.success("Delete success")
+    } catch (error) {
+      toast.info("try again later")
+    }
 
- 
-     
-  
-}
+
+
+  }
   return (
     <>
       {/* Popup */}
@@ -217,7 +220,7 @@ try {
           {subtasks.length > 0 && (
             <ul className="space-y-1.5">
               {subtasks.map((s) => (
-                <li style={{width:"25em"}}
+                <li style={{ width: "25em" }}
                   key={s.id}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-100 bg-gray-50 group hover:border-gray-200 transition-all"
                 >
@@ -242,9 +245,13 @@ try {
                     }`}>
                     {s.title}
                   </span>
-                <span className="text-red-500 hover:text-red-700 cursor-pointer">
-  <Trash size={16} onClick={()=>deleteSubTask(s.title)} />
+                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 shadow-sm">
+  {formatEstimateShort(s.estimate ?? 1)}
 </span>
+                  <span className="text-red-500 hover:text-red-700 cursor-pointer">
+                   
+                    <Trash size={16} onClick={() => deleteSubTask(s.title)} />
+                  </span>
 
                   {/* Description (if any) */}
                   {s.description && (

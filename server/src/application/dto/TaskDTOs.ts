@@ -12,7 +12,7 @@ export interface TaskRequestDTO {
   projectId?: string;
   project?: string;
   attachedURLs?:string[];
- subTask?: { title: string; status: "Pending" | "Completed" }[];
+ subTask?: { title: string; status: "Pending" | "Completed" ,estimate:number}[];
 }
 
 export interface TaskResponseDTO{

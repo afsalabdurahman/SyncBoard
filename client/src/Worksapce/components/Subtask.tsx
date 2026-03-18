@@ -6,6 +6,7 @@ interface Subtask {
   
   title: string;
   status: "Pending"| "Completed";
+  estimate:number
 }
 
 // const initialSubtasks: Subtask[] = [
@@ -192,7 +193,7 @@ function formatEstimateShort(minutes?: number): string {
     {task.title}
   </span>
 
-  {"s" && (
+  {task.estimate && (
     <span 
       // title={`Estimated time: ${formatEstimate(45)}`}
       className={`text-xs font-medium flex-shrink-0 px-1.5 py-0.5 rounded
@@ -200,7 +201,7 @@ function formatEstimateShort(minutes?: number): string {
           ? "text-slate-500/60 bg-slate-800/30" 
           : "text-blue-300/90 bg-blue-950/40 group-hover:bg-blue-900/50"}`}
     >
-      {formatEstimateShort(90)}
+      {formatEstimateShort(task.estimate)}
     </span>
   )}
 </div>

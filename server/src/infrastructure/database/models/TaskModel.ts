@@ -14,9 +14,9 @@ export interface TaskDocument extends Document {
   approvalStatus?: approvalType;
   rejectionMsg?: string;
   embedding?: number[];   // ← 384-dim vector
-  comments:commentType[];
-  attachedURLs:string[];
-   subTask?: { title: string; status: "Pending" | "Completed" }[];
+  comments: commentType[];
+  attachedURLs: string[];
+  subTask?: { title: string; status: "Pending" | "Completed", estimate: number }[];
 }
 
 const TaskSchema = new Schema<TaskDocument>(
@@ -32,7 +32,7 @@ const TaskSchema = new Schema<TaskDocument>(
     approvalStatus: { type: String, enum: ["Approved", "Rejected", "Waiting"] },
     rejectionMsg: { type: String },
     embedding: { type: [Number], required: false },
-   comments: [
+    comments: [
       {
         _id: false,
         name: { type: String, required: true },
@@ -41,18 +41,22 @@ const TaskSchema = new Schema<TaskDocument>(
         urls: { type: [String], default: [] },
       },
     ],
-   attachedURLs: { type: [String] },
-subTask: [
-  {
-      _id: false,
-    title: { type: String },
-    status: { 
-      type: String,
-      enum: ["Pending", "Completed"],
-      default: "Pending"
-    }
-  }
-]
+    attachedURLs: { type: [String] },
+    subTask: [
+      {
+        _id: false,
+        title: { type: String },
+        status: {
+          type: String,
+          enum: ["Pending", "Completed"],
+          default: "Pending"
+        },
+        estimate: {
+          type: Number,
+          default: 2
+        }
+      }
+    ]
   },
   { timestamps: true, collection: "Task" }
 );
