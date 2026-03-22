@@ -16,7 +16,7 @@ export class SentInvitaionUsecase implements ISentInvitaion {
  for (const email of emails) {
 const isValid= AuthMapper.emailValidator(email);
  if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
-//const isSend = await this._EmailService.inviteMembers(email, invitaionLink);
+const isSend = await this._EmailService.inviteMembers(email, invitaionLink);
 }
   
 

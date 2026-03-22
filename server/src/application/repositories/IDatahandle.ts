@@ -9,7 +9,7 @@ export interface IDatahandleUsecase {
     fetchDataworkspace(limit: number, skip: number,search:string,filter:string,plan:string): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }>
     fetchAllUsers(limit: number, skip: number): Promise<{ responseDTO: UserResponseDTO[], totalCount: number }>
     fetchAUser(userId: string): Promise<UserDetailsResponseDTO>
-    fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[], totalDocCounts: number }>
+    fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[]|[], totalDocCounts: number }>
     fetchTickets(): Promise<Ticket[]>;
     fetchPlans():Promise<Plan[]>;
     createPlan(input:PlanRequestDTO):Promise<void>;

@@ -63,11 +63,7 @@ function App() {
 <LoginPage />
            </PublicRoute> 
  
-           
-    
-         
-       
-            
+
             }></Route>
           <Route path='/signup' element={<SignupPage />}></Route>
           <Route path='/verify/otp' element={

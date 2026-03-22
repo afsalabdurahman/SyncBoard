@@ -147,21 +147,39 @@ export function RecentActivity({subscription,abuse}:Props) {
           <CardTitle className="text-lg font-semibold">Abuse Alerts</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {abuse?.map((alert) => (
-            <div key={alert.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-900">{alert.type}</p>
-                {/* <p className="text-sm text-gray-600">{alert.workspace}</p> */}
-              </div>
-              <div className="text-right">
-                <Badge variant="destructive" className="mb-1">
-                  {alert.severity}
-                </Badge>
-                {/* <p className="text-xs text-gray-500">{alert.time}</p> */}
-              </div>
-            </div>
-          ))??"Not available..."}
-        </CardContent>
+  {abuse && abuse.length > 0 ? (
+    abuse.map((alert) => (
+      <div
+        key={alert.id}
+        className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100 hover:shadow-sm transition"
+      >
+        <div>
+          <p className="text-sm font-semibold text-gray-900">
+            {alert.type}
+          </p>
+          <p className="text-xs text-gray-500">
+            Reported issue
+          </p>
+        </div>
+
+        <div className="text-right">
+          <Badge variant="destructive" className="mb-1">
+            {alert.severity}
+          </Badge>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <p className="text-sm font-medium text-gray-700">
+        No reports found
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        Everything looks clean 🎉
+      </p>
+    </div>
+  )}
+</CardContent>
       </Card>
 
       {/* Subscription Changes */}
@@ -169,24 +187,51 @@ export function RecentActivity({subscription,abuse}:Props) {
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Subscription Changes</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {subscription?subscription.map((change,index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-900">{change.workspaceName}</p>
-                <p className="text-sm text-gray-600">{upgradeStatus(change.subscriptionPlan)}</p>
-              </div>
-              <div className="text-right">
-                <p
-                  className={`text-sm font-medium ${change.subscriptionPlan.startsWith("+") ? "text-green-600" : "text-red-600"}`}
-                >
-                  {plan(change.subscriptionPlan)}
-                </p>
-                <p className="text-xs text-gray-500">{ DateInHours( change.updated)}</p>
-              </div>
-            </div>
-          )):"Not available..."}
-        </CardContent>
+    <CardContent className="space-y-4">
+  {subscription && subscription.length > 0 ? (
+    subscription.map((change, index) => (
+      <div
+        key={index}
+        className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border hover:shadow-sm transition"
+      >
+        {/* Left */}
+        <div>
+          <p className="text-sm font-semibold text-gray-900">
+            {change.workspaceName}
+          </p>
+          <p className="text-xs text-gray-500">
+            {upgradeStatus(change.subscriptionPlan)}
+          </p>
+        </div>
+
+        {/* Right */}
+        <div className="text-right">
+          <p
+            className={`text-sm font-semibold ${
+              change.subscriptionPlan?.startsWith("+")
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {plan(change.subscriptionPlan)}
+          </p>
+          <p className="text-xs text-gray-400">
+            {DateInHours(change.updated)}
+          </p>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <p className="text-sm font-medium text-gray-700">
+        No subscription activity
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        Changes will appear here once users upgrade or downgrade plans
+      </p>
+    </div>
+  )}
+</CardContent>
       </Card>
     </div>
   )

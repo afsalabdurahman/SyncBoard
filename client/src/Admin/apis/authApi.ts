@@ -13,7 +13,7 @@ export const adminLogin = async (
       { email, password },
       { withCredentials: true }
     );
-
+console.log(data,"dataADminLOGIN")
     return data;
   } catch (error: unknown) {
     if (error instanceof Error) {

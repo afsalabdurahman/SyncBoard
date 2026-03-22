@@ -9,7 +9,7 @@ interface Task {
   description: string;
   assignedTo: string[];
   createdBy: string;
-  status: 'Todo' | 'In Progress' | 'In Review' | 'Done' | 'Blocked';
+  status: 'To Do' | 'In Progress' | 'In Review' | 'Completed' | 'Blocked';
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
   dueDate?: string;
   startDate?: string;

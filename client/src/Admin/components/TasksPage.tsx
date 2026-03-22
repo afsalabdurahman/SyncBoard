@@ -74,9 +74,7 @@ export function TasksPage() {
   const workspaceid = useWorkspaceid()
   const [loader, setLoader] = useState("");
 const dispatch: AppDispatch = useDispatch();
-useSelector((state)=>{
 
-})
 const tasks = useTasks()
 useEffect(()=>{
 dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
@@ -87,7 +85,7 @@ const handleChangePage = (event, newPage) => {
    dispatch(setTaskPage(newPage + 1));
   dispatch(fetchTaskData({ page: newPage + 1, limit: rowPerPage }));
   };
-
+console.log(tasks,"TASK++++")
  
   const projects = useProjects()
   const users = new Set(
@@ -172,6 +170,10 @@ setIsModalOpen(false);
   };
 
   const openAddModal = () => {
+    if(projects.length==0){
+      toast.info("Project is not found");
+      return false
+    }
     setEditingTask(null);
     setIsModalOpen(true);
   };
@@ -219,6 +221,72 @@ if (loader) {
   }
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
+     {tasks.length==0?
+     
+    <div className="flex items-center justify-center h-[60vh] bg-gray-50 border border-dashed border-gray-200 rounded-xl">
+  
+  <div className="text-center max-w-md px-6">
+    
+    {/* Icon */}
+    <div className="mx-auto w-20 h-20 flex items-center justify-center rounded-2xl bg-white border border-gray-200 shadow-sm">
+      <svg
+        className="w-10 h-10 text-indigo-600"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z" />
+      </svg>
+    </div>
+
+    {/* Title */}
+    <h2 className="mt-5 text-xl font-semibold text-gray-900">
+      No tasks yet
+    </h2>
+
+    {/* Description */}
+    <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+      Break your project into actionable tasks. Assign work, track progress, and stay organized.
+    </p>
+
+    {/* CTA */}
+    <div className="mt-6 flex items-center justify-center gap-3">
+      
+      {/* Primary */}
+      <button
+       onClick={openAddModal}
+        className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow hover:bg-indigo-700 transition"
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Create Task
+      </button>
+
+      {/* Secondary */}
+      <button className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+        View guide
+      </button>
+
+    </div>
+
+    {/* Hint */}
+    <p className="mt-6 text-xs text-gray-400">
+      Tip: Start with a simple task like “Design login page”
+    </p>
+
+  </div>
+</div>:
+    
+ <div className="Wrap">
+   
       <div className='flex items-center justify-between'>
         <h2 className='text-3xl font-bold tracking-tight'>Tasks</h2>
         <Button onClick={openAddModal}>
@@ -368,6 +436,20 @@ if (loader) {
                                      taskId={openCommentId}
                                    />
                                  )}
+    </div>}
+     <ConfirmDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title='Delete Task?'
+        description='This Task will be permanently deleted.'
+      />
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={editingTask ? handleEditTask : handleAddTask}
+        task={editingTask}
+      />
     </div>
   );
 }

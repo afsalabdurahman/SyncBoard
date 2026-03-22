@@ -123,7 +123,7 @@ export const SubscriptionsPage = () => {
         <Pagination
           component="div"
           count={Math.max(1, Math.ceil((data?.totalCount || 0) / 5))}
-          page={data.currentPage}
+          page={data?.currentPage}
           onChange={(_, page) => handleChangePage(page)}
 
         />

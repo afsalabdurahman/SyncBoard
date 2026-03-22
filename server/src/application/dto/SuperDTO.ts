@@ -23,18 +23,18 @@ export interface UserResponseDTO {
 }
 export interface SuperSubscriptionResponseDTO {
   id?: string;
-  workspace: {
+  workspace?: {
     name: string;
     ownerName: string;
     ownerEmail: string;
     avatar: string;
   };
-  plan: string;
-  status: string;
-  amount: number;
-  currency: string;
-  interval: string;
-  startedAt: Date;
+  plan?: string;
+  status?: string;
+  amount?: number;
+  currency?: string;
+  interval?: string;
+  startedAt?: Date;
   currentPeriodEnd: Date|string;
   cancelAtPeriodEnd: boolean;
   paymentMethod: {

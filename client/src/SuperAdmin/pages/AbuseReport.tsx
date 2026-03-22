@@ -14,9 +14,9 @@ export  const AbuseReportsPage =()=> {
 
   const {data:reports,refetch,isLoading,error}=useFetchAbuseReportPageQuery({ page, limit: 5 })
   const  [updateReportStatus,   { isLoading: isUpdating } ] = useUpdateAbuseReportStatusMutation()
-    useEffect(()=>{
-refetch()
-  },[])
+//     useEffect(()=>{
+// refetch()
+//   },[])
   
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loadoooing posts</div>;
@@ -90,6 +90,7 @@ const handleStatusChange = async (
     refetch()
   } catch (error) {
     if (error instanceof Error) {
+      console.log(error,"eroror")
       toast.error(error.message)
     }
   }

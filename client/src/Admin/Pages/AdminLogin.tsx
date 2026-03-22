@@ -25,7 +25,7 @@ const [loading, setLoading] = useState(false);
       const response = await adminLogin(email,password)
 
      
-  
+  console.log(response,"response<")
       // Handle successful login response
        dispatch(setWorkspace(response.workspace))
             //  dispatch(setLog(response.data.logs))

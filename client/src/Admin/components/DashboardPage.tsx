@@ -12,6 +12,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  
 } from "../../Custom/ui/chart";
 
 import {
@@ -23,6 +24,7 @@ import {
   Bar,
   XAxis,
   YAxis,
+  Tooltip,
   CartesianGrid,
 } from "recharts";
 
@@ -31,35 +33,68 @@ import { Users, FolderOpen, AlertTriangle, CheckCircle } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useTasks } from "../hooks/taskhooks";
 
-const taskStatusData = [
-  { name: "To Do", value: 5, fill: "#ef4444" },
-  { name: "In Progress", value: 6, fill: "#f59e0b" },
-  { name: "Done", value: 1, fill: "#10b981" },
-];
+
 
 const projectProgressData = [
   { name: "Jan", completed: 4, total: 6 },
 ];
+
+// testing.....................
+
+
+
+// ednf
+
+
 
 export function DashboardPage() {
 
 
 
   const initialState = useSelector((state: RootState) => {
+    console.log(state,"stee+++++++USerADminDASHBOARD")
     const countProject = state.projects.list.length;
-    const countMembers = state.workspace.workspace.members.length;
+    const countProjectCompleted = state.projects.list.filter((project)=>project.status =="Completed");
+     const countProjectInProgress = state.projects.list.filter((project)=>project.status =="In Progress");
+const countTaskTODO = state.task.tasks.filter(
+  (task) => task.status === "To Do"
+).length;
+const countTaskProgress = state.task.tasks.filter(
+  (task) => task.status === "In Progress"
+).length;
+const countTaskCompleted = state.task.tasks.filter(
+  (task) => task.status === "Completed"
+).length;
+const countMembers = state.workspace.workspace.members.length;
 
     return {
       countProject,
       countMembers,
+      countProjectCompleted,
+      countProjectInProgress,
+      countTaskTODO,
+      countTaskProgress,
+      countTaskCompleted
+
     };
   });
-
+  const projectStats = [
+    { name: "Total", value: initialState.countProject, fill: "hsl(var(--chart-2))" },
+    { name: "Completed", value: initialState.countProjectCompleted.length, fill: "hsl(var(--chart-1))" },
+    { name: "In Progress", value: initialState.countProjectInProgress.length, fill: "hsl(var(--chart-3))" },
+  ];
+const taskStatusData = [
+  { name: "To Do", value: initialState.countTaskTODO, fill: "#ef4444" },
+  { name: "In Progress", value: initialState.countTaskProgress, fill: "#f59e0b" },
+  { name: "Done", value: initialState.countTaskCompleted, fill: "#10b981" },
+];
   const totalTasks = useTasks();
 
   const workspaceSlug = useSelector(
     (state: RootState) => state.workspace.workspace.slug
   );
+
+console.log(initialState,"omitails State")
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -86,9 +121,7 @@ export function DashboardPage() {
               {initialState.countProject}
             </div>
 
-            <p className="text-xs text-muted-foreground">
-              +2 from last month
-            </p>
+           
 
           </CardContent>
         </Card>
@@ -111,9 +144,7 @@ export function DashboardPage() {
               {initialState.countMembers - 1}
             </div>
 
-            <p className="text-xs text-muted-foreground">
-              +3 new this month
-            </p>
+           
 
           </CardContent>
 
@@ -137,9 +168,7 @@ export function DashboardPage() {
               0
             </div>
 
-            <p className="text-xs text-muted-foreground">
-              -2 from yesterday
-            </p>
+            
 
           </CardContent>
 
@@ -160,12 +189,10 @@ export function DashboardPage() {
           <CardContent>
 
             <div className="text-2xl font-bold">
-              0
+              {initialState.countTaskCompleted}
             </div>
 
-            <p className="text-xs text-muted-foreground">
-              +12 this week
-            </p>
+         
 
           </CardContent>
 
@@ -177,69 +204,89 @@ export function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
 
-        <Card className="col-span-4">
 
-          <CardHeader>
+<Card className="col-span-4">
+      <CardHeader>
+        <CardTitle>Project Overview</CardTitle>
+        <CardDescription>
+          Total, completed and in-progress projects
+        </CardDescription>
+      </CardHeader>
 
-            <CardTitle>
-              Project Progress
-            </CardTitle>
-
-            <CardDescription>
-              Monthly project completion overview
-            </CardDescription>
-
-          </CardHeader>
-
-          <CardContent className="pl-2">
-
-            <ChartContainer
-              config={{
-                completed: {
-                  label: "Completed",
-                  color: "hsl(var(--chart-1))",
-                },
-                total: {
-                  label: "Total",
-                  color: "hsl(var(--chart-2))",
-                },
-              }}
-              className="h-[300px]"
+{initialState.countProject != 0? 
+      <CardContent className="pl-2">
+        <ChartContainer
+          config={{
+            value: {
+              label: "Projects",
+              color: "hsl(var(--muted-foreground))",
+            },
+            Total: {
+              label: "Total",
+              color: "hsl(var(--chart-2))",
+            },
+            Completed: {
+              label: "Completed",
+              color: "hsl(var(--chart-1))",
+            },
+            "In Progress": {
+              label: "In Progress",
+              color: "hsl(var(--chart-3))",
+            },
+          }}
+          className="h-[280px] sm:h-[320px]"
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={projectStats}
+              layout="vertical"           // ← makes labels easier to read
+              margin={{ left: 20, right: 30, top: 10, bottom: 10 }}
             >
+              <CartesianGrid horizontal={false} strokeDasharray="3 3" />
 
-              <ResponsiveContainer width="100%" height="100%">
+              <XAxis type="number" hide={true} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                width={100}
+                fontSize={14}
+              />
 
-                <BarChart data={projectProgressData}>
+              <Tooltip content={<ChartTooltipContent />} cursor={false} />
 
-                  <CartesianGrid strokeDasharray="3 3" />
+              <Bar
+                dataKey="value"
+                radius={[4, 4, 4, 4]}
+                barSize={36}
+                // fill is taken from data → fill property
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </CardContent>:   (<div className="flex flex-col items-center justify-center text-center space-y-4">
+      {/* You can replace this src with your own Lottie, GIF or static image */}
+      <img
+        src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127818.jpg"
+        alt="No projects created yet"
+        className="w-44 h-44 sm:w-52 sm:h-52 object-contain opacity-90"
+      />
 
-                  <XAxis dataKey="name" />
-
-                  <YAxis />
-
-                  <ChartTooltip content={<ChartTooltipContent />} />
-
-                  <Bar
-                    dataKey="completed"
-                    fill="var(--color-completed)"
-                  />
-
-                  <Bar
-                    dataKey="total"
-                    fill="var(--color-total)"
-                    opacity={0.3}
-                  />
-
-                </BarChart>
-
-              </ResponsiveContainer>
-
-            </ChartContainer>
-
-          </CardContent>
-
-        </Card>
-
+      <div className="space-y-2">
+        <h3 className="text-xl font-semibold text-foreground">
+          No projects created yet
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-xs">
+          Start by creating your first project to see progress and statistics here.
+        </p>
+      </div>
+      </div>)
+      
+    }
+      
+ 
+    </Card>
         <Card className="col-span-3">
 
           <CardHeader>
@@ -255,7 +302,31 @@ export function DashboardPage() {
           </CardHeader>
 
           <CardContent>
+{initialState.countTaskTODO==0&&initialState.countProjectInProgress==0&&initialState.countProjectCompleted==0?(
+<div className="flex flex-col items-center justify-center text-center space-y-6">
+      {/* Animated / Beautiful Empty Image */}
+      <div className="relative">
+        <img
+          src="https://img.freepik.com/free-vector/no-data-concept-illustration_114360-536.jpg"
+          alt="No tasks found"
+          className="w-56 h-56 object-contain opacity-90"
+        />
+        {/* Optional floating icon */}
+        <div className="absolute -top-4 -right-4 bg-primary/10 text-primary rounded-full p-3 animate-bounce">
+          📋
+        </div>
+      </div>
 
+      <div className="space-y-3">
+        <h3 className="text-2xl font-semibold text-foreground">
+          No tasks found
+        </h3>
+        <p className="text-muted-foreground max-w-sm">
+          This project doesn't have any tasks yet.<br />
+          Create your first task to get started.
+        </p>
+      </div>
+      </div>):
             <ChartContainer
               config={{
                 todo: {
@@ -273,7 +344,7 @@ export function DashboardPage() {
               }}
               className="h-[300px]"
             >
-
+    
               <ResponsiveContainer width="100%" height="100%">
 
                 <PieChart>
@@ -307,7 +378,7 @@ export function DashboardPage() {
               </ResponsiveContainer>
 
             </ChartContainer>
-
+}
           </CardContent>
 
         </Card>

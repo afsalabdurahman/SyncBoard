@@ -50,11 +50,13 @@ export class DatahandleUsecase implements IDatahandleUsecase {
 
         return responseDTO
     }
-    async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[], totalDocCounts: number }> {
+    async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[]|[], totalDocCounts: number }> {
         const { subscriptions, totalDocCount } = await this._superAdminRepository.getSubscription(limit, skip)
-        console.log(subscriptions[0].history)
+    
+        // console.log(subscriptions[0].history)
+       
         const { responseDTO, totalDocCounts } = DatahandleMapper.mapSubscriptionToResponse(subscriptions, totalDocCount)
-        console.log(responseDTO, "resfPoseDTO")
+  
         return { responseDTO, totalDocCounts }
     }
     async fetchTickets(): Promise<Ticket[]> {

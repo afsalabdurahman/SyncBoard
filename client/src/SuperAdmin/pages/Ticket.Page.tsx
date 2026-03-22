@@ -111,9 +111,9 @@ export const TicketPage = () => {
      } = useFetchAllTicketsPageQuery({
       refetchOnFocus: true,
      });
-     useEffect(()=>{
-refetch()
-     },[])
+//      useEffect(()=>{
+// refetch()
+//      },[])
   const [ticketss, setTickets] = useState<Ticket[]>();
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState("");

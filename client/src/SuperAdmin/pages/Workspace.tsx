@@ -159,7 +159,7 @@ if(details){
     count={Math.max(1, Math.ceil((data?.totalCount || 0) / 5))}
 
            // rowsPerPage={3||0}
-              page={data.currentPage}
+              page={data?.currentPage||0}
              onChange={(_, page) => handleChangePage(page)}
           //     rowsPerPageOptions={[]}
         />
