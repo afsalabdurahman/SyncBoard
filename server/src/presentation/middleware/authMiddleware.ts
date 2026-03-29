@@ -21,8 +21,11 @@ export const authMiddelware = () => {
     const workspaceUsecse = container.resolve(CreateWorkspaceUsecases)
     const userRepository = container.resolve(UserMongooseRepository)
     const accessToken = req.cookies.accessToken;
-    console.log(req.cookies,"cookiees")
-   
+    if (!accessToken) {
+      console.log("NOt access")
+      throw new AuthenticationError('No token Provided')
+      // throw next(new AuthenticationError('No token provided'));
+    }
 
     try {
  if (!accessToken) {

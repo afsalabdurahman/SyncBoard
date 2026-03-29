@@ -60,10 +60,9 @@ console.log(AdminEntity,"entity")
     // }
     console.log(savedUser,"Save")
   const otp = this._otpRepository.generateOTP();
-    // await this._emailService.sendOtp(input.email, otp);
-console.log(otp,"OTP RECIVED")
-    const SaveOtp = new OTP(input.email, otp,1)
-    console.log(SaveOtp,"OTPDSVED");
+   //  await this._emailService.sendOtp(input.email, otp);
+
+    const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);
     if (!savedUser) throw new NotFoundError(ResponseMessages.NO_CONTENT);
     // const token = this._authService.generateToken({

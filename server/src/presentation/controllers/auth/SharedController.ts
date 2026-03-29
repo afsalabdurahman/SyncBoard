@@ -13,7 +13,7 @@ export class sharedController{
     res: Response,
     next: NextFunction):Promise<void>{
         try {
-          console.log("YTOKEN EXPIRED IS WORKOIGNGG")
+          console.log("calling refreshtoken.....")
              const token  = req.cookies.refreshToken;
                console.log(token,"YTOKEN EXPIRED IS WORKOIGNGG")
                 if (!token) throw new AuthenticationError("Token not found")
