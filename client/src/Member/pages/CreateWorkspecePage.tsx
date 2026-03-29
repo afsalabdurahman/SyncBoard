@@ -60,6 +60,7 @@ const dispatch =useDispatch()
     try {
       const response = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId)
       if (response) {
+        console.log(response,"REsponse++++")
 dispatch (setWorkspace(response.data.workspaceResponseDTO.workspace))
 dispatch (setUserData(response.data.workspaceResponseDTO.user))
        navigate('/invite/members')

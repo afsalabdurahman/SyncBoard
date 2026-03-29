@@ -22,18 +22,16 @@ export class RefreshTokenUsecase implements IRefreshtoken {
     ): Promise<{ accessToken: string; refreshToken: string }> {
         let decoded;
       
-        try {
-            if (!this._authService.verifyRefreshToken)
-                throw new NotFoundError(ResponseMessages.NOT_FOUND);
-            let decoded = await this._authService.verifyRefreshToken(RefreshToken);
+             if (!this._authService.verifyRefreshToken)    throw new NotFoundError(ResponseMessages.NO_CONTENT);
+             decoded = await this._authService.verifyRefreshToken(RefreshToken);
           
-            if (!decoded) throw new AuthenticationError(ResponseMessages.INVALID_TOKEN);
+            if (!decoded) throw new ForbiddenError(ResponseMessages.INVALID_TOKEN);
             const { userId, role } = decoded;
             const userRole = role as UserRole;
             if (!Object.values(UserRole).includes(userRole)) {
                 throw new ForbiddenError("Invalid role in refresh token");
             }
-            let userData = await this._userRepository.findById(userId);
+            const userData = await this._userRepository.findById(userId);
             if (!userData) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
          
 
@@ -48,8 +46,6 @@ export class RefreshTokenUsecase implements IRefreshtoken {
                 role: userData.role,
             });
             return { accessToken: newAccessToken, refreshToken: newRefreshToken };
-        } catch (error) {
-            throw new InternalServerError(ResponseMessages.INTERNAL_SERVER_ERROR);
-        }
+       
     }
 }

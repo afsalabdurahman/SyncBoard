@@ -1,91 +1,184 @@
 import { useState, useEffect, useRef } from "react";
 import { Check, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 import { RootState } from "../../Redux/store";
 import { setUserData } from "../../Redux/feature/user/userSlice";
-import { useNavigate } from "react-router-dom";
-import { useLayoutEffect } from "react";
 import { reSendOTP, verifyOTP } from "../apis/authApi";
+import { setUserAuth } from "../../Redux/feature/AuthSlice";
+
 const OTP_LENGTH = 6;
+const OTP_TIMER_SECONDS = 60; // 5 minutes
 
 const OtpVerification = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
+  const forward = useSelector((state: RootState) => state.forward);
+  const userData = useSelector((state: RootState) => state.user?.user);
 
-const forward = useSelector((state: RootState) => state.forward);
+  const email = userData?.email || location.state?.email;
 
-
-  const userData = useSelector((state: RootState) => ({
-    email: state?.user?.user?.email,
-    name: state?.user?.user?.name,
-    password:state?.user?.user?.password
-    
- 
-  }));
-
-
-  const [otp, setOtp] = useState<string[]>(
-    Array(OTP_LENGTH).fill("")
-  );
+  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [timer, setTimer] = useState(OTP_TIMER_SECONDS);
   const [message, setMessage] = useState("");
-  const [timer, setTimer] = useState(59);
-  const [isValidTrue, setIsValidTrue] = useState(false);
-  const [isValidFalse, setIsValidFalse] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  /* ---------------- Redirect if no email ---------------- */
+  const STORAGE_KEY = `otp_expiry_${email}`; // Better key: include email
 
-useLayoutEffect(() => {
-  if (!userData?.email) {
-    navigate("/signup", { replace: true });
-  }
-}, [userData, navigate]);
-
-  /* ---------------- Countdown Timer ---------------- */
+  // ====================== LOAD REMAINING TIME FROM LOCALSTORAGE ======================
   useEffect(() => {
-    if (timer > 0) {
-      const id = setTimeout(() => setTimer((prev) => prev - 1), 1000);
-      return () => clearTimeout(id);
+    if (!email) return;
+
+    const savedExpiry = localStorage.getItem(STORAGE_KEY);
+    
+    if (savedExpiry) {
+      const expiryTime = parseInt(savedExpiry, 10);
+      const now = Date.now();
+      const remaining = Math.floor((expiryTime - now) / 1000);
+
+      if (remaining > 0) {
+        setTimer(remaining);
+      } else {
+        // Expired
+        localStorage.removeItem(STORAGE_KEY);
+        setTimer(0);
+      }
+    } else {
+      // First time or after resend
+      const expiryTime = Date.now() + OTP_TIMER_SECONDS * 1000;
+      localStorage.setItem(STORAGE_KEY, expiryTime.toString());
+      setTimer(OTP_TIMER_SECONDS);
     }
-  }, [timer]);
+  }, [email, STORAGE_KEY]);
 
-  /* ---------------- Auto Verify ---------------- */
+  // ====================== TIMER LOGIC ======================
   useEffect(() => {
-   setIsValidFalse(false)
+    if (timer <= 0) {
+      localStorage.removeItem(STORAGE_KEY);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
+
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
+      setTimer((prev) => {
+        const newTime = prev - 1;
+        
+        if (newTime <= 0) {
+          localStorage.removeItem(STORAGE_KEY);
+          return 0;
+        }
+        return newTime;
+      });
+    }, 1000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [timer, STORAGE_KEY]);
+
+  // ====================== REDIRECT IF NO EMAIL ======================
+  useEffect(() => {
+    if (!email) {
+      navigate("/signup", { replace: true });
+    }
+  }, [email, navigate]);
+
+  // ====================== AUTO VERIFY WHEN OTP COMPLETE ======================
+  useEffect(() => {
     if (otp.every((digit) => digit !== "")) {
-       
       verifyOtp();
     }
-    
   }, [otp]);
 
-  /* ---------------- Verify OTP ---------------- */
+  // ====================== VERIFY OTP ======================
   const verifyOtp = async () => {
+    if (loading) return;
+    
     const otpValue = otp.join("");
-    try {
-   const data=await verifyOTP(userData?.email,otpValue)
-      setIsValidTrue(true);
-      if(forward){
-  navigate("/change/password")
-}else{
- const datavalue={email:data.email,name:data.name,isAdmin:true,id:data.id}
-   
-     dispatch( setUserData(datavalue))
-      setTimeout(() => {
-        navigate("/create/workspace",{replace:true});
-      }, 3000);
-      setMessage("Please wait automatically redirect...");
-}
-      
+    setLoading(true);
+    setIsError(false);
 
-     
-    } catch (error) {
-      setIsValidFalse(true);
+    try {
+      const data = await verifyOTP(email, otpValue);
+
+      setIsSuccess(true);
+      setMessage("Verification successful! Redirecting...");
+
+      // Clear timer on success
+      localStorage.removeItem(STORAGE_KEY);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+
+      if (forward) {
+        navigate("/change/password", { replace: true });
+      } else {
+        const userPayload = {
+          email: data.email,
+          name: data.name,
+          isAdmin: true,
+          id: data.id,
+        };
+
+        dispatch(setUserData(userPayload));
+dispatch(setUserAuth(userPayload))
+        setTimeout(() => {
+          navigate("/create/workspace", { replace: true });
+        }, 2500);
+      }
+    } catch (error: any) {
+      setIsError(true);
+      setMessage(error?.response?.data?.message || "Invalid or expired OTP. Please try again.");
+      
+      setOtp(Array(OTP_LENGTH).fill(""));
+      inputRefs.current[0]?.focus();
+    } finally {
+      setLoading(false);
     }
   };
 
-  /* ---------------- Handle Change ---------------- */
+  // ====================== RESEND OTP ======================
+  const resendCode = async () => {
+    if (!email || timer > 0) return;
+
+    try {
+      await reSendOTP(email);
+      
+      // Reset UI
+      setOtp(Array(OTP_LENGTH).fill(""));
+      setIsError(false);
+      setIsSuccess(false);
+      setMessage("");
+
+      // Start fresh 5-minute timer
+      const newExpiry = Date.now() + OTP_TIMER_SECONDS * 1000;
+      localStorage.setItem(STORAGE_KEY, newExpiry.toString());
+      setTimer(OTP_TIMER_SECONDS);
+
+      inputRefs.current[0]?.focus();
+    } catch (err) {
+      setMessage("Failed to resend OTP. Please try again.");
+    }
+  };
+
+  // ====================== HANDLERS ======================
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
 
@@ -98,69 +191,44 @@ useLayoutEffect(() => {
     }
   };
 
-  /* ---------------- Handle Backspace ---------------- */
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  /* ---------------- Strong Copy–Paste ---------------- */
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").trim();
+    const pasted = e.clipboardData.getData("text").trim();
+    if (!/^\d+$/.test(pasted)) return;
 
-    if (!/^\d+$/.test(pastedData)) return;
-
-    const digits = pastedData.slice(0, OTP_LENGTH).split("");
-    const newOtp = Array(OTP_LENGTH).fill("");
-
-    digits.forEach((digit, index) => {
-      newOtp[index] = digit;
-    });
-
-    setOtp(newOtp);
-
-    const lastIndex = digits.length - 1;
-    if (lastIndex >= 0) {
-      inputRefs.current[lastIndex]?.focus();
-    }
+    const digits = pasted.slice(0, OTP_LENGTH).split("");
+    setOtp(digits.concat(Array(OTP_LENGTH - digits.length).fill("")));
+    inputRefs.current[digits.length - 1]?.focus();
   };
 
-  /* ---------------- Resend OTP ---------------- */
-  const resendCode = async () => {
-   const response= await reSendOTP(userData?.email)
+  const formatTime = (seconds: number) => {
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+  };
 
- setOtp(Array(OTP_LENGTH).fill(""));
-    setTimer(59);
-    setIsValidFalse(false);
-    setIsValidTrue(false);
-    inputRefs.current[0]?.focus();
-  
-}
-   
-
+  // ====================== RENDER ======================
   return (
-    <div className="max-w-lg mx-auto px-4 py-8 flex flex-col items-center">
-      <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-2">
-        GrideSync
-      </h1>
+    <div className="max-w-lg mx-auto px-4 py-8 flex flex-col items-center min-h-screen">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">GridSync</h1>
 
-      <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mt-8 mb-2">
-        Check your email for a code
+      <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mt-10 mb-3">
+        Check your email
       </h2>
 
-      <p className="text-gray-600 text-center mb-8">
-        We've sent a 6-digit code to {userData.email}. The code expires shortly
-        <br />
-        so please enter it soon.
+      <p className="text-gray-600 text-center mb-10">
+        We've sent a 6-digit verification code to<br />
+        <span className="font-medium text-gray-800">{email}</span>
       </p>
 
-      {/* OTP INPUTS */}
-      <div className="flex items-center justify-center gap-2 mb-6">
+      {/* OTP Inputs */}
+      <div className="flex gap-3 mb-8">
         {otp.map((digit, index) => (
           <input
             key={index}
@@ -169,36 +237,38 @@ useLayoutEffect(() => {
             inputMode="numeric"
             maxLength={1}
             value={digit}
-            onChange={(e) =>
-              handleChange(index, e.target.value)
-            }
+            onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
-            className="w-12 h-16 text-3xl font-bold text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isSuccess || loading}
+            className="w-14 h-16 text-4xl font-bold text-center border-2 border-gray-300 rounded-xl 
+                       focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200
+                       disabled:bg-gray-100 disabled:cursor-not-allowed"
           />
         ))}
-
-        {isValidTrue && (
-          <Check className="w-8 h-8 text-green-500 ml-2" />
-        )}
-        {isValidFalse && (
-          <X className="w-8 h-8 text-red-500 ml-2" />
-        )}
       </div>
 
-      {/* TIMER */}
+      {/* Status Icons */}
+      <div className="h-8 mb-6">
+        {isSuccess && <Check className="w-9 h-9 text-green-500" />}
+        {isError && <X className="w-9 h-9 text-red-500" />}
+      </div>
+
+      {/* Timer / Message */}
       {message ? (
-        <div className="text-green-600 mb-6">{message}</div>
+        <p className={`text-center font-medium mb-8 ${isSuccess ? "text-green-600" : "text-red-600"}`}>
+          {message}
+        </p>
       ) : (
-        <div className="flex items-center gap-2 mb-8">
+        <div className="text-center mb-8">
           {timer > 0 ? (
-            <span className="text-gray-800">
-              Resend in 00:{timer < 10 ? `0${timer}` : timer}
-            </span>
+            <p className="text-gray-700">
+              Resend code in <span className="font-semibold">{formatTime(timer)}</span>
+            </p>
           ) : (
-            <button 
+            <button
               onClick={resendCode}
-              className="text-gray-600 hover:text-gray-800 cursor-pointer"
+              className="text-blue-600 hover:text-blue-700 font-medium"
             >
               Resend OTP
             </button>
@@ -206,61 +276,26 @@ useLayoutEffect(() => {
         </div>
       )}
 
-      {/* EMAIL SHORTCUTS */}
-      <div className="flex items-center justify-center gap-6 mb-6">
-        <a
-          href="https://mail.google.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center text-gray-600 hover:text-gray-800"
-        >
-          <img
-            src="/images/gmail.png"
-            alt="Gmail"
-            className="w-6 h-6 mr-2"
-          />
-          <span>Open Gmail</span>
+      {/* Quick Links */}
+      <div className="flex gap-8 mb-10">
+        <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <img src="/images/gmail.png" alt="Gmail" className="w-6 h-6" />
+          <span>Gmail</span>
         </a>
-
-        <a
-          href="https://outlook.live.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center text-gray-600 hover:text-gray-800"
-        >
-          <img
-            src="/images/outlook.jpeg"
-            alt="Outlook"
-            className="w-6 h-6 mr-2"
-          />
-          <span>Open Outlook</span>
+        <a href="https://outlook.live.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <img src="/images/outlook.jpeg" alt="Outlook" className="w-6 h-6" />
+          <span>Outlook</span>
         </a>
       </div>
 
-      {/* HELP */}
-      <div className="text-center mb-6">
+      <div className="text-center">
         <button
           onClick={resendCode}
-          className="text-gray-600 hover:text-gray-800"
+          disabled={timer > 0 || loading}
+          className={`text-sm ${timer > 0 || loading ? "text-gray-400 cursor-not-allowed" : "text-gray-600 hover:text-gray-800"}`}
         >
-          Can't find your code? Request a new code.
+          Didn't receive the code? Request again
         </button>
-      </div>
-
-      <div className="text-center mb-12">
-        <button className="text-blue-600 hover:text-blue-800">
-          Sign in a different way
-        </button>
-      </div>
-
-      {/* FOOTER */}
-      <div className="flex items-center justify-center gap-4 text-gray-500 text-sm">
-        <a href="#" className="hover:text-gray-700">
-          Privacy & Terms
-        </a>
-        <a href="#" className="hover:text-gray-700">
-          Contact Us
-        </a>
       </div>
     </div>
   );

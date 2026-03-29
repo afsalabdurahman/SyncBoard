@@ -76,17 +76,18 @@ about: z
   .nullable(),
 
 
-
-    phone: z
-  .string()
+phone: z
+  .string({ required_error: "Phone number is required" })
   .trim()
-  .regex(/^[0-9]{10}$/, {
-    message: "Phone must be exactly 10 digits",
-  })
-  .or(z.literal("")) 
+  .refine(
+    (val) => val === "" || /^[6-9]\d{9}$/.test(val),
+    {
+      message: "Phone number must be 10 digits or Invalid phone number"
+    }
+  )
   .optional()
-  .nullable(),
-
+  .nullable()
+  .transform((val) => (val === "" || val === null ? undefined : val)),
 
     imageUrl: z
       .string()

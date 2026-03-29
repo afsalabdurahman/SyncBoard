@@ -33,13 +33,14 @@ export class ForbiddenError extends CustomError {
 }
 
 export class NotFoundError extends CustomError {
-  constructor(message: string = ResponseMessages.NOT_FOUND) {
+  constructor(message: string = ResponseMessages.NO_CONTENT) {
     super(message, HttpStatusCode.NOT_FOUND);
   }
 }
 
 export class ConflictError extends CustomError {
   constructor(message: string = ResponseMessages.CONFLICT) {
+    console.log(message,"message")
     super(message, HttpStatusCode.CONFLICT);
   }
 }

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch, store } from "../../Redux/store";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { toggleForward } from "../../Redux/feature/ForwardSlice";
@@ -44,6 +45,11 @@ export default function ChangePasswordPage() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [countdown, setCountdown] = useState(5);
+
+  // 👁 visibility states
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const queryParams = new URLSearchParams(location.search);
   const isUserPasswordChange = Boolean(queryParams.get("user"));
@@ -128,22 +134,18 @@ export default function ChangePasswordPage() {
     setLoading(true);
 
     try {
-if(isUserPasswordChange){
-
-      await changePassword(
-        userId,
-        formData.currentPassword,
-        formData.confirmPassword
-      );
+      if (isUserPasswordChange) {
+        await changePassword(
+          userId,
+          formData.currentPassword,
+          formData.confirmPassword
+        );
+      } else {
+        await resetPassword(userId, formData.confirmPassword);
+      }
 
       setIsSuccess(true);
       setErrors({});
-}else{
-  await resetPassword(userId,formData.confirmPassword)
-   setIsSuccess(true);
-      setErrors({});
-}
-
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -165,7 +167,6 @@ if(isUserPasswordChange){
       }}
     >
       <div className="bg-white/90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md">
-
         <h2 className="text-3xl font-bold text-center text-purple-800 mb-4">
           Reset Password
         </h2>
@@ -182,38 +183,69 @@ if(isUserPasswordChange){
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
+          {/* Current Password */}
           {isUserPasswordChange && (
-            <input
-              type="password"
-              name="currentPassword"
-              placeholder="Current Password"
-              className="w-full border p-3 rounded focus:ring-2 focus:ring-purple-500"
-              value={formData.currentPassword}
-              onChange={handleChange}
-            />
+            <div className="relative">
+              <input
+                type={showCurrentPassword ? "password" : "text"}
+                name="currentPassword"
+                placeholder="Current Password"
+                className="w-full border p-3 rounded pr-10 focus:ring-2 focus:ring-purple-500"
+                value={formData.currentPassword}
+                onChange={handleChange}
+              />
+              <span
+                className="absolute right-3 top-3 cursor-pointer"
+                onClick={() => setShowCurrentPassword((prev) => !prev)}
+              >
+                {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
           )}
 
-          <input
-            type="password"
-            name="password"
-            placeholder="New Password"
-            className="w-full border p-3 rounded focus:ring-2 focus:ring-purple-500"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          {/* New Password */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="New Password"
+              className="w-full border p-3 rounded pr-10 focus:ring-2 focus:ring-purple-500"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <span
+              className="absolute right-3 top-3 cursor-pointer"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+            </span>
+          </div>
 
           {errors.password && (
             <p className="text-red-500 text-sm">{errors.password}</p>
           )}
 
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            className="w-full border p-3 rounded focus:ring-2 focus:ring-purple-500"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
+          {/* Confirm Password */}
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              className="w-full border p-3 rounded pr-10 focus:ring-2 focus:ring-purple-500"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
+            <span
+              className="absolute right-3 top-3 cursor-pointer"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+            >
+              {showConfirmPassword ? (
+                <Eye size={18} />
+              ) : (
+                <EyeOff size={18} />
+              )}
+            </span>
+          </div>
 
           {errors.confirmPassword && (
             <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
@@ -232,7 +264,6 @@ if(isUserPasswordChange){
           >
             {isSuccess ? "Password Changed" : "Reset Password"}
           </button>
-
         </form>
 
         <div className="mt-6 text-center">
@@ -243,7 +274,6 @@ if(isUserPasswordChange){
             Go to Login
           </button>
         </div>
-
       </div>
     </div>
   );

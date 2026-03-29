@@ -29,7 +29,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
     const isFound = await this._userRepository.findByEmail(dto.email);
     if (isFound)
-      throw new ConflictError(ResponseMessages.USER_EXIST);
+      throw new ConflictError(ResponseMessages.USER_EXISTS);
     const hashedPassword = await this._authService.hashPassword(dto.password);
     dto.password = hashedPassword;
     if (!hashedPassword)
@@ -59,7 +59,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
       dto.slug!
     );
     if (!workspace || !workspace.slug ||!workspace._id )
-      throw new NotFoundError(ResponseMessages.NOT_FOUND + "Workspace");
+      throw new NotFoundError(ResponseMessages.NO_CONTENT + "Workspace");
     await this._userRepository.addToWorkspace(
       createMember._id,
       workspace._id,
@@ -78,7 +78,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
         dto.email,
         dto.title
       );
-if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOTFOUND);
+if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND);
 
     const response = AuthMapper.mapEntityToMember(
       createMember,

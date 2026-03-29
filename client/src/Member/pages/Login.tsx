@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Eye, EyeOff } from "lucide-react";   // ← Add this import
 
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 
@@ -14,6 +15,7 @@ function Login() {
   const [load, setLoad] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false); 
   const [error, setError] = useState<string>("");
 
   const dispatch = useDispatch();
@@ -52,10 +54,8 @@ function Login() {
 
       if (message.includes("createdAt")) {
         const parsed = JSON.parse(message);
-
         const id = parsed._id;
         delete parsed._id;
-
         parsed.id = id;
 
         dispatch(setUserData(parsed));
@@ -88,32 +88,48 @@ function Login() {
 
           <h2 className="text-2xl font-semibold mb-6">Log in</h2>
 
-          {error && <p className="text-red-500">{error}</p>}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
 
+              {/* Email Field */}
               <input
                 type="email"
                 placeholder="Enter your email..."
-                className="w-full px-4 py-2 border rounded"
+                className="w-full px-4 py-2 border rounded focus:outline-none focus:border-purple-600"
                 onChange={(e) => setEmail(e.target.value)}
+                value={email}
               />
 
-              <input
-                type="password"
-                placeholder="Enter your password..."
-                className="w-full px-4 py-2 border rounded"
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              {/* Password Field with Eye Toggle */}
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password..."
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:border-purple-600 pr-10"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                />
+
+                {/* Eye Icon Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                </button>
+              </div>
 
               <div className="flex justify-between text-sm">
-                <Link to="/forgot/password" className="text-gray-600">
-                  forgot password?
+                <Link to="/forgot/password" className="text-gray-600 hover:underline">
+                  Forgot password?
                 </Link>
 
-                <Link to="/signup" className="text-purple-700">
-                  signup now
+                <Link to="/signup" className="text-purple-700 hover:underline">
+                  Sign up now
                 </Link>
               </div>
 
@@ -123,7 +139,8 @@ function Login() {
 
             <button
               type="submit"
-              className="mt-6 w-full bg-purple-700 text-white py-2 rounded"
+              className="mt-6 w-full bg-purple-700 hover:bg-purple-800 text-white py-2 rounded font-medium transition"
+              disabled={load}
             >
               Log in
             </button>
@@ -134,7 +151,6 @@ function Login() {
 
       {/* Right Section */}
       <div className="hidden lg:flex w-1/2 flex-col justify-center items-center bg-gray-100 p-8">
-
         <img
           src="/images/Login-preview.JPG"
           alt="Preview"
@@ -142,20 +158,14 @@ function Login() {
         />
 
         <div className="mt-6 text-center">
-          <p className="text-lg font-medium">
-            Explore ways to use GridSync
-          </p>
-
+          <p className="text-lg font-medium">Explore ways to use GridSync</p>
           <p className="text-gray-600 mt-2">
-            GridSync is powerful enough for any workflow,
-            but easy enough for everyone.
+            GridSync is powerful enough for any workflow, but easy enough for everyone.
           </p>
-
           <p className="italic text-sm mt-3 text-gray-700 font-semibold">
             Online GridSync maker for project management
           </p>
         </div>
-
       </div>
     </div>
   );

@@ -21,11 +21,14 @@ export const authMiddelware = () => {
     const workspaceUsecse = container.resolve(CreateWorkspaceUsecases)
     const userRepository = container.resolve(UserMongooseRepository)
     const accessToken = req.cookies.accessToken;
-    if (!accessToken) {
-      throw next(new AuthenticationError('No token provided'));
-    }
+    console.log(req.cookies,"cookiees")
+   
 
     try {
+ if (!accessToken) {
+      throw new AuthenticationError("Token not found")
+    }
+
       const decoded = await authService.verifyAccessToken(accessToken)
       if (!decoded.userId || !decoded.role) {
         throw new AuthenticationError('Invalid token payload');

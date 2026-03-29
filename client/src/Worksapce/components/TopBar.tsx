@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { logoutUserAuth } from '../../Redux/feature/AuthSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-
+import { toast } from 'react-toastify';
+import { persistor } from '../../Redux/store';
 const TopBar = () => {
   const dispacth = useDispatch()
   const navigate = useNavigate()
@@ -17,6 +18,9 @@ const TopBar = () => {
    logout(user._id).then((res)=>{
     if(res==204) {
       dispacth(logoutUserAuth())
+       persistor.purge()
+      toast.success("Logout successful");
+      
       navigate("/login")}
    })
    

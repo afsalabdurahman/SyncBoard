@@ -13,7 +13,7 @@ export class OTPRepository implements IOtpRepository {
     const document = new OTPModel({
       email: entity.email,
       otp: entity.otp,
-      expAt: entity.expireAt,
+      expAt: entity.expAt,
     });
      await document.save();
 

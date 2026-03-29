@@ -22,8 +22,6 @@ import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
 import PaymentRejected from "./Admin/Pages/PaymentRejected";
 // import OtpProtectedRoute from "./Member/protectedRoutes/OtpProtectedRoute";
-import AuthProtectRoutes from "./Worksapce/protectedRoutes/authProtectRoutes";
-import PublicProtectionRoute from "./Worksapce/protectedRoutes/PublicProtectionRoute";
 import AuthProvider from "./Worksapce/protectedRoutes/AuthProvider"
 import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
@@ -42,17 +40,22 @@ function App() {
         
         <Routes>
           <Route index element={
-            
-  <LandingPage />
+            <PublicRoute>
 
-          
-          
+  <LandingPage />    
+            </PublicRoute> 
+  
             
             } />
           <Route path='/' element={
-        
+         <PublicRoute>
+
  <LandingPage />
+         </PublicRoute>
+
            
+   
+
            
             
             }></Route>
@@ -105,11 +108,19 @@ function App() {
           ></Route>
           <Route
             path='/create/workspace'
-            element={<CreateWorkspacePage />}
+            element={
+              <ProtectedRoute>
+ <CreateWorkspacePage />
+              </ProtectedRoute>
+           
+          
+          }
           ></Route>
           <Route path='/invite/members' element={
-            
-            <InviteMembers />
+           
+ <InviteMembers />
+           
+           
             
             
             }></Route>

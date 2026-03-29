@@ -165,6 +165,8 @@ const user=await UserModel.findByIdAndUpdate(
 return user as User
 
 }
-
+async deleteuserById(userId: Types.ObjectId): Promise<void> {
+  await UserModel.findByIdAndDelete(userId)
+}
 }
 

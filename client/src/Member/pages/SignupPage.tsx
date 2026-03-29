@@ -10,6 +10,7 @@ import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 interface ErrorState {
   names: string;
   passwords: string;
+  emails: string;
   api: string;
 }
 
@@ -24,6 +25,7 @@ const SignupPage = () => {
 
   const [error, setError] = useState<ErrorState>({
     names: "",
+    emails: "",
     passwords: "",
     api: "",
   });
@@ -69,13 +71,13 @@ const SignupPage = () => {
 
     try {
       const user = await registerUser(name, email, password);
-
+localStorage.removeItem(`otp_expiry_${email}`)
       dispatch(setUserData({ email: user.email }));
 
       navigate("/verify/otp", { replace: true });
 
     } catch (err: unknown) {
-
+console.log(err,"err")
       let message = "Signup failed";
 
       if (err instanceof Error) {
@@ -84,8 +86,11 @@ const SignupPage = () => {
 
       if (message.includes("Name")) {
         setError((prev) => ({ ...prev, names: message }));
-      } else {
-        setError((prev) => ({ ...prev, api: message }));
+      } else if (message.includes("email")) {
+        setError((prev) => ({ ...prev, emails: message }));
+      }else{
+
+        setError((prv)=>({...prv,apis:message}))
       }
 
     } finally {
@@ -149,7 +154,11 @@ const SignupPage = () => {
               className="w-full p-2 border rounded focus:ring-2 focus:ring-purple-600"
               required
             />
-
+            {error.emails && (
+              <p className="text-red-500 text-sm mt-1">
+                {error.emails}
+              </p>
+            )}
           </div>
 
           {/* PASSWORD */}

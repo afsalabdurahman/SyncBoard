@@ -12,6 +12,7 @@ import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { CustomRequest } from "../../types/CustomRequest";
 import { User } from "../../../domain/entities/User";
+import { ForbiddenError } from "../../../utils/errors";
 
 @injectable()
 export class AuthController {
@@ -26,11 +27,12 @@ export class AuthController {
     try {
       const input: AdminSignupRequestDTO = req.body as AdminSignupRequestDTO
       const  user = await this._registerUseCase.execute(input);
-
+console.log(user,"userssCONTROLL")
       // setTokensInCookies(res, token, refreshToken);
 
       res.status(HttpStatusCode.CREATED).json({ user: user });
     } catch (error) {
+      console.log(error,"INCONTROLLER")
       next(error);
     }
   }
@@ -65,10 +67,13 @@ export class AuthController {
      
     try {
     console.log(req.user,"auth USER calling....")
+    if(!req.user){throw new ForbiddenError("User not found")}
         res.status(200).json({
     user: req?.user?.id,
     })
     } catch (error) {
+      
+      console.log(error,"erroAUTH ME")
       next(error)
     }
 }
