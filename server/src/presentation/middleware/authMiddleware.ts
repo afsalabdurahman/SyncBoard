@@ -22,7 +22,9 @@ export const authMiddelware = () => {
     const userRepository = container.resolve(UserMongooseRepository)
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
-      throw next(new AuthenticationError('No token provided'));
+      console.log("NOt access")
+      throw new AuthenticationError('No token Provided')
+      // throw next(new AuthenticationError('No token provided'));
     }
 
     try {

@@ -8,14 +8,16 @@ import { useNavigate } from "react-router-dom";
 import { logoutUserAuth } from '../../Redux/feature/AuthSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
+import { persistor } from '../../Redux/store';
 
 const TopBar = () => {
   const dispacth = useDispatch()
   const navigate = useNavigate()
   const user = useUser()
   const handleLogout =  async()=>{
-   logout(user._id).then((res)=>{
+   logout(user._id).then(async(res)=>{
     if(res==204) {
+           await persistor.purge();
       dispacth(logoutUserAuth())
       navigate("/login")}
    })

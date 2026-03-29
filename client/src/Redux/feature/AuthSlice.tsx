@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../Admin/types/userTypes";
+import { persistor } from "../store";
 
 interface AuthState {
   user: User | null;
@@ -20,8 +21,10 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
     },
     logoutUserAuth: (state) => {
+      
       state.user = null;
       state.isAuthenticated = false;
+    
     },
   },
 });

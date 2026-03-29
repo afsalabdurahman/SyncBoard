@@ -13,6 +13,7 @@ export class sharedController{
     res: Response,
     next: NextFunction):Promise<void>{
         try {
+          console.log("calling refreshtoken.....")
              const token  = req.cookies.refreshToken;
              
                 if (!token) throw new NotFoundError("Token not found")
