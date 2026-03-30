@@ -109,9 +109,9 @@ function App() {
           <Route
             path='/create/workspace'
             element={
-              <ProtectedRoute>
+             
  <CreateWorkspacePage />
-              </ProtectedRoute>
+            
            
           
           }

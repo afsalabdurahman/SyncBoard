@@ -40,7 +40,7 @@ export const signupApi = async (email: string, name: string, password: string): 
 }
 
 
-export const loginApi = async (email: string, password: string): Promise<{workspace:Workspace,user:User}> => {
+export const loginApi = async (email: string, password: string): Promise<{workspace:Workspace,user:User}|null> => {
   try {
     const response: AxiosResponse<AdminLoginResponse> = await apiService.post(
       "auth/user/login",
@@ -171,11 +171,9 @@ export const registerUser = async (name:string,email:string,password:string,)=>{
           name,
           role:"Admin"
         })
-        console.log(response,"REsponse")
     return response.data.user
     
   }catch(error){
-    console.log(error,"Erro")
  const err: string = catchErrorHandle(error, "Failed to send OTP")
     throw new Error(err)
   }
