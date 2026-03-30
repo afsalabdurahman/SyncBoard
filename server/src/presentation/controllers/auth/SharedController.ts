@@ -1,6 +1,6 @@
 import { injectable,inject } from "tsyringe";
 import {IRefreshtoken} from "../../../application/repositories/ishared/IRefreshToken"
-import { AuthenticationError, NotFoundError } from "../../../utils/errors";
+import { NotFoundError } from "../../../utils/errors";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { Request,Response,NextFunction } from "express";
@@ -15,12 +15,11 @@ export class sharedController{
         try {
           console.log("calling refreshtoken.....")
              const token  = req.cookies.refreshToken;
-               console.log(token,"YTOKEN EXPIRED IS WORKOIGNGG")
-                if (!token) throw new AuthenticationError("Token not found")
-     const {accessToken,refreshToken}  = await this._refreshTokenUsecase.exceute(token)
+             
+                if (!token) throw new NotFoundError("Token not found")
+     let {accessToken,refreshToken}  = await this._refreshTokenUsecase.exceute(token)
      if(!accessToken||!refreshToken) throw new NotFoundError("Tokens are not generated")
-       
-      setTokensInCookies(res,accessToken,refreshToken)
+        setTokensInCookies(res,accessToken,refreshToken)
       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS })
     }
     catch (error) {

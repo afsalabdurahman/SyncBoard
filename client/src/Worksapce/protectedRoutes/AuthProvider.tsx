@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { logoutUserAuth, setUserAuth } from "../../Redux/feature/AuthSlice";
+
+import { logoutUserAuth,setUserAuth } from "../../Redux/feature/AuthSlice";
 import apiService from "../../Services/apiServices/apiService";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { Navigate } from "react-router-dom";
@@ -9,13 +10,9 @@ import { persistor } from "../../Redux/store";
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const hasChecked = useRef(false);
 
   useEffect(() => {
-    if (hasChecked.current) return;
-    hasChecked.current = true;
-
-    const checkAuth = async () => {
+    async function checkAuth() {
       try {
         const res = await apiService.get("/auth/user/me");
         console.log(res, "AUTH ME response");
@@ -28,10 +25,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     checkAuth();
   }, [dispatch]);
+
   if (loading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white z-50">

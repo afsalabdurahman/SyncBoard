@@ -1,16 +1,13 @@
-import { Navigate } from "react-router-dom";
+import { RootState } from "@reduxjs/toolkit/query";
 import { useSelector } from "react-redux";
-import { RootState } from "@reduxjs/toolkit/query"; // Fix: usually it's from your store
+
+import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-
-  // Optional: Add a small check if you have user data too
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

@@ -28,10 +28,6 @@ export const authMiddelware = () => {
     }
 
     try {
- if (!accessToken) {
-      throw new AuthenticationError("Token not found")
-    }
-
       const decoded = await authService.verifyAccessToken(accessToken)
       if (!decoded.userId || !decoded.role) {
         throw new AuthenticationError('Invalid token payload');
