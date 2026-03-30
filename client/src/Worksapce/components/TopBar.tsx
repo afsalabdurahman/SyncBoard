@@ -9,6 +9,7 @@ import { logoutUserAuth } from '../../Redux/feature/AuthSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import { persistor } from '../../Redux/store';
+import { toast } from 'react-toastify';
 
 const TopBar = () => {
   const dispacth = useDispatch()

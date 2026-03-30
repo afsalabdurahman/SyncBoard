@@ -40,10 +40,10 @@ function App() {
         
         <Routes>
           <Route index element={
-            <PublicRoute>
+           
 
   <LandingPage />    
-            </PublicRoute> 
+           
   
             
             } />

@@ -138,7 +138,7 @@ const OtpVerification = () => {
         };
 
         dispatch(setUserData(userPayload));
-dispatch(setUserAuth(userPayload))
+// dispatch(setUserAuth(userPayload))
         setTimeout(() => {
           navigate("/create/workspace", { replace: true });
         }, 2500);

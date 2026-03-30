@@ -123,7 +123,7 @@ function WorkSpacePage() {
       {/* Backdrop overlay when RAG is open */}
       {isRagOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-20 z-30 transition-opacity duration-300"
+          className="fixed inset-0  bg-opacity-20 z-30 transition-opacity duration-300"
           onClick={() => setIsRagOpen(false)}
         />
       )}
