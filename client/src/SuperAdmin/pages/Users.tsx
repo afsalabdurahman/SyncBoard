@@ -1,8 +1,5 @@
 
 import { useEffect, useState } from "react"
-// import { Sidebar } from "../components/sidebar"
-// import { Header } from "./components/header"
-
 import { UserStats } from "../components/users/userState"
 import { UserFilters } from "../components/users/userFilter"
 import ProfieViewPage from"../components/users/UserProfilePage";
@@ -10,8 +7,6 @@ import ProfileEditPage from "../components/users/UserProfileEditPage"
 import { UserTable, type User } from "../components/users/userTable"
 import {useFetchUserPageQuery} from"../apis/fetchApi"
 import { Pagination } from "@mui/material";
-
-
 
 export const  UsersPage = () => {
     const [changePage,setChangePage]=useState(1)
@@ -25,7 +20,7 @@ export const  UsersPage = () => {
   const [user,setUser]=useState()
   const [users,setUsers]=useState([])
 
-console.log(data,"dataaa")
+
 const handleChangePage = (page) => {
   setChangePage(page);
   refetch()

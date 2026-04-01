@@ -90,10 +90,10 @@ const handleLogout = () => {
   Navigate("/login")
 };
 
-const handleApiError = (error: AxiosError) => {
-  console.error("API Error:", error);
-  // Add toast here if you want
-};
+// const handleApiError = (error: AxiosError) => {
+//   console.error("API Error:", error);
+//   // Add toast here if you want
+// };
 
 const apiService = {
   get: <T = unknown>(url: string, params = {}, config: AxiosRequestConfig = {}) =>

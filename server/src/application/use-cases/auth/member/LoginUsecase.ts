@@ -26,7 +26,7 @@ export class LoginUsecase implements ILogin {
 
     // if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const isExist = await this._userRepository.findByEmail(input.email);
-    if(!isExist || !isExist?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+    if(!isExist || !isExist?._id || !isExist.isVerified) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const user = await this._userRepository.findUser(isExist._id )
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user||!user.workspace) {
@@ -43,7 +43,7 @@ if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
       user.password!
     );
     if (!isTrue) {
-      throw new AuthenticationError(ResponseMessages.PASSWORD_FAILED);
+      throw new ForbiddenError(ResponseMessages.PASSWORD_FAILED);
     }
     if (!user.workspace?.length) {
       throw new CustomError("Create a new workspace",403,user);

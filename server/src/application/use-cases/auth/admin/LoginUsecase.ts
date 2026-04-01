@@ -20,9 +20,9 @@ export class AdminLoginUseCase implements ILoginUseCase {
 
   async execute(input: LoginRequestDTO): Promise<adminResponseDTO> {
     const isExist = await this._userRepository.findByEmail(input.email);
-    if (!isExist?._id || !isExist.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+    if (!isExist?._id || !isExist.workspace) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     const user = await this._userRepository.findUser(isExist?._id)
-    if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+    if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NO_CONTENT)
     const workspceId = user.workspace[0].workspaceId
     if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const isValid = await this._authService.comparePassword(
@@ -32,7 +32,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
     const workspace = await this._workspceRepository.findByObjectId(workspceId)
-    if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+    if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     if (workspace?.status.toLowerCase() == "suspend") throw new ForbiddenError("Workspace not found")
     if (!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
     const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id);
@@ -79,7 +79,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
       email: superAdmin.email!,
       role: superAdmin.role!,
     });
-    if (!refreshToken) throw new ValidationError(ResponseMessages.NOT_FOUND + 'Refresh Token')
+    if (!refreshToken) throw new ValidationError(ResponseMessages.USER_NOT_FOUND + 'Refresh Token')
 
     return { token, refreshToken, superAdmin }
   }

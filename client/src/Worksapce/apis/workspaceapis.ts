@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios"
 import { handleApiError } from "../../Services/apiServices/apiErrorHandle"
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle"
@@ -135,4 +136,21 @@ export const updateSubTaskStatus = async (taskId, title) => {
         throw new Error(err)
 
     }
+}
+export const  sendInvitation =async(emails,invitationLink,workspaceId)=>{
+try {
+        const response: AxiosResponse<boolean> = await apiService.post(
+            "workspace/invite",
+    
+            {
+              emails,
+              invitationLink,
+              workspaceId
+            },
+            { withCredentials: true }
+          );
+          return response
+} catch (error) {
+    catchErrorHandle(error,"Send failed")
+}
 }

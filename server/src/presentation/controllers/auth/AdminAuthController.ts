@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction, response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { NotFoundError } from "../../../utils/errors";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
 import { inject, injectable } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { adminResponseDTO, LoginRequestDTO } from "../../../application/dto/AuthDTOs";
+import {  LoginRequestDTO } from "../../../application/dto/AuthDTOs";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 
 @injectable()

@@ -104,7 +104,7 @@ export default function WorkspaceDetailsPage(props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <ToastContainer
+      {/* <ToastContainer
         position="top-center"
         autoClose={5000}
         hideProgressBar={false}
@@ -115,7 +115,7 @@ export default function WorkspaceDetailsPage(props) {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
 
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <div className="p-6 space-y-6">

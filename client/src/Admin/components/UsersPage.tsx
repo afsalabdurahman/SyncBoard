@@ -37,6 +37,7 @@ import { setUserPage } from "../../Redux/feature/users/AlluserSlice";
 
 import { usePaginationUser, useUsers } from "../hooks/userhooks";
 import { DialogMessage, userPage } from "../types/userTypes";
+import { toast } from "react-toastify";
 
 /* ---------------- TYPES ---------------- */
 
@@ -129,7 +130,7 @@ export function UsersPage() {
         updatedProfile: { isDeleted: !isRestore },
       })
     ).unwrap();
-
+toast.success("Update successfull")
     setRefreshKey((prev) => prev + 1);
 
     setIsDialogOpen(false);

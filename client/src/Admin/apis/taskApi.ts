@@ -78,3 +78,12 @@ try {
       throw new Error(err)   
       }
 }
+export const deleteProjectAttachment=async (projectId:string,url:string)=>{
+try {
+  await apiService.patch(`project/delete/attachment/${projectId}`,{url})
+  return true
+} catch (error) {
+      const err: string = catchErrorHandle(error, "Updation failed")
+      throw new Error(err)  
+}
+}

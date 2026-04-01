@@ -26,6 +26,8 @@ createRoot(document.getElementById("root")!).render(
           transition={Slide}
           toastClassName="rounded-xl shadow-md text-sm font-medium"
           bodyClassName="text-gray-700"
+          style={{ zIndex: 99999 }}
+          limit={1}
         />
       </PersistGate>
     </Provider>

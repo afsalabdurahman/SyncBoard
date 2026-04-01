@@ -11,6 +11,7 @@ import {
 } from "../../../dto/AuthDTOs";
 import { AuthMapper } from "../../../mappers/AuthMapper";
 import { ResponseMessages } from "../../../../common/erroResponse";
+import { IinvitationRepository } from "../../../../domain/interfaces/repositories/IInvitationRepository";
 @injectable()
 export class MemberRegisterUsecase implements IMemberRegister {
   constructor(
@@ -18,13 +19,17 @@ export class MemberRegisterUsecase implements IMemberRegister {
     @inject("AuthService") private _authService: IAuthService,
     @inject("WorkspaceRepository")
     private _workspaceRepository: IWorkspaceRepository,
+          @inject("InvitaionRepository") private _invitaionRepository: IinvitationRepository,
     
   ) {}
 
   async execute(
     dto: MemeberRegisterRequestDTO
   ): Promise<MemberRegisterResposeDTO> {
-  
+  const ValidLink= await this._invitaionRepository.findInvitaionLinkByEmail(dto.email);
+  // if(!ValidLink){
+  //  throw new NotFoundError("Link is expaired request to new link")
+  // }
     const isValid= AuthMapper.memberRegisterValidation(dto)
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
     const isFound = await this._userRepository.findByEmail(dto.email);

@@ -45,12 +45,14 @@ export class WorkspaceController {
   ): Promise<void> {
 
 
-    const { emails, invitationLink } = req.body;
+    const { emails, invitationLink,workspaceId } = req.body;
+    console.log(req,"requst+++++")
     console.log(emails,invitationLink,"++Contoll",req.body)
     try {
       const isSend = await this._sentInvitaionUsecase.send(
         emails,
-        invitationLink
+        invitationLink,
+        workspaceId
       );
       res.status(HttpStatusCode.OK).json(ResponseMessages.INVITAION_SEND);
     } catch (error) {

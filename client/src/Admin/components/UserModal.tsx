@@ -120,7 +120,8 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
       onClose();
 
     } catch (error) {
-      // toast.error("Failed to update user");
+      console.log(error,"err")
+       toast.error(error.message);
     }
   };
 

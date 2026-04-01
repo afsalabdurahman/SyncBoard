@@ -38,6 +38,7 @@ export class AuthMapper {
       password: dto.password,
       role: "Member",
       title: dto.title,
+      isVerified:true,
 
 
     })

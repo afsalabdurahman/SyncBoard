@@ -59,8 +59,17 @@ export class ProjectUsecase implements IProjectUsecase {
     projectId: string,
     ...args: string[]
   ): Promise<ProjectResponseDTO | null> {
-    const merged = Object.assign({}, ...args);
-
+    let merged = Object.assign({}, ...args);
+    console.log(merged,"mergedd")
+if(merged.attachedUrl.length==0){
+delete merged.attachedUrl
+}else{
+  const urls=merged.attachedUrl.map((data)=> data);
+  console.log(urls,"urls")
+  console.log(urls,"URLSSSSSSS");
+  delete merged.attachedUrl;
+await this._projectRepository.pushToAttachments(urls,projectId)
+}
     const updateProject = await this._projectRepository.updateProject(
       projectId,
       merged
@@ -76,5 +85,8 @@ export class ProjectUsecase implements IProjectUsecase {
   async paginationProjecust(workspaceId: string, page: number, limit: number, skip: number): Promise<{ items: ProjectRepositoryDTO[], totalItems: number }> {
     const { items, totalItems } = await this._projectRepository.getPagenationProjects(workspaceId, page, limit, skip)
     return { items, totalItems }
+  }
+ async deleteAttachment(projectId: string, url: string): Promise<void> {
+    await this._projectRepository.deleteAttachedURl(stringToMongoObj(projectId),url)
   }
 }

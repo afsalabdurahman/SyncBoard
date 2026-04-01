@@ -44,6 +44,7 @@ import { PlanUsecase } from "../../../application/use-cases/suscription/plans/Pl
 import { StripeService } from "../../services/StripeService"
 import { PlanRepository } from "../../repositories/PlanRepository";
 import { SuperAdminRepository } from "../../repositories/SuperAdminRepository";
+import { InvitaionRepository } from "../../repositories/InvitationRepository";
 import { DatahandleUsecase } from "../../../application/use-cases/super/DatahandleUsecase";
 //import { LogUseCases } from "../../../application/use-cases/activity/LogUsecases";
 // container.register("LogRepository",{useClass:LogRepository})
@@ -60,6 +61,7 @@ import { TicketUsecase } from "../../../application/use-cases/ticket/TicketUseca
 container.register("TicketUsecase", { useClass: TicketUsecase })
 container.register("GetUserUsecase",{useClass:GetUserUseCase})
 container.register("TicketRepository", { useClass: TicketRepository })
+container.register("InvitaionRepository",{useClass:InvitaionRepository})
 container.register("AbuseRepository", { useClass: AbuseRepository })
 container.register("AbuseUsecase", { useClass: AbuseUsecase })
 container.register("RagUsecase", { useClass: RagUseCase })

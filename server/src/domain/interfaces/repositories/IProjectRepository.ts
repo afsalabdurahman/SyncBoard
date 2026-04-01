@@ -11,4 +11,6 @@ export interface IProjectRepository extends IBaseRepository <Project> {
     countProject():Promise<number>;
     findProjectbyAdminId(id:string):Promise<Project[]>
     getPagenationProjects(workspaceId:string,page:number,limit:number,skip:number):Promise<{items:ProjectRepositoryDTO[],totalItems:number}>
+deleteAttachedURl(projectId:Types.ObjectId,url:string):Promise<void>;
+pushToAttachments(urls:string[],projectId:string):Promise<void>
 }

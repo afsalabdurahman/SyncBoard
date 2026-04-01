@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
   AdminSignupRequestDTO,
-  AdminSignupResponseDTO,
   LoginRequestDTO,
 } from "../../../application/dto/AuthDTOs";
 import { injectable, inject } from "tsyringe";
@@ -11,7 +10,6 @@ import { IAuth } from "../../../application/repositories/iauth/IAuth";
 import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { CustomRequest } from "../../types/CustomRequest";
-import { User } from "../../../domain/entities/User";
 import { ForbiddenError } from "../../../utils/errors";
 
 @injectable()

@@ -66,7 +66,8 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
   );
   const [count, setCount] = useState(0);
   const navigate = useNavigate();
-const user = useUser()
+const user = useUser();
+
   const addEmailField = (): void => {
     //validating invitaion field
     if (emailss.length < 4) {

@@ -43,14 +43,14 @@ export const authMiddelware = () => {
 
       }
       if (!user) {
-        throw new AuthenticationError('User not found');
+        throw new ForbiddenError('User not found');
       }
       if (!user.workspace || user.workspace.length === 0) {
-        throw new NotFoundError(ResponseMessages.NOT_FOUND);
+        throw new ForbiddenError(ResponseMessages.NO_CONTENT);
       }
       const workspaceId = user.workspace[0].workspaceId;
 
-      if (!workspaceId) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+      if (!workspaceId) throw new NotFoundError(ResponseMessages.NO_CONTENT)
       const workspace = await workspaceUsecse.findWorkspace(workspaceId);
       if (workspace?.status.toLowerCase() == "suspend") {
        throw new ForbiddenError('Workspace is Suspended')

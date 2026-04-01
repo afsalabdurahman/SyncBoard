@@ -6,6 +6,8 @@ import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
+import { useWorkspaceid } from "../hooks/workspacehooks";
+import { sendInvitation } from "../apis/workspaceapis";
 const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
 const Invite = () => {
   const workspaceName = useSelector((state: RootState) => {
@@ -15,6 +17,8 @@ const Invite = () => {
     const slug = state.workspace.workspace?.slug
     return { isAdmin, name, slug };
   });
+  const workspaceId=useWorkspaceid()
+
   if (workspaceName.isAdmin !== true) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
@@ -73,15 +77,7 @@ const Invite = () => {
       return false;
     }
     try {
-      const response: AxiosResponse<boolean> = await apiService.post(
-        "workspace/invite",
-
-        {
-          emails,
-          invitationLink,
-        },
-        { withCredentials: true }
-      );
+  const response = sendInvitation(emails,invitationLink,workspaceId)
 
       if (response) {
         setLoad(false);
@@ -89,7 +85,7 @@ const Invite = () => {
         toast.success("Invitation send");
         setTimeout(() => {
           // dispatch(setLog(response.data.logs))
-          navigate("/workspace");
+          // navigate("/workspace");
         }, 5000);
       }
     } catch (error) {

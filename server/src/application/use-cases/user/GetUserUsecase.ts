@@ -24,7 +24,7 @@ export class GetUserUseCase implements IUserUsecase {
   }
   async findUserByEmail(email: string): Promise<responseUser> {
     const user = await this.userRepository.findByEmail(email);
-if(!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+if(!user || !user.isVerified) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
 return user as responseUser
   }
 

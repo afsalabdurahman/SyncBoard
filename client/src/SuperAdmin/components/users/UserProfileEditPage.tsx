@@ -70,7 +70,7 @@ export default function UserProfileEditPage({ setPage, user, refetch, setUser })
       name: user.name ?? "",
       email: user.email ?? "",
       phone: user.phone ?? "",
-      bio: user.bio ?? "",
+      bio: user.about ?? "",
       role: user.role ?? "member",
       timezone: user.timezone ?? "UTC",
       locale: user.locale ?? "en-US",
@@ -84,27 +84,38 @@ export default function UserProfileEditPage({ setPage, user, refetch, setUser })
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const payload = dataMap({
-        ...formData,
-        status,
-      });
+const onSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-      await updateUser(user.id, payload);
-      await refetch?.();
-      toast.success("User profile updated successfully");
-      setPage(null);
-    } catch (err) {
-      console.error("Profile update failed:", err);
-      const errorMessage =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to update user profile. Please check your connection.";
-      toast.error(errorMessage);
-    }
-  };
+  try {
+    const payload = dataMap({
+      ...formData,
+      status,
+    });
+
+    await updateUser(user.id, payload);
+
+    toast.success("User profile updated successfully!", {
+      position: "top-right",
+      autoClose: 4000,
+    });
+
+    await refetch?.();
+    setPage(null);
+  } catch (err: any) {
+    console.error("Profile update failed:", err);
+
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Failed to update user profile. Please check your connection.";
+
+    toast.error(errorMessage, {
+      position: "top-right",
+      autoClose: 6000,
+    });
+  }
+};
 
   const onReset = () => {
     setFormData({

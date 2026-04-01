@@ -39,7 +39,7 @@ export default function WorkspaceEditPage({
   setViewDetails,
 }) {
   const [updateWorkspace, { isLoading }] = useUpdateWorkspaceMutation();
-
+const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [statusToSet, setStatusToSet] = useState(null);
 
@@ -95,7 +95,9 @@ export default function WorkspaceEditPage({
     setDialogOpen(true);
   };
 
-  const confirmStatusChange = async () => {
+const confirmStatusChange = async () => {
+    if (!statusToSet) return;
+
     try {
       await updateWorkspace({
         id: viewDetails.id,
@@ -109,13 +111,13 @@ export default function WorkspaceEditPage({
       setViewDetails((prev) => ({ ...prev, status: statusToSet }));
       refetch?.();
 
-      // ← Important fix: delay dialog close so toast has time to appear
+      // Small delay so toast appears before closing dialog
       setTimeout(() => {
         setDialogOpen(false);
         setStatusToSet(null);
-      }, 600); // 600ms is usually enough — can try 400–800ms
+      }, 700);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Status change failed:", err);
       const errorMsg = err?.data?.message || "Failed to update workspace status";
       toast.error(errorMsg);
@@ -133,7 +135,7 @@ export default function WorkspaceEditPage({
   return (
     <div className="min-h-screen bg-gray-50/70 pb-24 ml-[15em]">
       <form onSubmit={onSubmit} className="mx-auto max-w-6xl px-5 py-18 space-y-8">
-        <ToastContainer
+        {/* <ToastContainer
           position="top-center"
           autoClose={5000}
           hideProgressBar={false}
@@ -144,7 +146,7 @@ export default function WorkspaceEditPage({
           draggable
           pauseOnHover
           theme="light"
-        />
+        /> */}
 
         {/* Sticky Header */}
         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b px-6 py-4 -mx-5 md:-mx-0 flex items-center justify-between">
@@ -286,7 +288,9 @@ export default function WorkspaceEditPage({
         </Card>
 
         {/* Danger Zone */}
-        <Card className="border-red-200 bg-red-50/40 shadow-sm">
+      
+      </form>
+  <Card className="border-red-200 bg-red-50/40 shadow-sm">
           <CardHeader>
             <CardTitle className="text-red-700 flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
@@ -311,7 +315,7 @@ export default function WorkspaceEditPage({
             )}
           </CardContent>
         </Card>
-      </form>
+
 
       <ConfirmDialog
         open={dialogOpen}

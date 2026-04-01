@@ -89,4 +89,27 @@ return new Project({
       
       return projects
    }
+async deleteAttachedURl(projectId: Types.ObjectId, url: string): Promise<void> {
+   await ProjectModel.findByIdAndUpdate(
+    projectId,
+    {
+      $pull: { attachedUrl: url }
+    },
+    { new: true }
+  );
+}
+async pushToAttachments(urls: string[], projectId: string): Promise<void> {
+  await ProjectModel.findByIdAndUpdate(
+    projectId,
+    {
+      $push: {
+        attachedUrl: { $each: urls }   
+      }
+    },
+    { 
+      new: true,           
+      runValidators: true  
+    }
+  );
+}
 }

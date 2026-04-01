@@ -9,6 +9,7 @@ export interface AttachmentButtonProps {
   attachedUrl: string[];
   taskId: string;
   passURL: (url: string) => void;
+  isProject:boolean
 }
 export interface FileCardProps {
   file: string;

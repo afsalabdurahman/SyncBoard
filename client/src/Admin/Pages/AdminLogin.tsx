@@ -8,6 +8,7 @@ import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import {setSubscription} from "../../Redux/feature/subscription/subscriptionSlice";
 import { adminLogin } from "../apis/authApi";
+import { setUserAuth } from "../../Redux/feature/AuthSlice";
 const AdminLogin = () => {
 
 
@@ -27,6 +28,7 @@ const [loading, setLoading] = useState(false);
      
   console.log(response,"response<")
       // Handle successful login response
+        dispatch(setUserAuth(response?.user?._id))
        dispatch(setWorkspace(response.workspace))
             //  dispatch(setLog(response.data.logs))
              dispatch(setSubscription(response.suscribe))
