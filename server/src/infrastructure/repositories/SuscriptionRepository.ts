@@ -41,6 +41,7 @@ export class SuscriptionRepository implements ISuscription {
     const updated = await SubscriptionModel.findOneAndUpdate(
       { workspace: workspace._id },
       { $set: { planKey: plan } },
+      
       { new: true }
     )
 
@@ -77,5 +78,13 @@ export class SuscriptionRepository implements ISuscription {
   // subscriptionDetails(workspaceName: string): Promise<Subscription> {
   //   const details = await SubscriptionModel.findOne({})
   // }
+ async updateSubscriptionByWorkspaceId(workspaceId: Types.ObjectId, planKey: string, status: string): Promise<void> {
+
+await SubscriptionModel.findOneAndUpdate(
+  { workspace: workspaceId },
+  { $set: { planKey, status } },
+  { new: true }
+);
+}
 
 }

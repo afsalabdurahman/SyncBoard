@@ -38,8 +38,9 @@ export class DatahandleUsecase implements IDatahandleUsecase {
     }
     async fetchAllUsers(limit: number, skip: number): Promise<{ responseDTO: UserResponseDTO[], totalCount: number }> {
         const response = await this._superAdminRepository.getAllUsers(limit, skip);
-        console.log(response, "response")
+        console.log(response, "response from Usecase USER")
         const { responseDTO, totalCount } = DatahandleMapper.mapAllUserToResponse(response);
+       console.log(responseDTO,"totalCounrtr MApper",totalCount)
         console.log(responseDTO, totalCount, "count+++")
 
         return { responseDTO, totalCount }

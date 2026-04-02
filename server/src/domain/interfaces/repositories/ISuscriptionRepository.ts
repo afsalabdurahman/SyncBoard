@@ -8,4 +8,5 @@ export interface ISuscription {
     updateSubscriptionPlanBysuper(name: string, plan: string): Promise<void>;
     //  subscriptionDetails(workspaceName:string):Promise<Subscription>
     updateHistory(workspaceid: Types.ObjectId, id: string, date: Date, amount: number, status: string): Promise<void>
+updateSubscriptionByWorkspaceId(workspaceId:Types.ObjectId,planKey:string,status:string):Promise<void>
 }

@@ -80,10 +80,21 @@ static async mapSuperWorkspaceToResponse(
   };
 }
 
-  static mapAllUserToResponse(result: UserAggResponseDTO) {
-    const totalCount = result.totalCount
-    const responseDTO = result.userList.map((u) => ({
-     
+static mapAllUserToResponse(result: UserAggResponseDTO) {
+  const totalCount = result.totalCount;
+
+  const responseDTO = result.userList.map((u) => {
+    // Handle workspaceDetails - it can be array or object
+    const workspace = Array.isArray(u.workspaceDetails) 
+      ? u.workspaceDetails[0] || {} 
+      : u.workspaceDetails || {};
+
+    // Handle subscriptionDetails safely (can be empty array)
+    const subscription = Array.isArray(u.subscriptionDetails) && u.subscriptionDetails.length > 0
+      ? u.subscriptionDetails[0]
+      : { planKey: "free" };
+
+    return {
       id: u._id?.toString() || "",
       name: u.name || "",
       email: u.email || "",
@@ -93,21 +104,23 @@ static async mapSuperWorkspaceToResponse(
       phone: u.phone || "",
 
       workspace: {
-        name: u.workspaceDetails.name || "",
-        plan: u.subscriptionDetails[0].planKey || "free",
+        name: workspace.name || "",
+        plan: subscription.planKey || "free",
       },
 
-      joinedAt: u.createdAt?.toISOString() || "",
-      lastActivity: u.updatedAt?.toISOString() || "",
+      joinedAt: u.createdAt ? new Date(u.createdAt).toISOString() : "",
+      lastActivity: u.updatedAt ? new Date(u.updatedAt).toISOString() : "",
       loginCount: u.loginCount || 0,
       isEmailVerified: u.isEmailVerified ?? true,
       twoFactorEnabled: u.twoFactorEnabled ?? false,
-    }))
-    return {
-      responseDTO,
-      totalCount
-    }
-  }
+    };
+  });
+
+  return {
+    responseDTO,
+    totalCount,
+  };
+}
   static mapUserDetailsToResponse(result:UserDetailsAggResponseDTO): UserDetailsResponseDTO {
     return {
       id: result._id,

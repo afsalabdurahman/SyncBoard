@@ -46,7 +46,8 @@ const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    plan: "free",
+    planKey: "free",
+    status:"active"
   });
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(
     setFormData({
       name: viewDetails.name || "",
       description: viewDetails.description || "",
-      plan: viewDetails.plan || "free",
+      planKey: viewDetails.plan || "free",
     });
   }, [viewDetails]);
 
@@ -65,7 +66,7 @@ const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(
   };
 
   const handlePlanChange = (newPlan) => {
-    setFormData((prev) => ({ ...prev, plan: newPlan }));
+    setFormData((prev) => ({ ...prev, planKey: newPlan }));
   };
 
   const onSubmit = async (e) => {
@@ -78,7 +79,7 @@ const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(
       }).unwrap();
 
       toast.success("Workspace updated successfully");
-      setViewDetails((prev) => ({ ...prev, name: formData.name, plan: formData.plan }));
+      setViewDetails((prev) => ({ ...prev, name: formData.name, plan: formData.planKey }));
       refetch?.();
     } catch (err) {
       console.error("Workspace update failed:", err);
@@ -88,6 +89,8 @@ const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(
         "Failed to update workspace. Please try again.";
       toast.error(errorMsg);
     }
+    
+    //  setDetails(null)
   };
 
   const requestStatusChange = (newStatus) => {
@@ -130,7 +133,7 @@ const confirmStatusChange = async () => {
 
   if (!viewDetails) return <div className="p-10 text-center">Loading workspace...</div>;
 
-  const isFree = formData.plan === "free";
+  const isFree = formData.planKey === "free";
 
   return (
     <div className="min-h-screen bg-gray-50/70 pb-24 ml-[15em]">
@@ -267,7 +270,7 @@ const confirmStatusChange = async () => {
                   onClick={() => handlePlanChange(p.id)}
                   className={cn(
                     "relative flex flex-col items-center p-6 border-2 rounded-xl transition-all hover:shadow-md",
-                    formData.plan === p.id
+                    formData.planKey === p.id
                       ? `border-${p.color}-500 bg-${p.color}-50 ring-2 ring-${p.color}-300/50`
                       : "border-gray-200 hover:border-gray-300"
                   )}
@@ -276,7 +279,7 @@ const confirmStatusChange = async () => {
                     className={cn("h-10 w-10 mb-3", `text-${p.color}-600`)}
                   />
                   <span className="font-semibold text-lg">{p.label}</span>
-                  {formData.plan === p.id && (
+                  {formData.planKey === p.id && (
                     <div className="absolute -top-2 -right-2 bg-green-600 text-white text-xs px-2.5 py-1 rounded-full font-medium">
                       Active
                     </div>

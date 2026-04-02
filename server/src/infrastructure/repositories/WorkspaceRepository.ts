@@ -53,7 +53,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 return true
   }
   async updateWorkspaceDate(workspaceId: string, merge: Record<string,string>): Promise<Workspace | null> {
-
+console.log(merge,"WORKSPCE REPOSITORY")
     const objectId = new mongoose.Types.ObjectId(workspaceId); 
     const updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
   { _id: objectId },

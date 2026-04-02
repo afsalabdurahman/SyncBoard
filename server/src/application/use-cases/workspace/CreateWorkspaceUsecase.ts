@@ -19,6 +19,7 @@ import { slugify } from "../../../utils/slug";
 import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
 import { Workspace } from "../../../domain/entities/Workspace";
 import { ISuscription } from "../../../domain/interfaces/repositories/ISuscriptionRepository";
+import { stringToMongoObj } from "../../../utils/convertMongoObject";
 
 
 @injectable()
@@ -81,18 +82,26 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   }
 
   async updateWorkspaceData(id: string, merge: Record<string, string>): Promise<void> {
-const isValid=WorkspaceMapper.workspaceUpdateValidator(merge);
+console.log(id,"mergeiDDDDDDDDDCALLING??",merge)
+    const isValid=WorkspaceMapper.workspaceUpdateValidator(merge);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
+if(merge.planKey){
+  
+  this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id),merge.planKey,"active")
+  
+ 
 
     // if (merge.plan) {
     //   await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name, merge.plan);
 
     // } else {
+
+    }
       await this._workspaceRepository.updateWorkspaceDate(id, merge)
    
 
 
-  }
+}
   async generateWorkspaceExcel(): Promise<Buffer> {
     const workspaceData = await this._workspaceRepository.findAll();
 
