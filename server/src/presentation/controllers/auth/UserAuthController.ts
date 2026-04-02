@@ -11,6 +11,7 @@ import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { CustomRequest } from "../../types/CustomRequest";
 import { ForbiddenError } from "../../../utils/errors";
+import { OAuth2Client } from "google-auth-library";
 
 @injectable()
 export class AuthController {
@@ -53,7 +54,7 @@ console.log(user,"userssCONTROLL")
      async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
    try {
        const userId=req.params.id
-       
+       console.log(userId,"userIDD")
          await this._loginUsecase.logoutUser(userId)
           removeTokensInCookies(res)
           res.status(HttpStatusCode.NO_CONTENT).json({message:ResponseMessages.LOGGED_OUT})
@@ -74,5 +75,23 @@ console.log(user,"userssCONTROLL")
       console.log(error,"erroAUTH ME")
       next(error)
     }
+}
+async googleAuth(req:Request,res:Response,next:NextFunction):Promise<void>{
+  const { credential } = req.body;
+ console.log(credential,"REq>BODYYYY")
+  try {
+  const  {workspace,savedUser,token,refreshToken}=await this._registerUseCase.googleAuth(credential);
+  if(workspace){
+        setTokensInCookies(res, token, refreshToken);
+    res.status(HttpStatusCode.OK).json({workspace,savedUser})
+  }else{
+        setTokensInCookies(res, token, refreshToken);
+    res.status(HttpStatusCode.CREATED).json({savedUser})
+  }
+  } catch (error) {
+    console.log(error,"eroror CAtch")
+    next(error)
+  }
+ 
 }
 }

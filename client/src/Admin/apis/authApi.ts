@@ -23,3 +23,20 @@ console.log(data,"dataADminLOGIN")
     throw new Error("Admin login failed");
   }
 };
+export const googleAdminAuth = async (credential: string,
+): Promise<AdminLoginResponse> => {
+  try {
+    const { data } = await apiService.post<AdminLoginResponse>(
+      "auth/admin/google",
+     {credential}
+    );
+console.log(data,"dataADminLOGIN")
+    return data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+
+    throw new Error("Admin login failed");
+  }
+};

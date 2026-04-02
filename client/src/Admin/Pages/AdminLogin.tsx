@@ -6,41 +6,64 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
-import {setSubscription} from "../../Redux/feature/subscription/subscriptionSlice";
-import { adminLogin } from "../apis/authApi";
+import { setSubscription } from "../../Redux/feature/subscription/subscriptionSlice";
+import { adminLogin, googleAdminAuth } from "../apis/authApi";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
+import { GoogleLogin } from "@react-oauth/google";
 const AdminLogin = () => {
 
 
   const dispatch = useDispatch();
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-   
-    try {
-      const response = await adminLogin(email,password)
 
-     
-  console.log(response,"response<")
-      // Handle successful login response
-        dispatch(setUserAuth(response?.user?._id))
-       dispatch(setWorkspace(response.workspace))
-            //  dispatch(setLog(response.data.logs))
-             dispatch(setSubscription(response.suscribe))
-            dispatch(setUserData(response.user))
+    try {
+      const response = await adminLogin(email, password)
+
+
+      console.log(response, "response<")
+
+      dispatch(setUserAuth(response?.user?._id))
+      dispatch(setWorkspace(response.workspace))
+      //  dispatch(setLog(response.data.logs))
+      dispatch(setSubscription(response.suscribe))
+      dispatch(setUserData(response.user))
       navigate("/admin/dashboard");
-   
+
     } catch (error) {
       setLoading(false);
       setError(true);
-   
+
     }
-  };
+
+
+  }
+
+  const handleSuccess  = async(credentialResponse) =>{
+try {
+
+
+  const response = await googleAdminAuth(credentialResponse.credential);
+   console.log(response, "response<")
+    dispatch(setUserAuth(response?.user?._id))
+      dispatch(setWorkspace(response.workspace))
+      //  dispatch(setLog(response.data.logs))
+      dispatch(setSubscription(response.suscribe))
+      dispatch(setUserData(response.user))
+      navigate("/admin/dashboard");
+} catch (error) {
+  console.log(error,"err")
+  setLoading(false);
+      setError(true);
+}
+}
+  
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
@@ -52,7 +75,7 @@ const [loading, setLoading] = useState(false);
           Admin Login
         </h2>
         {error ?
-        <p className="text-center text-red-800">Invalid email or password</p>:null}
+          <p className="text-center text-red-800">Invalid email or password</p> : null}
         <form onSubmit={handleLogin} className='space-y-4'>
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>
@@ -80,7 +103,7 @@ const [loading, setLoading] = useState(false);
               placeholder='••••••••'
             />
           </div>
-            <div className="flex justify-end">
+          <div className="flex justify-end">
             <button
               type="button"
               className="text-sm text-blue-600 hover:underline focus:outline-none"
@@ -88,7 +111,7 @@ const [loading, setLoading] = useState(false);
             >
               Forgot password?
             </button>
-            </div>
+          </div>
           <button
             type='submit'
             className='w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200'
@@ -96,8 +119,16 @@ const [loading, setLoading] = useState(false);
             Login
           </button>
         </form>
-        {loading?
-        <LoadingSpinner/>:null}
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={() => console.log('Login Failed')}
+          useOneTap
+          theme="outline"
+          size="large"
+          text="continue_with"
+        />
+        {loading ?
+          <LoadingSpinner /> : null}
       </div>
     </div>
   );

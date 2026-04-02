@@ -3,6 +3,7 @@ import { WorkspaceMembership } from "../../types/workpaceTypes";
 
 
 export class User {
+  googleId?:string;
   email: string;
   password?: string;
   name: string;
@@ -28,6 +29,7 @@ export class User {
   verificationExpiresAt?: Date;
 
   constructor(params: {
+      googleId?:string;
     email: string;
     password?: string;
     name: string;
@@ -52,6 +54,7 @@ export class User {
  isVerified?: boolean;                 
   verificationExpiresAt?: Date; 
   }) {
+    this.googleId =params.googleId;
     this.email = params.email;
     this.password = params.password;
     this.name = params.name;

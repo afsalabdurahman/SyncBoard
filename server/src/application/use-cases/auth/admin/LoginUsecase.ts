@@ -8,9 +8,13 @@ import { ISuscription } from "../../../../domain/interfaces/repositories/ISuscri
 import { Subscription } from "../../../../domain/entities/Suscription";
 import { adminResponseDTO, LoginRequestDTO, SuperadminLoginResponseDTO, } from "../../../dto/AuthDTOs";
 import { ResponseMessages } from "../../../../common/erroResponse";
+import { envConfig } from "../../../../infrastructure/config/env.config";
+import { OAuth2Client } from "google-auth-library";
+import { User } from "../../../../domain/entities/User";
 
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
+  private client = new OAuth2Client(envConfig.GOOGLE_CLIENT_ID);
   constructor(
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private _authService: IAuthService,
@@ -65,6 +69,64 @@ export class AdminLoginUseCase implements ILoginUseCase {
     return { user, workspace, suscribe, token, refreshToken } as adminResponseDTO;
   }
 
+  async googleAuthAdmin(credential: string): Promise<adminResponseDTO | null> {
+
+
+    const ticket = await this.client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    console.log(ticket)
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, } = payload;
+
+    const existingUser = await this._userRepository.findByEmail(email);
+    if (existingUser?.googleId == googleId) {
+      if (existingUser?.workspace?.[0]?.workspaceId) {
+
+        const token = this._authService.generateToken({
+          id: existingUser._id!,
+          email: existingUser.email!,
+          role: existingUser.role!,
+        });
+        const refreshToken = this._authService.generateRefreshToken({
+          id: existingUser._id!,
+          email: existingUser.email!,
+          role: existingUser.role!,
+        });
+
+        const workspaceData = await this._workspceRepository.findByObjectId(existingUser?.workspace[0].workspaceId)
+        if (!workspaceData) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+        const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(existingUser?._id ?? "");
+        let mySuscription;
+        if (!isSuscribed) {
+          const entity = new Subscription({
+            user: existingUser._id,
+            workspace: workspaceData._id?.toString(),
+            planKey: "free",
+            status: "trialing"
+          });
+          mySuscription = await this._suscriptionRepository.create(entity)
+        }
+        const suscribe = isSuscribed ? isSuscribed : mySuscription;
+        return { user: existingUser, workspace: workspaceData, suscribe, token, refreshToken } as adminResponseDTO
+      }
+    }
+    return null;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   async superAdmin(input: LoginRequestDTO): Promise<SuperadminLoginResponseDTO | null> {
     const superAdmin = await this._userRepository.findByEmail(input.email)
     if (!superAdmin || !superAdmin.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
@@ -83,5 +145,6 @@ export class AdminLoginUseCase implements ILoginUseCase {
 
     return { token, refreshToken, superAdmin }
   }
+
 
 }

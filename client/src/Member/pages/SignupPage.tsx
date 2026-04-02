@@ -4,8 +4,13 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../Redux/store";
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import { registerUser } from "../apis/authApi";
-import { useNavigate } from "react-router-dom";
+import { Await, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
+import { GoogleLogin } from "@react-oauth/google";
+import apiService from "../../Services/apiServices/apiService";
+import { setUserAuth } from "../../Redux/feature/AuthSlice";
+import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
+
 
 interface ErrorState {
   names: string;
@@ -97,7 +102,38 @@ console.log(err,"err")
       setLoading(false);
     }
   };
-
+const handleSuccess =async (credentialResponse) =>{
+  console.log(credentialResponse,"SUCCESS GOOGLE")
+  try {
+  const response= await apiService.post('/auth/google',{credential:credentialResponse.credential,})
+console.log(response,"response+++") ;
+if(response.status==201){
+  const userPayload = {
+            email: response.data.savedUser.email,
+            name: response.data.savedUser.name,
+            isAdmin: true,
+            id: response.data.savedUser._id,
+          };
+  
+          dispatch(setUserData(userPayload));
+  navigate("/create/workspace")
+}else if(response.status == 200){
+    const userPayload = {
+              email: response.data.savedUser.email,
+              name: response.data.savedUser.name,
+              isAdmin: true,
+              role:response.data.savedUser.role,
+              id: response.data.savedUser._id,
+            };
+     dispatch(setUserAuth(userPayload.id));
+            dispatch(setUserData(userPayload));
+            dispatch(setWorkspace(response.data.workspace))
+    navigate("/workspace")
+}
+} catch (error) {
+    console.log(error,"error")
+  }
+}
   /* ---------------- UI ---------------- */
 
   return (
@@ -214,6 +250,14 @@ console.log(err,"err")
           </button>
 
         </form>
+        <GoogleLogin
+      onSuccess={handleSuccess}
+      onError={() => console.log('Login Failed')}
+      useOneTap   
+      theme="outline"
+      size="large"
+      text="continue_with"
+    />
 
       </div>
 

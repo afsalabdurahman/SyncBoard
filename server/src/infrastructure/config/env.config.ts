@@ -19,5 +19,6 @@ export const envConfig = {
   STRIPE_PAYMENT_CANCEL:process.env.STRIPE_CANCEL_URL,
   STRIPE_PAYMENT_SUCCESS:process.env.PAYMENT_SUCCESS_URL,
   GROKE_API_KEY:process.env.GROKE_API_KEY,
-  LLM_MODEL:process.env.LLM_MODEL||"your model name"
+  LLM_MODEL:process.env.LLM_MODEL||"your model name",
+  GOOGLE_CLIENT_ID:process.env.GOOGLE_CLIENT_ID
 };

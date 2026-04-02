@@ -6,7 +6,7 @@ import { boolean } from "zod";
 
 
 export interface UserDoument extends Document {
- 
+ googleId:string
    name: string;
    role: UserRole
   email: string;
@@ -35,8 +35,9 @@ export interface UserDoument extends Document {
 
 const userSchema = new Schema<UserDoument>(
   {
+    googleId:{type:String,unique:true},
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true,select:false },
+    password: { type: String,select:false },
     name: { type: String, required: true },
     role: {
       type: String,

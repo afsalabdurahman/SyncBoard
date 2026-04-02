@@ -16,7 +16,7 @@ const TopBar = () => {
   const navigate = useNavigate()
   const user = useUser()
   const handleLogout =  async()=>{
-   logout(user._id).then(async(res)=>{
+   logout(user._id ?? user.id).then(async(res)=>{
     if(res==204) {
            await persistor.purge();
       dispacth(logoutUserAuth())

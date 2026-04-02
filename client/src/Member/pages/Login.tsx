@@ -9,6 +9,8 @@ import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
 
 import { loginApi } from "../apis/authApi";
+import { GoogleLogin } from "@react-oauth/google";
+import apiService from "../../Services/apiServices/apiService";
 
 function Login() {
   const [load, setLoad] = useState<boolean>(false);
@@ -67,7 +69,40 @@ function Login() {
       setLoad(false);
     }
   };
+const handleSuccess =async (credentialResponse) =>{
+  console.log(credentialResponse,"SUCCESS GOOGLE")
+  try {
+  const response= await apiService.post('/auth/google',{credential:credentialResponse.credential,})
+console.log(response,"response+++");
+if(response.status==200){
+  const userPayload = {
+            email: response.data.savedUser.email,
+            name: response.data.savedUser.name,
+            isAdmin: true,
+            role:response.data.savedUser.role,
+            id: response.data.savedUser._id,
+          };
+   dispatch(setUserAuth(userPayload.id));
+          dispatch(setUserData(userPayload));
+          dispatch(setWorkspace(response.data.workspace))
+  navigate("/workspace")
+}else if(response.status == 201){
 
+    const userPayload = {
+              email: response.data.savedUser.email,
+              name: response.data.savedUser.name,
+              isAdmin: true,
+              id: response.data.savedUser._id,
+            };
+    
+            dispatch(setUserData(userPayload));
+    navigate("/create/workspace")
+  }
+  
+}catch (error) {
+    console.log(error,"error")
+  }
+}
   return (
     <div className="min-h-screen flex">
       {/* Login Section */}
@@ -117,7 +152,14 @@ function Login() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-
+  <GoogleLogin
+      onSuccess={handleSuccess}
+      onError={() => console.log('Login Failed')}
+      useOneTap   
+      theme="outline"
+      size="large"
+      text="continue_with"
+    />
               <div className="flex justify-between text-sm">
                 <Link to="/forgot/password" className="text-gray-600 hover:underline">
                   Forgot password?

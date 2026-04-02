@@ -27,6 +27,7 @@ import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
 import { useSelector } from "react-redux";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
   useSelector((state)=>{
@@ -36,6 +37,7 @@ function App() {
     <>
     
       <BrowserRouter>
+      
       <AuthProvider>
         
         <Routes>

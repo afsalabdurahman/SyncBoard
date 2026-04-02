@@ -22,10 +22,12 @@ router.post("/user/sendotp", (req, res, next) => otpController.sendOTP(req, res,
 router.post("/user/verifyotp", (req, res, next) => otpController.verifyOtp(req, res, next));
 router.post("/user/login", (req, res, next) => authController.login(req, res, next));
 router.post("/admin/login", (req, res, next) => adminController.LoginUsesCase(req, res, next));
+router.post("/admin/google",(req, res, next) => adminController.googleAdminAuth(req, res, next));
 router.post("/super/login", (req, res, next) => { superController.LoginUsesCase(req, res, next) })
 router.post("/refresh-token", (req, res, next) => sharedAuthController.generateNewToken(req, res, next));
 router.patch("/logout/:id", (req, res, next) => { authController.logout(req, res, next) })
 router.post("/user/forgot/password", (req, res, next) => otpController.reSendOTP(req, res, next))
 router.get("/user/me",memberAuth,authController.authMe.bind(authController))
+router.post("/google",(req,res,next)=>authController.googleAuth(req,res,next))
 export default router;
 

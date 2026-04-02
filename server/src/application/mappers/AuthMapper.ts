@@ -10,8 +10,8 @@ export class AuthMapper {
     return new User({
       email: dto.email,
       name: dto.name as string,
-      password: dto.password,
-      role: dto.role as UserRole,
+      password: dto?.password,
+      role: dto?.role as UserRole,
       isAdmin: true,
       isVerified:false,
       verificationExpiresAt:verificationExpiresAt

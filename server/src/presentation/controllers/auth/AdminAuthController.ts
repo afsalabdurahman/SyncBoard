@@ -29,4 +29,18 @@ export class AdminAuthController {
       next(error);
     }
   }
+  async googleAdminAuth(req:Request,res:Response,next:NextFunction):Promise<void>{
+    try {
+      console.log(req.body,"BODYYYY");
+       const { credential } = req.body;
+       const response = await this._loginUseCase.googleAuthAdmin(credential);
+         if (!response) {
+        throw new NotFoundError("User is found");
+      }
+       setTokensInCookies(res, response.token, response.refreshToken);
+        res.status(HttpStatusCode.OK).json({ user:response.user, workspace:response.workspace,suscribe:response.suscribe });
+    } catch (error) {
+      next(error)
+    }
+  }
 }
