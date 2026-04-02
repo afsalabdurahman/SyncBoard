@@ -86,73 +86,128 @@ console.log(AdminEntity,"entity")
     return savedUser
 
   }
-  async googleAuth(credential: string): Promise<{workspace:Workspace|null,savedUser:User,token:string,refreshToken:string}> {
+ async googleAuth(
+  credential: string
+): Promise<{
+  workspace: Workspace | null;
+  savedUser: User;
+  token: string;
+  refreshToken: string;
+}> {
 
-    
-     const ticket = await this.client.verifyIdToken({
-       idToken: credential,
-       audience: process.env.GOOGLE_CLIENT_ID,
-     });
-     console.log(ticket)
-     const payload = ticket.getPayload();
-     const { sub: googleId, email, name, picture } = payload;
-     const newUser:User={
-      name,
-      email,
-      googleId,
-      isVerified:true,
-      role:"Admin"
-     }
-         const existingUser = await this._userRepository.findByEmail(email);
-if(existingUser?.googleId){
-  if(existingUser.workspace?.[0]?.workspaceId){
+  // 🔐 1. Verify Google Token
+  const ticket = await this.client.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
 
-  
-const token = this._authService.generateToken({
-       id: existingUser._id!,
-       email: existingUser.email!,
-       role: existingUser.role!,
-     });
-     const refreshToken = this._authService.generateRefreshToken({
-       id: existingUser._id!,
-       email: existingUser.email!,
-       role: existingUser.role!,
-     });
+  const payload = ticket.getPayload();
 
-         const workspaceData = await this._workspceRepository.findByObjectId(existingUser.workspace[0].workspaceId)
-    if (!workspaceData) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+  if (!payload || !payload.email) {
+    throw new Error("Invalid Google token");
+  }
 
-     return {workspace:workspaceData,savedUser:existingUser,token,refreshToken}
-}else{
+  const { sub: googleId, email, name, picture } = payload;
+
+  // 🧠 2. Check existing user by email (IMPORTANT FIX)
+  let existingUser = await this._userRepository.findByEmail(email);
+
+  // ============================================================
+  // ✅ CASE 1: USER EXISTS → LOGIN FLOW
+  // ============================================================
+  if (existingUser) {
+
+    // 🔥 Attach googleId if missing (Account linking)
+    if (!existingUser.googleId) {
+      // existingUser = await this._userRepository.update(existingUser._id!, {
+      //   googleId,
+      //   isVerified: true,
+      //   name: name || existingUser.name,
+      // });
+    }
+
+    // 🔐 Generate tokens
     const token = this._authService.generateToken({
-       id: existingUser._id!,
-       email: existingUser.email!,
-       role: existingUser.role!,
-     });
-     const refreshToken = this._authService.generateRefreshToken({
-       id: existingUser._id!,
-       email: existingUser.email!,
-       role: existingUser.role!,
-     });
-    await this._userRepository.updateOnlineStatus(existingUser._id??"");
-    return {workspace:null,savedUser:existingUser,token,refreshToken}
-}
+      id: existingUser._id!,
+      email: existingUser.email!,
+      role: existingUser.role!,
+    });
 
-}
-    const savedUser = await this._userRepository.create(newUser);
-    if(!savedUser) throw new ConflictError("Registration failed")
-   const token = this._authService.generateToken({
-       id: savedUser._id!,
-       email: savedUser.email!,
-       role: savedUser.role!,
-     });
-     const refreshToken = this._authService.generateRefreshToken({
-       id: savedUser._id!,
-       email: savedUser.email!,
-       role: savedUser.role!,
-     });
-    await this._userRepository.updateOnlineStatus(savedUser._id??"");
-    return {workspace:null,savedUser,token,refreshToken}
- 
+    const refreshToken = this._authService.generateRefreshToken({
+      id: existingUser._id!,
+      email: existingUser.email!,
+      role: existingUser.role!,
+    });
+
+    // 🟢 Update online status
+    await this._userRepository.updateOnlineStatus(existingUser._id ?? "");
+
+    // 📦 Fetch workspace if exists
+    if (existingUser.workspace?.[0]?.workspaceId) {
+      const workspaceData = await this._workspceRepository.findByObjectId(
+        existingUser.workspace[0].workspaceId
+      );
+
+      if (!workspaceData) {
+        throw new NotFoundError(ResponseMessages.NO_CONTENT);
+      }
+
+      return {
+        workspace: workspaceData,
+        savedUser: existingUser,
+        token,
+        refreshToken,
+      };
+    }
+
+    return {
+      workspace: null,
+      savedUser: existingUser,
+      token,
+      refreshToken,
+    };
+  }
+
+  // ============================================================
+  // ✅ CASE 2: NEW USER → SIGNUP FLOW
+  // ============================================================
+
+  const newUser: User = {
+    name,
+    email,
+    googleId,
+    isVerified: true,
+    role: "Admin",
+    avatar: picture, // optional but recommended
+  };
+
+  const savedUser = await this._userRepository.create(newUser);
+delete savedUser?.password
+  if (!savedUser) {
+    throw new ConflictError("Registration failed");
+  }
+
+  // 🔐 Generate tokens
+  const token = this._authService.generateToken({
+    id: savedUser._id!,
+    email: savedUser.email!,
+    role: savedUser.role!,
+  });
+
+  const refreshToken = this._authService.generateRefreshToken({
+    id: savedUser._id!,
+    email: savedUser.email!,
+    role: savedUser.role!,
+  });
+
+  // 🟢 Update online status
+  await this._userRepository.updateOnlineStatus(savedUser._id ?? "");
+
+  return {
+    workspace: null,
+    savedUser,
+    token,
+    refreshToken,
+  };
 }
 }

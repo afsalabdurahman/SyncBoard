@@ -61,7 +61,8 @@ if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
       role: user.role!,
     });
     const workspaceData = await this._workspaceRepository.findByObjectId(user.workspace[0].workspaceId)
-    if (!workspaceData) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+    if (!workspaceData) throw new NotFoundError(ResponseMessages.NO_CONTENT);
+    delete user.password;
     return AuthMapper.mapEntityToMember(user, workspaceData, token, refreshToken)
 
   }

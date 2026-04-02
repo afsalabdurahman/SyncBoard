@@ -40,6 +40,7 @@ export class AdminAuthController {
        setTokensInCookies(res, response.token, response.refreshToken);
         res.status(HttpStatusCode.OK).json({ user:response.user, workspace:response.workspace,suscribe:response.suscribe });
     } catch (error) {
+      
       next(error)
     }
   }

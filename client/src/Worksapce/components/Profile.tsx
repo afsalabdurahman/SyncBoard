@@ -251,7 +251,10 @@ export default function Profile() {
     );
   };
 
-
+const addPassword = ()=>{
+  console.log("password");
+  navigate("/add/password");
+}
 
   return (
     <div className=' mt-[em] overflow-x-auto overflow-y-auto  '>
@@ -450,13 +453,22 @@ export default function Profile() {
                     </button>
                   )}
                 </div>
+                {Userdata.userData.user.googleId?
+              <button
+                  onClick={addPassword}
+                  className='px-4 py-2 text-sm font-semibold rounded-md bg-red-600 text-white border border-red-700 shadow hover:bg-red-700 transition-colors flex items-center gap-2 h-[3em]'
+                >
+                  <Key className='flex-shrink-0 h-5 w-5 text-white' />
+                  Add new password
+                </button>:
                 <button
                   onClick={changePassword}
                   className='px-4 py-2 text-sm font-semibold rounded-md bg-red-600 text-white border border-red-700 shadow hover:bg-red-700 transition-colors flex items-center gap-2 h-[3em]'
                 >
                   <Key className='flex-shrink-0 h-5 w-5 text-white' />
                   Change Password
-                </button>
+                </button>  
+              }
                 
               </div>
             </div>

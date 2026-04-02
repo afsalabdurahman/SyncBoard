@@ -28,6 +28,7 @@ import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
 import { useSelector } from "react-redux";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import  AddPassword  from "./Worksapce/components/AddPassword";
 
 function App() {
   useSelector((state)=>{
@@ -93,9 +94,7 @@ function App() {
                    <PublicRoute>
 
   <PasswordResetPage />
-                   </PublicRoute>
-          
-          
+                   </PublicRoute>  
           }
           ></Route>
           <Route
@@ -104,10 +103,17 @@ function App() {
           
    <ChangePasswordPage />
           
-           
-          
           }
           ></Route>
+
+<Route path="/add/password"
+element={
+  <AddPassword/>
+}>
+
+</Route>
+
+
           <Route
             path='/create/workspace'
             element={
