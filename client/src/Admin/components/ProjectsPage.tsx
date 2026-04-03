@@ -73,7 +73,6 @@ export default function ProjectsPage() {
   const projects = useProjects();
   const workspaceid = useWorkspaceid();
 
-  console.log(projects,"projectss")
   const { page, rowPerPage, totalItems } = usePagination();
 
   const logId = useSelector((state: RootState) => state.workspace.workspace.logId);

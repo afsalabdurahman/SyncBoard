@@ -36,10 +36,9 @@ export default function CurrentPlanOverview({
     }
     fetchPlans()
   }, [])
-  console.log(plans, "setPLance");
-  console.log(currentPlan, "currenTAPLSN")
+
   const filterPlan = plans.filter((plan) => plan.key === currentPlan);
-  console.log(filterPlan, "filterd")
+
   const planDetails = {
     free: { price: "$0", features: ["Basic features", "Limited usage"] },
     basic: { price: "$10", features: ["Basic features", "Limited usage"], priceId: "this isprice id" },

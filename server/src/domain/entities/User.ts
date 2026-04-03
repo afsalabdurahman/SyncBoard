@@ -3,7 +3,7 @@ import { WorkspaceMembership } from "../../types/workpaceTypes";
 
 
 export class User {
-  googleId?:string;
+  googleId?:string|null;
   email: string;
   password?: string;
   name: string;

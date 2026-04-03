@@ -82,7 +82,6 @@ localStorage.removeItem(`otp_expiry_${email}`)
       navigate("/verify/otp", { replace: true });
 
     } catch (err: unknown) {
-console.log(err,"err")
       let message = "Signup failed";
 
       if (err instanceof Error) {
@@ -106,7 +105,6 @@ const handleSuccess =async (credentialResponse) =>{
   console.log(credentialResponse,"SUCCESS GOOGLE")
   try {
   const response= await apiService.post('/auth/google',{credential:credentialResponse.credential,})
-console.log(response,"response+++") ;
 if(response.status==201){
   const userPayload = {
             email: response.data.savedUser.email,

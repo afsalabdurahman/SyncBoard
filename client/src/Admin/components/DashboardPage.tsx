@@ -52,7 +52,6 @@ export function DashboardPage() {
 
 
   const initialState = useSelector((state: RootState) => {
-    console.log(state,"stee+++++++USerADminDASHBOARD")
     const countProject = state.projects.list.length;
     const countProjectCompleted = state.projects.list.filter((project)=>project.status =="Completed");
      const countProjectInProgress = state.projects.list.filter((project)=>project.status =="In Progress");
@@ -94,7 +93,6 @@ const taskStatusData = [
     (state: RootState) => state.workspace.workspace.slug
   );
 
-console.log(initialState,"omitails State")
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">

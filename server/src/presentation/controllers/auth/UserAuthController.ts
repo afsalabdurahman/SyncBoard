@@ -25,6 +25,7 @@ export class AuthController {
     next: NextFunction): Promise<void> {
     try {
       const input: AdminSignupRequestDTO = req.body as AdminSignupRequestDTO
+      console.log("is calling.. IVNVYTE link")
       const  user = await this._registerUseCase.execute(input);
 console.log(user,"userssCONTROLL")
       // setTokensInCookies(res, token, refreshToken);
@@ -78,7 +79,7 @@ console.log(user,"userssCONTROLL")
 }
 async googleAuth(req:Request,res:Response,next:NextFunction):Promise<void>{
   const { credential } = req.body;
- console.log(credential,"REq>BODYYYY")
+
   try {
   const  {workspace,savedUser,token,refreshToken}=await this._registerUseCase.googleAuth(credential);
   if(workspace){

@@ -77,14 +77,14 @@ export class MemberController {
     };
   
     try {
-      const response =
-        await this._memberRegisterUsecase.execute(input);
+      const response = await this._memberRegisterUsecase.execute(input);
 
       setTokensInCookies(res, response.token, response.refreshToken);
       res
         .status(HttpStatusCode.CREATED)
         .json({ user: response.user, workspace: response.workspace });
     } catch (error) {
+      console.log(error,"error")
       next(error);
     }
   }

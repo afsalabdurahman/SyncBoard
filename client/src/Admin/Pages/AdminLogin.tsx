@@ -32,7 +32,6 @@ const AdminLogin = () => {
     try {
       const response = await adminLogin(email, password);
 
-      console.log(response, "response<");
 
       dispatch(setUserAuth(response?.user?._id));
       dispatch(setWorkspace(response.workspace));
@@ -49,7 +48,6 @@ const AdminLogin = () => {
   const handleSuccess = async (credentialResponse: any) => {
     try {
       const response = await googleAdminAuth(credentialResponse.credential);
-      console.log(response, "response<");
 
       dispatch(setUserAuth(response?.user?._id));
       dispatch(setWorkspace(response.workspace));
@@ -57,7 +55,6 @@ const AdminLogin = () => {
       dispatch(setUserData(response.user));
       navigate("/admin/dashboard");
     } catch (error) {
-      console.log(error, "err");
       setLoading(false);
       setError(true);
     }

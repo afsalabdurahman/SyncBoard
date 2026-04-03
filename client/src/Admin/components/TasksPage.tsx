@@ -85,7 +85,6 @@ const handleChangePage = (event, newPage) => {
    dispatch(setTaskPage(newPage + 1));
   dispatch(fetchTaskData({ page: newPage + 1, limit: rowPerPage }));
   };
-console.log(tasks,"TASK++++")
  
   const projects = useProjects()
   const users = new Set(
@@ -111,7 +110,6 @@ console.log(tasks,"TASK++++")
   const handleAddTask = async (taskData: Omit<Task, "id">) => {
    
  try {
-  console.log(taskData,"TAskDta")
  
 
  setLoader("Creating new task ...");

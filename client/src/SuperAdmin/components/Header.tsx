@@ -25,7 +25,6 @@ const handleLogout = () =>{
      navigate("/platform/login")
     }
   })
-  console.log("clicked LOgout")
 }
 
   return (

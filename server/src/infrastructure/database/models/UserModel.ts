@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document,Types } from "mongoose";
+import mongoose, { Schema, model, Document, Types } from "mongoose";
 import { WorkspaceMembership } from "../../../types/workpaceTypes";
 import { UserRole } from "../../../types/userTypes";
 import { workspaceMembershipSchema } from "./WorkspaceMemberModel";
@@ -6,38 +6,38 @@ import { boolean } from "zod";
 
 
 export interface UserDoument extends Document {
- googleId:string
-   name: string;
-   role: UserRole
+  googleId?: string|null;
+  name: string;
+  role: UserRole
   email: string;
   password: string;
   profileImage?: string;
   workspace: WorkspaceMembership[];
-  phone:string;
-  location:string;
-  address:string;
-  about:string;
+  phone: string;
+  location: string;
+  address: string;
+  about: string;
   createdAt: Date;
   updatedAt: Date;
-  title:string;
-  imageUrl:string;
-  isAdmin:boolean;
-  isSuperAdmin:boolean;
-  isBlocked:boolean;
-  isDeleted:boolean;
-  isOnline:boolean;
+  title: string;
+  imageUrl: string;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
+  isBlocked: boolean;
+  isDeleted: boolean;
+  isOnline: boolean;
   stripeCustomerId?: string;
   currentSubscription?: Types.ObjectId;
-   isVerified?:boolean;
-   verificationExpiresAt:Date
-  
+  isVerified?: boolean;
+  verificationExpiresAt: Date
+
 }
 
 const userSchema = new Schema<UserDoument>(
   {
-    googleId:{type:String,unique:true},
+    googleId: { type: String, unique: true, sparse: true,default:null },
     email: { type: String, required: true, unique: true },
-    password: { type: String,select:false },
+    password: { type: String, select: false },
     name: { type: String, required: true },
     role: {
       type: String,
@@ -46,21 +46,21 @@ const userSchema = new Schema<UserDoument>(
     },
     profileImage: { type: String },
     workspace: [workspaceMembershipSchema],
-    title:{type:String},
-    phone:{type:String},
-    location:{type:String},
-    address:{type:String},
-    about:{type:String},
-    imageUrl:{type:String},
-    isAdmin:{type:Boolean,default:false},
-    isSuperAdmin:{type:Boolean,default:false},
-    isBlocked:{type:Boolean,default:false},
-    isDeleted:{type:Boolean,default:false},
-    isOnline:{type:Boolean,default:false},
-     stripeCustomerId: {type:String},
-  currentSubscription: { type: Schema.Types.ObjectId, ref: 'Subscription' },
-   isVerified:{type:Boolean,default:false},
-   verificationExpiresAt:{type:Date}
+    title: { type: String },
+    phone: { type: String },
+    location: { type: String },
+    address: { type: String },
+    about: { type: String },
+    imageUrl: { type: String },
+    isAdmin: { type: Boolean, default: false },
+    isSuperAdmin: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
+    isOnline: { type: Boolean, default: false },
+    stripeCustomerId: { type: String },
+    currentSubscription: { type: Schema.Types.ObjectId, ref: 'Subscription' },
+    isVerified: { type: Boolean, default: false },
+    verificationExpiresAt: { type: Date }
 
   },
   { timestamps: true }

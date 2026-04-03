@@ -33,8 +33,9 @@ export class MemberRegisterUsecase implements IMemberRegister {
     const isValid= AuthMapper.memberRegisterValidation(dto)
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
     const isFound = await this._userRepository.findByEmail(dto.email);
-    if (isFound)
-      throw new ConflictError(ResponseMessages.USER_EXISTS);
+  
+    if (isFound){
+      throw new ConflictError(ResponseMessages.USER_EXISTS)}
     const hashedPassword = await this._authService.hashPassword(dto.password);
     dto.password = hashedPassword;
     if (!hashedPassword)
@@ -42,9 +43,11 @@ export class MemberRegisterUsecase implements IMemberRegister {
         ResponseMessages.PASSWORD_FAILED,
         HttpStatusCode.CONFLICT
       );
+    
     const newMember = AuthMapper.mapMemebrToEntity(dto);
-
+console.log(newMember,"new member registerzusecase after map")
     const createMember = await this._userRepository.create(newMember);
+    console.log(createMember,"created MERE")
     if (!createMember || !createMember._id)
       throw new ValidationError(ResponseMessages.CONFLICT);
     const token = this._authService.generateToken({

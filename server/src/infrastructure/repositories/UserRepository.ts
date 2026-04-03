@@ -19,7 +19,7 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
 
 
     if (!document) return null;
-    return new User({ ...document, _id: document._id?.toString()  });
+    return new User({ ...document, _id: document._id?.toString(), googleId: document.googleId ?? undefined });
 
 
   }
@@ -53,7 +53,7 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
       { new: true }
     ).lean<User>().exec();
     if (!updatedDocument) return null;
-    return new User({ ...updatedDocument, _id: updatedDocument._id?.toString() });
+    return new User({ ...updatedDocument, _id: updatedDocument._id?.toString(), googleId: updatedDocument.googleId ?? undefined });
 
   }
   async updateUser(

@@ -70,10 +70,8 @@ function Login() {
     }
   };
 const handleSuccess =async (credentialResponse) =>{
-  console.log(credentialResponse,"SUCCESS GOOGLE")
   try {
   const response= await apiService.post('/auth/google',{credential:credentialResponse.credential,})
-console.log(response,"response+++");
 if(response.status==200){
   const userPayload = {
             email: response.data.savedUser.email,

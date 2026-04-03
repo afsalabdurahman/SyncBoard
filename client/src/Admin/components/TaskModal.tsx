@@ -51,7 +51,6 @@ interface TaskModalProps {
 
 
 export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
-  console.log(task,"in task model 9999")
   const [selectAttachmanet, setAttachements] = useState<string>()
   const [subTask,setSubTask]=useState([])
   const [formData, setFormData] = useState({
@@ -133,7 +132,6 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
     // onClose();
   };
 
-  console.log(subTask,"subTASK IN MODELL")
   const [uploads, setUploads] = useState([]);
   const [showUploadPage, setUploadPage] = useState(false);
   const uploadFiles = () => {

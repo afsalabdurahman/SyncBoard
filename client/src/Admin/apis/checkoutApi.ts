@@ -7,7 +7,6 @@ export const checkoutapi = async (userId: string, plan: string): Promise<string>
         const data=await apiService.post(`/checkout/payment/${userId}`, {
             plan
         });
-        console.log(data)
         return data.data as string
     } catch (error) {
         if (error instanceof Error) {

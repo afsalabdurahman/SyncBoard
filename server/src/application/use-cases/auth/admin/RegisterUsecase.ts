@@ -107,14 +107,13 @@ export class RegisterUseCase implements IAuth {
       throw new Error("Invalid Google token");
     }
 
-    const { sub: googleId, email, name, picture } = payload;
+    const { sub: googleId, email, name } = payload;
 
     // 🧠 2. Check existing user by email (IMPORTANT FIX)
     let existingUser = await this._userRepository.findByEmail(email);
 
-    // ============================================================
-    // ✅ CASE 1: USER EXISTS → LOGIN FLOW
-    // ============================================================
+    if(existingUser?.isBlocked) throw new NotFoundError(ResponseMessages.USER_BLOCKED);
+    if(existingUser?.isDeleted) throw new NotFoundError(ResponseMessages.DELETED)
     if (existingUser) {
 
       // 🔥 Attach googleId if missing (Account linking)
@@ -178,7 +177,7 @@ export class RegisterUseCase implements IAuth {
       googleId,
       isVerified: true,
       role: "Admin",
-      imageUrl: picture, // optional but recommended
+      
     };
 
     const savedUser = await this._userRepository.create(newUser);

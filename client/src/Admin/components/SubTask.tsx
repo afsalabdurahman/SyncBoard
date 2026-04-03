@@ -159,7 +159,6 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   const dispacth = useDispatch()
-  console.log(subTask, "Subataksa99999")
   //  setSubtasks(subTask??[])
   const addSubtask = (data: Omit<Subtask, "id" | "completed">) =>
     setSubtasks((p) => [...p, { ...data }]);

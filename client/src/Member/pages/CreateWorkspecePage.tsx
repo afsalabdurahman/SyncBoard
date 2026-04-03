@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import {setWorkspace} from "../../Redux/feature/WorkspaceSlice"
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import { createWorkspace } from "../apis/workspaceApi";
+import { setForward } from "../../Redux/feature/ForwardSlice";
 
 interface FormField {
   projectName: string;
@@ -23,7 +24,7 @@ const dispatch =useDispatch()
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
 
-
+  dispatch(setForward(false));
 
 
   const [formFields, setFormFields] = useState<FormField[]>([

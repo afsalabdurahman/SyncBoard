@@ -110,7 +110,7 @@ export const AttachmentButton = ({
   passURL,
   isProject,
 }: AttachmentButtonProps) => {
-  console.log(isProject,"projectssss i s trueeee")
+
   const user = useUser();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -129,7 +129,7 @@ export const AttachmentButton = ({
   ) => {
     e.stopPropagation();
 if(isProject){
-  console.log(url,"URLLL")
+
  try {
   await deleteProjectAttachment(taskId,url)
   setFiles((prev) => prev.filter((f) => f !== url));

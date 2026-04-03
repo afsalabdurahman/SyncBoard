@@ -31,9 +31,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import  AddPassword  from "./Worksapce/components/AddPassword";
 
 function App() {
-  useSelector((state)=>{
-    console.log(state,"APP STate")
-  })
+
   return (
     <>
     

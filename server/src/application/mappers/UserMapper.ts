@@ -30,13 +30,14 @@ export class UserMapper{
   merge: Partial<ProfileUpdateDTO>
 ) {
 console.log(merge,"merge")
-  const onlyLettersWithSpace = z
+  const onlyLettersNumbersWithSpace = z
   .string()
-
+  .trim()
   .min(2, { message: "Must be at least 2 characters" })
   .max(50, { message: "Too long" })
-  .regex(/^[A-Za-z]+(?: [A-Za-z]+)*$/, {
-    message: "Only letters and single spaces allowed.",
+  .regex(/^[A-Za-z][A-Za-z0-9]*(?: [A-Za-z0-9]+)*$/, {
+    message:
+      "Must start with a letter. Only letters, numbers, and single spaces allowed.",
   });
 
 
@@ -51,11 +52,11 @@ console.log(merge,"merge")
     .nullable();
 
   const schema = z.object({
-    name: onlyLettersWithSpace,
-    role: onlyLettersWithSpace,
-    title: onlyLettersWithSpace,
+    name: onlyLettersNumbersWithSpace,
+    role: onlyLettersNumbersWithSpace,
+    title: onlyLettersNumbersWithSpace,
     location: addressValidation,
-    status: onlyLettersWithSpace,
+    status: onlyLettersNumbersWithSpace,
 
     email: z.string().email({ message: "Invalid email format" }),
 
