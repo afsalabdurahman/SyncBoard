@@ -66,7 +66,7 @@ export class TaskController {
     try {
       const taskId = req.params.id;
       await this._taskUsecase.deleteTask(taskId);
-      res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
+      res.status(HttpStatusCode.OK).json(ResponseMessages.DELETED);
     } catch (error) {
    
       next(error);
@@ -81,7 +81,7 @@ export class TaskController {
      
       const alltask = req.query.count;
       const userName = req.params.username;
-      if (!req.params.username) throw new NotFoundError("User "+ResponseMessages.NOT_FOUND);
+      if (!req.params.username) throw new NotFoundError("User "+ResponseMessages.NO_CONTENT);
       if (alltask == "all") {
         const data = await this._taskUsecase.myTask(userName, alltask);
       }

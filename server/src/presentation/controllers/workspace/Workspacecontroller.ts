@@ -54,7 +54,7 @@ export class WorkspaceController {
         invitationLink,
         workspaceId
       );
-      res.status(HttpStatusCode.OK).json(ResponseMessages.INVITAION_SEND);
+      res.status(HttpStatusCode.OK).json(ResponseMessages.INVITATION_SENT);
     } catch (error) {
       next(error);
     }

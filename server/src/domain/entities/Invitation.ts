@@ -45,8 +45,5 @@ export class Invitation {
     return new Date() > this.expiresAt;
   }
 
-  accept() {
-    this.status = "accepted";
-    this.acceptedAt = new Date();
-  }
+  
 }

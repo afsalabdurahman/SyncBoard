@@ -26,7 +26,7 @@ export class ProjectUsecase implements IProjectUsecase {
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const projectEntity = ProjectMapper.mapProjectToEntity(dto, workspaceId);
     const projectData = await this._projectRepository.create(projectEntity);
-    if (!projectData || !projectData.workspaceId) throw new ConflictError("Project" + ResponseMessages.CREATEION_FAILED);
+    if (!projectData || !projectData.workspaceId) throw new ConflictError("Project" + ResponseMessages.CREATION_FAILED);
 
     io.emit("new-project", {
       name: ResponseMessages.NEW_PROJECT_ADDED,
@@ -64,7 +64,7 @@ export class ProjectUsecase implements IProjectUsecase {
 if(merged.attachedUrl.length==0){
 delete merged.attachedUrl
 }else{
-  const urls=merged.attachedUrl.map((data)=> data);
+  const urls=merged.attachedUrl.map((data:string)=> data);
   console.log(urls,"urls")
   console.log(urls,"URLSSSSSSS");
   delete merged.attachedUrl;

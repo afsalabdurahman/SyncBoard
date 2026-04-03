@@ -1,9 +1,9 @@
 import { Invitation } from "../../domain/entities/Invitation"
-import { Iinvitation } from "../../domain/interfaces/repositories/IInvitationRepository"
+import { IinvitationRepository } from "../../domain/interfaces/repositories/IInvitationRepository"
 import { InvitationModel } from "../database/models/InvitationModel"
 import { BaseRepository } from "./BaseRepository"
 
-export class InvitaionRepository extends BaseRepository<Invitation> implements Iinvitation {
+export class InvitaionRepository extends BaseRepository<Invitation> implements IinvitationRepository {
   constructor() {
     super(InvitationModel)
   }

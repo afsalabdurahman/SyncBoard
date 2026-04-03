@@ -78,7 +78,9 @@ export class AdminLoginUseCase implements ILoginUseCase {
     });
     console.log(ticket)
     const payload = ticket.getPayload();
-    const { sub: googleId, email, } = payload;
+    if (!payload?.sub || !payload?.email) throw new ValidationError("Invalid Google token payload");
+    const googleId = payload.sub;
+    const email = payload.email;
 
     const existingUser = await this._userRepository.findByEmail(email);
     if (existingUser?.googleId == googleId) {
@@ -101,8 +103,8 @@ export class AdminLoginUseCase implements ILoginUseCase {
         let mySuscription;
         if (!isSuscribed) {
           const entity = new Subscription({
-            user: existingUser._id,
-            workspace: workspaceData._id?.toString(),
+            user: existingUser._id as string,
+            workspace: workspaceData._id?.toString() as string,
             planKey: "free",
             status: "trialing"
           });

@@ -44,7 +44,7 @@ export class TaskUsecase implements ITaskUseCase {
 
     const merged = Object.assign({}, ...args);
     const updatetask = await this._taskRepository.updatetask(taskId, merged);
-    if (!updatetask) throw new NotFoundError(ResponseMessages.TASK_NOTFOUND)
+    if (!updatetask) throw new NotFoundError(ResponseMessages.TASK_NOT_FOUND)
     const responseDTO = TaskMapper.mapEntityToTask("Task is updated", updatetask)
     return responseDTO;
   }
@@ -86,7 +86,7 @@ export class TaskUsecase implements ITaskUseCase {
     const projectTask =
       await this._taskRepository.findTaskByProjectId(projectId, taskfilter);
    
-    if (!projectTask) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+    if (!projectTask) throw new NotFoundError(ResponseMessages.NO_CONTENT)
 
     return projectTask;
   }
@@ -110,8 +110,8 @@ export class TaskUsecase implements ITaskUseCase {
   }
   async deleteAttachment(taskId: string, url: string): Promise<string> {
     const task = await this._taskRepository.deleteAttachment(taskId, url);
-    if (!task) throw new NotFoundError(ResponseMessages.NOT_FOUND);
-    return ResponseMessages.DELETE
+    if (!task) throw new NotFoundError(ResponseMessages.NO_CONTENT);
+    return ResponseMessages.DELETED
   }
   async deleteSubTask(taskId: string, subTask: string): Promise<void> {
     await this._taskRepository.deleteSubTask(stringToMongoObj(taskId),subTask);

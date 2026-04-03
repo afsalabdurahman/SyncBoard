@@ -31,6 +31,10 @@ export const addToVectors = async (task: TaskRequestDTO): Promise<number[]> => {
       normalize: true,
     });
 
+    if (Array.isArray(vector)) {
+      return vector;
+    }
+
     return Array.from(vector.data);
     
   } catch (err) {

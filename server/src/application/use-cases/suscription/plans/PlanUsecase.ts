@@ -21,7 +21,7 @@ export class PlanUsecase implements IPlanUsecase {
 
 
     const myKey = await this._planRepository.findByKey(input.planKey.toLowerCase());
-    if (!myKey) throw new ValidationError(ResponseMessages.NOT_FOUND + ' Key')
+    if (!myKey) throw new ValidationError(ResponseMessages.NO_CONTENT + ' Key')
     const user = await this._userRepository.findById(input.userId);
 
     if (!user || !user._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)

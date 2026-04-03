@@ -20,7 +20,7 @@ export class TicketUsecase implements ITicketUsecase{
     }
     async getMyTickets(workspaceId:string): Promise<TicketDocument[]> {
        const myTikets =await this._ticketRepository.getMyTickets(stringToMongoObj(workspaceId))
-       if(!myTikets) throw new NotFoundError(ResponseMessages.TASK_NOTFOUND)
+       if(!myTikets) throw new NotFoundError(ResponseMessages.TASK_NOT_FOUND)
        return myTikets
     }
     async updateMsgs(ticketId: string, msg: Message): Promise<void> {

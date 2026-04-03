@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../../../domain/interfaces/repositories/IUserRepository";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { injectable, inject } from "tsyringe";
-import { NotFoundError, ValidationError,ConflictError } from "../../../../utils/errors";
+import { NotFoundError, ValidationError, ConflictError } from "../../../../utils/errors";
 import { IAuth } from "../../../repositories/iauth/IAuth";
 import { AdminSignupRequestDTO } from "../../../dto/AuthDTOs";
 import { AuthMapper } from "../../../mappers/AuthMapper";
@@ -19,55 +19,55 @@ import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories
 
 @injectable()
 export class RegisterUseCase implements IAuth {
-   private client = new OAuth2Client(envConfig.GOOGLE_CLIENT_ID);
+  private client = new OAuth2Client(envConfig.GOOGLE_CLIENT_ID);
 
   constructor(
     @inject("AuthService") private _authService: IAuthService,
     @inject("UserRepository") private _userRepository: IUserRepository,
-       @inject("OTPRepository") private _otpRepository: IOtpRepository,
-           @inject("IEmailService") private _emailService: IEmailService,
-               @inject("WorkspaceRepository") private _workspceRepository: IWorkspaceRepository,
-           
-  ) {}
+    @inject("OTPRepository") private _otpRepository: IOtpRepository,
+    @inject("IEmailService") private _emailService: IEmailService,
+    @inject("WorkspaceRepository") private _workspceRepository: IWorkspaceRepository,
+
+  ) { }
   async execute(
     input: AdminSignupRequestDTO
   ): Promise<User> {
     const isValid = AuthMapper.registerValidation(input);
-    if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
+    if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const existingUser = await this._userRepository.findByEmail(input.email);
-    console.log(existingUser,"udreEXISTTT")
+    console.log(existingUser, "udreEXISTTT")
 
     if (existingUser) {
-    if (existingUser.isVerified) {
-      throw new ConflictError(ResponseMessages.USER_EXISTS);
-    }else{
- await this._otpRepository.deleteOTP(input.email);
- await this._userRepository.deleteuserById(stringToMongoObj(existingUser._id??""));
-    }
+      if (existingUser.isVerified) {
+        throw new ConflictError(ResponseMessages.USER_EXISTS);
+      } else {
+        await this._otpRepository.deleteOTP(input.email);
+        await this._userRepository.deleteuserById(stringToMongoObj(existingUser._id ?? ""));
+      }
 
-  }
+    }
     // if(!existingUser?.isVerified&&existingUser?._id){
     //    console.log("isworking....")
     //       await this._userRepository.deleteuserById(stringToMongoObj(existingUser?._id));
-       
+
     //     }else{
     // if (existingUser) throw new ConflictError  (ResponseMessages.USER_EXISTS);
 
     //     }
-  
+
     const hashedPassword = await this._authService.hashPassword(input.password as string);
     input.password = hashedPassword;
     const AdminEntity = AuthMapper.mapUserToEntity(input)
 
-console.log(AdminEntity,"entity")
+    console.log(AdminEntity, "entity")
     const savedUser = await this._userRepository.create(AdminEntity);
     //    const findOTP = await this._otpRepository.findOTPbyEMAIL(input.email);
     //   if (findOTP) {
     //   await this._otpRepository.deleteOTP(input.email)
     // }
-    console.log(savedUser,"Save")
-  const otp = this._otpRepository.generateOTP();
-   //  await this._emailService.sendOtp(input.email, otp);
+    console.log(savedUser, "Save")
+    const otp = this._otpRepository.generateOTP();
+    //  await this._emailService.sendOtp(input.email, otp);
 
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);
@@ -82,132 +82,132 @@ console.log(AdminEntity,"entity")
     //   email: savedUser.email!,
     //   role: savedUser.role!,
     // });
-   // await this._userRepository.updateOnlineStatus(savedUser._id??"")
+    // await this._userRepository.updateOnlineStatus(savedUser._id??"")
     return savedUser
 
   }
- async googleAuth(
-  credential: string
-): Promise<{
-  workspace: Workspace | null;
-  savedUser: User;
-  token: string;
-  refreshToken: string;
-}> {
+  async googleAuth(
+    credential: string
+  ): Promise<{
+    workspace: Workspace | null;
+    savedUser: User;
+    token: string;
+    refreshToken: string;
+  }> {
 
-  // 🔐 1. Verify Google Token
-  const ticket = await this.client.verifyIdToken({
-    idToken: credential,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  });
+    // 🔐 1. Verify Google Token
+    const ticket = await this.client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
-  const payload = ticket.getPayload();
+    const payload = ticket.getPayload();
 
-  if (!payload || !payload.email) {
-    throw new Error("Invalid Google token");
-  }
-
-  const { sub: googleId, email, name, picture } = payload;
-
-  // 🧠 2. Check existing user by email (IMPORTANT FIX)
-  let existingUser = await this._userRepository.findByEmail(email);
-
-  // ============================================================
-  // ✅ CASE 1: USER EXISTS → LOGIN FLOW
-  // ============================================================
-  if (existingUser) {
-
-    // 🔥 Attach googleId if missing (Account linking)
-    if (!existingUser.googleId) {
-      // existingUser = await this._userRepository.update(existingUser._id!, {
-      //   googleId,
-      //   isVerified: true,
-      //   name: name || existingUser.name,
-      // });
+    if (!payload || !payload.email) {
+      throw new Error("Invalid Google token");
     }
 
-    // 🔐 Generate tokens
-    const token = this._authService.generateToken({
-      id: existingUser._id!,
-      email: existingUser.email!,
-      role: existingUser.role!,
-    });
+    const { sub: googleId, email, name, picture } = payload;
 
-    const refreshToken = this._authService.generateRefreshToken({
-      id: existingUser._id!,
-      email: existingUser.email!,
-      role: existingUser.role!,
-    });
+    // 🧠 2. Check existing user by email (IMPORTANT FIX)
+    let existingUser = await this._userRepository.findByEmail(email);
 
-    // 🟢 Update online status
-    await this._userRepository.updateOnlineStatus(existingUser._id ?? "");
+    // ============================================================
+    // ✅ CASE 1: USER EXISTS → LOGIN FLOW
+    // ============================================================
+    if (existingUser) {
 
-    // 📦 Fetch workspace if exists
-    if (existingUser.workspace?.[0]?.workspaceId) {
-      const workspaceData = await this._workspceRepository.findByObjectId(
-        existingUser.workspace[0].workspaceId
-      );
+      // 🔥 Attach googleId if missing (Account linking)
+      if (!existingUser.googleId) {
+        // existingUser = await this._userRepository.update(existingUser._id!, {
+        //   googleId,
+        //   isVerified: true,
+        //   name: name || existingUser.name,
+        // });
+      }
 
-      if (!workspaceData) {
-        throw new NotFoundError(ResponseMessages.NO_CONTENT);
+      // 🔐 Generate tokens
+      const token = this._authService.generateToken({
+        id: existingUser._id!,
+        email: existingUser.email!,
+        role: existingUser.role!,
+      });
+
+      const refreshToken = this._authService.generateRefreshToken({
+        id: existingUser._id!,
+        email: existingUser.email!,
+        role: existingUser.role!,
+      });
+
+      // 🟢 Update online status
+      await this._userRepository.updateOnlineStatus(existingUser._id ?? "");
+
+      // 📦 Fetch workspace if exists
+      if (existingUser.workspace?.[0]?.workspaceId) {
+        const workspaceData = await this._workspceRepository.findByObjectId(
+          existingUser.workspace[0].workspaceId
+        );
+
+        if (!workspaceData) {
+          throw new NotFoundError(ResponseMessages.NO_CONTENT);
+        }
+
+        return {
+          workspace: workspaceData,
+          savedUser: existingUser,
+          token,
+          refreshToken,
+        };
       }
 
       return {
-        workspace: workspaceData,
+        workspace: null,
         savedUser: existingUser,
         token,
         refreshToken,
       };
     }
 
+    // ============================================================
+    // ✅ CASE 2: NEW USER → SIGNUP FLOW
+    // ============================================================
+
+    const newUser: User = {
+      name: name ?? "Google user",
+      email,
+      googleId,
+      isVerified: true,
+      role: "Admin",
+      imageUrl: picture, // optional but recommended
+    };
+
+    const savedUser = await this._userRepository.create(newUser);
+    delete savedUser?.password
+    if (!savedUser) {
+      throw new ConflictError("Registration failed");
+    }
+
+    // 🔐 Generate tokens
+    const token = this._authService.generateToken({
+      id: savedUser._id!,
+      email: savedUser.email!,
+      role: savedUser.role!,
+    });
+
+    const refreshToken = this._authService.generateRefreshToken({
+      id: savedUser._id!,
+      email: savedUser.email!,
+      role: savedUser.role!,
+    });
+
+    // 🟢 Update online status
+    await this._userRepository.updateOnlineStatus(savedUser._id ?? "");
+
     return {
       workspace: null,
-      savedUser: existingUser,
+      savedUser,
       token,
       refreshToken,
     };
   }
-
-  // ============================================================
-  // ✅ CASE 2: NEW USER → SIGNUP FLOW
-  // ============================================================
-
-  const newUser: User = {
-    name,
-    email,
-    googleId,
-    isVerified: true,
-    role: "Admin",
-    avatar: picture, // optional but recommended
-  };
-
-  const savedUser = await this._userRepository.create(newUser);
-delete savedUser?.password
-  if (!savedUser) {
-    throw new ConflictError("Registration failed");
-  }
-
-  // 🔐 Generate tokens
-  const token = this._authService.generateToken({
-    id: savedUser._id!,
-    email: savedUser.email!,
-    role: savedUser.role!,
-  });
-
-  const refreshToken = this._authService.generateRefreshToken({
-    id: savedUser._id!,
-    email: savedUser.email!,
-    role: savedUser.role!,
-  });
-
-  // 🟢 Update online status
-  await this._userRepository.updateOnlineStatus(savedUser._id ?? "");
-
-  return {
-    workspace: null,
-    savedUser,
-    token,
-    refreshToken,
-  };
-}
 }

@@ -24,7 +24,7 @@ export class SubscriptionUsecase implements ISuscriptionUsecase {
 
   async getSuscription(userid: string): Promise<Subscription> {
     const suscriptions = await this._suscriptionRepository.findSuscriptionByUserId(userid);
-    if (!suscriptions) throw new NotFoundError(ResponseMessages.NOT_FOUND);
+    if (!suscriptions) throw new NotFoundError(ResponseMessages.NO_CONTENT);
     return suscriptions;
   }
   async updateSuscriptionPlan(userId: string, planName: string, status: string): Promise<Subscription | null> {

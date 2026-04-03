@@ -54,7 +54,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
 
     const isCreateWorkspace = await this._workspaceRepository.create(workspaceEntity);
     if (!isCreateWorkspace || !isCreateWorkspace._id)
-      throw new ValidationError(ResponseMessages.NOT_FOUND + ' Workspace');
+      throw new ValidationError(ResponseMessages.NO_CONTENT + ' Workspace');
 
     const updatedUser = await this._userRepository.addToWorkspace(
       user._id ?? "",
@@ -75,7 +75,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     id: Types.ObjectId,
     logId: Types.ObjectId
   ): Promise<boolean> {
-    if (!this._workspaceRepository.addlogId) throw new NotFoundError(ResponseMessages.NOT_FOUND);
+    if (!this._workspaceRepository.addlogId) throw new NotFoundError(ResponseMessages.NO_CONTENT);
     const result = this._workspaceRepository.addlogId(id, logId);
     if (!result) throw new InternalServerError(ResponseMessages.CONFLICT);
     return true;

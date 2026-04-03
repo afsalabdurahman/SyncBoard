@@ -15,20 +15,20 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
 
    async getWorkspceDate(slug: string): Promise<UserDoument[] | null> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
-      if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace')
+      if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT + ' Workspace')
       const users = await this.userRepository.findUsersInsameWorkspace(stringToMongoObj(workspceData._id.toString()))
       return users
 
    }
    async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<{ items: UserDoument[] | null, totalItems: number }> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
-      if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND)
+      if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT)
       const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip)
       return { items: items, totalItems }
    }
   async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{
           const workspceData = await this.workspaceRepository.findbySlug(slug);
-            if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NOT_FOUND + ' Workspace');
+            if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT + ' Workspace');
                const users=await this.userRepository.searchUser(stringToMongoObj(workspceData._id.toString()),query);
                return users
    }

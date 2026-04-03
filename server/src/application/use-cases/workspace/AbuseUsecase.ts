@@ -32,7 +32,7 @@ export class AbuseUsecase implements IAbuseUsecase {
       throw new ValidationError("Description must not start with a special character.")
     }
     const abuseEntity = new Abuse({ description: input.description, otherType: input.otherType, userId: stringToMongoObj(userId), severity: input.severity, type: input.type, workspaceId: stringToMongoObj(workspaceId), status: "Waiting", })
-    if (!abuseEntity) throw new ValidationError("Report" + ResponseMessages.CREATEION_FAILED)
+    if (!abuseEntity) throw new ValidationError("Report" + ResponseMessages.CREATION_FAILED)
     await this._abuseRepository.create(abuseEntity)
     return ResponseMessages.SUCCESS
   }
@@ -46,7 +46,7 @@ export class AbuseUsecase implements IAbuseUsecase {
 
     const user = await this._userRepository.findById(input.userId)
 
-    if (!workspace || !user) throw new ValidationError("User or Workspace" + ResponseMessages.NOT_FOUND)
+    if (!workspace || !user) throw new ValidationError("User or Workspace" + ResponseMessages.NO_CONTENT)
     await this._abuseRepository.updateReport(stringToMongoObj(reportId), input.status);
     const msg = getStatusBasedMsg(input.status);
     if (msg) {

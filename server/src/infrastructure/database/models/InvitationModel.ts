@@ -29,7 +29,7 @@ const InvitationSchema = new Schema<InvitationDocument>(
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
-      default: "pending",
+      
     },
     expiresAt: {
       type: Date,

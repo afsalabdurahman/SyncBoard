@@ -51,7 +51,7 @@ export class SuperController {
     try {
       const userId = req.params.id
       const responseDTO = await this._dataHandleUsecase.fetchAUser(userId);
-      res.status(HttpStatusCode.OK).json({ message: ResponseMessages.Fetch_SUCCESS, data: responseDTO })
+      res.status(HttpStatusCode.OK).json({ message: ResponseMessages.FETCH_SUCCESS, data: responseDTO })
     } catch (error) {
 next(error)
     }

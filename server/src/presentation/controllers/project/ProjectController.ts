@@ -59,7 +59,7 @@ export class ProjectController {
 
       res
         .status(HttpStatusCode.OK)
-        .json({ message: ResponseMessages.ATTACHEMNT_REMOVE });
+        .json({ message: ResponseMessages.ATTACHMENT_REMOVED });
     } catch (error) {
 
       next(error);
@@ -94,7 +94,7 @@ export class ProjectController {
       const projectId = req.params.id;
       if (!projectId) throw new NotFoundError("ProjectId not found");
       await this._projectUsecase.deleteProject(projectId);
-      res.status(HttpStatusCode.OK).json(ResponseMessages.DELETE);
+      res.status(HttpStatusCode.OK).json(ResponseMessages.DELETED);
     } catch (error) {
       next(error);
     }

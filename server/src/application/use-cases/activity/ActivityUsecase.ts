@@ -15,7 +15,7 @@ export class ActivityUsecase implements IActivity {
   ) {}
   async myLogs(workspaceId: string): Promise<string[]|null> {
     const activty=await this._activityRepository.allActivitiesInWorkspace( stringToMongoObj( workspaceId))
-   if(!activty) throw new NotFoundError(ResponseMessages.NOT_FOUND) 
+   if(!activty) throw new NotFoundError(ResponseMessages.NO_CONTENT) 
     const responseDTO=ActivityMapper.mapToResponseDto(activty)
     return responseDTO
   }
