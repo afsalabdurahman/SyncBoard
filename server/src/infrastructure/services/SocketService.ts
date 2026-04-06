@@ -10,7 +10,7 @@ export const initSocketServer = (io: Server) => {
 
     //Room 
 
-    socket.on("join-workspace", ({ workspaceId, userId }) => {
+    socket.on("join-workspace", ({ workspaceId }) => {
 
       socket.join(workspaceId);
     });

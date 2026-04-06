@@ -1,5 +1,5 @@
 
-import { IEmbeddingProvider, ILLMProvider, IVectorStore } from "../../domain/interfaces/services/IRagService";
+import {  ILLMProvider, IVectorStore } from "../../domain/interfaces/services/IRagService";
 import { IRagOrchestartorService } from "../../domain/interfaces/services/IRagOrchestartorService"
 import { injectable, inject } from "tsyringe";
 import { hybridFilter } from "../services/ragPipeline/filters/hybridFilter"

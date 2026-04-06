@@ -4,8 +4,7 @@ import { IRefreshtoken } from "../../../repositories/ishared/IRefreshToken";
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import {
     NotFoundError,
-    AuthenticationError,
-    InternalServerError,
+
     ForbiddenError,
 } from "../../../../utils/errors";
 import { UserRole } from "../../../../types/userTypes";
@@ -23,6 +22,7 @@ export class RefreshTokenUsecase implements IRefreshtoken {
         let decoded;
       
              if (!this._authService.verifyRefreshToken)    throw new NotFoundError(ResponseMessages.NO_CONTENT);
+             // eslint-disable-next-line prefer-const
              decoded = await this._authService.verifyRefreshToken(RefreshToken);
           
             if (!decoded) throw new ForbiddenError(ResponseMessages.INVALID_TOKEN);

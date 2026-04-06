@@ -4,8 +4,6 @@ import { Abuse } from "../../domain/entities/Abuse";
 import { IAbuseRepository } from "../../domain/interfaces/repositories/IAbuseRepository";
 import { AbuseModel } from "../database/models/AbuseModel";
 import { BaseRepository } from "./BaseRepository";
-import { stringToMongoObj } from "../../utils/convertMongoObject";
-import { ObjectId } from "mongodb";
 
 export class AbuseRepository extends BaseRepository <Abuse> implements IAbuseRepository  {
    constructor(){

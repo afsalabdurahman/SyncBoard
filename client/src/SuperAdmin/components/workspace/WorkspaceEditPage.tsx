@@ -120,7 +120,7 @@ const confirmStatusChange = async () => {
         setStatusToSet(null);
       }, 700);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Status change failed:", err);
       const errorMsg = err?.data?.message || "Failed to update workspace status";
       toast.error(errorMsg);

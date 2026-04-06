@@ -2,7 +2,6 @@ import mongoose, { Schema, model, Document, Types } from "mongoose";
 import { WorkspaceMembership } from "../../../types/workpaceTypes";
 import { UserRole } from "../../../types/userTypes";
 import { workspaceMembershipSchema } from "./WorkspaceMemberModel";
-import { boolean } from "zod";
 
 
 export interface UserDoument extends Document {

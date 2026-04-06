@@ -39,7 +39,7 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     userId: string | ObjectId,
     workspaceId: string | ObjectId,
     role: string,
-    joinDate?: Date
+    
   ): Promise<User | null> {
     const data = { workspaceId, role, joinDate: new Date() };
 
@@ -90,7 +90,7 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     return new User({ ...updatedUser, _id: updatedUser._id?.toString() });
   }
   async changePassword(userId: string, newPassword: string): Promise<boolean> {
-    const result = await this.model.findByIdAndUpdate(
+      await this.model.findByIdAndUpdate(
       userId,
       { $set: { password: newPassword } },
       { new: true, upsert: true }

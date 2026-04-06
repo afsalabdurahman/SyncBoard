@@ -15,10 +15,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     async function checkAuth() {
       try {
         const res = await apiService.get("/auth/user/me");
-        console.log(res, "AUTH ME response");
+     
         dispatch(setUserAuth(res.data));   // adjust according to your actual response shape
-      } catch (err: any) {
-        console.log("Auth check failed - user not logged in");
+      } catch (err: unknown) {
         await persistor.purge();
         dispatch(logoutUserAuth());
         <Navigate to="/login" replace />

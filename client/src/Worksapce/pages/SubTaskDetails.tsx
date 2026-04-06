@@ -15,7 +15,6 @@ interface AssignedUser {
 export const TaskDetailPopup: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
-  // Demo task data with full state management
   const [task, setTask] = useState({
     name: 'Build Task Management Dashboard',
     description: 'Create a beautiful full-screen task detail modal with Tailwind CSS, real-time progress tracking, and subtask management.',
@@ -36,14 +35,11 @@ export const TaskDetailPopup: React.FC = () => {
     ] as Subtask[],
   });
 
-  // Calculate subtask progress
+
   const completedCount = task.subtasks.filter((s) => s.completed).length;
   const totalSubtasks = task.subtasks.length;
   const subProgress = totalSubtasks > 0 ? Math.round((completedCount / totalSubtasks) * 100) : 0;
 
-  // Special rule as requested:
-  // → If ALL subtasks are completed → show 90% (unless main status is Completed)
-  // → If main status is Completed → show 100%
   const displayProgress =
     task.status === 'Completed'
       ? 100
@@ -76,7 +72,7 @@ export const TaskDetailPopup: React.FC = () => {
     setTask((prev) => ({ ...prev, priority: newPriority }));
   };
 
-  // Update other fields
+
   const updateField = (field: keyof typeof task, value: any) => {
     setTask((prev) => ({ ...prev, [field]: value }));
   };
@@ -106,7 +102,7 @@ export const TaskDetailPopup: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 bg-zinc-950 flex flex-col">
-      {/* Closing Bar / Header */}
+
       <div className="bg-white border-b border-zinc-200 px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">T</div>
@@ -123,12 +119,11 @@ export const TaskDetailPopup: React.FC = () => {
         </button>
       </div>
 
-      {/* Main Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-white p-6 md:p-10">
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* LEFT COLUMN - Task Details */}
+    
           <div className="lg:col-span-7 space-y-10">
-            {/* Status */}
+
             <div>
               <p className="text-sm font-medium text-zinc-500 mb-3">STATUS</p>
               <div className="flex flex-wrap gap-3">
@@ -148,7 +143,7 @@ export const TaskDetailPopup: React.FC = () => {
               </div>
             </div>
 
-            {/* Priority */}
+ 
             <div>
               <p className="text-sm font-medium text-zinc-500 mb-3">PRIORITY</p>
               <div className="flex gap-3">
@@ -190,7 +185,7 @@ export const TaskDetailPopup: React.FC = () => {
               />
             </div>
 
-            {/* Assigned Users */}
+
             <div>
               <p className="text-sm font-medium text-zinc-500 mb-4">ASSIGNED TO</p>
               <div className="flex -space-x-4">
@@ -210,18 +205,18 @@ export const TaskDetailPopup: React.FC = () => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN - Progress & Subtasks */}
+ 
           <div className="lg:col-span-5 space-y-10">
-            {/* Circular Progress Chart */}
+
             <div className="flex flex-col items-center">
               <p className="text-sm font-medium text-zinc-500 mb-4 text-center">
                 TASK PROGRESS
               </p>
 
               <div className="relative w-48 h-48">
-                {/* SVG Progress Ring */}
+      
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 130 130">
-                  {/* Background circle */}
+   
                   <circle
                     cx="65"
                     cy="65"

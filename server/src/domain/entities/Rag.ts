@@ -18,7 +18,7 @@ export class Rag {
     channel?: string;
     senderName?: string;
     timestamp?: string;
-    [key: string]: any
+   
   };
 
   constructor(init?: Partial<Rag>) {

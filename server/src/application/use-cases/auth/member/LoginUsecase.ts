@@ -3,7 +3,7 @@ import { IUserRepository } from "../../../../domain/interfaces/repositories/IUse
 import { IAuthService } from "../../../../domain/interfaces/services/IAuthService";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { ILogger } from "../../../repositories/ilogger/ILogger";
-import { CustomError, ForbiddenError, NotFoundError, ValidationError,AuthenticationError } from "../../../../utils/errors";
+import { CustomError, ForbiddenError, NotFoundError, ValidationError } from "../../../../utils/errors";
 import { ILogin } from "../../../repositories/iauth/ILogin";
 import { LoginRequestDTO, LoginResponseDTO } from "../../../dto/AuthDTOs";
 import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository";

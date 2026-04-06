@@ -1,7 +1,7 @@
 // src/api/apiService.ts
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from "axios";
-import { handleApiError } from "./apiErrorHandle"; // keep your existing if any
-import { Navigate, useNavigate } from "react-router-dom";
+import { handleApiError } from "./apiErrorHandle"; 
+import { Navigate } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 
@@ -21,7 +21,7 @@ const axiosInstance = axios.create({
   },
 });
 
-// Global state
+
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (value?: any) => void; reject: (error?: any) => void }> = [];
 
@@ -36,16 +36,14 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-    // Only act on 401 that is not already retried
+   
     if (error.response?.status === 401 && !originalRequest?._retry) {
 
-      // If the failing request IS the refresh endpoint itself → logout immediately
       if (originalRequest?.url?.includes("/auth/refresh-token")) {
         handleLogout();
         return Promise.reject(error);
       }
 
-      // Queue if refresh is already in progress
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -60,17 +58,15 @@ axiosInstance.interceptors.response.use(
       try {
         const refreshResponse = await refreshAxios.post("/auth/refresh-token");
 
-        // 🔥 CRITICAL FIXES:
-        // Backend returns 204 when no refresh token → treat as failure
         if (refreshResponse.status === 404 || refreshResponse.status >= 400) {
           throw new Error("Refresh token invalid or missing");
         }
 
-        // Refresh successful
+    
         processQueue();
         return axiosInstance(originalRequest); // retry original request
       } catch (refreshError: any) {
-        // Any failure during refresh (no token, expired, 401, 204, error, etc.) → logout
+       
         processQueue(refreshError);
         handleLogout();
         return Promise.reject(refreshError);
@@ -79,21 +75,19 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    // Other errors
+   
     handleApiError(error);
     return Promise.reject(error);
   }
 );
 
 const handleLogout = () => {
-  // Optional: dispatch logout to Redux if needed
+  
   Navigate("/login")
 };
 
-// const handleApiError = (error: AxiosError) => {
-//   console.error("API Error:", error);
-//   // Add toast here if you want
-// };
+
+
 
 const apiService = {
   get: <T = unknown>(url: string, params = {}, config: AxiosRequestConfig = {}) =>

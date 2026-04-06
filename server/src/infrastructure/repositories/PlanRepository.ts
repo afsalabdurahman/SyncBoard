@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Plan } from "../../domain/entities/Plan";
 import {IPlanRepository} from "../../domain/interfaces/repositories/IPlanRepository"
 import { injectable } from "tsyringe";
-import {PlanDocument, PlanModel} from "../database/models/PlanModel"
+import {PlanModel} from "../database/models/PlanModel"
 import { NotFoundError } from "../../utils/errors";
 
 @injectable()

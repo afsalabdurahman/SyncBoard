@@ -1,8 +1,8 @@
-import { handleApiError } from "../../Services/apiServices/apiErrorHandle";
+import { User } from "../../Admin/types/userTypes";
 import api from "../../Services/apiServices/apiService";
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
-export const updateUser = async (userId: string, updatedProfile: any) => {
+export const updateUser = async (userId: string, updatedProfile: User) => {
   try {
     if (!updatedProfile.about) {
       delete updatedProfile.about;
@@ -16,13 +16,13 @@ export const updateUser = async (userId: string, updatedProfile: any) => {
       { withCredentials: true }
     );
 
-    return axiosResponse.data;   // ← Always return data on success (good practice)
-  } catch (error: any) {
+    return axiosResponse.data;   
+  } catch (error) {
     const errorMessage = catchErrorHandle(error, "Updation failed");
     
-    // Better: Throw a proper error object so toast can read it easily
+    
     const customError = new Error(errorMessage);
-    (customError as any).response = error?.response;   // Preserve axios response if needed
+    (customError as any).response = error?.response;   
     
     throw customError;
   }

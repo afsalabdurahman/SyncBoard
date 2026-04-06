@@ -59,14 +59,13 @@ export class ProjectUsecase implements IProjectUsecase {
     projectId: string,
     ...args: string[]
   ): Promise<ProjectResponseDTO | null> {
+    // eslint-disable-next-line prefer-const
     let merged = Object.assign({}, ...args);
     console.log(merged,"mergedd")
 if(merged.attachedUrl.length==0){
 delete merged.attachedUrl
 }else{
   const urls=merged.attachedUrl.map((data:string)=> data);
-  console.log(urls,"urls")
-  console.log(urls,"URLSSSSSSS");
   delete merged.attachedUrl;
 await this._projectRepository.pushToAttachments(urls,projectId)
 }

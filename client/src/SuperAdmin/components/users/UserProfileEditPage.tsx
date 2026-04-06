@@ -102,12 +102,13 @@ const onSubmit = async (e: React.FormEvent) => {
 
     await refetch?.();
     setPage(null);
-  } catch (err: any) {
-    console.error("Profile update failed:", err);
+  } catch (err: unknown) {
+  
 
+    const error = err as { response?: { data?: { message?: string } }; message?: string };
     const errorMessage =
-      err?.response?.data?.message ||
-      err?.message ||
+      error?.response?.data?.message ||
+      error?.message ||
       "Failed to update user profile. Please check your connection.";
 
     toast.error(errorMessage, {
@@ -142,7 +143,6 @@ const onSubmit = async (e: React.FormEvent) => {
       await refetch?.();
       toast.success(`User has been ${newStatus === "active" ? "reactivated" : "suspended"}`);
     } catch (err) {
-      console.error("Status change failed:", err);
       const errorMessage =
         err?.response?.data?.message ||
         err?.message ||

@@ -1,14 +1,8 @@
 // src/infrastructure/mongodb/vector-store.mongo.ts
-import { MongoClient, Collection } from "mongodb";
 import { IVectorStore } from "../../../domain/interfaces/services/IRagService";
 // import { TaskModel } from "../../database/models/TaskModel";
 import mongoose from "mongoose";
-interface ChunkDoc {
-  userId: string;
-  chunkId: string;
-  embedding: number[];
-  metadata: { text: string; taskId?: string; projectId?: string };
-}
+
 
 export class MongoVectorStore implements IVectorStore {
   // private collection: Collection<ChunkDoc>;
@@ -49,7 +43,7 @@ export class MongoVectorStore implements IVectorStore {
 
   //   return this.collection.aggregate(pipeline).toArray();
   // }
-  async findFromdb(user: string, key:string,value:string,model:mongoose.Model<any>): Promise<any> {
+  async findFromdb(user: string, key:string,value:string,model:mongoose.Model<unknown>): Promise<unknown> {
  
     const result = await model
     .find({ assignedUser: user, [key]: value },{name:1,deadline:1,description:1,status:1,project:1,_id:0,rejectionMsg:1,approvalStatus:1})

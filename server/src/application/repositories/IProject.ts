@@ -1,5 +1,4 @@
 
-import { Project } from "../../domain/entities/Project"
 import { ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 export interface IProjectUsecase{
 excute(input:ProjectRequstDTO,workspaceId:string):Promise<ProjectResponseDTO>

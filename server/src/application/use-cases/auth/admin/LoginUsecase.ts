@@ -10,7 +10,6 @@ import { adminResponseDTO, LoginRequestDTO, SuperadminLoginResponseDTO, } from "
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { envConfig } from "../../../../infrastructure/config/env.config";
 import { OAuth2Client } from "google-auth-library";
-import { User } from "../../../../domain/entities/User";
 
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
