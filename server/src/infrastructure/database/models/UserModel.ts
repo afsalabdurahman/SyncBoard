@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document, Types } from "mongoose";
+import mongoose, { Schema, model, Document, Types, Model } from "mongoose";
 import { WorkspaceMembership } from "../../../types/workpaceTypes";
 import { UserRole } from "../../../types/userTypes";
 import { workspaceMembershipSchema } from "./WorkspaceMemberModel";
@@ -68,4 +68,4 @@ userSchema.index(
   { verificationExpiresAt: 1 },
   { expireAfterSeconds: 0 }
 );
-export const UserModel = model<UserDoument>("User", userSchema);
+export const UserModel:Model<UserDoument> = model<UserDoument>("User", userSchema);

@@ -167,18 +167,20 @@ export class RegisterUseCase implements IAuth {
       };
     }
 
-    // ============================================================
-    // ✅ CASE 2: NEW USER → SIGNUP FLOW
-    // ============================================================
 
-    const newUser: User = {
-      name: name ?? "Google user",
-      email,
-      googleId,
-      isVerified: true,
-      role: "Admin",
-      
-    };
+    const newUser =  new User({
+      googleId:googleId,
+      email:email,
+      name:name??"Google user",
+      role:"Admin",
+      isVerified:true,
+  
+
+    })
+    //   email,
+    //   googleId,
+    //   isVerified: true,
+    //   role: "Admin",
 
     const savedUser = await this._userRepository.create(newUser);
     delete savedUser?.password

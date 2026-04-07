@@ -7,13 +7,14 @@ import { ResponseMessages } from "../../../common/erroResponse"
 import { UserDoument } from "../../../infrastructure/database/models/UserModel"
 import { stringToMongoObj } from "../../../utils/convertMongoObject"
 import { UserResponseDTO } from "../../dto/SuperDTO"
+import { User } from "../../../domain/entities/User"
 @injectable()
 export class GetWorkspaceUsecase implements IWokspaceMember {
    constructor(@inject("WorkspaceRepository") private workspaceRepository: IWorkspaceRepository,
       @inject("UserRepository") private userRepository: IUserRepository
    ) { }
 
-   async getWorkspceDate(slug: string): Promise<UserDoument[] | null> {
+   async getWorkspceDate(slug: string): Promise<User[] | null> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT + ' Workspace')
       const users = await this.userRepository.findUsersInsameWorkspace(stringToMongoObj(workspceData._id.toString()))

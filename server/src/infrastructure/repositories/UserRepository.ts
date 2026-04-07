@@ -2,20 +2,20 @@ import { UserDoument, UserModel } from "../database/models/UserModel";
 import { IUserRepository } from "../../domain/interfaces/repositories/IUserRepository";
 import { User } from "../../domain/entities/User";
 import { BaseRepository } from "./BaseRepository";
-import { injectable,  } from "tsyringe";
+import { injectable, } from "tsyringe";
 import { Types, ObjectId, Date } from "mongoose";
-import {  ValidationError } from "../../utils/errors";
+import { ValidationError } from "../../utils/errors";
 import mongoose from "mongoose";
 import { UserResponseDTO } from "../../application/dto/SuperDTO";
 @injectable()
-export class UserMongooseRepository extends BaseRepository<User | null> implements IUserRepository {
+export class UserMongooseRepository extends BaseRepository<User> implements IUserRepository {
   constructor() {
     super(UserModel);
   }
 
   async findByEmail(email: string): Promise<User | null> {
 
-    const document: UserDoument = await this.model.findOne({ email }).select("-password").lean().exec()
+    const document = await this.model.findOne({ email }).select("-password").lean().exec()
 
 
     if (!document) return null;
@@ -26,12 +26,17 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
   async findById(id: string): Promise<User | null> {
     const document = await this.model.findById(id).select("-password").lean().exec();
     if (!document) return null;
-    return new User({ ...document, _id: document._id?.toString() });
+    return new User({
+      ...document,
+      _id: document._id?.toString(),
+      googleId: document.googleId ?? undefined,
+    });
   }
   async findUser(id: string): Promise<User | null> {
     const document = await this.model.findById(id).select("+password").lean().exec();
     if (!document) return null;
-    return new User({ ...document, _id: document._id?.toString() });
+    return new User({ ...document, _id: document._id?.toString(), googleId: document.googleId ?? undefined });
+
   }
 
 
@@ -39,7 +44,7 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     userId: string | ObjectId,
     workspaceId: string | ObjectId,
     role: string,
-    
+
   ): Promise<User | null> {
     const data = { workspaceId, role, joinDate: new Date() };
 
@@ -70,11 +75,15 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     ).lean().exec()
 
     if (!updatedUser) return null;
-    return new User({ ...updatedUser, _id: updatedUser._id?.toString() });
+    return new User({
+      ...updatedUser,
+      _id: updatedUser._id?.toString(),
+      googleId: updatedUser.googleId ?? undefined,
+    });
 
   }
   // Update profile
-  async updateProfile(userId: string, merge: Record<string, string>): Promise<User | null> {
+  async updateProfile(userId: string, merge: { profileData: Record<string, string> }): Promise<User | null> {
     const objectId: Types.ObjectId = new mongoose.Types.ObjectId(userId.toString());
 
     const updatedUser = await this.model.findOneAndUpdate(
@@ -87,10 +96,10 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
       }
     ).lean().exec()
     if (!updatedUser) return null;
-    return new User({ ...updatedUser, _id: updatedUser._id?.toString() });
+    return new User({ ...updatedUser, _id: updatedUser._id?.toString(), googleId: updatedUser.googleId ?? undefined });
   }
   async changePassword(userId: string, newPassword: string): Promise<boolean> {
-      await this.model.findByIdAndUpdate(
+    await this.model.findByIdAndUpdate(
       userId,
       { $set: { password: newPassword } },
       { new: true, upsert: true }
@@ -99,16 +108,31 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
 
     return true;
   }
-  async findUsersInsameWorkspace(workspaceId: Types.ObjectId): Promise<UserDoument[] | null> {
-    const document: UserDoument[] = await this.model.find({
-      "workspace.workspaceId": workspaceId,
-    }).lean().exec()
-    if (!document) return null;
-    return document
-  }
+ async findUsersInsameWorkspace(
+  workspaceId: Types.ObjectId
+): Promise<User[] | null> {
+
+  const documents = await this.model
+    .find({ "workspace.workspaceId": workspaceId })
+    .lean()
+    .exec();
+
+  if (!documents || documents.length === 0) return null;
+
+  return documents.map((doc) =>
+    new User({
+    _id:doc._id.toString(),
+    email: doc.email,
+    name: doc.name,
+    googleId:   doc.googleId ?? undefined,
+    role:doc.role
+    } 
+    )
+  );
+}
   async updateOnlineStatus(userId: string): Promise<void> {
-    let objectId = new mongoose.Types.ObjectId(userId.toString());
-    const user = await this.model.findByIdAndUpdate(
+    const objectId = new mongoose.Types.ObjectId(userId.toString());
+    await this.model.findByIdAndUpdate(
       objectId,
       { isOnline: true },
       { new: true, upsert: true }
@@ -140,33 +164,33 @@ export class UserMongooseRepository extends BaseRepository<User | null> implemen
     if (!isUpdated) throw new ValidationError("Updation failed")
     return true
   }
-async searchUser(workspaceId: Types.ObjectId, query: string): Promise<UserResponseDTO[]> {
-  const regex = new RegExp(query.trim(), 'i');
+  async searchUser(workspaceId: Types.ObjectId, query: string): Promise<UserResponseDTO[]> {
+    const regex = new RegExp(query.trim(), 'i');
 
-  const users = await UserModel.find({
-    "workspace.workspaceId": workspaceId,
-    $or: [
-      { name: regex },
-      { email: regex }
-    ]
-  }).lean<UserResponseDTO[]>().exec()
- return users 
-}
+    const users = await UserModel.find({
+      "workspace.workspaceId": workspaceId,
+      $or: [
+        { name: regex },
+        { email: regex }
+      ]
+    }).lean<UserResponseDTO[]>().exec()
+    return users
+  }
 
-async userVerified(userId: Types.ObjectId, isVerified: boolean, verificationExpiresAt: Date | null): Promise<User | null> {
-const user=await UserModel.findByIdAndUpdate(
-  userId,
-  {
-    isVerified: isVerified,
-    verificationExpiresAt: verificationExpiresAt
-  },
-  { new: true }
-)
-return user as User
+  async userVerified(userId: Types.ObjectId, isVerified: boolean, verificationExpiresAt: Date | null): Promise<User | null> {
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        isVerified: isVerified,
+        verificationExpiresAt: verificationExpiresAt
+      },
+      { new: true }
+    )
+    return user as User
 
-}
-async deleteuserById(userId: Types.ObjectId): Promise<void> {
-  await UserModel.findByIdAndDelete(userId)
-}
+  }
+  async deleteuserById(userId: Types.ObjectId): Promise<void> {
+    await UserModel.findByIdAndDelete(userId)
+  }
 }
 
