@@ -1,17 +1,17 @@
 import { Document, Model } from "mongoose";
 import { IBaseRepository } from "../../domain/interfaces/repositories/IBaseReposiory";
 
-export abstract class BaseRepository<T> implements IBaseRepository<T>  {
+export abstract class BaseRepository<T> implements IBaseRepository<T> {
   protected model: Model<T>;
 
-  constructor(model:any) {
+  constructor(model: any) {
     this.model = model;
   }
-async create(entity:T): Promise<T | null> {
-  return await this.model.create(entity)
-}
+  async create(entity: T): Promise<T | null> {
+    return await this.model.create(entity)
+  }
   // async create(item: T): Promise<T|null> {
-   
+
   //   const document = new this.model(item);
   //   const saved = await document.save();
   //     return saved ? saved.toObject() : null;

@@ -12,5 +12,5 @@ export interface IVectorStore {
 export interface ILLMProvider {
   generate(prompt: string, context: string): Promise<string>;
   refinePrompt(name:string,prompt:string,INTENT_PROMPT:string):Promise<string>
-  responseMessage(userQuery:string,dbResponse:unknown[],RESPONSE_PROMPT:string):Promise<string>
+  responseMessage(userQuery:string,dbResponse:Record<string,string>[],RESPONSE_PROMPT:string):Promise<string>
 }

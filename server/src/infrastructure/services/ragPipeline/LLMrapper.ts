@@ -25,7 +25,7 @@ export class GroqLLMProvider implements ILLMProvider {
     return completion.choices[0]?.message?.content ?? "";
 };
 
-async responseMessage(userQuery: string, dbResponse: any[],RESPONSE_PROMPT:string): Promise<string> {
+async responseMessage(userQuery: string, dbResponse: Record<string,string>[],RESPONSE_PROMPT:string): Promise<string> {
     const count = dbResponse.length;
     const plural = count === 1 ? "" : "s";
     if (!count) {
