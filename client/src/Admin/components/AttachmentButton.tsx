@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "../../Custom/ui/dialog";
 import { getFileTypeFromUrl } from "../../Utility/extesionFinder";
-import { useUser } from "../../Worksapce/hooks/workspacehooks";
 import { deleteAttachmentUrl, deleteProjectAttachment } from "../apis/taskApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -111,7 +110,7 @@ export const AttachmentButton = ({
   isProject,
 }: AttachmentButtonProps) => {
 
-  const user = useUser();
+  
   const dispatch = useDispatch<AppDispatch>();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -134,7 +133,7 @@ if(isProject){
   await deleteProjectAttachment(taskId,url)
   setFiles((prev) => prev.filter((f) => f !== url));
   toast.success("Deleted")
- } catch (error) {
+ } catch  {
   toast.error("Failed to delete")
  }
 }else{
@@ -154,7 +153,6 @@ if(isProject){
     passURL(url);
   }
 };
-console.log(File,"files")
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

@@ -1,20 +1,12 @@
-import { useState, useRef, use, useEffect } from "react";
-import api from "../../Services/apiServices/apiService";
+import { useState, useRef,  } from "react";
 
-import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import axios from "axios";
 
 import {
-  setUserData,
   updateUserPartial,
 } from "../../Redux/feature/user/userSlice";
-import {
-  setUserEmail,
-  setUserName,
-  setUserPassword,
-  clearUserProfiles,
-} from "../../Redux/feature/RegisterSlice";
+
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -24,31 +16,20 @@ import {
   MapPin,
   Calendar,
   Briefcase,
-  Clock,
-  Globe,
-  FileText,
-  Star,
-  MessageSquare,
-  Users,
-  Tag,
-  AlertCircle,
-  Shield,
-  Award,
-  User,
+
+
   Edit,
-  Check,
-  X,
+ 
   Key,
-  ChevronDown,
-  Save,
+
+
   Camera,
   MapPinHouse,
-  LoaderIcon,
+  
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
-import apiService from "../../Services/apiServices/apiService";
 import { profilePartialUpdate } from "../apis/workspaceapis";
 import { RootState } from "../../Redux/store";
 export default function Profile() {
@@ -80,7 +61,7 @@ export default function Profile() {
   });
   const userId = Userdata.userData.user._id;
   const isAdmin= Userdata.userData.user.role=="Admin"?true:false;
-  const [activeTab, setActiveTab] = useState("about");
+  const [activeTab,] = useState("about");
   const [isEditing, setIsEditing] = useState(false);
   const [editSection, setEditSection] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -131,7 +112,7 @@ export default function Profile() {
           ...profileData,
           imageUrl,
         };
-    const isUpdated=await profilePartialUpdate(userId,updatedProfile)
+    await profilePartialUpdate(userId,updatedProfile)
       } catch (error) {
       
       if(error instanceof Error){
@@ -214,45 +195,15 @@ export default function Profile() {
     });
   };
 
-  // Handle adding a new skill
-  const [newSkill, setNewSkill] = useState("");
+ 
 
-  const handleAddSkill = () => {
-    if (newSkill.trim() !== "") {
-      setFormData({
-        ...formData,
-        skills: [...(formData.skills || []), newSkill.trim()],
-      });
-      setNewSkill("");
-    }
-  };
+ 
 
-  const handleRemoveSkill = (skillToRemove) => {
-    setFormData({
-      ...formData,
-      skills: formData.skills.filter((skill) => skill !== skillToRemove),
-    });
-  };
 
-  const TabButton = ({ id, label, icon }) => {
-    const Icon = icon;
-    return (
-      <button
-        onClick={() => setActiveTab(id)}
-        className={`flex items-center px-4 py-2 text-sm font-medium ${
-          activeTab === id
-            ? "text-blue-600 border-b-2 border-blue-600"
-            : "text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-300"
-        }`}
-      >
-        <Icon size={16} className='mr-2' />
-        {label}
-      </button>
-    );
-  };
+
+
 
 const addPassword = ()=>{
-  console.log("password");
   navigate("/add/password");
 }
 

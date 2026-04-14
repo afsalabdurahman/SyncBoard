@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../../Custom/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
 import { Badge } from "../../Custom/ui/badge"
-import { DateInHours, formatDate } from "../../Utility/dateformate"
+import { DateInHours } from "../../Utility/dateformate"
+import { RevenueChart } from "../pages/RevenueChart";
 
 // const recentSignups = [
 //   {
@@ -233,6 +233,7 @@ export function RecentActivity({subscription,abuse}:Props) {
   )}
 </CardContent>
       </Card>
+      <RevenueChart/>
     </div>
   )
 }

@@ -25,69 +25,32 @@ import { RootState } from "../../Redux/store";
 import {SubtaskButton} from "../components/Subtask"
 import {SubtaskPage} from "../pages/SubtaskPage";
 import { toast } from "react-toastify";
+import {KanbanApiTask, KanbanTask} from"../types/workspaceTypes"
 
-interface Attachment {
-  id: string;
-  file: File;
-  type: "image" | "pdf" | "doc" | "other";
-  preview?: string;
-}
 
-interface Comment {
-  id: number;
-  name: string;
-  text: string;
-  timestamp: Date;
-  attachments: Attachment[];
-}
 
-interface Task {
-  id: string;
-  projectName: string;
-  taskName: string;
-  description: string;
-  dueDate: string;
-  priority: "low" | "medium" | "high";
-  status: "todo" | "progress" | "completed";
-  approvalStatus: string;
-  rejectionMsg: string | null;
-  comments: Comment[];
-  attachments:string[];
-  subTask?: { title: string; status: "Pending" | "Completed" }[];
-}
-interface ApiTask {
-  _id: string;
-  project?: string;
-  name?: string;
-  description?: string;
-  dueDate?: string;
-  approvalStatus?: string;
-  rejectionMsg?: string;
-  priority?: string;
-  status?: string;
-  attachedURLs?: string[];
-  subTask?: { title: string; status: "Pending" | "Completed" }[];
-}
+
+
+
 export default function KanbanBoard() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<KanbanTask[]>([]);
   const [openCommentId, setOpenCommentId] = useState<string | null>(null);
   const [popup, setPopup] = useState(false);
   const [message, setMessage] = useState("");
-  const [draggedTask, setDraggedTask] = useState<Task | null>(null);
+  const [draggedTask, setDraggedTask] = useState<KanbanTask | null>(null);
 // const [notify,setNotify]=useState(false)
 const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
 const [isOpensub,setOpensub] =useState<string | null>(null);
   const user = useSelector((state: RootState) => state.user.user);
-console.log(tasks,"Taslkkss")
-const areAllSubtasksCompleted = (task: Task): boolean => {
-  if (!task.subTask || task.subTask.length === 0) return true;
-  return task.subTask.every((sub) => sub.status === "Completed");
-};
+// const areAllSubtasksCompleted = (task: KanbanTask): boolean => {
+//   if (!task.subTask || task.subTask.length === 0) return true;
+//   return task.subTask.every((sub) => sub.status === "Completed");
+// };
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         const res = await apiService.get(`task/mytask/${user.name}`);
-        const mappedTasks: Task[] = res.data.map((data: ApiTask) => ({
+        const mappedTasks: KanbanTask[] = res.data.map((data: KanbanApiTask) => ({
           id: data._id.toString(),
           projectName: data.project || "Abcd",
           taskName: data.name || "Untitled Task",
@@ -96,20 +59,20 @@ const areAllSubtasksCompleted = (task: Task): boolean => {
           approvalStatus: data.approvalStatus,
           rejectionMsg: data.rejectionMsg,
           subTask:data.subTask,
-          priority: (data.priority?.toLowerCase?.() || "medium") as Task["priority"],
+          priority: (data.priority?.toLowerCase?.() || "medium") as KanbanTask["priority"],
           status: (() => {
             const s = data.status;
             if (s === "To Do") return "todo";
             if (s === "In Progress") return "progress";
             if (s === "Completed") return "completed";
             return "todo";
-          })() as Task["status"],
+          })() as KanbanTask["status"],
           comments: [],
           attachments:data.attachedURLs
         }));
         setTasks(mappedTasks);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
+      } catch  {
+        toast.error("Failed to fetch tasks:",);
       }
     };
 
@@ -148,7 +111,7 @@ const handleNotification = (data: { taskId: string }) => {
 }, [tasks]);
   const closeComment = () => setOpenCommentId(null);
 
-  const handleDragStart = (e: React.DragEvent, task: Task) => {
+  const handleDragStart = (e: React.DragEvent, task: KanbanTask) => {
     if (task.status === "completed") {
       e.preventDefault();
       return;
@@ -168,8 +131,7 @@ const handleNotification = (data: { taskId: string }) => {
     e.dataTransfer.dropEffect = "move";
   };
 
-  const handleDrop = async (e: React.DragEvent, newStatus: Task["status"]) => {
-    console.log(newStatus,"Status",draggedTask,"DRAGGED");
+  const handleDrop = async (e: React.DragEvent, newStatus: KanbanTask["status"]) => {
 
  if(newStatus =="completed"){
  const isFound=draggedTask?.subTask?.filter((task)=>{
@@ -195,8 +157,8 @@ const handleNotification = (data: { taskId: string }) => {
 
     try {
       await apiService.patch(`task/status/${draggedTask.id}`, { status: apiStatus });
-    } catch (error) {
-      console.error("Failed to update task status:", error);
+    } catch  {
+toast.error("Failed to drag")
     }
 
     setDraggedTask(null);
@@ -227,7 +189,7 @@ const handleNotification = (data: { taskId: string }) => {
     });
   };
 
-  const getTasksByStatus = (status: Task["status"]) =>
+  const getTasksByStatus = (status: KanbanTask["status"]) =>
     tasks.filter((task) => task.status === status);
 
   const showRejectionPopup = (msg: string) => {
@@ -240,9 +202,7 @@ const handleNotification = (data: { taskId: string }) => {
     { id: "progress", title: "In Progress", status: "progress" as const },
     { id: "completed", title: "Completed", status: "completed" as const },
   ];
-const onTogglesub = () =>{
 
-}
 return (
   <div className="p-6 bg-gray-50 min-h-screen" style={{ marginTop: "1.5em" }}>
     <div className="max-w-7xl mx-auto">

@@ -134,7 +134,7 @@ export default function ProjectsPage() {
     }
   };
 
-  const handleEditProject = async (projectData: Project) => {
+  const handleEditProject = async (projectData: any) => {
     try {
       setLoader("Updating project ...");
 
@@ -321,11 +321,13 @@ export default function ProjectsPage() {
 
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
-                        {project.assignedUsers.map((user, i) => (
-                          <Badge key={i} variant="outline" className="text-xs">
-                            {user}
-                          </Badge>
-                        ))}
+                       {project.assignedUsers?.length > 0 &&
+  project.assignedUsers.map((user, i) => (
+    <Badge key={i} variant="outline" className="text-xs">
+      {user}
+    </Badge>
+  ))
+}
                       </div>
                     </TableCell>
 

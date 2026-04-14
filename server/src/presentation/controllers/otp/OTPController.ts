@@ -4,9 +4,8 @@ import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { IOTP } from "../../../application/repositories/IOTP";
 import { MailRequestDTO } from "../../../application/dto/MailDTO";
-import { User } from "../../../domain/entities/User";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
-import { adminResponseDTO, AdminSignupResponseDTO } from "../../../application/dto/AuthDTOs";
+import {  AdminSignupResponseDTO } from "../../../application/dto/AuthDTOs";
 @injectable()
 export class OTPController {
   constructor(

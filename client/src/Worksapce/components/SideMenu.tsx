@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FiHome, FiUsers, FiBell, FiMessageCircle } from "react-icons/fi";
+import { FiHome } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { useDispatch } from "react-redux";

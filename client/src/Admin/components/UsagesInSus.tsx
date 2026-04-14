@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../Custom/ui/card"
 import { Progress } from "../../Custom/ui/progress"
-import { Activity, FolderOpen, Users, HardDrive } from "lucide-react"
+import { Activity, FolderOpen, Users, } from "lucide-react"
 import type { UsageMetrics as UsageMetricsType } from "../subscription-page"
 
 interface UsageMetricsProps {

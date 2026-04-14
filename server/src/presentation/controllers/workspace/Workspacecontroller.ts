@@ -1,7 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { Request, Response, NextFunction } from "express";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { NotFoundError } from "../../../utils/errors";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
@@ -46,10 +45,9 @@ export class WorkspaceController {
 
 
     const { emails, invitationLink,workspaceId } = req.body;
-    console.log(req,"requst+++++")
-    console.log(emails,invitationLink,"++Contoll",req.body)
+
     try {
-      const isSend = await this._sentInvitaionUsecase.send(
+       await this._sentInvitaionUsecase.send(
         emails,
         invitationLink,
         workspaceId
@@ -66,9 +64,9 @@ export class WorkspaceController {
   ): Promise<void> {
     const slug = req.params.workspaceslug;
     try {
-      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
-      const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
-      const skip = (page - 1) * limit;
+      // const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+      // const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
+      // // const skip = (page - 1) * limit;
       const workspaceData = await this._workspaceUsecase.getWorkspceDate(slug);
       res.status(HttpStatusCode.OK).json(workspaceData);
     } catch (error) {

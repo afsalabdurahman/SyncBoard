@@ -4,28 +4,27 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch } from "../../Redux/store";
-import { fetchAllLogs } from "../../Redux/feature/logs/logThunks";
-import { Activity, Clock, User, MessageCircle, UserPlus, Mail ,FolderKanban ,FileText, Settings } from 'lucide-react';
+import { Activity, Clock, User, MessageCircle, FolderKanban } from 'lucide-react';
 import { useWorkspaceid } from "../hooks/workspacehooks";
 import { myLogs } from "../apis/workspaceapis";
 
 export default function ActivityFeed() {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-const workspaceId=useWorkspaceid()
-  
+  const workspaceId = useWorkspaceid() as string
 
-const [logs, setLogs] = useState([]);
 
-useEffect(() => {
-  const fetchLogs = async () => {
-    const result = await myLogs(workspaceId);
+  const [logs, setLogs] = useState([]);
 
-    setLogs([ ...result]);
-  };
+  useEffect(() => {
+    const fetchLogs = async () => {
+      const result = await myLogs(workspaceId);
 
-  fetchLogs();
-}, []);
+      setLogs([...result]);
+    };
+
+    fetchLogs();
+  }, []);
 
 
 
@@ -37,20 +36,17 @@ useEffect(() => {
     navigate("/login");
   }
 
-  const getActivityIcon = (message) => {
+  const getActivityIcon = (message:string) => {
     if (message.includes('Created')) return <User className="w-4 h-4" />;
-    if (message.includes('Project') || message.includes('File')) return <FolderKanban  className="w-4 h-4" />;
+    if (message.includes('Project') || message.includes('File')) return <FolderKanban className="w-4 h-4" />;
     if (message.includes('mentioned')) return <MessageCircle className="w-4 h-4" />;
     if (message.includes('huddle')) return <Activity className="w-4 h-4" />;
     return <Clock className="w-4 h-4" />;
   };
 
 
-  const formatDate = (timestamp: string | number | Date) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString(); // You can customize this format
-  };
  
+
   useEffect(() => {
   }, [dispatch]);
 
@@ -60,7 +56,7 @@ useEffect(() => {
         <h2 className='text-lg font-medium text-gray-800'>Activities</h2>
       </div>
 
-  <div className="max-h-80 overflow-y-auto divide-y divide-gray-100">
+      <div className="max-h-80 overflow-y-auto divide-y divide-gray-100">
         {logs.length === 0 && (
           <div className="px-6 py-12 text-center">
             <div className="flex flex-col items-center gap-3">
@@ -75,8 +71,8 @@ useEffect(() => {
           </div>
         )}
         {logs.map((msg, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="px-4 py-3 hover:bg-gray-50 transition-colors duration-150 cursor-pointer group"
           >
             <div className="flex items-start gap-3">

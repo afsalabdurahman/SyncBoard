@@ -1,7 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import { WorkspaceRequestDTO,WorkspaceResponseDTO } from "../../dto/WorkspaceDTOs";
 import { Workspace } from "../../../domain/entities/Workspace";
-import { WorkspaceDoument } from "../../../infrastructure/database/models/WorkspaceModel";
 
 export interface IWorkspace {
       createWorkspace(input: WorkspaceRequestDTO): Promise<WorkspaceResponseDTO>;

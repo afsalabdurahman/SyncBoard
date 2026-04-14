@@ -1,33 +1,20 @@
-import React, { use, useEffect, useState } from "react";
+import  {  useEffect, useState } from "react";
 import {
   Search,
   Calendar,
   Users,
-  Star,
-  Filter,
-  MoreVertical,
-  Clock,
-  User,
-} from "lucide-react";
-import apiService from "../../Services/apiServices/apiService";
-import { useSelector, useDispatch } from "react-redux";
-import ProjectDetailsPage from "../pages/ProjectDetailsPage";
-import {
-  addProject,
-  updateProject,
-  removeProject,
   
-} from "../../Redux/feature/project/projectSlice";
+  Filter,
+  
+  Clock,
+  
+} from "lucide-react";
+import ProjectDetailsPage from "../pages/ProjectDetailsPage";
 
-import { socket } from "../../Services/socket";
-import {setTasks} from "../../Redux/feature/task/taskSlice"
-import { fetchProjectData } from "../../Redux/feature/project/projectThunks";
 import { myProjects } from "../apis/workspaceapis";
 import { useWorkspaceid } from "../hooks/workspacehooks";
-import { RootState } from "../../Redux/store";
 
 const MyProject = () => {
-  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState(null);
   const [displayCount, setDisplayCount] = useState(3);
@@ -35,13 +22,10 @@ const MyProject = () => {
   const [projectDetails, setProjectDetails] = useState(null);
   
 
-  const userName = useSelector((state: RootState) => {
-    
-    return state.user.name;
-  });
+
   const [projects, setProjects] = useState([]);
 
-  const workspaceId=useWorkspaceid()
+  const workspaceId=useWorkspaceid() as string
 
 
  
@@ -72,7 +56,6 @@ useEffect(() => {
     }
   );
 
-  const displayedProjects = filteredProjects.slice(0, displayCount);
   const hasMoreProjects = filteredProjects.length > displayCount;
 
   const getStatusColor = (status) => {
@@ -109,15 +92,8 @@ useEffect(() => {
     });
   };
 
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  };
 
-  const showProjects = (projectName) => {
+  const showProjects = (projectName:string) => {
     setShowProjectDetails(true);
     if (!projects) return;
     projects.filter((project) => {

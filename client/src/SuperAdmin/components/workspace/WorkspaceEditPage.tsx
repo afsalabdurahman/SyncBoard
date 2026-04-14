@@ -1,6 +1,6 @@
 // WorkspaceEditPage.tsx
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { format } from "date-fns";
 
 import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton";
@@ -24,7 +24,7 @@ import {
   Calendar,
   Users,
   Crown,
-  Infinity,
+  
   AlertTriangle,
   Save,
   CheckCircle,
@@ -39,7 +39,6 @@ export default function WorkspaceEditPage({
   setViewDetails,
 }) {
   const [updateWorkspace, { isLoading }] = useUpdateWorkspaceMutation();
-const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [statusToSet, setStatusToSet] = useState(null);
 
@@ -82,7 +81,7 @@ const [pendingStatus, setPendingStatus] = useState<"active" | "suspend" | null>(
       setViewDetails((prev) => ({ ...prev, name: formData.name, plan: formData.planKey }));
       refetch?.();
     } catch (err) {
-      console.error("Workspace update failed:", err);
+  
       const errorMsg =
         err?.data?.message ||
         err?.error ||
@@ -121,7 +120,6 @@ const confirmStatusChange = async () => {
       }, 700);
 
     } catch (err: unknown) {
-      console.error("Status change failed:", err);
       const errorMsg = err?.data?.message || "Failed to update workspace status";
       toast.error(errorMsg);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { formatDate } from "../../Utility/dateformate";
 import {
   Calendar,
@@ -12,12 +12,10 @@ import {
 
 } from "lucide-react";
 
-import { useSelector } from "react-redux";
 
 import { ProjectType } from "../../Admin/types/projetctTypes";
 import { tasksInProjectDetails } from "../apis/workspaceapis";
 import { toast } from "react-toastify";
-import TaskDetailPopup from "./SubTaskDetails";
 
 const ProjectDetailsPage = (props: ProjectType) => {
   const [myTasks, setMytask] = useState([]);
@@ -41,35 +39,30 @@ useEffect(() => {
 
   fetchTasks();
 }, [projectId, taskFilter]);
-  const [progress, setProgress] = useState();
   const total = myTasks.length;
  const completed = myTasks.filter(
   (task) => task.status === "Completed"
 );
-  const allTask = useSelector((state) => {
-    return state.task.tasks;
-  });
+ 
   const totalProgress = Math.round((completed.length / total) * 100);
-console.log(props,"pross")
   
 
   const [activeTab, setActiveTab] = useState("overview");
   
-  const [showAddTask, setShowAddTask] = useState(false);
-  const [task1, setTask1] = useState(null);
-  const [projectAdminName, setProjectAdminName] = useState(null);
+  // const [task1] = useState(null);
+  const [projectAdminName] = useState(null);
 
   //find pdf or image
-  const isImage = (filename: string) =>
-    /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
-  const isPdf = (filename: string) => /\.pdf$/i.test(filename);
-  let hasPdf = false;
-  let hasImage = false;
+  // const isImage = (filename: string) =>
+  //  /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
+  // const isPdf = (filename: string) => /\.pdf$/i.test(filename);
+  // let hasPdf = false;
+  // let hasImage = false;
 
-  if (props.projectDetails) {
-    hasPdf = props?.projectDetails.attachedUrl.some(isPdf);
-    hasImage = props?.projectDetails.attachedUrl.some(isImage);
-  }
+  // if (props.projectDetails) {
+  //   hasPdf = props?.projectDetails.attachedUrl.some(isPdf);
+  //   hasImage = props?.projectDetails.attachedUrl.some(isImage);
+  // }
   const pdfArray = props?.projectDetails.attachedUrl.map((url: string) => {
     if (url.includes(".pdf")) {
       return url;
@@ -81,71 +74,71 @@ console.log(props,"pross")
   );
   
   //Define task
-  const tasks = [
-    {
-      id: 1,
-      title: "Design Homepage Layout",
-      assignee: "Maria Garcia",
-      status: "completed",
-      priority: "high",
-      dueDate: "2024-06-15",
-    },
-    {
-      id: 2,
-      title: "Implement User Authentication",
-      assignee: "Alex Chen",
-      status: "in-progress",
-      priority: "high",
-      dueDate: "2024-06-18",
-    },
-    {
-      id: 3,
-      title: "Setup Database Schema",
-      assignee: "David Kim",
-      status: "completed",
-      priority: "medium",
-      dueDate: "2024-06-12",
-    },
-    {
-      id: 4,
-      title: "Write API Documentation",
-      assignee: "David Kim",
-      status: "To Do",
-      priority: "Low",
-      dueDate: "2024-06-25",
-    },
-    {
-      id: 5,
-      title: "Mobile Responsive Testing",
-      assignee: "Emma Wilson",
-      status: "in-progress",
-      priority: "medium",
-      dueDate: "2024-06-20",
-    },
-  ];
+  // const tasks = [
+  //   {
+  //     id: 1,
+  //     title: "Design Homepage Layout",
+  //     assignee: "Maria Garcia",
+  //     status: "completed",
+  //     priority: "high",
+  //     dueDate: "2024-06-15",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Implement User Authentication",
+  //     assignee: "Alex Chen",
+  //     status: "in-progress",
+  //     priority: "high",
+  //     dueDate: "2024-06-18",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Setup Database Schema",
+  //     assignee: "David Kim",
+  //     status: "completed",
+  //     priority: "medium",
+  //     dueDate: "2024-06-12",
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Write API Documentation",
+  //     assignee: "David Kim",
+  //     status: "To Do",
+  //     priority: "Low",
+  //     dueDate: "2024-06-25",
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Mobile Responsive Testing",
+  //     assignee: "Emma Wilson",
+  //     status: "in-progress",
+  //     priority: "medium",
+  //     dueDate: "2024-06-20",
+  //   },
+  // ];
 
  
 
  
-  const projectData = {
-    id: "PRJ-001",
-    name: "E-Commerce Platform Redesign",
-    description:
-      "Complete redesign of the company e-commerce platform with modern UI/UX, improved performance, and mobile responsiveness.",
-    status: "In Progress",
-    priority: "High",
-    startDate: "2024-01-15",
-    endDate: "2024-06-30",
-    progress: 0,
-    budget: "$125,000",
-    spent: "$81,250",
-    manager: {
-      name: "Sarah Johnson",
-      email: "sarah.johnson@company.com",
-      avatar: "/api/placeholder/40/40",
-    },
-    client: "TechCorp Solutions",
-  };
+  // const projectData = {
+  //   id: "PRJ-001",
+  //   name: "E-Commerce Platform Redesign",
+  //   description:
+  //     "Complete redesign of the company e-commerce platform with modern UI/UX, improved performance, and mobile responsiveness.",
+  //   status: "In Progress",
+  //   priority: "High",
+  //   startDate: "2024-01-15",
+  //   endDate: "2024-06-30",
+  //   progress: 0,
+  //   budget: "$125,000",
+  //   spent: "$81,250",
+  //   manager: {
+  //     name: "Sarah Johnson",
+  //     email: "sarah.johnson@company.com",
+  //     avatar: "/api/placeholder/40/40",
+  //   },
+  //   client: "TechCorp Solutions",
+  // };
 
 
   const getStatusColor = (status: string) => {
@@ -175,10 +168,10 @@ console.log(props,"pross")
     }
   };
 
-  const filteredTasks = (task1 ?? []).filter((task) => {
-    if (taskFilter === "all") return true;
-    return task.status === taskFilter;
-  });
+  // const filteredTasks = (task1 ?? []).filter((task) => {
+  //   if (taskFilter === "all") return true;
+  //   return task.status === taskFilter;
+  // });
 
   return (
     <div className='min-h-screen bg-gray-50'>

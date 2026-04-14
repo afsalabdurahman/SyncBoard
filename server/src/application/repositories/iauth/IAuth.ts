@@ -1,6 +1,6 @@
 import { User } from "../../../domain/entities/User"
 import { Workspace } from "../../../domain/entities/Workspace";
-import { AdminSignupResponseDTO ,AdminSignupRequestDTO } from "../../dto/AuthDTOs"
+import { AdminSignupRequestDTO } from "../../dto/AuthDTOs"
 
 export interface IAuth{
     execute(RegisterInput:AdminSignupRequestDTO):Promise<User>;

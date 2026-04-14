@@ -1,26 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { updateSubTaskStatus } from "../apis/workspaceapis";
 import { toast } from "react-toastify";
+import {Subtask} from "../types/workspaceTypes"
 
-interface Subtask {
-  
-  title: string;
-  status: "Pending"| "Completed";
-  estimate:number
-}
 
-// const initialSubtasks: Subtask[] = [
-//   { id: 1, label: "Design wireframes for the dashboard", completed: true },
-//   { id: 2, label: "Set up project repository", completed: true },
-//   { id: 3, label: "Implement authentication flow", completed: false },
-//   { id: 4, label: "Write unit tests for API routes", completed: false },
-//   { id: 5, label: "Deploy to staging environment", completed: false },
-// ];
 
 export const SubtaskButton = ({setOpensub,task}) => {
  
   const [subtasks, setSubtasks] = useState<Subtask[]>(task.subTask);
- console.log(subtasks,"task IN VIEW")
+ 
   /* ── drag state ── */
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const dragging = useRef(false);
@@ -34,7 +22,7 @@ export const SubtaskButton = ({setOpensub,task}) => {
 const toggleSubtask = async(title: string) => {
 
 try {
-  console.log(task,"TASKOOOOOOO")
+
  await updateSubTaskStatus(task.id,title);
  toast.success("Updated")
  setSubtasks((prev) =>
@@ -44,7 +32,7 @@ try {
         : s
     )
   );
-} catch (error) {
+} catch  {
   toast.error("Failed to update")
 } 
 };
@@ -61,22 +49,7 @@ try {
     dragging.current = true;
     dragOffset.current = { x: t.clientX - pos.x, y: t.clientY - pos.y };
   };
-function formatEstimate(minutes: number | undefined): string {
-  if (!minutes || minutes <= 0) return "";
 
-  if (minutes < 60) {
-    return `${minutes}m`;
-  }
-
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-
-  if (mins === 0) {
-    return `${hours} hrs`;
-  }
-
-  return `${hours} hrs ${mins}m`;
-}
 
 // Alternative short version people often prefer:
 function formatEstimateShort(minutes?: number): string {
@@ -132,12 +105,7 @@ function formatEstimateShort(minutes?: number): string {
         className="flex items-center justify-between px-4 py-2.5 border-b border-[#252840] bg-[#1a1d2e] cursor-grab active:cursor-grabbing select-none"
       >
         <div className="flex items-center gap-2">
-          {/* grip dots */}
-          {/* <svg className="w-3 h-3 text-slate-600 shrink-0" viewBox="0 0 12 12" fill="currentColor">
-            <circle cx="3.5" cy="2.5" r="1.1" /><circle cx="8.5" cy="2.5" r="1.1" />
-            <circle cx="3.5" cy="6"   r="1.1" /><circle cx="8.5" cy="6"   r="1.1" />
-            <circle cx="3.5" cy="9.5" r="1.1" /><circle cx="8.5" cy="9.5" r="1.1" />
-          </svg> */}
+        
             <button onClick={()=>setOpensub(null)} className="w-5 h-5 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 text-white">
   <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 6l12 12M6 18L18 6" />

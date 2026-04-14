@@ -31,13 +31,12 @@ import {
 import { Users, FolderOpen, AlertTriangle, CheckCircle } from "lucide-react";
 
 import { useSelector } from "react-redux";
-import { useTasks } from "../hooks/taskhooks";
 
 
 
-const projectProgressData = [
-  { name: "Jan", completed: 4, total: 6 },
-];
+// const projectProgressData = [
+//   { name: "Jan", completed: 4, total: 6 },
+// ];
 
 // testing.....................
 
@@ -87,11 +86,11 @@ const taskStatusData = [
   { name: "In Progress", value: initialState.countTaskProgress, fill: "#f59e0b" },
   { name: "Done", value: initialState.countTaskCompleted, fill: "#10b981" },
 ];
-  const totalTasks = useTasks();
+  // const totalTasks = useTasks();
 
-  const workspaceSlug = useSelector(
-    (state: RootState) => state.workspace.workspace.slug
-  );
+  // const workspaceSlug = useSelector(
+  //   (state: RootState) => state.workspace.workspace.slug
+  // );
 
 
   return (

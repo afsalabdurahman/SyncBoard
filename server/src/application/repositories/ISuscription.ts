@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { Subscription } from "../../domain/entities/Suscription";
 
 export interface ISuscriptionUsecase{

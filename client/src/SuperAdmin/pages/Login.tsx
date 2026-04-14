@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import apiService from "../../Services/apiServices/apiService";
+import React, {  useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCountData } from "../../Redux/feature/count/countThunks";
 import { useDispatch } from "react-redux";
-import { superLogin, superLoginApi } from "../apis/fetchApi";
 import { setUserData } from "../../Redux/feature/user/userSlice";
+import { superLoginApi } from "../apis/fetchApi";
 export const Login = () => {
   const dispacth=useDispatch()
 const navigate=useNavigate()
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();

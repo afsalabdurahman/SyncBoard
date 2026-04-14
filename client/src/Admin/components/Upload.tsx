@@ -7,7 +7,7 @@ import {
 } from "../../Custom/ui/dialog";
 
 import { toast } from "react-toastify";
-import { X, Upload as UploadIcon, File, FileText, ImageIcon, ChevronDownCircle } from "lucide-react";
+import { X, Upload as UploadIcon, File, FileText, ImageIcon } from "lucide-react";
 
 /* ---------------- TYPES ---------------- */
 
@@ -20,14 +20,14 @@ interface UploadedFile {
 interface UploadProps {
   isOpen: boolean;
   onClose: () => void;
-  removeUpload:()=>any;
-  uploadfiles:string[];
+  removeUpload: () => any;
+  uploadfiles: string[];
   onSubmit: (files: UploadedFile[]) => void;
 }
 
 /* ---------------- COMPONENT ---------------- */
 
-export function Upload({ isOpen,removeUpload, onClose, onSubmit }: UploadProps) {
+export function Upload({ isOpen, removeUpload, onClose, onSubmit }: UploadProps) {
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,11 +84,13 @@ export function Upload({ isOpen,removeUpload, onClose, onSubmit }: UploadProps) 
   /* ---------------- REMOVE FILE ---------------- */
 
   const removeFile = (id: string) => {
-
-removeUpload((prev) => {
-  return prev.filter((item) => item.id !== id);
-});
     setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
+    removeUpload((prev: any[]) => {
+      if (!prev || prev.length === 0) return prev;
+
+      return prev.filter((item) => item.id !== id);
+    });
+
   };
 
   /* ---------------- FILE ICON ---------------- */
@@ -256,7 +258,7 @@ removeUpload((prev) => {
 
                   <Button
                     variant="outline"
-                    onClick={() => {setUploadedFiles([]);removeUpload([])}}
+                    onClick={() => { setUploadedFiles([]); removeUpload([]) }}
                   >
                     Clear
                   </Button>

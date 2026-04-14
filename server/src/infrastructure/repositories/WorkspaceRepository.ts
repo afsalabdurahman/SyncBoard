@@ -48,7 +48,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
            return new Workspace({ ...workspace, _id: workspace._id?.toString() });
   }
  async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{
-    const result= await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})
+    await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})
 
 return true
   }

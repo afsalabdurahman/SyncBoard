@@ -120,7 +120,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
       onClose();
 
     } catch (error) {
-      console.log(error,"err")
+      
        toast.error(error.message);
     }
   };

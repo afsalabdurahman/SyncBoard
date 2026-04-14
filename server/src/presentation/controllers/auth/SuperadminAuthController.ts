@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction, response } from "express";
-import { LoginRequestDTO, SuperadminResponseDTO } from "../../../application/dto/AuthDTOs";
+import { Request, Response, NextFunction, } from "express";
+import { LoginRequestDTO } from "../../../application/dto/AuthDTOs";
 import { inject,injectable } from "tsyringe";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
@@ -15,7 +15,7 @@ export class SuperadminAuthController{
   ): Promise<void> {
    try {
   
-       let input:LoginRequestDTO = req.body as LoginRequestDTO;
+       const input:LoginRequestDTO = req.body as LoginRequestDTO;
 
 
     const reponseDTO=await this._loginUseCase.superAdmin(input);

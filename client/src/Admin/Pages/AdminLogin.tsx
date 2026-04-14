@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import api from "../../Services/apiServices/apiService";
-import { AxiosResponse } from "axios";
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../Redux/feature/user/userSlice";
@@ -13,12 +12,13 @@ import { GoogleLogin } from "@react-oauth/google";
 
 // Import Lucide Eye Icons
 import { Eye, EyeOff } from "lucide-react";
+import { CredentialResponse } from "../types/adminTypes";
 
 const AdminLogin = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // New state
@@ -39,13 +39,13 @@ const AdminLogin = () => {
       dispatch(setUserData(response.user));
       navigate("/admin/dashboard");
 
-    } catch (error) {
+    } catch {
       setLoading(false);
       setError(true);
     }
   };
 
-  const handleSuccess = async (credentialResponse: any) => {
+  const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
       const response = await googleAdminAuth(credentialResponse.credential);
 
@@ -54,7 +54,7 @@ const AdminLogin = () => {
       dispatch(setSubscription(response.suscribe));
       dispatch(setUserData(response.user));
       navigate("/admin/dashboard");
-    } catch (error) {
+    } catch {
       setLoading(false);
       setError(true);
     }
@@ -104,7 +104,7 @@ const AdminLogin = () => {
                 className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10'
                 placeholder='••••••••'
               />
-              
+
               {/* Eye Icon Button */}
               <button
                 type="button"
@@ -141,7 +141,7 @@ const AdminLogin = () => {
 
         <GoogleLogin
           onSuccess={handleSuccess}
-          onError={() => console.log('Login Failed')}
+
           useOneTap
           theme="outline"
           size="large"

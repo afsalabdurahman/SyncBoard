@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from "react"
+import {  useState } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
 import { Badge } from "../../../Custom/ui/badge"
@@ -14,16 +14,10 @@ import { cn } from "../../../Utility/utils"
 import {
   UserIcon,
   Mail,
-  Shield,
+  
   CheckCircle2,
   XCircle,
-  Smartphone,
-  Globe,
   Clock,
-  LogIn,
-  KeyRound,
-  MessageSquare,
-  UserCog,
   PauseCircle,
   PlayCircle,
   RefreshCw,
@@ -31,7 +25,6 @@ import {
 import type { User } from "./userTable"
 import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon"
 type MemberRole = "owner" | "admin" | "member" | "guest"
-type MemberStatus = "active" | "inactive" | "suspended" | "pending"
 type Plan = "basic" | "pro" | "enterprise"|"free"
 
 const roleColors: Record<MemberRole, string> = {
@@ -70,48 +63,14 @@ function fmtDateTime(d: string) {
 
 export default function UserProfilePage({setPage,user}) {
   
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed, ] = useState(false)
 
 
   const userDefault = user
   const [status, setStatus] = useState<User["status"]>(userDefault.status)
-  const [twoFA, setTwoFA] = useState<boolean>(userDefault.twoFactorEnabled)
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(userDefault.isEmailVerified)
 
-  // Memberships across workspaces
-  const memberships: {
-    id: string
-    workspace: string
-    plan: Plan
-    role: MemberRole
-    status: MemberStatus
-    joinedAt: string
-  }[] = [
-    {
-      id: "ws_techstart",
-      workspace: "TechStart Inc",
-      plan: "pro",
-      role: "admin",
-      status: "active",
-      joinedAt: "2023-03-22",
-    },
-    {
-      id: "ws_designstudio",
-      workspace: "Design Studio",
-      plan: "basic",
-      role: "member",
-      status: "active",
-      joinedAt: "2024-02-10",
-    },
-    {
-      id: "ws_marketing",
-      workspace: "Marketing Agency",
-      plan: "pro",
-      role: "guest",
-      status: "inactive",
-      joinedAt: "2024-07-05",
-    },
-  ]
+
 
  
 const dispatch = useDispatch()
@@ -127,27 +86,27 @@ const dispatch = useDispatch()
 
     toast.success("Activated")
   }
-  const toggle2FA = () => {
-    setTwoFA((v) => !v)
-    toast({
-      title: "Two-factor updated",
-      description: twoFA ? "2FA disabled for this user." : "2FA enabled for this user.",
-    })
-  }
+  // const toggle2FA = () => {
+  //   setTwoFA((v) => !v)
+  //   toast({
+  //     title: "Two-factor updated",
+  //     description: twoFA ? "2FA disabled for this user." : "2FA enabled for this user.",
+  //   })
+  // }
   const resendVerification = () => {
     setIsEmailVerified(true)
     toast({ title: "Verification sent", description: `Verification email has been sent to ${userDefault.email}.` })
   }
-  const revokeSession = (id: string) => {
-    toast({ title: "Session revoked", description: `Session ${id} has been revoked.` })
-  }
-  const editUser = () => toast({ title: "Open edit modal", description: "Hook up your edit user modal here." })
-  const messageUser = () => toast({ title: "Start message", description: "Open your internal DM or email composer." })
-  const resetPassword = () => toast({ title: "Password reset", description: "Password reset email has been sent." })
+  // const revokeSession = (id: string) => {
+  //   toast({ title: "Session revoked", description: `Session ${id} has been revoked.` })
+  // }
+  // const editUser = () => toast({ title: "Open edit modal", description: "Hook up your edit user modal here." })
+  // const messageUser = () => toast({ title: "Start message", description: "Open your internal DM or email composer." })
+  // const resetPassword = () => toast({ title: "Password reset", description: "Password reset email has been sent." })
 
-  const storageUsedGB = 12
-  const storageLimitGB = 50
-  const storagePct = Math.min(100, Math.round((storageUsedGB / storageLimitGB) * 100))
+  // const storageUsedGB = 12
+  // const storageLimitGB = 50
+  // const storagePct = Math.min(100, Math.round((storageUsedGB / storageLimitGB) * 100))
 
   return (
     <div className="min-h-screen bg-gray-50">

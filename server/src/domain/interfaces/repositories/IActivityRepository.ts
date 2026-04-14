@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import  { Types } from "mongoose";
 import { Activities } from "../../entities/Activities";
 import { ActivitiesResponseDTO } from "../../../application/dto/ActivityDTO";
 

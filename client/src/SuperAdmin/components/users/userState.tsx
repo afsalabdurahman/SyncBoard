@@ -1,4 +1,4 @@
-import { Users, UserCheck, UserX, Shield } from "lucide-react"
+import { Users, UserCheck, UserX, } from "lucide-react"
 import { Card, CardContent } from "../../../Custom/ui/card"
 
 interface UserStatsProps {
@@ -31,11 +31,7 @@ export const UserStats = ({ totalUsers, activeUsers, suspendedUsers }: UserStats
    
   ]
 
-  const changeColors = {
-    positive: "text-green-600",
-    negative: "text-red-600",
-    neutral: "text-gray-600",
-  }
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

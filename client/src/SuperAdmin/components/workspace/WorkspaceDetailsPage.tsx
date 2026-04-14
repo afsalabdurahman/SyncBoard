@@ -1,12 +1,12 @@
-import { toast, ToastContainer } from "react-toastify";
-import { useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import {  useState } from "react";
 import { ConfirmDialog } from "../../../Custom/ui/DeleteAlertButton";
 import { Card, CardContent } from "../../../Custom/ui/card";
 import { Badge } from "../../../Custom/ui/badge";
 import { Button } from "../../../Custom/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar";
 import {
-  Building2,
+  
   Users,
   Calendar,
   PauseCircle,
@@ -81,7 +81,7 @@ export default function WorkspaceDetailsPage(props) {
       }, 600);
 
     } catch (err) {
-      console.error("Workspace status update failed:", err);
+    
 
       const errorMessage =
         err?.data?.message ||
@@ -225,10 +225,10 @@ export default function WorkspaceDetailsPage(props) {
 
             <WorkspaceMembersTable
               members={data?.items ?? []}
-              onView={(m) => console.log("View member", m.id)}
-              onChangeRole={(m) => console.log("Change role", m.id)}
-              onSuspend={(m) => console.log("Suspend member", m.id)}
-              onRemove={(m) => console.log("Remove member", m.id)}
+              // onView={ }
+              // onChangeRole={}
+              // onSuspend={}
+              // onRemove={}
             />
           </div>
 

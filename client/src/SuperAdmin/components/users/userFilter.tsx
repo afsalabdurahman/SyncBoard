@@ -1,7 +1,6 @@
-"use client"
 
-import { Search, Download, Plus, Filter } from "lucide-react"
-import { Button } from "../../../Custom/ui/button"
+
+import { Search,  Filter } from "lucide-react"
 import { Input } from "../../../Custom/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
 import { Badge } from "../../../Custom/ui/badge"
@@ -29,9 +28,7 @@ export const UserFilters = ({
   roleFilter,
   onRoleFilterChange,
   planFilter,
-  onPlanFilterChange,
-  onExport,
-  onInviteUser,
+
   totalUsers,
   filteredCount,
 }: UserFiltersProps) => {

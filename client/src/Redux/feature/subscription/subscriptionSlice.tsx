@@ -25,7 +25,7 @@ export type SubscriptionStatus =
   __v?: number;
   _id?: string; // subscription id
   
-  [key: string]: any;
+  // [key: string]: any;
 }
 export type PartialSubscriptionUpdate = Partial<
   Pick<

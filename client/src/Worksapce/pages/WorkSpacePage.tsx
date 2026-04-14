@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { socket } from "../../Services/socket";
 import SideMenu from "../components/SideMenu";
 import SubSideMenu from "../../Worksapce/components/SubSideMenu";
 import ActivityFeed from "../components/ActivityFeed";
@@ -13,7 +12,6 @@ import MyProject from "../components/MyProject";
 import Profile from "../components/Profile";
 import RAG from "../pages/RagChatPage";
 import Abuse from "../pages/AbuseReport"
-import { useDispatch } from "react-redux";
 import {Sparkles } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../Custom/ui/tooltip"; // Add this import
 import { RootState } from "../../Redux/store";

@@ -4,13 +4,13 @@ import { useDispatch } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 
-import { setUserData } from "../../Redux/feature/user/userSlice";
+import { setUserData,  } from "../../Redux/feature/user/userSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
 
-import { loginApi } from "../apis/authApi";
+import { googleAuth, loginApi } from "../apis/authApi";
 import { GoogleLogin } from "@react-oauth/google";
-import apiService from "../../Services/apiServices/apiService";
+import { toast } from "react-toastify";
 
 function Login() {
   const [load, setLoad] = useState<boolean>(false);
@@ -39,9 +39,16 @@ function Login() {
     setLoad(true);
 
     try {
-      const { workspace, user } = await loginApi(email, password);
+      const response = await loginApi(email, password);
 
-      dispatch(setUserAuth(user._id));
+      if (!response) {
+        setError("Login failed: Invalid response from server");
+        return;
+      }
+
+      const { workspace, user } = response;
+
+      dispatch(setUserAuth(user));
       dispatch(setWorkspace(workspace));
       dispatch(setUserData(user));
 
@@ -69,38 +76,41 @@ function Login() {
       setLoad(false);
     }
   };
-const handleSuccess =async (credentialResponse) =>{
-  try {
-  const response= await apiService.post('/auth/google',{credential:credentialResponse.credential,})
-if(response.status==200){
-  const userPayload = {
-            email: response.data.savedUser.email,
-            name: response.data.savedUser.name,
-            isAdmin: true,
-            role:response.data.savedUser.role,
-            id: response.data.savedUser._id,
-          };
-   dispatch(setUserAuth(userPayload.id));
-          dispatch(setUserData(userPayload));
-          dispatch(setWorkspace(response.data.workspace))
-  navigate("/workspace")
-}else if(response.status == 201){
+  const handleSuccess = async (credentialResponse) => {
+    try {
+      const response = await googleAuth(credentialResponse);
+      if(!response||!response.data) throw new Error("Google auth failed")
+      if (response.status == 200) {
+        const userPayload = {
+          email: response.data.savedUser.email,
+          name: response.data.savedUser.name,
+          isAdmin: true,
+          role: response.data.savedUser.role,
+          id: response.data.savedUser._id,
+        };
+        dispatch(setUserAuth(userPayload.id));
+        dispatch(setUserData(userPayload));
+        dispatch(setWorkspace(response.data?.workspace))
+        navigate("/workspace")
+      } else if (response.status == 201) {
 
-    const userPayload = {
-              email: response.data.savedUser.email,
-              name: response.data.savedUser.name,
-              isAdmin: true,
-              id: response.data.savedUser._id,
-            };
-    
-            dispatch(setUserData(userPayload));
-    navigate("/create/workspace")
+        const userPayload = {
+          email: response.data.savedUser.email,
+          name: response.data.savedUser.name,
+          isAdmin: true,
+          id: response.data.savedUser._id,
+        };
+
+        dispatch(setUserData(userPayload));
+        navigate("/create/workspace")
+      }
+
+    } catch (error) {
+      if(error instanceof Error){
+           toast.error(error.message)
+          }
+    }
   }
-  
-}catch (error) {
-    console.log(error,"error")
-  }
-}
   return (
     <div className="min-h-screen flex">
       {/* Login Section */}
@@ -150,14 +160,13 @@ if(response.status==200){
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-  <GoogleLogin
-      onSuccess={handleSuccess}
-      onError={() => console.log('Login Failed')}
-      useOneTap   
-      theme="outline"
-      size="large"
-      text="continue_with"
-    />
+              <GoogleLogin
+                onSuccess={handleSuccess}
+                useOneTap
+                theme="outline"
+                size="large"
+                text="continue_with"
+              />
               <div className="flex justify-between text-sm">
                 <Link to="/forgot/password" className="text-gray-600 hover:underline">
                   Forgot password?

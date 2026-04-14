@@ -25,9 +25,7 @@ import PaymentRejected from "./Admin/Pages/PaymentRejected";
 import AuthProvider from "./Worksapce/protectedRoutes/AuthProvider"
 import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
-import { useSelector } from "react-redux";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import  AddPassword  from "./Worksapce/components/AddPassword";
 
 function App() {

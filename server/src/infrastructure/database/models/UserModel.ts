@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Document, Types, Model } from "mongoose";
+import { Schema, model, Document, Types, Model } from "mongoose";
 import { WorkspaceMembership } from "../../../types/workpaceTypes";
 import { UserRole } from "../../../types/userTypes";
 import { workspaceMembershipSchema } from "./WorkspaceMemberModel";

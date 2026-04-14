@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import {  Response, NextFunction } from "express";
 import { AuthenticationError, ForbiddenError, NotFoundError } from "../../utils/errors";
 
 import { AuthService } from "../../infrastructure/services/AuthService"

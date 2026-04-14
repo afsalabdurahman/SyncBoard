@@ -9,17 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from "../../../Custom/ui/scrollArea";
 import { Send, Building2, Users, Clock, AlertCircle, CheckCircle2, PlayCircle, RotateCcw } from "lucide-react";
 import { cn } from "../../../Utility/cn";
-import { toast } from "react-toastify";
 import {formatDate} from"../../../Utility/dateConverter"
-import Tikets from "../../../Admin/Pages/Tikets";
 interface SuperAdminTicketDetailProps {
   ticket: Ticket;
   onSendMessage: (ticketId: string, message: string) => void;
   onStatusChange: (ticketId: string, status: TicketStatus) => void;
-  onClose?: () => void;
 }
 
-const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange, onClose }: SuperAdminTicketDetailProps) => {
+const SuperAdminTicketDetail = ({ ticket, onSendMessage, onStatusChange,  }: SuperAdminTicketDetailProps) => {
   const [message, setMessage] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loacState,setLocalstate]=useState<TicketStatus>(ticket.status)

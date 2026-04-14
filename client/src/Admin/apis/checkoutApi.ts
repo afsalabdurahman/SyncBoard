@@ -1,7 +1,6 @@
-import { handleApiError } from "../../Services/apiServices/apiErrorHandle";
 import apiService from "../../Services/apiServices/apiService"
 
-export const checkoutapi = async (userId: string, plan: string): Promise<string> => {
+export const checkoutapi = async (userId: string, plan: string): Promise<string|boolean> => {
     try {
 
         const data=await apiService.post(`/checkout/payment/${userId}`, {
@@ -18,9 +17,9 @@ export const checkoutapi = async (userId: string, plan: string): Promise<string>
 export const fetchAllPlans = async () => {
     try {
         const plants = await apiService.get("/subscription/active/plans");
-        console.log(plants, "API")
+        
         return plants.data
-    } catch (error) {
-        console.log(error)
+    } catch  {
+       throw new Error("Updation failed")
     }
 }

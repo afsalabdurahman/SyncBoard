@@ -6,7 +6,7 @@ import { AnalyticsFilters } from "../components/analytics/analyticFilter"
 import { AnalyticsCharts, generateTimeSeries } from "../components/analytics/analyticChart"
 
 export const  AnalyticsPage =()=> {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
 
   // Filters
   const [search, setSearch] = useState("")
@@ -34,7 +34,6 @@ export const  AnalyticsPage =()=> {
   }, [range, granularity])
 
   // In a real app you'd filter by search and workspace before computing charts
-  const _ = search + workspace // keep lints happy for now
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -11,7 +11,7 @@ import { Pagination } from "@mui/material";
 export const  UsersPage = () => {
     const [changePage,setChangePage]=useState(1)
   const {data,isLoading,refetch} = useFetchUserPageQuery(changePage)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [roleFilter, setRoleFilter] = useState("all")
@@ -75,15 +75,15 @@ const handleChangePage = (page) => {
     // Implement edit user logic
   }
 
-  const handleSuspendUser = (user: User) => {
+  const handleSuspendUser = () => {
     // Implement suspend user logic
   }
 
-  const handleDeleteUser = (user: User) => {
+  const handleDeleteUser = () => {
     // Implement delete user logic
   }
 
-  const handleResendInvite = (user: User) => {
+  const handleResendInvite = () => {
     // Implement resend invite logic
   }
 

@@ -1,7 +1,6 @@
 "use client"
 
-import { Search, Download, Filter, Plus } from "lucide-react"
-import { Button } from "../../../Custom/ui/button"
+import { Search,Filter } from "lucide-react"
 import { Input } from "../../../Custom/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
 
@@ -14,8 +13,7 @@ export function SubscriptionFilters({
   onPlan,
   period,
   onPeriod,
-  onExport,
-  onCreate,
+
 }: {
   search: string
   onSearch: (v: string) => void

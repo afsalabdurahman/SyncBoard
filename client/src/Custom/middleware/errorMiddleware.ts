@@ -1,5 +1,4 @@
 import { Middleware, UnknownAction } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 
 export const errorMiddleware: Middleware =
   () => (next) => (action: UnknownAction) => {
@@ -13,10 +12,7 @@ export const errorMiddleware: Middleware =
         error?: { message?: string };
       };
 
-      const message =
-        errorAction.payload ??
-        errorAction.error?.message ??
-        "Something went wrong. Please try again.";
+  
 
       // toast.error(message);
     }

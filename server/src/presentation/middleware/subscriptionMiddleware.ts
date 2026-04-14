@@ -1,18 +1,13 @@
-import  {SubscriptionModel} from "../../infrastructure/database/models/SuscriptionModel" 
-import {ProjectModel} from  "../../infrastructure/database/models/ProjectModel";
-import {TaskModel} from "../../infrastructure/database/models/TaskModel"
-import {UserModel} from "../../infrastructure/database/models/UserModel"
+
 import { Response,NextFunction } from "express";
 
 import {CustomRequest} from"../types/CustomRequest"
-import { ForbiddenError, NotFoundError, ValidationError } from "../../utils/errors";
-import {ISuscription} from "../../domain/interfaces/repositories/ISuscriptionRepository"
+import {  NotFoundError, ValidationError } from "../../utils/errors";
 import { SuscriptionRepository } from "../../infrastructure/repositories/SuscriptionRepository";
 import { container } from "tsyringe";
 import { PlanRepository } from "../../infrastructure/repositories/PlanRepository";
 import { ProjectRepository } from "../../infrastructure/repositories/ProjectRepository";
 import { TaskRepository } from "../../infrastructure/repositories/TaskRepository";
-import { UserMongooseRepository } from "../../infrastructure/repositories/UserRepository";
 import { SUBSCRIPTION_LIMITS, SubscriptionLimitsMap } from "../../utils/subscriptionUtil";
 
 
@@ -25,7 +20,6 @@ try {
      const plan = container.resolve(PlanRepository);
      const projectRepo = container.resolve(ProjectRepository);
      const taskRepo = container.resolve(TaskRepository);
-     const userRepo = container.resolve(UserMongooseRepository)
 const userId=req.user?.id
 if(!userId) throw new NotFoundError("NOt found")
   if(req?.user?.role=="Member") return next()
@@ -40,7 +34,7 @@ const checkisAvilablePlan= await plan.findByKey(isSubscribe.planKey);
 
 if (!checkisAvilablePlan) throw new NotFoundError("Plan is not Avilable")
 
-let myPlan = isSubscribe.planKey as keyof SubscriptionLimitsMap;
+const myPlan = isSubscribe.planKey as keyof SubscriptionLimitsMap;
 
 const limit = SUBSCRIPTION_LIMITS[myPlan];
 

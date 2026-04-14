@@ -1,4 +1,3 @@
-import { Ticket } from "../../domain/entities/Ticket";
 import { TicketDocument } from "../../infrastructure/database/models/TicketModel";
 import { Message, TicketStatus } from "../../types/tiketTypes";
 import { ticketRequestDTO } from "../dto/TiketDTO";

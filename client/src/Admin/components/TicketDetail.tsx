@@ -3,7 +3,7 @@ import { Ticket, TicketStatus } from "../types/TiketTypes";
 import { Button } from "../../Custom/ui/button";
 import { Textarea } from "../../Custom/ui/textarea";
 import { Badge } from "../../Custom/ui/badge";
-import { X, Send, Building2, Users, Clock, AlertCircle, RotateCcw,Rotate3DIcon } from "lucide-react";
+import { X, Send, Clock, AlertCircle, RotateCcw,Rotate3DIcon } from "lucide-react";
 import { cn } from "../../Utility/cn";
 import {formatTimestamp} from "../../Utility/dateConverter"
 interface TicketDetailProps {

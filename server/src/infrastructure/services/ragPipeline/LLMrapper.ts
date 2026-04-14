@@ -56,6 +56,7 @@ async responseMessage(userQuery: string, dbResponse: Record<string,string>[],RES
 }
 
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async generate(prompt: string, context: string): Promise<string> {
          return "hiii"
         

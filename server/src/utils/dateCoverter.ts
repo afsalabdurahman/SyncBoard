@@ -1,8 +1,7 @@
 export const nextMonth = () => {
-  let today = new Date();
+  const today = new Date();
 
 
-  const monthNumber = today.getMonth() + 1;
 
  
   const nextMonthDate = new Date(today);

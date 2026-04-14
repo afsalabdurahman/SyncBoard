@@ -1,6 +1,6 @@
 import { Ticket, TicketCardProps } from "../types/TiketTypes";
 import { Badge } from "../../Custom/ui/badge";
-import { Building2, Users, Clock, MessageSquare,Rotate3DIcon,Grid } from "lucide-react";
+import {  Clock, MessageSquare,Grid } from "lucide-react";
 import { cn } from "../../Utility/cn";
 import {formatDate} from "../../Utility/dateConverter"
 

@@ -39,23 +39,7 @@ export default function CurrentPlanOverview({
 
   const filterPlan = plans.filter((plan) => plan.key === currentPlan);
 
-  const planDetails = {
-    free: { price: "$0", features: ["Basic features", "Limited usage"] },
-    basic: { price: "$10", features: ["Basic features", "Limited usage"], priceId: "this isprice id" },
-    pro: {
-      price: "$20",
-      features: ["All basic features", "Advanced tools", "Priority support"],
-    },
-    enterprise: {
-      price: "$50",
-      features: [
-        "All Pro features",
-        "Custom integrations",
-        "Dedicated support",
-        "Advanced analytics",
-      ],
-    },
-  };
+ 
 if(plans.length ==0) return <><LoadingSpinner/></>
   return (
     <Card className='w-full'>

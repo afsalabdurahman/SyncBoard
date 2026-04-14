@@ -30,27 +30,25 @@ import {
   Mail,
   Phone,
   ShieldCheck,
-  ShieldOff,
+  
   UserCog,
   Globe,
-  Clock,
+
   Calendar,
   Activity,
-  LogIn,
+  
   Building2,
   Save,
   RefreshCw,
   Ban,
   PlayCircle,
-  CheckCircle2,
 } from "lucide-react";
 
 import { cn } from "../../../Utility/utils";
 import { updateUser } from "../../apis/updateApi";
-import { useFetchUserPageQuery } from "../../apis/fetchApi";
 import { dataMap } from "../../types/mapData";
 
-export default function UserProfileEditPage({ setPage, user, refetch, setUser }) {
+export default function UserProfileEditPage({ setPage, user, refetch,  }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",

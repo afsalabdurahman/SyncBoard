@@ -17,7 +17,7 @@ export class sharedController{
              const token  = req.cookies.refreshToken;
              
                 if (!token) throw new NotFoundError("Token not found")
-     let {accessToken,refreshToken}  = await this._refreshTokenUsecase.exceute(token)
+     const {accessToken,refreshToken}  = await this._refreshTokenUsecase.exceute(token)
      if(!accessToken||!refreshToken) throw new NotFoundError("Tokens are not generated")
         setTokensInCookies(res,accessToken,refreshToken)
       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS })

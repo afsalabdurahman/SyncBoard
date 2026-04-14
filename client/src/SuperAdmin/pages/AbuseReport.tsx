@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { AlertTriangle, CheckCircle, XCircle, Eye, Search, Clock, User, FileText } from 'lucide-react';
+import React, {  useState } from 'react';
+import { AlertTriangle, CheckCircle, XCircle, Eye, Search, Clock,  FileText } from 'lucide-react';
 import { useFetchAbuseReportPageQuery, useUpdateAbuseReportStatusMutation } from '../apis/fetchApi';
 import { toast } from 'react-toastify';
 export  const AbuseReportsPage =()=> {
-   const [page,setPage] = useState(1);
-   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+   const [page] = useState(1);
+   const [sidebarCollapsed] = useState(false);
     const [selectedReport, setSelectedReport] = useState(null);
   const [filterType, setFilterType] = useState('All');
   const [filterSeverity, setFilterSeverity] = useState('All');
@@ -13,7 +13,7 @@ export  const AbuseReportsPage =()=> {
   
 
   const {data:reports,refetch,isLoading,error}=useFetchAbuseReportPageQuery({ page, limit: 5 })
-  const  [updateReportStatus,   { isLoading: isUpdating } ] = useUpdateAbuseReportStatusMutation()
+  const  [updateReportStatus,    ] = useUpdateAbuseReportStatusMutation()
 //     useEffect(()=>{
 // refetch()
 //   },[])
@@ -90,7 +90,7 @@ const handleStatusChange = async (
     refetch()
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error,"eroror")
+      
       toast.error(error.message)
     }
   }

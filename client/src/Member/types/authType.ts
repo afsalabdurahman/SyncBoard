@@ -13,3 +13,10 @@ export interface commentType {
   timestamp:Date | string;
   attachments?: string[] 
 }
+export interface ErrorState {
+  names: string;
+  passwords: string;
+  cpasswords: string;
+  emails: string;
+  api: string;
+}

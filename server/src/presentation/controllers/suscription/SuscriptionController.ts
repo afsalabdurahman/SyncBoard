@@ -81,30 +81,30 @@ console.log("webHokkCalling")
     }
     switch (event.type) {
       case "checkout.session.completed":
-        const session = event.data.object as Stripe.Checkout.Session;
+        { const session = event.data.object as Stripe.Checkout.Session;
 await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString()??"",session.id,new Date(),session?.amount_subtotal??0,session.payment_status)
         if (session.metadata) {
           
           await this._suscriptionUsecase.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
         }
-        break;
+        break; }
       case "invoice.paid":
 
         //         case "charge.succeeded":
-        const invoice = event.data.object as Stripe.Invoice
+        { const invoice = event.data.object as Stripe.Invoice
         if (invoice.customer_name && invoice.customer_email && invoice.hosted_invoice_url) {
           await this._suscriptionUsecase.sendReceipt(invoice.customer_name, invoice.customer_email, invoice.hosted_invoice_url)
         }
 console.log(event,"envents")
         res.sendStatus(200);
-        break;
+        break; }
 
 
     }
     next()
 
   }
-  async getSuscription(req: Request, res: Response, next: NextFunction) {
+  async getSuscription(req: Request, res: Response, ) {
 
     const subscription = await this._suscriptionUsecase.getSuscription(req.params.userid);
 

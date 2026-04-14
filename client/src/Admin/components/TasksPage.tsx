@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Button } from "../../Custom/ui/button";
 import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 import {TablePagination} from"@mui/material"
-import { AppDispatch, RootState } from "../../Redux/store";
+import { AppDispatch } from "../../Redux/store";
 import CommentBox from "../../Custom/ui/CommentBox";
 import {
   Card,
@@ -30,12 +29,11 @@ import {
   SelectValue,
 } from "../../Custom/ui/select";
 import { Edit, Trash2, Plus, Calendar,MessageCircle } from "lucide-react";
-import { updateTask,setTaskPage } from "../../Redux/feature/task/taskSlice";
+import { setTaskPage } from "../../Redux/feature/task/taskSlice";
 import { useDispatch } from "react-redux";
   import { addTaskApi, deleteTaskApi, fetchTaskData, updateTaskApi } from "../../Redux/feature/task/taskThunks";
 import { usePaginationTask, useTasks } from "../hooks/taskhooks";
 import { useProjects } from "../hooks/projectshooks";
-import { useMember } from "../../Member/hooks/memeberhooks";
 import { toast } from "react-toastify";
 import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
@@ -54,7 +52,7 @@ interface Task {
 
 export function TasksPage() {
 
-   const {page,rowPerPage,totalItems,totalPage} = usePaginationTask()
+   const {page,rowPerPage,totalItems} = usePaginationTask()
      const [openCommentId, setOpenCommentId] = useState<string | null>(null);
     const toggleComment = (taskId: string) => {
     setOpenCommentId((prev) => (prev === taskId ? null : taskId));
@@ -64,10 +62,7 @@ export function TasksPage() {
   }
 
  
-  const AdminId = useSelector((state: RootState) => {
-    return state?.user?.user?.id;
-  });
-  const [refreshKey, setRefreshKey] = useState(0);
+ 
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<string>("");
@@ -87,15 +82,7 @@ const handleChangePage = (event, newPage) => {
   };
  
   const projects = useProjects()
-  const users = new Set(
-    projects
-      .map((user: { id: number; name: string; assignedUsers: string[] }) => {
-        return user.assignedUsers.map((name: string) => {
-          return name;
-        });
-      })
-      .flat()
-  );
+  ;
 
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,14 +119,14 @@ setIsModalOpen(false);
   }catch (error) {
     setLoader("");
 
-   let message=error.message
+   const message=error.message
     toast.error(message)
  }
 
 };
   const handleEditTask = async (taskData) => {
    
-    const id = taskData.id;
+    
   try {
     
    await  dispatch(updateTaskApi(taskData)).unwrap()
@@ -150,7 +137,7 @@ setIsModalOpen(false);
       setLoader("");
 setIsModalOpen(false);
   } catch (error) {
-    let message=error.message
+    const message=error.message
     toast.error(message)
   }
   

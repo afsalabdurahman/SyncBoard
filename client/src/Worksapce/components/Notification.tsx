@@ -10,15 +10,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../../Custom/ui/popover";
 import { Badge } from "../../Custom/ui/badge";
 import { Bell, X, User, MessageSquare, Heart, Settings } from "lucide-react";
+import { Notification } from "../types/workspaceTypes";
 
-interface Notification {
-  id?: string;
-  title?: string;
-  message: string;
-  time?: string;
-  type?: "message" | "like" | "follow" | "system";
-  read?: boolean;
-}
 
 export default function NotificationBell(props) {
  

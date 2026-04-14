@@ -1,21 +1,19 @@
-import { Button } from "./button"
-import { Input } from "./input"
-import { Label } from "./label"
+
 import { toast, ToastContainer } from "react-toastify";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "./popover"
-import { X ,Trash2,XCircle } from "lucide-react"
-import { ConfirmDialog } from "./DeleteAlertButton"
-import { useEffect, useState } from "react"
+import {Trash2,XCircle } from "lucide-react"
+
 import MinimalConfirmDialog from "./Minimaldelete"
 import apiService from "../../Services/apiServices/apiService";
+import { useState } from "react";
 
 // import {type} from "../../Redux/workspace/admin/ProjectSlice"
 
-export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:void) {
+export function Popup({isOpen,onClose,Url,projectId,deletdAUrl}:void) {
  
      const [urls,setUrls]=useState<string[]>(Url)
      const [deletedUrl,setDeletedUrl]=useState<string>("")
@@ -23,7 +21,7 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:void) {
    const handleConfirmDelete = async() =>{
        try {
         const encodedUrl = encodeURIComponent(deletedUrl);
-       const response= await apiService.delete(`project/remove/attachment/${projectId}/${encodedUrl}`)
+       await apiService.delete(`project/remove/attachment/${projectId}/${encodedUrl}`)
          
       setTimeout(() => {
           toast.success("Url is deleted")
@@ -35,8 +33,8 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:void) {
         
       
   
-       } catch (error) {
-        console.log(error,"response")
+       } catch  {
+        throw new Error("Deletion failed")
        }
 
   
@@ -73,7 +71,7 @@ export function Popup({isOpen,onClose,Url,type,projectId,deletdAUrl}:void) {
                   <a href={url} className="h-8 text-black truncate cursor-pointer">
                     https://res.cloudinary.com/{index+1}
                   </a>
-                  <Trash2 onClick={() => {setIsDialogOpen(true),setDeletedUrl(url)}} className="text-red-500 cursor-pointer  w-4 h-4" />
+                  <Trash2 onClick={() => {setIsDialogOpen(true); setDeletedUrl(url);}} className="text-red-500 cursor-pointer  w-4 h-4" />
                 </>
               ))}
          

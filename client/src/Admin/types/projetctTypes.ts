@@ -3,11 +3,11 @@ export interface ProjectType {
   name: string;
   description: string;
   assignedUsers: string[];
-  deadline: string; 
+  deadline: string;
   status: 'Planning' | 'In Progress' | 'Completed' | 'On Hold';
-  preiority?: 'Low' | 'Medium' |'High';
-  clientName?:string;
- adminProjects?:string;
+  preiority?: 'Low' | 'Medium' | 'High';
+  clientName?: string;
+  adminProjects?: string;
 
 }
 
@@ -16,13 +16,14 @@ export type ProjectStatus = "Completed" | "In Progress" | "Planning" | "On Hold"
 export interface ProjectFormData {
 
   _id?: string;
+  assignedUsers: string[];
 
   name: string;
-  
+
   description: string;
 
   status: ProjectStatus;
-  
+
   deadline: string;
 
   priority: string;
@@ -30,13 +31,13 @@ export interface ProjectFormData {
   clientName?: string;
 
   attachment?: { file: File }[];
- url?:[string]
+  url?: [string]
 }
-export interface projectResponse{
-list:ProjectFormData[],
-totalPages:number|string,
-currentPage:number|string,
-totalItems:number|string
+export interface projectResponse {
+  list: ProjectFormData[],
+  totalPages: number | string,
+  currentPage: number | string,
+  totalItems: number | string
 
 
 }

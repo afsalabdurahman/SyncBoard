@@ -47,7 +47,7 @@ export class StripeService implements IStripeService {
   }
 
   async createStripeCustomerId(email: string, name: string): Promise<Stripe.Customer> {
-    let stripeCustomer = await stripe.customers.create({ email, name });
+    const stripeCustomer = await stripe.customers.create({ email, name });
 
     return stripeCustomer;
   }
@@ -56,7 +56,7 @@ export class StripeService implements IStripeService {
     paymentMethodId: string,
     stripeCustomerId: string
   ): Promise<boolean> {
-    let paymentattched = await stripe.paymentMethods.attach(paymentMethodId, {
+     await stripe.paymentMethods.attach(paymentMethodId, {
       customer: stripeCustomerId,
     });
 
@@ -72,7 +72,7 @@ export class StripeService implements IStripeService {
         invoice_settings: { default_payment_method: paymentMethodId },
       });
       return true;
-    } catch (error) {
+    } catch  {
 throw new InternalServerError("Something went to wrong")
     }
   }

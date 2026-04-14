@@ -23,8 +23,7 @@ export const signupApi = async (email: string, name: string, password: string): 
 
   } catch (err: unknown) {
 
-   
-
+  
     let errorMessage = "Something went wrong";
 
     if (err && typeof err === "object" && "isAxiosError" in err) {
@@ -37,6 +36,7 @@ export const signupApi = async (email: string, name: string, password: string): 
 
     throw new Error(errorMessage);
   }
+  return null;
 }
 
 
@@ -101,7 +101,7 @@ export const sendComment = async (
 
     // If status is not success, treat as failure
     return false;
-  } catch (error) {
+  } catch {
 
    
     return false; // or throw error if you prefer
@@ -130,7 +130,7 @@ export const verifyOTP = async (
      return  response.data.user
     
 
-  } catch (error: unknown) {
+  } catch  {
     throw new Error("Invalid OTP");
   }
 };
@@ -152,7 +152,7 @@ export const reSendOTP = async (email: string) => {
     throw new Error(err)
   }
 }
-export const changePassword = async (userId,currentPassword,newPassword) =>{
+export const changePassword = async (userId:string,currentPassword:string,newPassword:string) =>{
   try {
     await apiService.patch( `member/change/password/${userId}`,
        { currentPassword, newPassword }
@@ -189,4 +189,13 @@ export const resetPassword  = (userId:string,password:string)=>{
      const err: string = catchErrorHandle(error, "Failed to send OTP")
     throw new Error(err)
   }
+}
+export const googleAuth = async(credentialResponse:{credential:string}) =>{
+try {
+          const response = await apiService.post('/auth/google', { credential: credentialResponse.credential, })
+         return response
+
+} catch (error) {
+  catchErrorHandle(error,"Failed to signup")
+}
 }

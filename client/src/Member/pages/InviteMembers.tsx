@@ -1,28 +1,20 @@
 import React, { useState } from "react";
-import { Copy, Plus, X } from "lucide-react";
+import { Copy, Plus, } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from "../../Redux/store";
-import {  useNavigate } from "react-router-dom";
-import {  useDispatch } from "react-redux";
-        const INVITE_LINK = import.meta.env.VITE_BASE_INVITE_LINK
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+const INVITE_LINK = import.meta.env.VITE_BASE_INVITE_LINK
 import { useSelector } from "react-redux";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { sendInvitaionMail } from "../apis/workspaceApi";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
 import { useUser } from "../../Worksapce/hooks/workspacehooks";
+import { EmailField } from "../types/memberType";
+import { TeamMember } from "../types/memberType";
+import { User } from "../../Admin/types/userTypes";
 
-interface EmailField {
-  email: string;
-  role: "member";
-}
-
-interface TeamMember {
-  name: string;
-  position: string;
-  team?: string;
-  avatar: string;
-}
 
 interface CollabInterfaceProps {
   initialEmails?: EmailField[];
@@ -30,9 +22,10 @@ interface CollabInterfaceProps {
   teamMembers?: TeamMember[];
 }
 
+
 const InviteMembers: React.FC<CollabInterfaceProps> = ({
   initialEmails = [{ email: "", role: "member" }],
-  inviteLink = INVITE_LINK ,
+
   teamMembers = [
     {
       name: "Vanessa",
@@ -51,22 +44,22 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
   ],
 }) => {
   const dispatch = useDispatch();
-  const workspaceLink: any = useSelector((state: RootState) => {
-    return state.workspace.workspace.slug;
+  const workspaceLink: string | undefined = useSelector((state: RootState) => {
+    return state.workspace?.workspace?.slug;
   });
 
-  const link=INVITE_LINK+workspaceLink;
+  const link = INVITE_LINK + (workspaceLink || "");
 
 
   const [loader, setLoader] = useState(false);
   const [emailss, setEmails] = useState<EmailField[]>(initialEmails);
-  const [emails,setSingleEmail]=useState(null)
-  const [invitationLink, setInvitationLink] = useState<string>(
-  link
+  const [emails, setSingleEmail] = useState(null)
+  const [invitationLink] = useState<string>(
+    link
   );
   const [count, setCount] = useState(0);
   const navigate = useNavigate();
-const user = useUser();
+  const user:User = useUser() 
 
   const addEmailField = (): void => {
     //validating invitaion field
@@ -83,26 +76,20 @@ const user = useUser();
   };
   const handleEmailChange = (index: number, value: string): void => {
     const updatedEmails = [...emailss];
-    
+
     updatedEmails[index].email = value;
     setEmails(updatedEmails);
     setSingleEmail([value])
   };
 
-  const handleRoleChange = (index: number, role: "member"): void => {
-    const updatedEmailss = [...emailss];
 
-    updatedEmails[index].role = role;
-    setEmails(updatedEmails);
-    
-  };
 
-dispatch(setUserAuth(user))
-const remaindLater = () =>{
-  setTimeout(() => {
-    navigate("/workspace");
-  }, 100);
-}
+  dispatch(setUserAuth(user))
+  const remaindLater = () => {
+    setTimeout(() => {
+      navigate("/workspace");
+    }, 100);
+  }
 
   const copyInviteLink = (): void => {
     navigator.clipboard.writeText(invitationLink);
@@ -115,22 +102,22 @@ const remaindLater = () =>{
     } else {
       setLoader(true);
       try {
-const response = await sendInvitaionMail(emails,invitationLink)
-        if (response.status==200) {
+        const response = await sendInvitaionMail(emails, invitationLink)
+        if (response.status == 200) {
           setLoader(false);
-       
+
           toast.success("Invitation send");
           setTimeout(() => {
-          
+
             navigate("/workspace");
           }, 5000);
         }
       } catch (error) {
         setLoader(false);
-      let message = "Login failed"
-       if (error instanceof Error) {
-      message = error.message;
-    }
+        let message = "Login failed"
+        if (error instanceof Error) {
+          message = error.message;
+        }
         toast.error(message);
       }
     }

@@ -1,18 +1,14 @@
 "use client"
 
-import { MoreHorizontal, Mail, Calendar, Shield } from "lucide-react"
+import {  Mail, Calendar, Shield } from "lucide-react"
 import { Card, CardContent } from "../../../Custom/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Badge } from "../../../Custom/ui/badge"
-import { Button } from "../../../Custom/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
+  
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+ 
 } from "../../../Custom/ui/dropdown-menu"
 
 export type MemberRole = "owner" | "admin" | "member" | "guest"
@@ -49,10 +45,7 @@ const statusColors: Record<MemberStatus, string> = {
 
 export function WorkspaceMembersTable({
   members,
-  onView,
-  onChangeRole,
-  onSuspend,
-  onRemove,
+ 
 }: {
   members: WorkspaceMember[]
   onView: (m: WorkspaceMember) => void

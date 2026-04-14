@@ -17,7 +17,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const res = await apiService.get("/auth/user/me");
      
         dispatch(setUserAuth(res.data));   // adjust according to your actual response shape
-      } catch (err: unknown) {
+      } catch  {
         await persistor.purge();
         dispatch(logoutUserAuth());
         <Navigate to="/login" replace />

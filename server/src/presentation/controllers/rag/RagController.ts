@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { NotFoundError } from "../../../utils/errors";
-import { ResponseMessages } from "../../../common/erroResponse";
 import { IRagUsecase } from "../../../application/repositories/IRag"
 @injectable()
 export class RagController {

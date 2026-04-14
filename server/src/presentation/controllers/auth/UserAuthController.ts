@@ -11,7 +11,6 @@ import { ILogin } from "../../../application/repositories/iauth/ILogin";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { CustomRequest } from "../../types/CustomRequest";
 import { ForbiddenError } from "../../../utils/errors";
-import { OAuth2Client } from "google-auth-library";
 
 @injectable()
 export class AuthController {
@@ -36,9 +35,9 @@ console.log(user,"userssCONTROLL")
       next(error);
     }
   }
-  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async login(req: Request, res: Response, ): Promise<void> {
     const input: LoginRequestDTO = req.body as LoginRequestDTO;
-    try {
+    
        const {token,refreshToken,user,workspace} = await this._loginUsecase.loginUser(input);
 
     setTokensInCookies(res, token, refreshToken);
@@ -46,16 +45,12 @@ console.log(user,"userssCONTROLL")
       .status(HttpStatusCode.OK)
       .json({ workspace: workspace, user: user });
   
-    } catch (error) {
-      console.log(error,"errr")
-      next(error)
-    }
+  
    
     }
      async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
    try {
        const userId=req.params.id
-       console.log(userId,"userIDD")
          await this._loginUsecase.logoutUser(userId)
           removeTokensInCookies(res)
           res.status(HttpStatusCode.NO_CONTENT).json({message:ResponseMessages.LOGGED_OUT})

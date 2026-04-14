@@ -1,11 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { Search, Users } from "lucide-react";
 import { useSelector } from "react-redux";
-import apiService from "../../Services/apiServices/apiService";
-import { fetchAllUsers } from "../../Redux/feature/users/AlluserThunks";
-import { allMembers, paginationUser, searchUser } from "../apis/workspaceapis";
+import { paginationUser, searchUser } from "../apis/workspaceapis";
 import { Pagination } from "@mui/material";
-import { setPage } from "../../Redux/feature/project/projectSlice";
 import { RootState } from "../../Redux/store";
 
 
@@ -27,27 +24,26 @@ function useDebounce<T>(value: T, delay: number = 450): T {
 }
 
 export default function MeetingRoom() {
-  const [page,setPage]=useState();
-const [total,setTotal]=useState()
+  const [page, setPage] = useState();
+  const [total, setTotal] = useState(1)
   const workspaceSlug = useSelector(
     (state: RootState) => state.workspace.workspace?.slug
-  );
+  ) as string
+  useEffect(() => {
+    async function fetch() {
+      const data = await paginationUser(workspaceSlug, 1);
+      setMembers(data.items);
+      setTotal(data.totalItems);
+      setPage(data.currentPage)
+    }
+    fetch()
 
-useEffect(()=>{
- async function fetch(){
-const data=await paginationUser(workspaceSlug,1);
-setMembers(data.items);
-setTotal(data.totalItems);
-setPage(data.currentPage)
-  }
- fetch()
-
-},[workspaceSlug])
+  }, [workspaceSlug])
 
 
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState<Array<{ id: string; name: string; role: string; imageUrl?: string; online?: boolean }>>([]);
   const [loading, setLoading] = useState(false);
 
   const debouncedSearch = useDebounce(searchQuery.trim(), 450);
@@ -57,12 +53,11 @@ setPage(data.currentPage)
 
     setLoading(true);
     try {
-      
-    const response= await searchUser(workspaceSlug,query)
 
-       setMembers(response || []);
-    } catch (error) {
-      console.error("Failed to fetch members:", error);
+      const response = await searchUser(workspaceSlug, query)
+
+      setMembers(response || []);
+    } catch {
       setMembers([]);
     } finally {
       setLoading(false);
@@ -73,9 +68,9 @@ setPage(data.currentPage)
   useEffect(() => {
     fetchMembers(debouncedSearch);
   }, [fetchMembers, debouncedSearch]);
-const handleChangePage = (page)=>{
+  const handleChangePage = () => {
 
-}
+  }
   return (
     <div className="mt-8 w-full bg-slate-50 min-h-screen p-4 max-w-[1000px] mx-auto">
       <div className="max-w-[60rem] mx-auto">
@@ -120,7 +115,7 @@ const handleChangePage = (page)=>{
                   <div className="relative mr-3">
                     <img
                       src={member.imageUrl ?? "/images/user.jpeg"}
-                      alt={member.name}
+                      alt={member?.name}
                       className="w-10 h-10 rounded-full object-cover border"
                     />
                     {member.online && (
@@ -144,13 +139,13 @@ const handleChangePage = (page)=>{
             </div>
           )}
         </div>
-<Pagination 
-component="div"
-count={Math.ceil(total/4)}
-page={page}
- onChange={(_, page) => handleChangePage(page)}
+        <Pagination
+          component="div"
+          count={Math.ceil(total / 4)}
+          page={page}
+          onChange={(_, page) => handleChangePage(page)}
 
-/>
+        />
       </div>
     </div>
   );

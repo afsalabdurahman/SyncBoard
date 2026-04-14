@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import  { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {setForward} from "../../Redux/feature/ForwardSlice"
 import { useDispatch } from "react-redux";

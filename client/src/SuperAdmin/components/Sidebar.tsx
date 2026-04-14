@@ -5,15 +5,13 @@ import {
   CreditCard,
   Shield,
   Headphones,
-  Settings,
-  ToggleLeft,
-  FileText,
+
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
 import { cn } from "../../Utility/cn"
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 interface SidebarProps {
   currentPage: number;
@@ -23,7 +21,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({
-  currentPage,
+  
   setCurrentPage,
   collapsed,
   onToggle,

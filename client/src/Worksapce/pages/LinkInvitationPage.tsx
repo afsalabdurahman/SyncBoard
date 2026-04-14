@@ -1,19 +1,11 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
 import { useParams } from "react-router-dom";
-import { RootState, AppDispatch } from "../../Redux/store";
+import {  AppDispatch } from "../../Redux/store";
 
-import Loader from "../../Custom/reusecomponents/Loader";
 
-import {
-  setUserName,
-  setUserEmail,
-  setUserPassword,
-} from "../../Redux/feature/RegisterSlice";
 import { setUserData } from "../../Redux/feature/user/userSlice";
-import api from "../../Services/apiServices/apiService";
-import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
@@ -29,9 +21,8 @@ const LinkInvitaionPage = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("Member");
+  const [role] = useState("Member");
   const [title, setTitle] = useState("");
-  const [loader, setLoader] = useState(false);
   const [password, setPassword] = useState("");
   const [conformPassword, setConformPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);

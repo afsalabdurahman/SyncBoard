@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Ticket, TicketDashboardProps, TicketStatus } from "../types/TiketTypes";
+import {  TicketDashboardProps, TicketStatus } from "../types/TiketTypes";
 import { Button } from "../../Custom/ui/button";
 import { Input } from "../../Custom/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "../../Custom/ui/tabs";

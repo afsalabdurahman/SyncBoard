@@ -1,5 +1,5 @@
 // src/infra/db/models/Task.ts
-import mongoose, { model, Schema, Document } from "mongoose";
+import  { model, Schema, Document } from "mongoose";
 import { approvalType, commentType, priorityType, statusType } from "../../../types/taskTypes";
 
 export interface TaskDocument extends Document {

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   AlertCircle,
-  CheckCircle,
-  Clock,
+  
   Search
 } from 'lucide-react';
 import debounce from 'lodash/debounce';
@@ -10,15 +9,13 @@ import { Pagination } from "@mui/material"
 import { abuseReportList, searchApi, sendAbuse } from '../apis/workspaceapis';
 import { useMember } from '../../Member/hooks/memeberhooks';
 import { ToastContainer, toast } from 'react-toastify';
-import apiService from '../../Services/apiServices/apiService';
-import Tikets from '../../Admin/Pages/Tikets';
 import { useWorkspaceid } from '../hooks/workspacehooks';
 
 export default function AbuseReportForm() {
   const memeber = useMember();
   const workspace = useWorkspaceid()
   const [refresh,setRefresh]=useState(1);
-const [loading, setLoading] = useState(false);
+const [ setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: '',
     otherType: '',
@@ -112,8 +109,7 @@ const debouncedSearch = debounce(async (searchQuery) => {
 
       const response = await searchApi(searchQuery,memeber.workspace[0].workspaceId,memeber._id,)
       setTickets(response.data.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch  {
       setTickets([]);
     } finally {
       setLoading(false);

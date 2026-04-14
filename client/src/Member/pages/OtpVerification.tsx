@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { RootState } from "../../Redux/store";
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import { reSendOTP, verifyOTP } from "../apis/authApi";
-import { setUserAuth } from "../../Redux/feature/AuthSlice";
 
 const OTP_LENGTH = 6;
 const OTP_TIMER_SECONDS = 60; // 5 minutes
@@ -16,7 +15,7 @@ const OtpVerification = () => {
   const dispatch = useDispatch();
 
   const forward = useSelector((state: RootState) => state.forward);
-  console.log(forward,"formward")
+
   const userData = useSelector((state: RootState) => state.user?.user);
 
   const email = userData?.email || location.state?.email;
@@ -38,7 +37,7 @@ const OtpVerification = () => {
     if (!email) return;
 
     const savedExpiry = localStorage.getItem(STORAGE_KEY);
-    
+
     if (savedExpiry) {
       const expiryTime = parseInt(savedExpiry, 10);
       const now = Date.now();
@@ -78,7 +77,7 @@ const OtpVerification = () => {
     intervalRef.current = setInterval(() => {
       setTimer((prev) => {
         const newTime = prev - 1;
-        
+
         if (newTime <= 0) {
           localStorage.removeItem(STORAGE_KEY);
           return 0;
@@ -111,7 +110,7 @@ const OtpVerification = () => {
   // ====================== VERIFY OTP ======================
   const verifyOtp = async () => {
     if (loading) return;
-    
+
     const otpValue = otp.join("");
     setLoading(true);
     setIsError(false);
@@ -139,15 +138,14 @@ const OtpVerification = () => {
         };
 
         dispatch(setUserData(userPayload));
-// dispatch(setUserAuth(userPayload))
         setTimeout(() => {
           navigate("/create/workspace", { replace: true });
         }, 2500);
       }
-    } catch (error: any) {
+    } catch (error) {
       setIsError(true);
       setMessage(error?.response?.data?.message || "Invalid or expired OTP. Please try again.");
-      
+
       setOtp(Array(OTP_LENGTH).fill(""));
       inputRefs.current[0]?.focus();
     } finally {
@@ -161,7 +159,7 @@ const OtpVerification = () => {
 
     try {
       await reSendOTP(email);
-      
+
       // Reset UI
       setOtp(Array(OTP_LENGTH).fill(""));
       setIsError(false);
@@ -174,7 +172,7 @@ const OtpVerification = () => {
       setTimer(OTP_TIMER_SECONDS);
 
       inputRefs.current[0]?.focus();
-    } catch (err) {
+    } catch {
       setMessage("Failed to resend OTP. Please try again.");
     }
   };

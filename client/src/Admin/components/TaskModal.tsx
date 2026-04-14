@@ -148,14 +148,14 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
 
     onClose()
   }
-  const setDelete = (url: string) => {
+  // const setDelete = (url: string) => {
 
 
-    setFormData((prev) => ({
-      ...prev,
-      attachedURLs: prev.attachedURLs.filter((existingUrl) => existingUrl !== url)
-    }));
-  };
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     attachedURLs: prev.attachedURLs.filter((existingUrl) => existingUrl !== url)
+  //   }));
+  // };
   return (
     <Dialog open={isOpen} onOpenChange={closeTaskModel}>
       <DialogContent className="sm:max-w-[525px] max-h-[80vh] overflow-y-auto">

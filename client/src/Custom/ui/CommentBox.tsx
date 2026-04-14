@@ -1,10 +1,9 @@
 
 import { useState, useRef, useEffect } from "react";
-const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 import {
   MessageSquare,
   X,
-  User,
+  
   Paperclip,
   Image as ImageIcon,
   FileText,
@@ -15,7 +14,6 @@ import { uploadAttachment } from "../../Services/Cloudinary";
 import { getFileTypeFromUrl } from "../../Utility/extesionFinder";
 import { fetchComments, sendComment } from "../../Member/apis/authApi";
 import { toast } from "react-toastify";
-import LoadingSpinner from "../reusecomponents/LoadingSpinner";
 import { formatTime } from "../../Utility/dateformate";
 import { useUser } from "../../Worksapce/hooks/workspacehooks";
 import { channelAttachement } from "../../Utility/attachmentValidation";
@@ -83,8 +81,6 @@ fetchComments(taskId).then((data)=>{
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const commentsEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [cloudinaryURL,setCloudinaryURL]=useState<string[]>([]);
-  const [isLoading,setLoading]=useState("false")
 
   const scrollToBottom = () => {
     commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -190,7 +186,7 @@ const handleCommentSubmit = async () => {
     uploadedUrls
 
   });
-  } catch (error) {
+  } catch  {
    
     // Optionally: show error to user or mark comment as having failed uploads
     setComments((prev) =>

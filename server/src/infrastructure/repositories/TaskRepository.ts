@@ -1,13 +1,10 @@
 import mongoose, { Types } from "mongoose";
 import { Task } from "../../domain/entities/Task";
 import { ITaskRepository } from "../../domain/interfaces/repositories/ITaskRepository";
-import { InternalServerError, NotFoundError } from "../../utils/errors";
+import {  NotFoundError } from "../../utils/errors";
 import { TaskModel } from "../database/models/TaskModel";
 import { commentType } from "../../types/taskTypes";
-import { commentsDTO } from "../../application/dto/TaskDTOs";
 import { ProjectModel } from "../database/models/ProjectModel";
-import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs";
-import { ConflictError } from "openai";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -69,7 +66,7 @@ export class TaskRepository implements ITaskRepository {
         }
       );
     } else {
-      const updated = await TaskModel.updateOne(
+      await TaskModel.updateOne(
         { _id: objId },
         { $set: { status: updatedStatus } }
       );

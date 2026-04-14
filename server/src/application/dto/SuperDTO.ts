@@ -185,6 +185,10 @@ export interface SubscriptionAggResponseDTO {
   subscriptions:listOfSubscriptionsDTO[];
   totalDocCount:number;
 }
+export interface RevenuChartReponseDTO{
+  planName:string;
+  totalRevenue:number
+}
 export interface MessageDto {
   sender: "admin" | "super_admin" | string;
   content: string;
@@ -230,5 +234,11 @@ export interface PaginatedUsersResponse {
   limit: number;
   skip: number;
  
+}
+export interface UserGrowthChartReponseDTO{
+ month: string,
+ totalUsers: number,
+  newUsers: number,
+  churned: number  
 }
 

@@ -12,7 +12,7 @@ export class ChatRepository implements IChatRepository {
   constructor() {}
   async saveChats(message: Chat): Promise<void> {
 
-    const responseDb = await ChatMessageModel.create(message);
+    await ChatMessageModel.create(message);
 
   }
 async findAllChats(

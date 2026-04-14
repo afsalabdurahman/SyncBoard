@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 const ADMIN_URL = import.meta.env.VITE_BASE_ADMIN_DASHBOARD
 const PaymentCompleted: React.FC = () => {
-  const navigate = useNavigate()
   const [seconds, setSeconds] = useState(5);
 
   useEffect(() => {

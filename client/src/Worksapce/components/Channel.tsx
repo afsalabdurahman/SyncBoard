@@ -17,38 +17,15 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { socket } from "../../Services/socket";
-import apiService from "../../Services/apiServices/apiService";
 import EmojiPicker from "emoji-picker-react"; // npm install emoji-picker-react
 import { useUser, useWorkspaceid } from "../hooks/workspacehooks";
 import { audioUpload, uploadAttachment, uploadVideo } from "../../Services/Cloudinary";
 import { toast } from "react-toastify";
 import { channelAttachement } from "../../Utility/attachmentValidation";
 import { RootState } from "../../Redux/store";
+import {Attachment,Message} from "../types/workspaceTypes"
+import { chatHistory, chatOnline } from "../apis/workspaceapis";
 
-interface Attachment {
-  name: string;
-  url: string; // Object URL for preview
-  blob: Blob;
-  type: "image" | "video" | "pdf" | "doc" | "audio" | "other";
-}
-
-interface Reaction {
-  emoji: string;
-  count: number;
-  users: string[];
-}
-
-interface Message {
-  id: string;
-  sender: string;
-  content: string;
-  timestamp: string;
-  isOwn: boolean;
-  attachments?: Attachment[];
-  reactions?: Reaction[];
-  workspaceId:string;
-  userId:string;
-}
 
 export default function GroupChannel() {
   const userData = useUser()
@@ -63,7 +40,7 @@ export default function GroupChannel() {
 
   const user = useSelector((state: RootState) => state.user.user?.name);
   const userId = useSelector((state: RootState) => state.user.user?._id);
-const workspaceid=useWorkspaceid();
+const workspaceid=useWorkspaceid() as string
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -96,16 +73,14 @@ const workspaceid=useWorkspaceid();
   }, []);
 
   useEffect(() => {
-    // Fetch online users
-    apiService.get(`chat/online/${workspaceid}`).then((res) => {
+ async function fetchData(){
+       await chatOnline(workspaceid).then((res) => {
       const users = res.data
         .map((u) => u.name)
         .filter((name: string) => name && name !== user);
       setOnlineUsers(users);
     });
-
-    // Fetch chat history
-    apiService.get(`chat/history/${workspaceid}`).then((resp) => {
+ await chatHistory(workspaceid).then((resp) => {
       const formatted: Message[] = resp.data.map((msg) => ({
         id: msg._id || Date.now().toString(),
         sender: msg.senderName === user ? "You" : msg.senderName,
@@ -120,6 +95,13 @@ const workspaceid=useWorkspaceid();
       }));
       setMessages(formatted);
     });
+    }
+    // Fetch online users
+  
+
+    // Fetch chat history
+   
+    fetchData()
     socket.emit("join-workspace", {
   workspaceId: workspaceid,
   userId: userId
@@ -201,7 +183,7 @@ if(!isAllow) {toast.error("file not supported")
           blob: file, // optional: keep if you need preview before upload completes
           type: getFileType(file)
         } as Attachment;
-      } catch (error) {
+      } catch  {
         // Return null or a placeholder for failed uploads
         return {
           name: file.name,
@@ -227,7 +209,7 @@ if(!isAllow) {toast.error("file not supported")
     if (failedCount > 0) {
       toast.error(`${failedCount} file(s) failed to upload.`);
     }
-  } catch (error) {
+  } catch {
     toast.error('Something went wrong while uploading files.');
   }
 };
@@ -260,9 +242,9 @@ if(!isAllow) {toast.error("file not supported")
 
       mediaRecorder.start();
       setIsRecording(true);
-    } catch (err) {
+    } catch  {
       alert("Microphone access denied or not available.");
-      console.error(err);
+     
     }
   };
 

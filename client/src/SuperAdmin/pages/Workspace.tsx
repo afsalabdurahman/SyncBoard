@@ -6,13 +6,12 @@ import {WorkspaceStats} from "../components/workspace/workspaceState"
 import { WorkspaceTable, type Workspace } from "../components/workspace/workspaceTable"
 import WorkSapceDetails from "../components/workspace/WorkspaceDetailsPage"
 import WorkSpaceEdit from "../components/workspace/WorkspaceEditPage"
-import { downloadExcel, useGetWorkspaceCountQuery } from "../apis/fetchApi"
+import {  useGetWorkspaceCountQuery } from "../apis/fetchApi"
 import { Pagination } from "@mui/material"
 import { useDebounce } from "../../Custom/hooks/useDebounce"
-import { toast } from "react-toastify"
 // Mock data
 
-export  const  Workspaces =(props)=> {
+export  const  Workspaces =()=> {
     const [searchTerm, setSearchTerm] = useState("")
     const [changePage,setChangePage]=useState(1)
     const debouncedSearch = useDebounce(searchTerm, 500);
@@ -26,7 +25,7 @@ const { data, isLoading,refetch  } = useGetWorkspaceCountQuery({
 })
   const [details,setDetails] =useState(false)
   const [viewDetails,setViewDetails] = useState(null)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
 
  
   
@@ -52,7 +51,6 @@ useEffect(() => {
 
 
   
-console.log(Workspaces,"Mocle ResponseData")
   // Calculate stats
   const stats = {
     totalWorkspaces: Workspaces.length,
@@ -76,17 +74,13 @@ console.log(Workspaces,"Mocle ResponseData")
     // Implement edit workspace logic
   }
 
-  const handleSuspendWorkspace = (workspace: Workspace) => {
-    // Implement suspend workspace logic
-  }
+ 
 
-  const handleDeleteWorkspace = (workspace: Workspace) => {
+  const handleDeleteWorkspace = () => {
     // Implement delete workspace logic
   }
 
   const handleExport = async() => {
-   const response= await downloadExcel();
- 
   }
 
 const handleChangePage = (page) => {

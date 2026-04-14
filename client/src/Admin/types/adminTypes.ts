@@ -69,3 +69,8 @@ export interface Subscription {
   createdAt: string;
   updatedAt: string;
 }
+export interface CredentialResponse {
+  credential: string;        
+  select_by: string;         
+  clientId?: string;
+}

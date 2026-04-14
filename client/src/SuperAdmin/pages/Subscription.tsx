@@ -8,7 +8,7 @@ import { SubscriptionDetails } from "../components/subscription/subscriptionDeta
 import { useFetchSubscriptionPageQuery } from "../apis/fetchApi"
 import { Pagination } from "@mui/material"
 export const SubscriptionsPage = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
   const [changePage, setChangePage] = useState(1)
   const { data, isLoading, refetch } = useFetchSubscriptionPageQuery(changePage)
 
@@ -65,11 +65,11 @@ export const SubscriptionsPage = () => {
     setSelected(sub)
     setDetailsOpen(true)
   }
-  const onChangePlan = (sub: Subscription) => {
+  const onChangePlan = () => {
   }
-  const onCancel = (sub: Subscription) => {
+  const onCancel = () => {
   }
-  const onRefund = (sub: Subscription) => {
+  const onRefund = () => {
   }
 
   const onExport = () => {

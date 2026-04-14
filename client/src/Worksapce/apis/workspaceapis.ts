@@ -1,7 +1,15 @@
 import { AxiosResponse } from "axios"
-import { handleApiError } from "../../Services/apiServices/apiErrorHandle"
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle"
+
+interface formData {
+      type: string
+      otherType: string,
+      severity: string,
+      description: string,
+      reportedContent: string
+}
+
 
 export const myProjects = async (workspaceId: string) => {
     const response = await apiService.get(`project/projects/${workspaceId}`)
@@ -14,7 +22,7 @@ export const sendQuery = async (userName: string, query: string) => {
     })
     return response
 }
-export const sendAbuse = async (formData, userId, workspaceId) => {
+export const sendAbuse = async (formData:formData, userId:string, workspaceId:string) => {
     try {
         const response = await apiService.post(`workspace/abuse/${userId}/${workspaceId}`, {
             description: formData.description,
@@ -28,12 +36,13 @@ export const sendAbuse = async (formData, userId, workspaceId) => {
     }
 }
 
-export const searchApi = (searchQuery, workspaceid, userid) => {
+export const searchApi = (searchQuery:string, workspaceid:string, userid:string) => {
     try {
         const response = apiService.get(`workspace/abuse/report/search/${workspaceid}/${userid}?q=${encodeURIComponent(searchQuery)}`);
         return response
     } catch (error) {
-        console.log(error)
+       const err: string = catchErrorHandle(error, "Failed to search")
+        throw new Error(err)
     }
 }
 export const abuseReportList = async (userId: string, workspaceId: string, page: number) => {
@@ -61,17 +70,17 @@ export const myLogs = async (workspaceId: string) => {
     return response.data
 
 }
-export const acceptInvitaionLink = async (name,
-    email,
-    password,
-    role,
-    title,
-    workspaceSlug,) => {
+export const acceptInvitaionLink = async (name:string,
+    email:string,
+    password:string,
+    role:string,
+    title:string,
+    workspaceSlug:string) => {
     try {
         const response = await apiService.post("member/invite/register", {
             name, email, password, role, title, workspaceSlug
         })
-        console.log(response, "response")
+        
         return response.data
     } catch (error) {
         const err: string = catchErrorHandle(error, "Invalid input feild")
@@ -94,13 +103,14 @@ export const searchUser = async (slug: string, q: string) => {
         const response = await apiService.get(`workspace/members/find/${slug}?query=${q}`);
         return response.data
     } catch (error) {
-        console.log(error)
+        const err: string = catchErrorHandle(error, "Can't find user")
+        throw new Error(err)
     }
 }
 
 export const profilePartialUpdate = async (userId: string, updatedProfile: string[]) => {
     try {
-        const axiosResponse: AxiosResponse<boolean> = await apiService.patch(
+         await apiService.patch(
             `member/profile/update/${userId}`,
             {
                 profileData: updatedProfile,
@@ -126,7 +136,7 @@ export const tasksInProjectDetails = async (projectId: string, taskFilter: strin
     }
 }
 
-export const updateSubTaskStatus = async (taskId, title) => {
+export const updateSubTaskStatus = async (taskId:string, title:string) => {
     try {
         await apiService.patch(`task/update/subtask/status/${taskId}`, {
             title
@@ -137,7 +147,7 @@ export const updateSubTaskStatus = async (taskId, title) => {
 
     }
 }
-export const  sendInvitation =async(emails,invitationLink,workspaceId)=>{
+export const  sendInvitation =async(emails:string,invitationLink:string,workspaceId:string)=>{
 try {
         const response: AxiosResponse<boolean> = await apiService.post(
             "workspace/invite",
@@ -153,4 +163,20 @@ try {
 } catch (error) {
     catchErrorHandle(error,"Send failed")
 }
+}
+export const chatOnline =async (workspaceid:string)=>{
+ try {
+    const response = await apiService.get(`chat/online/${workspaceid}`)
+    return response
+ } catch (error) {
+    catchErrorHandle(error,"Send failed")
+ }
+}
+export const chatHistory= async (workspaceid:string)=>{
+    try {
+       const response=await  apiService.get(`chat/history/${workspaceid}`)
+       return response
+    } catch (error) {
+            catchErrorHandle(error,"Failed to connect ")
+    }
 }

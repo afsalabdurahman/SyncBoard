@@ -3,7 +3,6 @@ import { injectable, inject } from "tsyringe";
 import { IDatahandleUsecase } from "../../../application/repositories/IDatahandle";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
-import { PlanRequestDTO } from "../../../application/dto/PlanDTO";
 
 @injectable()
 
@@ -128,5 +127,14 @@ async deletePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
   } catch (error) {
     next(error)
   }
+}
+async revenuSubscription(req:Request,res:Response):Promise<void>{
+const revenue=await this._dataHandleUsecase.fetchSubscriptionRevenue();
+res.status(HttpStatusCode.OK).json(revenue)
+}
+
+async UserGrowthChart(req:Request,res:Response):Promise<void>{
+  const usergrowthChartData= await this._dataHandleUsecase.fetchUserGrowth();
+  res.status(HttpStatusCode.OK).json(usergrowthChartData)
 }
 }

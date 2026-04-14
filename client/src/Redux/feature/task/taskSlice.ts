@@ -82,7 +82,7 @@ deleteAttachment: (
   state,
   action: PayloadAction<{ taskId: string; url: string }>
 ) => {
-  const { taskId, url } = action.payload;
+  const {  url } = action.payload;
 
   state.tasks = state.tasks.map((task)=>({
  ...task,

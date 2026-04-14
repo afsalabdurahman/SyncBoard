@@ -6,10 +6,10 @@ import { TicketController } from "../controllers/ticket/TicketController";
 
 const router = Router();
 
-let adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
-let superAuth = [authMiddelware(), roleMiddleware(["Admin", "SuperAdmin"])];
+const adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
+const superAuth = [authMiddelware(), roleMiddleware(["Admin", "SuperAdmin"])];
 
-let ticketController = container.resolve(TicketController);
+const ticketController = container.resolve(TicketController);
 
 router.post("/create",adminAuth,ticketController.createTicket.bind(ticketController));
 router.get("/mytickets/:workspaceid",adminAuth,ticketController.findMyTickets.bind(ticketController))

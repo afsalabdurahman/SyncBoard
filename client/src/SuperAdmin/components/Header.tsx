@@ -1,7 +1,6 @@
 
-import { Search, Bell, ChevronDown,LogOut } from "lucide-react"
+import { Search,LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
-import { Button } from "../../Custom/ui/button"
 import { Input } from "../../Custom/ui/input"
 
 import { useUser } from "../../Worksapce/hooks/workspacehooks"

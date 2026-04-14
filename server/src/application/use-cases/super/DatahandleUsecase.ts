@@ -3,7 +3,7 @@ import { CountResponseDTO, CountWorkspaceReponseDTO } from "../../dto/Datahandle
 import { IDatahandleUsecase } from "../../repositories/IDatahandle";
 import { ISuperAdminRepository } from "../../../domain/interfaces/repositories/ISuperAdminRepository";
 import { DatahandleMapper } from "../../mappers/DatahandleMapper";
-import { listOfSubscriptionsDTO, SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
+import {  RevenuChartReponseDTO, SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
 import { Ticket } from "../../../domain/entities/Ticket";
 import { TicketMapper } from "../../mappers/TicketMapper";
 import { Plan } from "../../../domain/entities/Plan";
@@ -147,5 +147,13 @@ async removePlan(id: string,): Promise<void> {
 }
 async deletePlan(id: string): Promise<void> {
     await this._planRepository.deletePlan(stringToMongoObj(id))
+}
+async fetchSubscriptionRevenue(): Promise<RevenuChartReponseDTO[] | null> {
+   const chartData= await this._superAdminRepository.getRevenueChart();
+   return chartData
+}
+async fetchUserGrowth(): Promise<UserGrowthChartReponseDTO[] | null> {
+    const userGrowth= await this._superAdminRepository.getUserGrowth();
+    return userGrowth
 }
 }

@@ -1,4 +1,3 @@
-import { Chat } from "../../domain/entities/Chat"
 import { User } from "../../domain/entities/User"
 import {ChatMessage, ChatRequestDTO} from"../dto/ChatDTOs"
 export interface IChatUsecase {

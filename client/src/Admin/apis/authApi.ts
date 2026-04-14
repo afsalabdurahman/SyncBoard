@@ -29,7 +29,6 @@ export const googleAdminAuth = async (credential: string,
       "auth/admin/google",
      {credential}
     );
-console.log(data,"dataADminLOGIN")
     return data;
   } catch (error: unknown) {
     if (error instanceof Error) {

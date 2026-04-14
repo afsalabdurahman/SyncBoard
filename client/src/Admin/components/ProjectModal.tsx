@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../../Redux/store";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 
 import { Button } from "../../Custom/ui/button";
 import { deadlineCovert } from "../../Utility/dateConverter";
@@ -44,7 +44,7 @@ export function ProjectModal({
   onSubmit,
   project,
 }: ProjectModalProps) {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
   const availableUsers = useSelector((state: RootState) =>
     state.alluser.users.filter((user: User) => user.role !== "Owner")

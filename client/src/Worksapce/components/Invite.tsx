@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { X, Link, Settings } from "lucide-react";
+import  { useState } from "react";
+import { X, } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
-import apiService from "../../Services/apiServices/apiService";
-import { AxiosResponse } from "axios";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
@@ -36,15 +34,19 @@ const Invite = () => {
   }
 
  
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [emails, setEmails] = useState([]);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [currentEmail, setCurrentEmail] = useState("");
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [inviteRole, setInviteRole] = useState("Member");
-  const [showExternalOptions, setShowExternalOptions] = useState(true);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [load, setLoad] = useState(false);
-  const [invitationLink, setInvitationLink] = useState<string>(
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [invitationLink,] = useState<string>(
     `${INVITE_MEMBER_}${workspaceName.slug}` // Replace with your actual invitation link
   );
-  const addEmail = (email) => {
+  const addEmail = (email:string) => {
     if (email && !emails.includes(email) && isValidEmail(email)) {
       setEmails([...emails, email]);
       setCurrentEmail("");
@@ -60,12 +62,12 @@ const Invite = () => {
     return emailRegex.test(email);
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      addEmail(currentEmail.trim());
-    }
-  };
+  // const handleKeyPress = (e) => {
+  //   if (e.key === "Enter" || e.key === ",") {
+  //     e.preventDefault();
+  //     addEmail(currentEmail.trim());
+  //   }
+  // };
 
   const handleSend = async () => {
     setLoad(true);
@@ -88,17 +90,13 @@ const Invite = () => {
           // navigate("/workspace");
         }, 5000);
       }
-    } catch (error) {
+    } catch  {
       setLoad(false);
       toast.error("Invitation send failed ");
     }
   };
 
-  const handleGoogleWorkspace = () => {
-    
-    // Add Google Workspace integration logic here
-    alert("Google Workspace integration would be implemented here");
-  };
+
 
   return (
     <div className='mt-6 mx-auto bg-white rounded-lg shadow-lg p-6 relative'>

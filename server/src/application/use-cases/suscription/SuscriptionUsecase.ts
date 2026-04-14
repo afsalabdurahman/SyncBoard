@@ -3,12 +3,10 @@ import { ISuscriptionUsecase } from "../../repositories/ISuscription";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { ISuscription } from "../../../domain/interfaces/repositories/ISuscriptionRepository";
 import { IStripeService } from "../../../domain/interfaces/services/IStripService";
-import { SubscriptionDocument } from "../../../infrastructure/database/models/SuscriptionModel";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { NotFoundError } from "../../../utils/errors";
 import { Subscription } from "../../../domain/entities/Suscription";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailServices";
-import { Types } from "mongoose";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
 
 @injectable()

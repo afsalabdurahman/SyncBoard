@@ -1,6 +1,4 @@
-import { MessageSquare, X, Reply } from "lucide-react";
-import { useEffect } from "react";
-import { socket } from "../../Services/socket";
+import {  X, Reply } from "lucide-react";
 
 interface CommentButtonProps {
   isOpen: boolean;

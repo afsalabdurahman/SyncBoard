@@ -3,21 +3,16 @@ import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../Redux/store";
 import { setUserData } from "../../Redux/feature/user/userSlice";
-import { registerUser } from "../apis/authApi";
-import { Await, useNavigate } from "react-router-dom";
+import { googleAuth, registerUser } from "../apis/authApi";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 import { GoogleLogin } from "@react-oauth/google";
-import apiService from "../../Services/apiServices/apiService";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
 import { setWorkspace } from "../../Redux/feature/WorkspaceSlice";
+import { ErrorState } from "../types/authType";
+import { toast } from "react-toastify";
 
 
-interface ErrorState {
-  names: string;
-  passwords: string;
-  emails: string;
-  api: string;
-}
 
 const SignupPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,25 +21,34 @@ const SignupPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cpassword, csetPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [cshowPassword, csetShowPassword] = useState(false);
 
   const [error, setError] = useState<ErrorState>({
     names: "",
     emails: "",
     passwords: "",
+    cpasswords: "",
     api: "",
   });
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+  const toggleCPasswordVisibility = () => {
+
+    csetShowPassword((prev) => !prev);
+  };
 
   /* ---------------- VALIDATION ---------------- */
 
   const validateForm = () => {
     const newErrors: ErrorState = {
+      emails: "",
       names: "",
       passwords: "",
+      cpasswords: "",
       api: "",
     };
 
@@ -59,10 +63,17 @@ const SignupPage = () => {
       newErrors.passwords =
         "Password must contain uppercase, lowercase, special character and 6+ length";
     }
+    if (!passwordRegex.test(cpassword)) {
+      newErrors.cpasswords =
+        "Password must contain uppercase, lowercase, special character and 6+ length";
+    }
+    if (password !== cpassword) {
+      newErrors.cpasswords = "Password is mismatch"
+    }
 
     setError(newErrors);
 
-    return !newErrors.names && !newErrors.passwords;
+    return !newErrors.names && !newErrors.passwords && !newErrors.cpasswords;
   };
 
   /* ---------------- SUBMIT ---------------- */
@@ -76,7 +87,7 @@ const SignupPage = () => {
 
     try {
       const user = await registerUser(name, email, password);
-localStorage.removeItem(`otp_expiry_${email}`)
+      localStorage.removeItem(`otp_expiry_${email}`)
       dispatch(setUserData({ email: user.email }));
 
       navigate("/verify/otp", { replace: true });
@@ -92,46 +103,47 @@ localStorage.removeItem(`otp_expiry_${email}`)
         setError((prev) => ({ ...prev, names: message }));
       } else if (message.includes("email")) {
         setError((prev) => ({ ...prev, emails: message }));
-      }else{
+      } else {
 
-        setError((prv)=>({...prv,apis:message}))
+        setError((prv) => ({ ...prv, apis: message }))
       }
 
     } finally {
       setLoading(false);
     }
   };
-const handleSuccess =async (credentialResponse) =>{
-  console.log(credentialResponse,"SUCCESS GOOGLE")
-  try {
-  const response= await apiService.post('/auth/google',{credential:credentialResponse.credential,})
-if(response.status==201){
-  const userPayload = {
-            email: response.data.savedUser.email,
-            name: response.data.savedUser.name,
-            isAdmin: true,
-            id: response.data.savedUser._id,
-          };
-  
-          dispatch(setUserData(userPayload));
-  navigate("/create/workspace")
-}else if(response.status == 200){
-    const userPayload = {
-              email: response.data.savedUser.email,
-              name: response.data.savedUser.name,
-              isAdmin: true,
-              role:response.data.savedUser.role,
-              id: response.data.savedUser._id,
-            };
-     dispatch(setUserAuth(userPayload.id));
-            dispatch(setUserData(userPayload));
-            dispatch(setWorkspace(response.data.workspace))
-    navigate("/workspace")
-}
-} catch (error) {
-    console.log(error,"error")
+  const handleSuccess = async (credentialResponse) => {
+
+    try {
+      const response = await googleAuth(credentialResponse)
+      if(!response) throw Error("Failed to signup")
+      if (response.status == 201) {
+        const userPayload = {
+          email: response.data.savedUser.email,
+          name: response.data.savedUser.name,
+          isAdmin: true,
+          id: response.data.savedUser._id,
+        };
+
+        dispatch(setUserData(userPayload));
+        navigate("/create/workspace")
+      } else if (response.status == 200) {
+        const userPayload = {
+          email: response.data.savedUser.email,
+          name: response.data.savedUser.name,
+          isAdmin: true,
+          role: response.data.savedUser.role,
+          id: response.data.savedUser._id,
+        };
+        dispatch(setUserAuth(userPayload.id));
+        dispatch(setUserData(userPayload));
+        dispatch(setWorkspace(response.data.workspace))
+        navigate("/workspace")
+      }
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
   }
-}
   /* ---------------- UI ---------------- */
 
   return (
@@ -231,6 +243,41 @@ if(response.status==201){
             )}
 
           </div>
+          {/* Confirm Password */}
+          <div className="mb-6">
+
+            <label className="block text-sm text-gray-700 mb-1">
+              Confirm Password
+            </label>
+
+            <div className="relative">
+
+              <input
+                type={cshowPassword ? "text" : "password"}
+                value={cpassword}
+                onChange={(e) => csetPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-purple-600"
+                required
+              />
+
+              <button
+                type="button"
+                onClick={toggleCPasswordVisibility}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              >
+                {cshowPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+              </button>
+
+            </div>
+
+            {error.cpasswords && (
+              <p className="text-red-500 text-sm mt-1">
+                {error.cpasswords}
+              </p>
+            )}
+
+          </div>
 
           {loading && <LoadingSpinner />}
 
@@ -249,13 +296,13 @@ if(response.status==201){
 
         </form>
         <GoogleLogin
-      onSuccess={handleSuccess}
-      onError={() => console.log('Login Failed')}
-      useOneTap   
-      theme="outline"
-      size="large"
-      text="continue_with"
-    />
+          onSuccess={handleSuccess}
+         
+          useOneTap
+          theme="outline"
+          size="large"
+          text="continue_with"
+        />
 
       </div>
 

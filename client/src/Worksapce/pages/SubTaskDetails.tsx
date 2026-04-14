@@ -73,7 +73,7 @@ export const TaskDetailPopup: React.FC = () => {
   };
 
 
-  const updateField = (field: keyof typeof task, value: any) => {
+  const updateField = (field: keyof typeof task, value: number) => {
     setTask((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -189,7 +189,7 @@ export const TaskDetailPopup: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-zinc-500 mb-4">ASSIGNED TO</p>
               <div className="flex -space-x-4">
-                {task.assignedUsers.map((user, index) => (
+                {task.assignedUsers.map((user) => (
                   <div
                     key={user.id}
                     className={`w-12 h-12 ${user.color} text-white text-xl font-semibold flex items-center justify-center border-4 border-white rounded-2xl shadow-md ring-2 ring-white`}

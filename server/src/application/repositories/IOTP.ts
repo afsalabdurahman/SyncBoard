@@ -1,4 +1,3 @@
-import { User } from "../../domain/entities/User"
 import {  AdminSignupResponseDTO } from "../dto/AuthDTOs"
 import { MailRequestDTO } from "../dto/MailDTO"
 

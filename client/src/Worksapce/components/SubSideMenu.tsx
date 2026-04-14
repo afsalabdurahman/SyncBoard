@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { FiUser, FiHeadphones, FiChevronDown, FiPlus,FiCalendar,FiTv,FiFolder } from 'react-icons/fi';
+import { FiUser, FiHeadphones, FiPlus,FiCalendar,FiTv,FiFolder } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import {meeting,deactive, activity,channel,invite,mytodo,myproject,abuse  } from '../../Redux/feature/StatusSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
-import { FlagIcon,Flag } from 'lucide-react';
+import { Flag } from 'lucide-react';
 const SubSideMenu = () => {
   const WorkspaceData = useSelector((state: RootState) =>{
     const user=state.register;
@@ -13,8 +13,7 @@ const SubSideMenu = () => {
 return{user,workspaces}
   } );
   const dispatch=useDispatch()
-  const [showChannels, setShowChannels] = useState(false);
-  const [showDMs, setShowDMs] = useState(true);
+
   const [bgColor, setBgColor] = useState("activitys");
   
 const meetings = () =>{

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 
 export default function SimpleAlert({message,onclose}) {
 

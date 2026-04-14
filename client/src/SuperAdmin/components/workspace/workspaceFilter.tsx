@@ -1,7 +1,6 @@
-"use client"
 
-import { Search, Download, Plus } from "lucide-react"
-import { Button } from "../../../Custom/ui/button"
+
+import { Search, } from "lucide-react"
 import { Input } from "../../../Custom/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
 
@@ -23,8 +22,7 @@ export const WorkspaceFilters=({
   onStatusFilterChange,
   planFilter,
   onPlanFilterChange,
-  onExport,
-  onCreateWorkspace,
+  
 }: WorkspaceFiltersProps) =>{
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">

@@ -6,11 +6,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../Custom/ui/dialog";
-import { splitWordsIntoRows } from "../../Utility/utils";
 
 export const TaskDetails = ({details}) => {
   
-  const words=splitWordsIntoRows(details)
+ 
   return (
     <div className="">
       <div className="text-center space-y-6">

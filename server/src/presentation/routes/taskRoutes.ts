@@ -7,7 +7,7 @@ import { roleMiddleware } from "../middleware/roleMiddleware"
 
 const taskController = container.resolve(TaskController)
 
-let router = express.Router();
+const router = express.Router();
 
 const adminAuth = [authMiddelware(), roleMiddleware(["Admin"])];
 const memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin"])];

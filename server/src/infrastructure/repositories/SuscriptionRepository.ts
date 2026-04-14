@@ -1,7 +1,7 @@
-import mongoose, { ObjectId, Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import { Subscription } from "../../domain/entities/Suscription";
 import { ISuscription } from "../../domain/interfaces/repositories/ISuscriptionRepository";
-import { SubscriptionDocument, SubscriptionModel } from "../database/models/SuscriptionModel";
+import {  SubscriptionModel } from "../database/models/SuscriptionModel";
 import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { ValidationError } from "../../utils/errors";
 
@@ -86,5 +86,6 @@ await SubscriptionModel.findOneAndUpdate(
   { new: true }
 );
 }
+
 
 }

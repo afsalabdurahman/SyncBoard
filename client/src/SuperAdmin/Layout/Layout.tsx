@@ -1,22 +1,17 @@
 import { useState } from "react"
-import { Building2, Users, CreditCard, MessageSquare } from "lucide-react"
 import { Sidebar } from "../components/Sidebar"
 import { Header } from "../components/Header"
-import { MetricCard } from "../components/MetricCard"
-import { RecentActivity } from "../components/RecentActivity"
 import Dashboard from "../pages/SuperDashboard"
 import { UsersPage } from "../pages/Users"
 import { Workspaces } from "../pages/Workspace"
 import { AnalyticsPage } from "../pages/Analytic"
 import { SubscriptionsPage } from "../pages/Subscription"
-import { SupportTicketsPage } from "../pages/SupportTickets"
 import { TicketPage } from "../pages/Ticket.Page"
 import { AbuseReportsPage } from "../pages/AbuseReport"
 import { PlanManagementPage } from "../pages/PlanManagementPage"
 export const Layout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [currentPage, setCurrentPage] = useState("dashboard");
-  console.log(currentPage, "Page++")
   const renderPage = () => {
     switch (currentPage) {
       case "Dashboard":

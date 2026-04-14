@@ -3,7 +3,6 @@ import { useState } from "react"
 import CurrentPlanOverview from "../components/CurrentPlanSus"
 import UsageMetricsComponent from "../components/UsagesInSus"
 import PaymentInfoComponent from "../components/PaymentInfoSus"
-// import CheckoutPage from "./CheckoutPage"
 import { useSelector } from "react-redux"
 import { checkoutapi } from "../apis/checkoutApi"
 import { RootState } from "../../Redux/store"
@@ -35,15 +34,14 @@ export default function SubscriptionPage() {
   const myPlan = useSelector((state: RootState) => {
     return state.subscriptions.subscription?.planKey ?? "free"
   })
-  const planStatus = useSelector((state) => {
-    return state.subscriptions.subscription.status
-  })
+  // const planStatus = useSelector((state) => {
+  //   return state.subscriptions.subscription.status
+  // })
 
 
-  const [currentPlan, setCurrentPlan] = useState<Plan>(myPlan)
-  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null)
+  const [currentPlan, ] = useState<Plan>(myPlan)
+  const [paymentInfo, ] = useState<PaymentInfo | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [checkout, setCheckout] = useState(false)
   const userId = useSelector((state: RootState) => state.user.user?._id)
   const projectCount = useSelector((state: RootState) => state.projects.list.length)
   const userCount = useSelector((state: RootState) => state.alluser.users.length)
@@ -78,44 +76,37 @@ export default function SubscriptionPage() {
     return baseMetrics[currentPlan]
   })
 
-  const [billingHistory] = useState<BillingRecord[]>([
-    {
-      id: "1",
-      amount: "$10.00",
-      date: "2024-01-15",
-      status: "Success",
-      description: "Basic Plan - Monthly",
-    },
-    {
-      id: "2",
-      amount: "$20.00",
-      date: "2023-12-15",
-      status: "Success",
-      description: "Pro Plan - Monthly",
-    },
-    {
-      id: "3",
-      amount: "$50.00",
-      date: "2023-11-15",
-      status: "Success",
-      description: "Pro Plan - Monthly",
-    },
-  ])
+  // const [billingHistory] = useState<BillingRecord[]>([
+  //   {
+  //     id: "1",
+  //     amount: "$10.00",
+  //     date: "2024-01-15",
+  //     status: "Success",
+  //     description: "Basic Plan - Monthly",
+  //   },
+  //   {
+  //     id: "2",
+  //     amount: "$20.00",
+  //     date: "2023-12-15",
+  //     status: "Success",
+  //     description: "Pro Plan - Monthly",
+  //   },
+  //   {
+  //     id: "3",
+  //     amount: "$50.00",
+  //     date: "2023-11-15",
+  //     status: "Success",
+  //     description: "Pro Plan - Monthly",
+  //   },
+  // ])
 
   const handleUpgrade = async (targetPlan: Plan) => {
-    console.log(targetPlan, "PlanTArget")
     setIsProcessing(true)
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    const amount =
-      targetPlan === "Basic"
-        ? "$10/month"
-        : targetPlan === "Pro"
-          ? "$20/month"
-          : "$50/month";
+  
 
-    const currentDate = new Date().toLocaleDateString()
 
     await checkoutapi(userId, targetPlan).then((res) => {
     

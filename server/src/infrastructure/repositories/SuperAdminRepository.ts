@@ -4,9 +4,8 @@ import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose, { Types } from "mongoose";
 import { TicketDocument, TicketModel } from "../database/models/TicketModel";
-import { GetAllCountResponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
+import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
 import { AbuseModel } from "../database/models/AbuseModel";
-import { Ticket } from "../../domain/entities/Ticket";
 import { PlanDocument, PlanModel } from "../database/models/PlanModel";
 import { PlanRequestDTO } from "../../application/dto/PlanDTO";
 export class SuperAdminRepository implements ISuperAdminRepository {
@@ -14,7 +13,7 @@ export class SuperAdminRepository implements ISuperAdminRepository {
   async getAllCount(): Promise<GetAllCountResponseDTO> {
     const userCount = await UserModel.countDocuments({ role: { $ne: "SuperAdmin" } });
 
-    let workspaceCount = await WorkspaceModel.countDocuments();
+    const workspaceCount = await WorkspaceModel.countDocuments();
     const data = await SubscriptionModel.aggregate([
       {
         $lookup: {
@@ -253,7 +252,7 @@ result.push(totalDocCount)
 
 
   async  getUserDetails(userId: string):Promise<UserDetailsAggResponseDTO> {
-     let id = new mongoose.Types.ObjectId(userId);
+     const id = new mongoose.Types.ObjectId(userId);
     const result = await UserModel.aggregate([
       {
         $match: {
@@ -451,5 +450,211 @@ async updatePlan(input: PlanRequestDTO,id:Types.ObjectId): Promise<void> {
     }
   )
 }
+async getRevenueChart(): Promise<RevenuChartReponseDTO[] | null> {
+ const result =await SubscriptionModel.aggregate([
+  // 1. Unwind history array
+  {
+    $unwind: "$history"
+  },
 
+  // 2. Only consider paid records (optional but recommended)
+  {
+    $match: {
+      "history.status": "paid"
+    }
+  },
+
+  // 3. Add planName based on amount
+  {
+    $addFields: {
+      planName: {
+        $switch: {
+          branches: [
+            { case: { $eq: ["$history.amount", 1000] }, then: "basic" },
+            { case: { $eq: ["$history.amount", 2000] }, then: "pro" },
+            { case: { $eq: ["$history.amount", 5000] }, then: "enterprise" }
+          ],
+          default: "unknown"
+        }
+      }
+    }
+  },
+
+  // 4. Group by planName and calculate total revenue
+  {
+    $group: {
+      _id: "$planName",
+      totalRevenue: { $sum: "$history.amount" }
+    }
+  },
+
+  // 5. Format output
+  {
+    $project: {
+      _id: 0,
+      planName: "$_id",
+      totalRevenue: 1
+    }
+  }
+]);
+return result
+}
+getUserGrowth(): Promise<UserGrowthChartReponseDTO[] | null> {
+const userGrowth=UserModel.aggregate([
+  // ─── STEP 1: Project needed fields ─────────────────────
+  {
+    $project: {
+      createdMonth: { $month: "$createdAt" },
+      createdYear: { $year: "$createdAt" },
+
+      churnMonth: {
+        $cond: [
+          { $or: ["$isBlocked", "$isDeleted"] },
+          { $month: "$updatedAt" },
+          null,
+        ],
+      },
+      churnYear: {
+        $cond: [
+          { $or: ["$isBlocked", "$isDeleted"] },
+          { $year: "$updatedAt" },
+          null,
+        ],
+      },
+    },
+  },
+
+  // ─── STEP 2: FACET (parallel pipelines) ─────────────────
+  {
+    $facet: {
+      // ✅ NEW USERS
+      newUsers: [
+        {
+          $group: {
+            _id: {
+              year: "$createdYear",
+              month: "$createdMonth",
+            },
+            count: { $sum: 1 },
+          },
+        },
+      ],
+
+      // ✅ CHURN USERS
+      churned: [
+        {
+          $match: {
+            churnMonth: { $ne: null },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: "$churnYear",
+              month: "$churnMonth",
+            },
+            count: { $sum: 1 },
+          },
+        },
+      ],
+    },
+  },
+
+  // ─── STEP 3: Merge both arrays ──────────────────────────
+  {
+    $project: {
+      combined: {
+        $map: {
+          input: "$newUsers",
+          as: "n",
+          in: {
+            year: "$$n._id.year",
+            month: "$$n._id.month",
+            newUsers: "$$n.count",
+            churned: {
+              $let: {
+                vars: {
+                  match: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$churned",
+                          as: "c",
+                          cond: {
+                            $and: [
+                              { $eq: ["$$c._id.month", "$$n._id.month"] },
+                              { $eq: ["$$c._id.year", "$$n._id.year"] },
+                            ],
+                          },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+                in: { $ifNull: ["$$match.count", 0] },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  // ─── STEP 4: unwind for sorting ─────────────────────────
+  { $unwind: "$combined" },
+  { $replaceRoot: { newRoot: "$combined" } },
+
+  // ─── STEP 5: sort by time ───────────────────────────────
+  { $sort: { year: 1, month: 1 } },
+
+  // ─── STEP 6: month name + running total ─────────────────
+  {
+    $setWindowFields: {
+      sortBy: { year: 1, month: 1 },
+      output: {
+        totalUsers: {
+          $sum: {
+            $subtract: ["$newUsers", "$churned"],
+          },
+          window: {
+            documents: ["unbounded", "current"],
+          },
+        },
+      },
+    },
+  },
+
+  // ─── STEP 7: format output ──────────────────────────────
+  {
+    $project: {
+      _id: 0,
+      month: {
+        $arrayElemAt: [
+          [
+            "",
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
+          "$month",
+        ],
+      },
+      totalUsers: 1,
+      newUsers: 1,
+      churned: 1,
+    },
+  },
+]);
+return userGrowth
+}
 }

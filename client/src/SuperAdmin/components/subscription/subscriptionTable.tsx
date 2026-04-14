@@ -4,8 +4,7 @@ import { Card, CardContent } from "../../../Custom/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
 import { Badge } from "../../../Custom/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
-import { Button } from "../../../Custom/ui/button"
-import { Calendar, CreditCard, DollarSign, AlertTriangle, Eye, Pencil,Repeat,Ban } from "lucide-react"
+import { Calendar, CreditCard, DollarSign, AlertTriangle, Eye, } from "lucide-react"
 
 export type Plan = "basic" | "pro" | "enterprise"
 export type SubStatus = "active" | "trialing" | "past_due" | "canceled"
@@ -52,9 +51,7 @@ const planColors: Record<Plan, string> = {
 export function SubscriptionTable({
   data,
   onView,
-  onChangePlan,
-  onCancel,
-  onRefund,
+
 }: {
   data: Subscription[]
   onView: (sub: Subscription) => void

@@ -1,16 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Building2, Users, CreditCard, MessageSquare } from "lucide-react"
-import { Sidebar } from "../components/Sidebar"
-import { Header } from "../components/Header"
+import { Building2, Users, CreditCard } from "lucide-react"
 import { MetricCard } from "../components/MetricCard"
 import { RecentActivity } from "../components/RecentActivity"
-import { useSelector } from "react-redux"
 import { dashBordDataApi } from "../apis/fetchApi"
-
+import { RevenueChart } from "./RevenueChart"
+import UserGrowthTrend from "./UserGrowthTrend"
 export default function SuperDashboard() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
   const [data,setData] = useState()
 
 
@@ -60,14 +58,17 @@ useEffect(() => {
           </div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {metrics.map((metric, index) => (
               <MetricCard key={index} {...metric} />
             ))}
+           
           </div>
+ 
 
           {/* Recent Activity */}
           <RecentActivity subscription={data?.subscriptionChanges} abuse={data?.Abuse} />
+        <UserGrowthTrend/>
         </div>
       </main>
     </div>

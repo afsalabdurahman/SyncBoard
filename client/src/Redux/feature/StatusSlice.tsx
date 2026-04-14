@@ -17,7 +17,7 @@ const StatusSlice = createSlice({
     name: 'status',
     initialState,
     reducers: {
-        activity: (state, action) => {
+        activity: (state, ) => {
 
             state.ActivityFeed = true;
         },

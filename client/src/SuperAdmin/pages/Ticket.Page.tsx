@@ -1,15 +1,12 @@
 import { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Ticket, TicketStatus, Message } from "./TicketIndex";
-import { Button } from "../../Custom/ui/button";
 import { Input } from "../../Custom/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "../../Custom/ui/tabs";
-import { Search, Shield, ArrowLeft } from "lucide-react";
+import { Search, Shield,  } from "lucide-react";
 import { Dialog, DialogContent } from "../../Custom/ui/dialog";
 import TicketCard from "../components/tickets/TicketCard";
 import SuperAdminTicketDetail from "../components/tickets/SuperAdminTicketDetail";
 import { useFetchAllTicketsPageQuery, useUpdateTicketStatusMutation } from "../apis/fetchApi";
-import {formatDate} from "../../Utility/dateConverter"
 import { useUpdateMsgMutation } from "../../Admin/apis/rtqApi";
 import { toast } from "react-toastify";
 // Mock data for super admin view - would come from backend
@@ -100,12 +97,9 @@ export const TicketPage = () => {
 
   const [updateTicketStatus] = useUpdateTicketStatusMutation()
     const [updateMsg] = useUpdateMsgMutation()
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const [sidebarCollapsed] = useState(false)
      const {
        data: tickets = [],
-       isLoading,
-       isFetching,
-       isError,
        refetch,
        
      } = useFetchAllTicketsPageQuery({
@@ -114,7 +108,6 @@ export const TicketPage = () => {
 //      useEffect(()=>{
 // refetch()
 //      },[])
-  const [ticketss, setTickets] = useState<Ticket[]>();
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<TicketStatus | "all">("all");
@@ -154,7 +147,8 @@ export const TicketPage = () => {
     : prev
 );
 refetch()
-              } catch (error) {
+              } catch  {
+                toast.error("Send failed")
               }
   };
 
@@ -163,7 +157,7 @@ refetch()
       await updateTicketStatus({ticketId,newStatus})
    refetch()
       toast.success("Updated")
-    } catch (error) {
+    } catch  {
       toast.error("Failed to update")
     }
     // setTickets((prevTickets) =>

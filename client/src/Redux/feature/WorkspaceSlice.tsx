@@ -15,12 +15,12 @@ export type WorkspaceStorage = 1 | 5 | 10 | 100;
 export interface Workspace {
   name: string;
   slug: string;
-  role: string;
-  ownerId: string;
+  role?: string;
+  ownerId?: string;
   members?: Member[];
-  status: WorkspaceStatus;
-  storage: WorkspaceStorage;
-  createdAt: Date;
+  status?: WorkspaceStatus;
+  storage?: WorkspaceStorage;
+  createdAt?: Date;
   _id?: string;
 }
 

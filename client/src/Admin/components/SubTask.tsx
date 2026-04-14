@@ -1,5 +1,4 @@
 import { Trash } from "lucide-react";
-import { title } from "process";
 import { useState, useRef, useEffect } from "react";
 import { deleteSubTaskApi } from "../apis/taskApi";
 import { toast } from "react-toastify";
@@ -169,7 +168,6 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
   const removeSubtask = (id: string) =>
     setSubtasks((p) => p.filter((s) => s.id !== id));
 
-  const completed = subtasks.filter((s) => s.status).length;
   const deleteSubTask = async (subTask) => {
 
     try {
@@ -178,7 +176,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
       setSubtasks((p) => p.filter((s) => s.title !== subTask));
       dispacth(deleteSubTaskRedux(subTask))
       toast.success("Delete success")
-    } catch (error) {
+    } catch  {
       toast.info("try again later")
     }
 

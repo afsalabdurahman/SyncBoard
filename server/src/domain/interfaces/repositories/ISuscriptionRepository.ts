@@ -1,6 +1,5 @@
-import { ObjectId, Types } from "mongoose"
+import {  Types } from "mongoose"
 import { Subscription } from "../../entities/Suscription"
-import { SubscriptionDocument } from "../../../infrastructure/database/models/SuscriptionModel";
 export interface ISuscription {
     create(data: Subscription): Promise<Subscription>
     findSuscriptionByUserId(customerId: string): Promise<Subscription | null>;

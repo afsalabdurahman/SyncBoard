@@ -1,9 +1,8 @@
 import { Plan } from "../../domain/entities/Plan"
 import { Ticket } from "../../domain/entities/Ticket"
-import { PlanDocument } from "../../infrastructure/database/models/PlanModel"
 import { CountResponseDTO, CountWorkspaceReponseDTO } from "../dto/DatahandleDTO"
 import { PlanRequestDTO } from "../dto/PlanDTO"
-import { SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserResponseDTO } from "../dto/SuperDTO"
+import { RevenuChartReponseDTO, SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../dto/SuperDTO"
 export interface IDatahandleUsecase {
     fetchDataCounts(): Promise<CountResponseDTO | null>
     fetchDataworkspace(limit: number, skip: number,search:string,filter:string,plan:string): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }>
@@ -15,5 +14,7 @@ export interface IDatahandleUsecase {
     createPlan(input:PlanRequestDTO):Promise<void>;
     updatePlan(input:PlanRequestDTO,id:string):Promise<void>;
     removePlan(id:string):Promise<void>;
-    deletePlan(id:string):Promise<void>
+    deletePlan(id:string):Promise<void>;
+    fetchSubscriptionRevenue():Promise<RevenuChartReponseDTO[]|null>
+    fetchUserGrowth():Promise<UserGrowthChartReponseDTO[]|null>
 }

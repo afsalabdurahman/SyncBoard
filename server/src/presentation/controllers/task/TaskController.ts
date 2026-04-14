@@ -83,7 +83,7 @@ export class TaskController {
       const userName = req.params.username;
       if (!req.params.username) throw new NotFoundError("User "+ResponseMessages.NO_CONTENT);
       if (alltask == "all") {
-        const data = await this._taskUsecase.myTask(userName, alltask);
+       await this._taskUsecase.myTask(userName, alltask);
       }
       const task = await this._taskUsecase.myTask(userName);
 

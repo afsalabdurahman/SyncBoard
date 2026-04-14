@@ -1,4 +1,4 @@
-import { MoreHorizontal, Mail, Calendar, Shield, AlertTriangle, CheckCircle, Clock, XCircle, Eye, Pencil } from "lucide-react"
+import {  Mail, Calendar, Shield, AlertTriangle, CheckCircle, Clock, XCircle, Eye, Pencil } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
 import { Badge } from "../../../Custom/ui/badge"
 import { Button } from "../../../Custom/ui/button"
@@ -46,19 +46,13 @@ const roleColors = {
   guest: "bg-gray-100 text-gray-800",
 }
 
-const planColors = {
-  basic: "bg-gray-100 text-gray-800",
-  pro: "bg-purple-100 text-purple-800",
-  enterprise: "bg-orange-100 text-orange-800",
-}
+
 
 export const UserTable = ({
   users,
   onViewUser,
   onEditUser,
-  onSuspendUser,
-  onDeleteUser,
-  onResendInvite,
+
 }: UserTableProps) => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
