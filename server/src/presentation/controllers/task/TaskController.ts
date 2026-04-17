@@ -45,7 +45,7 @@ export class TaskController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const taskId = req.params.id;
+    const taskId = req.params.id as string
     try {
       const responseDTO = await this._taskUsecase.update(
         taskId,
@@ -64,7 +64,7 @@ export class TaskController {
   ): Promise<void> {
 
     try {
-      const taskId = req.params.id;
+      const taskId = req.params.id as string
       await this._taskUsecase.deleteTask(taskId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETED);
     } catch (error) {
@@ -79,8 +79,8 @@ export class TaskController {
   ): Promise<void> {
     try {
      
-      const alltask = req.query.count;
-      const userName = req.params.username;
+      const alltask = req.query.count as string
+      const userName = req.params.username as string
       if (!req.params.username) throw new NotFoundError("User "+ResponseMessages.NO_CONTENT);
       if (alltask == "all") {
        await this._taskUsecase.myTask(userName, alltask);
@@ -98,8 +98,8 @@ export class TaskController {
     next: NextFunction
   ): Promise<void> {
    
-    const status = req.body.status;
-    const taskID = req.params.id;
+    const status = req.body.status 
+    const taskID = req.params.id as string
  
     try {
       if (!status || !taskID) throw new NotFoundError("Status not found");
@@ -111,7 +111,7 @@ export class TaskController {
   }
   async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
 
-    const workspaceid = req.params.workspaceid;
+    const workspaceid = req.params.workspaceid as string
  const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
@@ -130,7 +130,7 @@ export class TaskController {
   ) {
  
     try {
-      const taskId = req.params.id;
+      const taskId = req.params.id as string
       const status = req.body.status;
       const msg = req.body.msg;
       if (!taskId || !status)
@@ -150,7 +150,7 @@ export class TaskController {
       if (!req.params.projectId) throw new NotFoundError("Id is not found");
       const filter=req.query.filter as string
       const task = await this._taskUsecase.findTaskByProjectId(
-        req.params.projectId,
+        req.params.projectId as string,
         filter
       );
       res.status(HttpStatusCode.OK).json(task);
@@ -159,7 +159,7 @@ export class TaskController {
     }
   }
 async pagination (req:CustomRequest,res:Response):Promise<void> {
- const workspaceId= req.params.workspaceid;
+ const workspaceId= req.params.workspaceid as string
      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
@@ -173,7 +173,7 @@ res.status(200).json({
 }
 async addComment(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
-   const taskId=req.params.id;
+   const taskId=req.params.id as string
     const comment = req.body;
 await this._taskUsecase.addComment(taskId,comment)
 res.status(HttpStatusCode.CREATED).json({message:"Comment added"})
@@ -183,7 +183,7 @@ res.status(HttpStatusCode.CREATED).json({message:"Comment added"})
 }
 async getCommentsById(req:Request,res:Response,next:NextFunction):Promise<void>{
  try {
-   const taskId= req.params.id;
+   const taskId= req.params.id as string
    const responseDTO = await this._taskUsecase.getTaskComments(taskId)
    res.status(HttpStatusCode.OK).json({data:responseDTO})
  } catch (error) {
@@ -203,7 +203,7 @@ res.status(HttpStatusCode.OK).json({message:deleteMsg})
 }
 async deleteSubTask(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
-    const taskId = req.params.taskid;
+    const taskId = req.params.taskid as string
     const subTask=req.body.subTask;
 
     await this._taskUsecase.deleteSubTask(taskId,subTask);
@@ -215,7 +215,7 @@ async deleteSubTask(req:Request,res:Response,next:NextFunction):Promise<void>{
 async updateSubtask(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
 
-      const taskId = req.params.taskid;
+      const taskId = req.params.taskid as string
        const title=req.body.title;
 
        console.log(req.body,"dsBODYYYY",taskId,"IDDD")

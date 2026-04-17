@@ -106,7 +106,7 @@ console.log(event,"envents")
   }
   async getSuscription(req: Request, res: Response, ) {
 
-    const subscription = await this._suscriptionUsecase.getSuscription(req.params.userid);
+    const subscription = await this._suscriptionUsecase.getSuscription(req.params.userid as string);
 
     res.status(HttpStatusCode.OK).json(subscription)
   }

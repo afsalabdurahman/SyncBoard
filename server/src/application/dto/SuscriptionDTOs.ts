@@ -1,5 +1,5 @@
 export interface SuscriptionRequestDTO{
-userId:string ;
+userId:string;
 planKey:string;
 
 }

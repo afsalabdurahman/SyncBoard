@@ -24,7 +24,7 @@ res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
 }
 async findMyTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
-        const workspaceId = req.params.workspaceid;
+        const workspaceId = req.params.workspaceid as string
         const responseDTO=await this._ticketUsecases.getMyTickets(workspaceId)
         res.status(HttpStatusCode.OK).json(responseDTO)
     } catch (error) {
@@ -34,7 +34,7 @@ async findMyTickets(req:Request,res:Response,next:NextFunction):Promise<void>{
 async updateTicketMsg(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
         const msg = req.body;
-        const ticketId=req.params.id;
+        const ticketId=req.params.id as string
         await this._ticketUsecases.updateMsgs(ticketId,msg)
         res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
     } catch (error) {
@@ -44,7 +44,7 @@ async updateTicketMsg(req:Request,res:Response,next:NextFunction):Promise<void>{
 async updateTicketStatus(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
         const status=req.query.status as TicketStatus
-        const ticketId=req.params.id
+        const ticketId=req.params.id as string
         await this._ticketUsecases.updateTicketStatus(ticketId,status)
         res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
     } catch (error) {

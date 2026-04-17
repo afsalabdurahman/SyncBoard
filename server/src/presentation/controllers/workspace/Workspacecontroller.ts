@@ -62,7 +62,7 @@ export class WorkspaceController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const slug = req.params.workspaceslug;
+    const slug = req.params.workspaceslug as string
     try {
       // const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
       // const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
@@ -75,7 +75,7 @@ export class WorkspaceController {
   }
   async pagination(req: Request, res: Response): Promise<void> {
 
-    const slug = req.params.workspaceslug;
+    const slug = req.params.workspaceslug as string
     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
@@ -89,7 +89,7 @@ export class WorkspaceController {
   }
   async updateWorkspace(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const workspaceId = req.params.id
+      const workspaceId = req.params.id as string
       const merge = req.body;
    
       await this._createWorkspceUsecases.updateWorkspaceData(workspaceId, merge)
@@ -102,8 +102,8 @@ export class WorkspaceController {
     try {
     
       const input: AbuseRequestDTO = req.body
-      const userId = req.params.id
-      const workspaceId = req.params.workspaceid
+      const userId = req.params.id as string
+      const workspaceId = req.params.workspaceid as string
       await this._abuseUsecase.execute(input, userId, workspaceId)
       res.status(HttpStatusCode.CREATED).json(ResponseMessages.CREATED)
     } catch (error) {
@@ -129,7 +129,7 @@ export class WorkspaceController {
   async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
 
-      const reportId = req.params.id;
+      const reportId = req.params.id as string
       const input = req.body as UpdateAbuseStatusDTO;
 
       await this._abuseUsecase.updateStatus(input, reportId)
@@ -161,8 +161,8 @@ export class WorkspaceController {
   async searchReports(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const q = req.query.q as string
-      const userid = req.params.userid;
-      const workspaceid = req.params.workspaceid;
+      const userid = req.params.userid as string
+      const workspaceid = req.params.workspaceid as string
       const result = await this._abuseUsecase.searchReport(q, workspaceid, userid);
       res.status(HttpStatusCode.OK).json({ data: result })
     } catch (error) {

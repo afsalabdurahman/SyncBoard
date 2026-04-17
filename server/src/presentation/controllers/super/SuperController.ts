@@ -48,7 +48,7 @@ export class SuperController {
   }
   async fetchAUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = req.params.id
+      const userId = req.params.id as string
       const responseDTO = await this._dataHandleUsecase.fetchAUser(userId);
       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.FETCH_SUCCESS, data: responseDTO })
     } catch (error) {
@@ -100,7 +100,7 @@ async createNewPlan(req:Request,res:Response,next:NextFunction):Promise<void>{
 async updatePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
     console.log(req.body,"BODY",req.params,"Parmsssss")
-    const id  = req.params.id;
+    const id  = req.params.id as string
     await this._dataHandleUsecase.updatePlan(req.body.form,id);
     res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
   } catch (error) {
@@ -110,7 +110,7 @@ async updatePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
 }
 async removePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
-    const id = req.params.id;
+    const id = req.params.id as string
 
     await this._dataHandleUsecase.removePlan(id);
     res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
@@ -120,7 +120,7 @@ async removePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
 }
 async deletePlan(req:Request,res:Response,next:NextFunction):Promise<void>{
   try {
-    const id = req.params.id;
+    const id = req.params.id as string
 
     await this._dataHandleUsecase.deletePlan(id);
     res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
