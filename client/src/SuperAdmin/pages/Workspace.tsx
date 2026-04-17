@@ -73,6 +73,13 @@ useEffect(() => {
     
     // Implement edit workspace logic
   }
+    const handleSuspendWorkspace = (workspace: Workspace) => {
+        setViewDetails(workspace)
+      setDetails(true);
+      setPage("edit");
+    
+    // Implement edit workspace logic
+  }
 
  
 

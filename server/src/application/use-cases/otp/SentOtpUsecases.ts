@@ -32,7 +32,7 @@ console.log(input,"input value email")
       await this._otpRepository.deleteOTP(input.email)
     }
     const otp = this._otpRepository.generateOTP();
-    // await this._emailService.sendOtp(input.email, otp);
+     await this._emailService.sendOtp(input.email, otp);
     console.log(user, otp, "otppp")
     const SaveOtp = new OTP(input.email, otp);
     console.log(SaveOtp, "OTPSSSVE")
@@ -79,7 +79,7 @@ console.log(input,"input value email")
       await this._otpRepository.deleteOTP(email)
     }
     const otp = this._otpRepository.generateOTP();
-    // await this._emailService.sendOtp(email, otp);
+     await this._emailService.sendOtp(email, otp);
     const SaveOtp = new OTP(email, otp);
     await this._otpRepository.save(SaveOtp);
 

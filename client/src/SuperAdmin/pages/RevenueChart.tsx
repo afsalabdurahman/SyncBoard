@@ -42,7 +42,7 @@ function DonutTooltip({ active, payload }) {
   return (
     <div className="bg-white border rounded px-2 py-1 text-xs shadow">
       <p>{capitalize(planName)}</p>
-      <p>${totalRevenue} / month</p>
+      <p>${totalRevenue/100} / month</p>
     </div>
   );
 }
@@ -57,7 +57,7 @@ function DonutCenterLabel({ viewBox, total }) {
   return (
     <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle">
       <tspan x={cx} dy="-0.4em" fontSize={20} fontWeight={600}>
-        ${total}
+        ${total/100}
       </tspan>
       <tspan x={cx} dy="1.6em" fontSize={10}>
         per month

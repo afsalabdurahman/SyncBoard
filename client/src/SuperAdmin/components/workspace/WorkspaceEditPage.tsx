@@ -273,9 +273,9 @@ const confirmStatusChange = async () => {
                       : "border-gray-200 hover:border-gray-300"
                   )}
                 >
-                  <p.icon
+                  {/* <p.icon
                     className={cn("h-10 w-10 mb-3", `text-${p.color}-600`)}
-                  />
+                  /> */}
                   <span className="font-semibold text-lg">{p.label}</span>
                   {formData.planKey === p.id && (
                     <div className="absolute -top-2 -right-2 bg-green-600 text-white text-xs px-2.5 py-1 rounded-full font-medium">

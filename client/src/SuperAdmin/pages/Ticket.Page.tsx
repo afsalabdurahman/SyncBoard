@@ -98,16 +98,28 @@ export const TicketPage = () => {
   const [updateTicketStatus] = useUpdateTicketStatusMutation()
     const [updateMsg] = useUpdateMsgMutation()
     const [sidebarCollapsed] = useState(false)
-     const {
-       data: tickets = [],
-       refetch,
+    //  const {
+    //    data: tickets = [],
+    //    refetch,
        
-     } = useFetchAllTicketsPageQuery({
-      refetchOnFocus: true,
-     });
-//      useEffect(()=>{
-// refetch()
-//      },[])
+    //  } = useFetchAllTicketsPageQuery({
+    //   refetchOnFocus: true,
+    //  });
+   
+     const {
+  data: tickets = [],
+  refetch,
+} = useFetchAllTicketsPageQuery(
+  {},
+  {
+    refetchOnFocus: true,
+    pollingInterval: 15000,    
+    // pollingInterval: 10000, 
+  }
+);
+  useEffect(()=>{
+refetch()
+     },[])
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<TicketStatus | "all">("all");

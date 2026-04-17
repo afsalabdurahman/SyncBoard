@@ -1,11 +1,10 @@
-"use client"
+
 
 import { useEffect, useState } from "react"
 import { Building2, Users, CreditCard } from "lucide-react"
 import { MetricCard } from "../components/MetricCard"
 import { RecentActivity } from "../components/RecentActivity"
 import { dashBordDataApi } from "../apis/fetchApi"
-import { RevenueChart } from "./RevenueChart"
 import UserGrowthTrend from "./UserGrowthTrend"
 export default function SuperDashboard() {
   const [sidebarCollapsed] = useState(false)

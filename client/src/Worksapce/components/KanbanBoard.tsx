@@ -158,7 +158,7 @@ const handleNotification = (data: { taskId: string }) => {
     try {
       await apiService.patch(`task/status/${draggedTask.id}`, { status: apiStatus });
     } catch  {
-toast.error("Failed to drag")
+console.log("Failed to drag")
     }
 
     setDraggedTask(null);

@@ -10,8 +10,12 @@ import { TicketPage } from "../pages/Ticket.Page"
 import { AbuseReportsPage } from "../pages/AbuseReport"
 import { PlanManagementPage } from "../pages/PlanManagementPage"
 export const Layout = () => {
+  // const setpage = (page) =>{
+  //   setCurrentPage(page)
+  // }
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [currentPage, setCurrentPage] = useState("dashboard");
+  const [currentPage, setCurrentPage] = useState("Dashboard");
+  const [activate,setActivate]=useState("")
   const renderPage = () => {
     switch (currentPage) {
       case "Dashboard":
@@ -22,7 +26,7 @@ export const Layout = () => {
         return <Workspaces setCurrentPage={setCurrentPage} />;
       case "Subscriptions":
         return <SubscriptionsPage />;
-      case "PlanManagementPage":
+      case "Plan Management":
         return <PlanManagementPage />;
 
       case "Analytics":
@@ -35,10 +39,11 @@ export const Layout = () => {
         return <Dashboard />;
     }
   };
+  console.log(currentPage,"inLayout")
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
-      <Header sidebarCollapsed={sidebarCollapsed} />
+      <Header  sidebarCollapsed={sidebarCollapsed} setCurrentPage={setCurrentPage}  />
       <main>
         {renderPage()}
       </main>

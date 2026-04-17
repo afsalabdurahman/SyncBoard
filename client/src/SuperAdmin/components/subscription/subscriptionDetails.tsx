@@ -123,7 +123,7 @@ export function SubscriptionDetails({
                   <DollarSign className="h-5 w-5 text-gray-500" />
                   <div>
                     <div className="font-medium text-lg">
-                      {formatCurrency(sub.amount, sub.currency)}
+                      {sub.amount}
                       <span className="text-sm text-gray-500 ml-1">
                         {sub.interval === "month" ? "/ month" : "/ year"}
                       </span>

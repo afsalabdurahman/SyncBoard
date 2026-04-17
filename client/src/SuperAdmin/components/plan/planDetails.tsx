@@ -62,7 +62,7 @@ const emptyPlan: Omit<Plan, "id"> = {
 export const PlanDetails = () => {
   const { data, isLoading, error, refetch } = useFetchAllPlansQuery("");
   const [loading, setLoading] = useState(false)
-  const [ setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [open, setOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
   const [form, setForm] = useState(emptyPlan);
@@ -73,6 +73,7 @@ const [deletePlanId,setDeletePlanId]= useState(null)
     setEditingPlan(null);
   };
 
+  console.log(plans, "plans from global")
 
   const handleOpenCreate = () => {
     resetForm();
@@ -130,9 +131,9 @@ try {
     resetForm();
   };
 
-  // const handleDelete = (id: string) => {
-  //   setPlans((prev) => prev.filter((p) => p.id !== id));
-  // };
+  const handleDelete = (id: string) => {
+    setPlans((prev) => prev.filter((p) => p.id !== id));
+  };
 
   const toggleActive = async (id: string) => {
     // setPlans((prev) =>
@@ -175,7 +176,7 @@ try {
       features: prev.features.filter((_, i) => i !== index),
     }));
   };
-  const [sidebarCollapsed] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   if (isLoading) return <p>Loading plans...</p>;
 
@@ -207,18 +208,23 @@ try {
         description="This project will be permanently deleted."
       />
       {/* Header */}
-      <div className="">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Subscription Plans</h1>
-          <p className="text-muted-foreground mt-1">
-            Create and manage your subscription offerings
-          </p>
-        </div>
-        <Button onClick={handleOpenCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Plan
-        </Button>
-      </div>
+     <div className="flex items-center justify-between mb-6">
+  {/* Left Section */}
+  <div>
+    <h1 className="text-3xl font-bold tracking-tight">
+      Subscription Plans
+    </h1>
+    <p className="text-muted-foreground mt-1">
+      Create and manage your subscription offerings
+    </p>
+  </div>
+
+  {/* Right Section */}
+  <Button onClick={handleOpenCreate}>
+    <Plus className="mr-2 h-4 w-4" />
+    New Plan
+  </Button>
+</div>
 
       {/* Plans Grid */}
       {data.length === 0 ? (
