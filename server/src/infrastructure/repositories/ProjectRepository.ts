@@ -8,7 +8,7 @@ import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
 import { stringToMongoObj } from "../../utils/convertMongoObject"
 
 
-export class ProjectRepository extends BaseRepository<Project> implements IProjectRepository {
+export class ProjectRepository extends BaseRepository<Project,ProjectDocument> implements IProjectRepository {
    constructor() {
       super(ProjectModel)
    }

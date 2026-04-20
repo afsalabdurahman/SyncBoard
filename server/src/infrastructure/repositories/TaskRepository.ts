@@ -132,7 +132,7 @@ export class TaskRepository implements ITaskRepository {
     //
     const projects = await ProjectModel.findOne({ workspaceId: workspaceId }, { _id: 1 })
 
-    const result = await TaskModel.find({ projectId: projects?._id });
+    await TaskModel.find({ projectId: projects?._id });
 
     // END 
     const totalItems = await TaskModel.countDocuments();

@@ -24,48 +24,30 @@ export class WorkspaceController {
 
   async Create(req: Request, res: Response, ): Promise<void> {
     const input: WorkspaceRequestDTO = req.body
-
-    
-
       const workspaceResponseDTO = await this._createWorkspceUsecases.createWorkspace(input);
-
       res
         .status(HttpStatusCode.OK)
-        .json({ message: ResponseMessages.CREATED, workspaceResponseDTO });
-
-    
+        .json({ message: ResponseMessages.CREATED, workspaceResponseDTO });   
   }
   async inviteMembers(
     req: Request,
-    res: Response,
-    
+    res: Response,  
   ): Promise<void> {
-
-
     const { emails, invitationLink,workspaceId } = req.body;
-
-   
        await this._sentInvitaionUsecase.send(
         emails,
         invitationLink,
         workspaceId
       );
       res.status(HttpStatusCode.OK).json(ResponseMessages.INVITATION_SENT);
-   
   }
   async getAllMembersData(
     req: Request,
-    res: Response,
-    
+    res: Response,   
   ): Promise<void> {
     const slug = req.params.workspaceslug as string
-  
-      // const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
-      // const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
-      // // const skip = (page - 1) * limit;
       const workspaceData = await this._workspaceUsecase.getWorkspceDate(slug);
       res.status(HttpStatusCode.OK).json(workspaceData);
-    
   }
   async pagination(req: Request, res: Response): Promise<void> {
 
@@ -82,17 +64,13 @@ export class WorkspaceController {
     })
   }
   async updateWorkspace(req: Request, res: Response,): Promise<void> {
-    
       const workspaceId = req.params.id as string
       const merge = req.body;
-   
       await this._createWorkspceUsecases.updateWorkspaceData(workspaceId, merge)
       res.status(HttpStatusCode.OK).json({ message: "Updated" })
     
   }
   async abuseReport(req: Request, res: Response): Promise<void> {
-    
-    
       const input: AbuseRequestDTO = req.body
       const userId = req.params.id as string
       const workspaceId = req.params.workspaceid as string
@@ -115,20 +93,13 @@ export class WorkspaceController {
    
   }
   async updateStatus(req: Request, res: Response, ): Promise<void> {
-    
-
       const reportId = req.params.id as string
       const input = req.body as UpdateAbuseStatusDTO;
-
       await this._abuseUsecase.updateStatus(input, reportId)
       res.status(HttpStatusCode.CREATED).json({ message: ResponseMessages.SUCCESS })
-  
-
-
   }
   async listOfAbuseReports(req: Request, res: Response): Promise<void> {
-   
-      const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
+     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
       const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
       const skip = (page - 1) * limit;
       const userid = req.params.userid;
@@ -136,10 +107,6 @@ export class WorkspaceController {
 
       const { mappedReponse, docsize } = await this._abuseUsecase.listOfReports(page, limit, skip, userid, workspaceid);
       res.status(HttpStatusCode.OK).json({ data: mappedReponse, count: docsize })
-
-
-    
-
   }
 
   async searchReports(req: Request, res: Response): Promise<void> {
@@ -174,9 +141,7 @@ export class WorkspaceController {
       const slug = req.params.slug;
       const query = req.query.query as string;
       const user = await this._workspaceUsecase.getMembers(slug, query);
-
-        res.status(HttpStatusCode.OK).json(user);
-    
+      res.status(HttpStatusCode.OK).json(user);
   }
 
 

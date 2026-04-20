@@ -8,7 +8,7 @@ import { ValidationError } from "../../utils/errors";
 import mongoose from "mongoose";
 import { UserResponseDTO } from "../../application/dto/SuperDTO";
 @injectable()
-export class UserMongooseRepository extends BaseRepository<User> implements IUserRepository {
+export class UserMongooseRepository extends BaseRepository<User,UserDoument> implements IUserRepository {
   constructor() {
     super(UserModel);
   }

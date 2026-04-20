@@ -1,7 +1,5 @@
 import { inject, injectable } from "tsyringe";
 import { IChatUsecase } from "../../../application/repositories/IChat";
-
-
 import { Request,Response } from "express";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ChatRequestDTO } from "../../../application/dto/ChatDTOs";
@@ -10,10 +8,11 @@ import { ChatRequestDTO } from "../../../application/dto/ChatDTOs";
 @injectable()
 export class ChatController{
     constructor(@inject("ChatUseCase")private _chatuseCase:IChatUsecase){}
-   
+
 async saveMessage(message:ChatRequestDTO):Promise<void>{
 await this._chatuseCase.sendMessage(message)
 }
+
 async chatHistory(req:Request,res:Response,):Promise<void>{
     const workapaceid=req.params.workspaceid as string;
 const historyData=await this._chatuseCase.history(workapaceid)

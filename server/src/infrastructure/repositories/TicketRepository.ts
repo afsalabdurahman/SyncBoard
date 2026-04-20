@@ -5,7 +5,7 @@ import { TicketDocument, TicketModel } from "../database/models/TicketModel";
 import { BaseRepository } from "./BaseRepository";
 import { Message } from "../../types/tiketTypes";
 
-export class TicketRepository extends BaseRepository<Ticket> implements ITicketRepository {
+export class TicketRepository extends BaseRepository<Ticket,TicketDocument> implements ITicketRepository {
     constructor() {
         super(TicketModel)
     }

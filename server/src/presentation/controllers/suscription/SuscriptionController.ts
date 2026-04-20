@@ -31,11 +31,9 @@ export class SubscriptionController {
   async addCheckout(
     req: Request,
     res: Response,
-    next: NextFunction
+  
   ): Promise<void> {
-    try {
-    
-      const input: SuscriptionRequestDTO = {
+ const input: SuscriptionRequestDTO = {
         userId: req.params.userid,
         planKey: req.body.plan,
 
@@ -44,16 +42,12 @@ export class SubscriptionController {
       console.log(checkoutLink,"in controller link")
       res.status(HttpStatusCode.OK).json(checkoutLink)
 
-    } catch (error) {
-      next(error);
-    }
   }
 
 
 
   async webHookNotify(req: Request, res: Response, next: NextFunction) {
 
-console.log("webHokkCalling")
     const sig = req.headers["stripe-signature"] as string;
 
     if (!sig) {
@@ -61,7 +55,7 @@ console.log("webHokkCalling")
       return;
     }
     let event: Stripe.Event;
-    // try
+ 
 
     try {
       event = stripe.webhooks.constructEvent(
@@ -84,13 +78,12 @@ console.log("webHokkCalling")
         { const session = event.data.object as Stripe.Checkout.Session;
 await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString()??"",session.id,new Date(),session?.amount_subtotal??0,session.payment_status)
         if (session.metadata) {
-          
-          await this._suscriptionUsecase.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
+           await this._suscriptionUsecase.updateSuscriptionPlan(session.metadata.userId, session.metadata.planName, "active")
         }
-        break; }
+        break; 
+      }
       case "invoice.paid":
 
-        //         case "charge.succeeded":
         { const invoice = event.data.object as Stripe.Invoice
         if (invoice.customer_name && invoice.customer_email && invoice.hosted_invoice_url) {
           await this._suscriptionUsecase.sendReceipt(invoice.customer_name, invoice.customer_email, invoice.hosted_invoice_url)
@@ -98,8 +91,6 @@ await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString(
 console.log(event,"envents")
         res.sendStatus(200);
         break; }
-
-
     }
     next()
 
@@ -110,14 +101,10 @@ console.log(event,"envents")
 
     res.status(HttpStatusCode.OK).json(subscription)
   }
-  async getActivePlans(req:Request,res:Response,next:NextFunction){
-  try {
+  async getActivePlans(req:Request,res:Response,){
+ 
       const plans = await this._planUsecase.findActivePlan();
        res.status(HttpStatusCode.OK).json(plans)
-  } catch (error) {
-    next(error)
-  }
-
-  }
-  
+ 
+ } 
 }
