@@ -1,10 +1,8 @@
 
 import { ILLMProvider, IVectorStore } from "../../domain/interfaces/services/IRagService";
-
 import { IRagOrchestartorService } from "../../domain/interfaces/services/IRagOrchestartorService"
 import { injectable, inject } from "tsyringe";
 import { hybridFilter } from "../services/ragPipeline/filters/hybridFilter"
-import { modelMap } from "../services/ragPipeline/filters/chooseModel"
 import { INTENT_TASK_PROMPT, RESPONSE_Task_PROMPT } from "../services/ragPipeline/filters/expandPrompts";
 @injectable()
 export class RagOrchestrator implements IRagOrchestartorService {
@@ -20,10 +18,12 @@ export class RagOrchestrator implements IRagOrchestartorService {
     let refinedPrompt: string = ""
     if (/tasks?/i.test(query)) {
       refinedPrompt = await this._llmProvider.refinePrompt(user, query, INTENT_TASK_PROMPT)
+      console.log(refinedPrompt, "Refined propmt")
       const { key, value, model }: { key: string | null, value: string, model?: string } = hybridFilter(refinedPrompt)
       if (!key && value && !model) { return value }
       if (!key || !model) return value
-      const results = await this._vectorStore.findFromdb(user, key, value, modelMap[model])
+      const results = await this._vectorStore.findFromdb(user, key, value, model)
+      console.log(results, "resuktdesdssssss")
       const response = await this._llmProvider.responseMessage(query, results, RESPONSE_Task_PROMPT)
 
       return response

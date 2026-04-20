@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { TaskLLM } from "../../../types/LLMtaskTypes";
 
 
 export interface IEmbeddingProvider {
@@ -6,11 +6,11 @@ export interface IEmbeddingProvider {
   embedBatch(texts: string[]): Promise<number[][]>;
 }
 export interface IVectorStore {
-  findFromdb(user:string,key:string,value:string,model:mongoose.Model<any>):Promise<any>
- 
+  findFromdb(user: string, key: string, value: string, model: string): Promise<TaskLLM[]>
+
 }
 export interface ILLMProvider {
   generate(prompt: string, context: string): Promise<string>;
-  refinePrompt(name:string,prompt:string,INTENT_PROMPT:string):Promise<string>
-  responseMessage(userQuery:string,dbResponse:Record<string,string>[],RESPONSE_PROMPT:string):Promise<string>
+  refinePrompt(name: string, prompt: string, INTENT_PROMPT: string): Promise<string>
+  responseMessage(userQuery: string, dbResponse: Record<string, string>[], RESPONSE_PROMPT: string): Promise<string>
 }

@@ -1,7 +1,9 @@
 // src/infrastructure/mongodb/vector-store.mongo.ts
 import { IVectorStore } from "../../../domain/interfaces/services/IRagService";
 // import { TaskModel } from "../../database/models/TaskModel";
-import mongoose from "mongoose";
+import { chooseModel } from "./filters/chooseModel";
+import { NotFoundError } from "../../../utils/errors";
+import { TaskLLM } from "../../../types/LLMtaskTypes";
 
 
 export class MongoVectorStore implements IVectorStore {
@@ -43,15 +45,16 @@ export class MongoVectorStore implements IVectorStore {
 
   //   return this.collection.aggregate(pipeline).toArray();
   // }
-  async findFromdb(user: string, key:string,value:string,model:mongoose.Model<unknown>): Promise<unknown> {
- 
-    const result = await model
+  async findFromdb(user: string, key:string,value:string,model:string): Promise<TaskLLM[]> {
+    const modelMap= chooseModel(model);
+    if(!modelMap) throw new NotFoundError("Model not found")
+    const result = await modelMap
     .find({ assignedUser: user, [key]: value },{name:1,deadline:1,description:1,status:1,project:1,_id:0,rejectionMsg:1,approvalStatus:1})
     .limit(3)
     .sort({ createdAt: 1 });
 
 
-  return result;
+  return result as TaskLLM[];
 
   }
 }
