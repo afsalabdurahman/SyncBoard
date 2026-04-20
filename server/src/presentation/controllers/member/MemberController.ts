@@ -3,7 +3,7 @@ import { ResponseMessages } from "../../../common/erroResponse";
 import { injectable, inject } from "tsyringe";
 import { NextFunction, Request, Response } from "express";
 import { IUpdateProfileUsecases } from "../../../application/repositories/IUpdateProfile";
-import { ConflictError, NotFoundError } from "../../../utils/errors";
+import {  NotFoundError } from "../../../utils/errors";
 import { IChangePasword } from "../../../application/repositories/IChangePassword";
 import { IMemberRegister } from "../../../application/repositories/IMemberRegister";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
@@ -43,12 +43,12 @@ export class MemberController {
   async changeUserPassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    
   ): Promise<void> {
     const { currentPassword, newPassword } = req.body;
     const userId = req.params.id;
 
-    try {
+   
       if (!currentPassword || !newPassword) {
         throw new NotFoundError("filed is emty please enter");
       }
@@ -58,14 +58,12 @@ export class MemberController {
         newPassword
       );
       res.status(HttpStatusCode.OK).json(ResponseMessages.SUCCESS);
-    } catch (error) {
-      next(error);
-    }
+   
   }
   async inviteAndRegister(
     req: Request,
     res: Response,
-    next: NextFunction
+   
   ): Promise<void> {
     const input: MemeberRegisterRequestDTO = {
       email: req.body.email,
@@ -76,45 +74,36 @@ export class MemberController {
       slug: req.body.workspaceSlug,
     };
   
-    try {
+ 
       const response = await this._memberRegisterUsecase.execute(input);
 
       setTokensInCookies(res, response.token, response.refreshToken);
       res
         .status(HttpStatusCode.CREATED)
         .json({ user: response.user, workspace: response.workspace });
-    } catch (error) {
-      console.log(error,"error")
-      next(error);
-    }
+    
   }
   async changeOnlinestatus(userId: string): Promise<void> {
-    try {
+    
       await this._updateProfileUsecase.updateOnlineStatus(userId);
-    } catch  {
-      throw new ConflictError("Updation failed")
-    }
+   
   }
-  async findUserByEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
+  async findUserByEmail(req: Request, res: Response, ): Promise<void> {
+    
       const email = req.params.email;
   
       const userDocument = await this._getUserUsecase.findUserByEmail(email);;
       const user = UserMapper.userResponseDTO(userDocument)
       res.status(HttpStatusCode.OK).json({ user })
-    } catch (error) {
-      next(error)
-    }
+    
   }
 
-  async resetPassword(req:Request,res:Response,next:NextFunction):Promise<void>{
-   try {
+  async resetPassword(req:Request):Promise<void>{
+   
        const userId = req.params.id;
       const password = req.body.password;
       await this._changePasswordUsecase.resetPassword(userId,password)
-   } catch (error) {
-    next(error)
-   }
+  
 
   }
 

@@ -3,7 +3,7 @@ import {IRefreshtoken} from "../../../application/repositories/ishared/IRefreshT
 import { NotFoundError } from "../../../utils/errors";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
-import { Request,Response,NextFunction } from "express";
+import { Request,Response } from "express";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
 @injectable()
 export class sharedController{
@@ -11,8 +11,8 @@ export class sharedController{
 
    async generateNewToken( req: Request,
     res: Response,
-    next: NextFunction):Promise<void>{
-        try {
+    ):Promise<void>{
+       
           console.log("calling refreshtoken.....")
              const token  = req.cookies.refreshToken;
              
@@ -22,10 +22,8 @@ export class sharedController{
         setTokensInCookies(res,accessToken,refreshToken)
       res.status(HttpStatusCode.OK).json({ message: ResponseMessages.SUCCESS })
     }
-    catch (error) {
-            next(error)
-        }
+  
     
-        } 
+        
 
 }

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 
 import { ITaskUseCase } from "../../../application/repositories/ITask";
@@ -14,70 +14,59 @@ export class TaskController {
   async createTask(
     req: Request,
     res: Response,
-    next: NextFunction
+    
   ): Promise<void> {
-    try {
-      console.log(req.body.newTask,"NEW+++TASK")
+  
+ 
       const input: TaskRequestDTO = req.body.newTask as TaskRequestDTO
 
       const resposeDTO = await this._taskUsecase.execute(input);
       res.status(HttpStatusCode.CREATED).json(resposeDTO);
       
-    } catch (error) {
-      next(error);
-    }
+    
   }
   async allTasks(
     req: Request,
     res: Response,
-    next: NextFunction
+    
   ): Promise<void> {
-    try {
+   
       const tasks = await this._taskUsecase.getAllTasks();
 
       res.status(HttpStatusCode.OK).json(tasks);
-    } catch (error) {
-      next(error);
-    }
+    
   }
   async updateTask(
     req: Request,
     res: Response,
-    next: NextFunction
   ): Promise<void> {
     const taskId = req.params.id as string
-    try {
+   
       const responseDTO = await this._taskUsecase.update(
         taskId,
         req.body.updatedTask
       );
       
       res.status(HttpStatusCode.OK).json(responseDTO);
-    } catch (error) {
-      next(error);
-    }
+   
   }
   async deleteTask(
     req: Request,
     res: Response,
-    next: NextFunction
+    
   ): Promise<void> {
 
-    try {
+ 
       const taskId = req.params.id as string
       await this._taskUsecase.deleteTask(taskId);
       res.status(HttpStatusCode.OK).json(ResponseMessages.DELETED);
-    } catch (error) {
-   
-      next(error);
-    }
+    
   }
   async findMyTask(
     req: Request,
     res: Response,
-    next: NextFunction
   ): Promise<void> {
-    try {
+    
      
       const alltask = req.query.count as string
       const userName = req.params.username as string
@@ -88,26 +77,21 @@ export class TaskController {
       const task = await this._taskUsecase.myTask(userName);
 
       res.status(HttpStatusCode.OK).json(task);
-    } catch (error) {
-      next(error);
-    }
+   
   }
   async updateTaskStatus(
     req: Request,
     res: Response,
-    next: NextFunction
   ): Promise<void> {
    
     const status = req.body.status 
     const taskID = req.params.id as string
  
-    try {
+   
       if (!status || !taskID) throw new NotFoundError("Status not found");
       await this._taskUsecase.updateTaskStatus(taskID, status);
       res.status(HttpStatusCode.OK);
-    } catch (error) {
-      next(error);
-    }
+    
   }
   async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
 
@@ -126,10 +110,9 @@ export class TaskController {
   async controllApprovalSatatus(
     req: Request,
     res: Response,
-    next: NextFunction
   ) {
  
-    try {
+    
       const taskId = req.params.id as string
       const status = req.body.status;
       const msg = req.body.msg;
@@ -137,16 +120,14 @@ export class TaskController {
         throw new NotFoundError("Task id or status not found");
       await this._taskUsecase.updateApprovalStatus(taskId, status, msg);
       res.status(HttpStatusCode.OK).json({ message: "Updated" });
-    } catch (error) {
-      next(error);
-    }
+   
   }
   async findTaskByProject(
     req: Request,
     res: Response,
-    next: NextFunction
+    
   ): Promise<void> {
-    try {
+    
       if (!req.params.projectId) throw new NotFoundError("Id is not found");
       const filter=req.query.filter as string
       const task = await this._taskUsecase.findTaskByProjectId(
@@ -154,9 +135,7 @@ export class TaskController {
         filter
       );
       res.status(HttpStatusCode.OK).json(task);
-    } catch (error) {
-      next(error);
-    }
+   
   }
 async pagination (req:CustomRequest,res:Response):Promise<void> {
  const workspaceId= req.params.workspaceid as string
@@ -171,59 +150,48 @@ res.status(200).json({
       totalItems,
 })
 }
-async addComment(req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
+async addComment(req:Request,res:Response,):Promise<void>{
+ 
    const taskId=req.params.id as string
     const comment = req.body;
 await this._taskUsecase.addComment(taskId,comment)
 res.status(HttpStatusCode.CREATED).json({message:"Comment added"})
-  } catch (error) {
-    next(error)
-  }
+ 
 }
-async getCommentsById(req:Request,res:Response,next:NextFunction):Promise<void>{
- try {
+async getCommentsById(req:Request,res:Response,):Promise<void>{
+ 
    const taskId= req.params.id as string
    const responseDTO = await this._taskUsecase.getTaskComments(taskId)
    res.status(HttpStatusCode.OK).json({data:responseDTO})
- } catch (error) {
-  next(error)
- }
+ 
 
 }
-async deleteAttachment(req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
+async deleteAttachment(req:Request,res:Response):Promise<void>{
+ 
     const taskId=req.params.taskid;
     const url=req.body.attachment;
    const  deleteMsg=await this._taskUsecase.deleteAttachment(taskId,url)
 res.status(HttpStatusCode.OK).json({message:deleteMsg})
-  } catch (error) {
-    next(error)
-  }
+ 
 }
-async deleteSubTask(req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
+async deleteSubTask(req:Request,res:Response,):Promise<void>{
+  
     const taskId = req.params.taskid as string
     const subTask=req.body.subTask;
 
     await this._taskUsecase.deleteSubTask(taskId,subTask);
     res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
-  } catch (error) {
-    next(error)
-  }
+ 
 }
-async updateSubtask(req:Request,res:Response,next:NextFunction):Promise<void>{
-  try {
+async updateSubtask(req:Request,res:Response):Promise<void>{
+
 
       const taskId = req.params.taskid as string
        const title=req.body.title;
 
-       console.log(req.body,"dsBODYYYY",taskId,"IDDD")
        await this._taskUsecase.updateSubtask(taskId,title);
        res.status(HttpStatusCode.OK).json({message:ResponseMessages.SUCCESS})
-  } catch (error) {
-    next(error)
-  }
+ 
 }
 
 }

@@ -18,16 +18,16 @@ const sharedAuthController = container.resolve(sharedController);
 const superController = container.resolve(SuperadminAuthController);
 const memberAuth = [authMiddelware(), roleMiddleware(["Admin","Member"])];
 router.post("/user/register", (req, res, next) => authController.register(req, res, next));
-router.post("/user/sendotp", (req, res, next) => otpController.sendOTP(req, res, next));
-router.post("/user/verifyotp", (req, res, next) => otpController.verifyOtp(req, res, next));
+router.post("/user/sendotp", (req, res,) => otpController.sendOTP(req, res));
+router.post("/user/verifyotp", (req, res) => otpController.verifyOtp(req, res));
 router.post("/user/login", (req, res, ) => authController.login(req, res, ));
-router.post("/admin/login", (req, res, next) => adminController.LoginUsesCase(req, res, next));
-router.post("/admin/google",(req, res, next) => adminController.googleAdminAuth(req, res, next));
-router.post("/super/login", (req, res, next) => { superController.LoginUsesCase(req, res, next) })
-router.post("/refresh-token", (req, res, next) => sharedAuthController.generateNewToken(req, res, next));
-router.patch("/logout/:id", (req, res, next) => { authController.logout(req, res, next) })
-router.post("/user/forgot/password", (req, res, next) => otpController.reSendOTP(req, res, next))
+router.post("/admin/login", (req, res) => adminController.LoginUsesCase(req, res));
+router.post("/admin/google",(req, res) => adminController.googleAdminAuth(req, res));
+router.post("/super/login", (req, res) => { superController.LoginUsesCase(req, res) })
+router.post("/refresh-token", (req, res, ) => sharedAuthController.generateNewToken(req, res));
+router.patch("/logout/:id", (req, res) => { authController.logout(req, res) })
+router.post("/user/forgot/password", (req, res) => otpController.reSendOTP(req, res))
 router.get("/user/me",memberAuth,authController.authMe.bind(authController))
-router.post("/google",(req,res,next)=>authController.googleAuth(req,res,next))
+router.post("/google",(req,res)=>authController.googleAuth(req,res))
 export default router;
 

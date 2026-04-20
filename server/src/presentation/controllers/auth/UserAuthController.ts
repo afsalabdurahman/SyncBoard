@@ -48,34 +48,28 @@ console.log(user,"userssCONTROLL")
   
    
     }
-     async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
-   try {
+     async logout(req: Request, res: Response, ): Promise<void> {
+ 
        const userId=req.params.id
          await this._loginUsecase.logoutUser(userId)
           removeTokensInCookies(res)
           res.status(HttpStatusCode.NO_CONTENT).json({message:ResponseMessages.LOGGED_OUT})
-   } catch (error) {
-    next(error)
-   }
+ 
     }
-    async authMe(req:CustomRequest,res:Response,next:NextFunction):Promise<void>{
+    async authMe(req:CustomRequest,res:Response):Promise<void>{
      
-    try {
+    
     console.log(req.user,"auth USER calling....")
     if(!req.user){throw new ForbiddenError("User not found")}
         res.status(200).json({
     user: req?.user?.id,
     })
-    } catch (error) {
-      
-      console.log(error,"erroAUTH ME")
-      next(error)
-    }
+    
 }
-async googleAuth(req:Request,res:Response,next:NextFunction):Promise<void>{
+async googleAuth(req:Request,res:Response):Promise<void>{
   const { credential } = req.body;
 
-  try {
+ 
   const  {workspace,savedUser,token,refreshToken}=await this._registerUseCase.googleAuth(credential);
   if(workspace){
         setTokensInCookies(res, token, refreshToken);
@@ -84,10 +78,7 @@ async googleAuth(req:Request,res:Response,next:NextFunction):Promise<void>{
         setTokensInCookies(res, token, refreshToken);
     res.status(HttpStatusCode.CREATED).json({savedUser})
   }
-  } catch (error) {
-    console.log(error,"eroror CAtch")
-    next(error)
-  }
+  
  
 }
 }

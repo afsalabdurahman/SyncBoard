@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { NotFoundError } from "../../../utils/errors";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
 import { inject, injectable } from "tsyringe";
@@ -13,11 +13,11 @@ export class AdminAuthController {
   async LoginUsesCase(
     req: Request,
     res: Response,
-    next: NextFunction
+    
   ): Promise<void> {
 
     const input:LoginRequestDTO = req.body as LoginRequestDTO;
-    try {
+    
       const response= await this._loginUseCase.execute(input );
 
       if (!response) {
@@ -25,13 +25,12 @@ export class AdminAuthController {
       }
         setTokensInCookies(res, response.token, response.refreshToken);
       res.status(HttpStatusCode.OK).json({ user:response.user, workspace:response.workspace,suscribe:response.suscribe });
-    } catch (error) {
-      next(error);
-    }
+   
+     
   }
-  async googleAdminAuth(req:Request,res:Response,next:NextFunction):Promise<void>{
-    try {
-      console.log(req.body,"BODYYYY");
+  async googleAdminAuth(req:Request,res:Response):Promise<void>{
+    
+   
        const { credential } = req.body;
        const response = await this._loginUseCase.googleAuthAdmin(credential);
          if (!response) {
@@ -39,9 +38,6 @@ export class AdminAuthController {
       }
        setTokensInCookies(res, response.token, response.refreshToken);
         res.status(HttpStatusCode.OK).json({ user:response.user, workspace:response.workspace,suscribe:response.suscribe });
-    } catch (error) {
-      
-      next(error)
-    }
+    
   }
 }
