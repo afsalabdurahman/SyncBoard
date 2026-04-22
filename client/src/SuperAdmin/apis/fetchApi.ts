@@ -164,7 +164,6 @@ export const { useGetWorkspaceCountQuery, useGetAlluserListQuery, useUpdateWorks
 export const fetchRevenue = async()=>{
  try {
    const revenueData = await apiService.get("/super/revenue/subscription");
-   console.log(revenueData,"Revenue")
    return revenueData.data
  } catch (error) {
 const err=catchErrorHandle(error,"failed to fetch") ;
@@ -176,7 +175,6 @@ throw Error(err)
 export const fetchUserGrowth = async()=>{
  try {
    const userData = await apiService.get("/super/user/growth");
-   console.log(userData,"Growth++")
    return userData.data
  } catch (error) {
 const err=catchErrorHandle(error,"failed to fetch") ;

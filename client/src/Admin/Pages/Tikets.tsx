@@ -26,7 +26,7 @@ const Tickets = () => {
   const [updateTicketStatus] = useUpdateTicketStatusMutation();
 
   // 🔥 AUTO-UPDATE ENABLED: Polling every 5 seconds
-  // This will automatically fetch the latest data from MongoDB whenever the client (or any other admin) updates anything.
+  // This will automatically fetch the latest data from MongoDB whenever the client (or  other admin) updates anything.
   // No page refresh needed.
   const { data: tickets = [] } = useGetTicketsQuery(workspaceId ?? skipToken, {
     pollingInterval: 5000,        // ← Change this value if you want faster/slower updates (in milliseconds)
@@ -49,7 +49,7 @@ const Tickets = () => {
     if (updatedTicket) {
       setSelectedTicket(updatedTicket);
     }
-  }, [tickets]);
+  }, [tickets,selectedTicket]);
 
   /* ---------------- SEND MESSAGE ---------------- */
 

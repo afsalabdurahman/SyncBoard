@@ -1,5 +1,5 @@
 export const getFileTypeFromUrl = (url: string): string => {
-  // Extract the part after the last '/' and before any query params
+  // Extract the part after the last '/' and before  query params
   const pathname = url.split('/').pop()?.split('?')[0] || '';
 
   // Get the extension (everything after the last dot)

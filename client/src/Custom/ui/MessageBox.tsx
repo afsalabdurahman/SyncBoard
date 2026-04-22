@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Send, X, MessageSquare, User } from "lucide-react";
 
 interface Message {
@@ -38,17 +38,17 @@ const MessageBox = ({ isOpen, onClose }: MessageBoxProps) => {
   const commentsEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
+const scrollToBottom = useCallback(() => {
     if (activeTab === "messages") {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     } else {
       commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  };
+  }, [activeTab]);          // ← only activeTab matters (refs are stable)
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, comments, activeTab]);
+  }, [messages, comments, activeTab, scrollToBottom]);
 
   useEffect(() => {
     if (isOpen) {

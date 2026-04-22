@@ -250,7 +250,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
                     <Trash size={16} onClick={() => deleteSubTask(s.title)} />
                   </span>
 
-                  {/* Description (if any) */}
+          
                   {s.description && (
                     <span className={`hidden sm:block text-[10px] max-w-[100px] truncate transition-all ${s.completed ? "text-gray-300 line-through" : "text-gray-400"
                       }`}>

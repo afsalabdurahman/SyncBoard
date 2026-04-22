@@ -17,12 +17,12 @@ const PLAN_COLORS = {
 
 // ─── sample data ────────────────────────────────────────
 
-const DEFAULT_DATA = [
-  { plan: "pro", amount: 20 },
-  { plan: "enterprise", amount: 50 },
-  { plan: "enterprise", amount: 50 },
-  { plan: "pro", amount: 20 },
-];
+// const DEFAULT_DATA = [
+//   { plan: "pro", amount: 20 },
+//   { plan: "enterprise", amount: 50 },
+//   { plan: "enterprise", amount: 50 },
+//   { plan: "pro", amount: 20 },
+// ];
 
 // ─── helper ─────────────────────────────────────────────
 import { useEffect, useState } from "react";

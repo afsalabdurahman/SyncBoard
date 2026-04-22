@@ -1,4 +1,3 @@
-import { Paperclip, Image, FileText, File, Trash2 } from "lucide-react";
 import { FileItem } from "../Admin/types/AttachmentTypes";
 
 export const FileIcon = ({ type }: { type: FileItem["type"] }) => {

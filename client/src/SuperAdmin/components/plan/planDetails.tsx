@@ -62,7 +62,7 @@ const emptyPlan: Omit<Plan, "id"> = {
 export const PlanDetails = () => {
   const { data, isLoading, error, refetch } = useFetchAllPlansQuery("");
   const [loading, setLoading] = useState(false)
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [ setPlans] = useState<Plan[]>([]);
   const [open, setOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
   const [form, setForm] = useState(emptyPlan);
@@ -73,7 +73,7 @@ const [deletePlanId,setDeletePlanId]= useState(null)
     setEditingPlan(null);
   };
 
-  console.log(plans, "plans from global")
+
 
   const handleOpenCreate = () => {
     resetForm();
@@ -131,9 +131,9 @@ try {
     resetForm();
   };
 
-  const handleDelete = (id: string) => {
-    setPlans((prev) => prev.filter((p) => p.id !== id));
-  };
+  // const handleDelete = (id: string) => {
+  //   setPlans((prev) => prev.filter((p) => p.id !== id));
+  // };
 
   const toggleActive = async (id: string) => {
     // setPlans((prev) =>
@@ -176,7 +176,7 @@ try {
       features: prev.features.filter((_, i) => i !== index),
     }));
   };
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
 
   if (isLoading) return <p>Loading plans...</p>;
 
@@ -395,7 +395,7 @@ try {
               <Switch
                 id="active"
                 checked={form.status}
-                onCheckedChange={(checked) =>
+                onCheckedChange={() =>
                   setForm({ ...form, status: "Active" })
                 }
               />

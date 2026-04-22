@@ -73,7 +73,7 @@ const dispatch: AppDispatch = useDispatch();
 const tasks = useTasks()
 useEffect(()=>{
 dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
-},[dispatch,rowPerPage,page])
+},[dispatch,rowPerPage,page,workspaceid])
 
 
 const handleChangePage = (event, newPage) => {

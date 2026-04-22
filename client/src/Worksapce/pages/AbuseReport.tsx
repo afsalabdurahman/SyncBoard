@@ -51,7 +51,7 @@ useEffect(() => {
   };
 
   fetchReports();
-}, [refresh, memeber?._id, memeber?.workspace]);
+}, [refresh, memeber?._id,workspace]);
 
 
   const [search, setSearch] = useState('');
@@ -121,7 +121,7 @@ const debouncedSearch = debounce(async (searchQuery) => {
     debouncedSearch(search);
     // Cleanup debounce on unmount
     return () => debouncedSearch.cancel();
-  }, [search]);
+  }, [search,debouncedSearch]);
 
 
   //End Debousing.............

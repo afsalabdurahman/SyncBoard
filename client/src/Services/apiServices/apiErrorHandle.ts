@@ -84,5 +84,6 @@ export const handleApiError = (error: AxiosError): void => {
   }
 
   // toast.error(message);
+  // eslint-disable-next-line no-console
   console.error(`[API Error] ${message}`, error);
 };

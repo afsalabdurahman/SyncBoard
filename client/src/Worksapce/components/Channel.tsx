@@ -144,7 +144,7 @@ const workspaceid=useWorkspaceid() as string
       socket.off("typing", handleTyping);
       socket.off("stop-typing", handleStopTyping);
     };
-  }, [user, userId]);
+  }, [user, userId,workspaceid]);
 
   const getFileType = (file: File): Attachment["type"] => {
     const type = file.type;

@@ -61,7 +61,7 @@ export const TaskApproval = () => {
 
   useEffect(() => {
     loadTasks();
-  }, [workspaceid]);
+  }, );
 
   /* ---------------- PAGINATION ---------------- */
 

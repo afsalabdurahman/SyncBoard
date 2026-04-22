@@ -9,7 +9,7 @@
 //     try {
 //       const body = {
 //   planKey: "pro",
-//   paymentMethodId: "pm_card_visa", // ✅ test method, works with any customer
+//   paymentMethodId: "pm_card_visa", // ✅ test method, works with  customer
 //   quantity: 1
 // };
 

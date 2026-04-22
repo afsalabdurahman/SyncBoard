@@ -119,7 +119,7 @@ export const TicketPage = () => {
 );
   useEffect(()=>{
 refetch()
-     },[])
+     },[refetch])
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<TicketStatus | "all">("all");

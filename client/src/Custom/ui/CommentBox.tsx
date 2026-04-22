@@ -66,7 +66,7 @@ fetchComments(taskId).then((data)=>{
  
   setComments([...data])
 })
-  },[])
+  })
 
 // socket.io on commet
 

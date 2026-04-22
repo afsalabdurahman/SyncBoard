@@ -25,7 +25,7 @@ export type SubscriptionStatus =
   __v?: number;
   _id?: string; // subscription id
   
-  // [key: string]: any;
+
 }
 export type PartialSubscriptionUpdate = Partial<
   Pick<
@@ -188,14 +188,13 @@ const subscriptionSlice = createSlice({
       state.errors = { fetch: null, update: null, cancel: null, resume: null };
     },
 
-    // update any single field; defensive - only if subscription exists
     updateField(
       state,
       action: PayloadAction<{ field: keyof Subscription; value: string|number }>
     ) {
       const { field, value } = action.payload;
       if (!state.subscription) return;
-      // @ts-ignore -- dynamic field set (RTK + Immer)
+   
       state.subscription[field] = value;
       state.loading.update = false;
       state.errors.update = null;

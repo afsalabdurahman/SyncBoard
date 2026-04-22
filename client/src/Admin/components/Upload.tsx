@@ -20,7 +20,7 @@ interface UploadedFile {
 interface UploadProps {
   isOpen: boolean;
   onClose: () => void;
-  removeUpload: () => any;
+  removeUpload: () => void;
   uploadfiles: string[];
   onSubmit: (files: UploadedFile[]) => void;
 }
@@ -85,7 +85,7 @@ export function Upload({ isOpen, removeUpload, onClose, onSubmit }: UploadProps)
 
   const removeFile = (id: string) => {
     setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
-    removeUpload((prev: any[]) => {
+    removeUpload((prev) => {
       if (!prev || prev.length === 0) return prev;
 
       return prev.filter((item) => item.id !== id);

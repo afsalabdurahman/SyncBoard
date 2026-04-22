@@ -134,7 +134,7 @@ export default function ProjectsPage() {
     }
   };
 
-  const handleEditProject = async (projectData: any) => {
+  const handleEditProject = async (projectData: ProjectFormData) => {
     try {
       setLoader("Updating project ...");
 

@@ -15,7 +15,7 @@ const navigate=useNavigate()
     e.preventDefault();
 // dispacth(fetchCountData(email,password))
 const response=await superLoginApi(email,password)
-console.log(response,"response")
+
 dispacth(setUserData(response.data.superAdmin))
 navigate("/platform/admin");
 

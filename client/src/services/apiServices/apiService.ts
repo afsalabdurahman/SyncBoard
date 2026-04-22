@@ -21,11 +21,14 @@ const axiosInstance = axios.create({
   },
 });
 
-
+type QueueItem = {
+  resolve: () => void;
+  reject: (error: unknown) => void;
+};
 let isRefreshing = false;
-let failedQueue: Array<{ resolve: (value?: any) => void; reject: (error?: any) => void }> = [];
+let failedQueue: QueueItem[] = [];
 
-const processQueue = (error: any = null) => {
+const processQueue = (error: unknown = null) => {
   failedQueue.forEach((prom) => (error ? prom.reject(error) : prom.resolve()));
   failedQueue = [];
 };
@@ -65,7 +68,7 @@ axiosInstance.interceptors.response.use(
     
         processQueue();
         return axiosInstance(originalRequest); // retry original request
-      } catch (refreshError: any) {
+      } catch (refreshError: unknown) {
        
         processQueue(refreshError);
         handleLogout();

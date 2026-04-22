@@ -75,7 +75,7 @@ export default function ChangePasswordPage() {
       clearTimeout(redirectTimer);
       clearInterval(interval);
     };
-  }, [isSuccess]);
+  },);
 
   /* ---------- REDIRECT ---------- */
 

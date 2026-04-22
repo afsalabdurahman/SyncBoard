@@ -3,7 +3,8 @@ import { useMemo, useState } from "react"
 
 import { AnalyticsStats } from "../components/analytics/analyticState"
 import { AnalyticsFilters } from "../components/analytics/analyticFilter"
-import { AnalyticsCharts, generateTimeSeries } from "../components/analytics/analyticChart"
+import { AnalyticsCharts,  } from "../components/analytics/analyticChart"
+import { generateTimeSeries } from "../../Utility/charts"
 
 export const  AnalyticsPage =()=> {
   const [sidebarCollapsed] = useState(false)

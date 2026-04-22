@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Check, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -69,7 +69,7 @@ const OtpVerification = () => {
       return;
     }
 
-    // Clear any existing interval
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -101,57 +101,57 @@ const OtpVerification = () => {
   }, [email, navigate]);
 
   // ====================== AUTO VERIFY WHEN OTP COMPLETE ======================
-  useEffect(() => {
-    if (otp.every((digit) => digit !== "")) {
-      verifyOtp();
+// ====================== VERIFY OTP ======================
+const verifyOtp = useCallback(async () => {
+  if (loading) return;
+
+  const otpValue = otp.join("");
+  setLoading(true);
+  setIsError(false);
+
+  try {
+    const data = await verifyOTP(email, otpValue);
+
+    setIsSuccess(true);
+    setMessage("Verification successful! Redirecting...");
+
+    // Clear timer on success
+    localStorage.removeItem(STORAGE_KEY);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-  }, [otp]);
 
-  // ====================== VERIFY OTP ======================
-  const verifyOtp = async () => {
-    if (loading) return;
+    if (forward) {
+      navigate("/change/password", { replace: true });
+    } else {
+      const userPayload = {
+        email: data.email,
+        name: data.name,
+        isAdmin: true,
+        id: data.id,
+      };
 
-    const otpValue = otp.join("");
-    setLoading(true);
-    setIsError(false);
-
-    try {
-      const data = await verifyOTP(email, otpValue);
-
-      setIsSuccess(true);
-      setMessage("Verification successful! Redirecting...");
-
-      // Clear timer on success
-      localStorage.removeItem(STORAGE_KEY);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-
-      if (forward) {
-        navigate("/change/password", { replace: true });
-      } else {
-        const userPayload = {
-          email: data.email,
-          name: data.name,
-          isAdmin: true,
-          id: data.id,
-        };
-
-        dispatch(setUserData(userPayload));
-        setTimeout(() => {
-          navigate("/create/workspace", { replace: true });
-        }, 2500);
-      }
-    } catch (error) {
-      setIsError(true);
-      setMessage(error?.response?.data?.message || "Invalid or expired OTP. Please try again.");
-
-      setOtp(Array(OTP_LENGTH).fill(""));
-      inputRefs.current[0]?.focus();
-    } finally {
-      setLoading(false);
+      dispatch(setUserData(userPayload));
+      setTimeout(() => {
+        navigate("/create/workspace", { replace: true });
+      }, 2500);
     }
-  };
+  } catch (error) {
+    setIsError(true);
+    setMessage(error?.response?.data?.message || "Invalid or expired OTP. Please try again.");
+
+    setOtp(Array(OTP_LENGTH).fill(""));
+    inputRefs.current[0]?.focus();
+  } finally {
+    setLoading(false);
+  }
+}, [loading, otp, email, forward, STORAGE_KEY, dispatch, navigate]);   // ← only these actually change
+
+useEffect(() => {
+  if (otp.every((digit) => digit !== "")) {
+    verifyOtp();
+  }
+}, [otp, verifyOtp]);
 
   // ====================== RESEND OTP ======================
   const resendCode = async () => {

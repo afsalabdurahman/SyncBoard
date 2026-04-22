@@ -20,11 +20,6 @@ export const updateUser = async (userId: string, updatedProfile: User) => {
   } catch (error) {
     const errorMessage = catchErrorHandle(error, "Updation failed");
     
-    
-    const customError = new Error(errorMessage);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (customError as any).response = error?.response;   
-    
-    throw customError;
+    throw errorMessage;
   }
 };

@@ -178,7 +178,7 @@
 //   const formsubmit = async () => {
 //     const body = {
 //       planKey: "pro",
-//       paymentMethodId: "pm_card_visa", // ✅ test method, works with any customer
+//       paymentMethodId: "pm_card_visa", // ✅ test method, works with  customer
 //       quantity: 2,
 //     };
 //     const res = await apiService.post("checkout/pay", body, {

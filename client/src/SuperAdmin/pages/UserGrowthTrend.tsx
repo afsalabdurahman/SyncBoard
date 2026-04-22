@@ -13,15 +13,15 @@ import { useEffect, useState } from "react";
 
 // ─── sample data – replace with your API response ────────────────────────────
 
-const DEFAULT_DATA = [
-  { month: "Oct", totalUsers: 120, newUsers: 32, churned: 8  },
-  { month: "Nov", totalUsers: 145, newUsers: 41, churned: 16 },
-  { month: "Dec", totalUsers: 162, newUsers: 29, churned: 12 },
-  { month: "Jan", totalUsers: 198, newUsers: 54, churned: 18 },
-  { month: "Feb", totalUsers: 231, newUsers: 48, churned: 15 },
-  { month: "Mar", totalUsers: 274, newUsers: 62, churned: 19 },
-  { month: "Apr", totalUsers: 310, newUsers: 55, churned: 19 },
-];
+// const DEFAULT_DATA = [
+//   { month: "Oct", totalUsers: 120, newUsers: 32, churned: 8  },
+//   { month: "Nov", totalUsers: 145, newUsers: 41, churned: 16 },
+//   { month: "Dec", totalUsers: 162, newUsers: 29, churned: 12 },
+//   { month: "Jan", totalUsers: 198, newUsers: 54, churned: 18 },
+//   { month: "Feb", totalUsers: 231, newUsers: 48, churned: 15 },
+//   { month: "Mar", totalUsers: 274, newUsers: 62, churned: 19 },
+//   { month: "Apr", totalUsers: 310, newUsers: 55, churned: 19 },
+// ];
 
 // ─── custom tooltip ───────────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function UserGrowthTrend() {
 const [data,setData]=useState([])
-const [error,setError]=useState(false)
+const [setError]=useState(false)
 
 useEffect(()=>{
   async function fetchChart(){
@@ -67,14 +67,14 @@ setData(response)
   }
 ;
 fetchChart()
-},[])
-console.log(data,"dataaaGROW")
+},[setError])
+
 const peak = data?.length
   ? data.reduce((a, b) =>
       (a?.totalUsers ?? 0) > (b?.totalUsers ?? 0) ? a : b
     )
   : null;
-console.log(peak,"PEak")
+
   return (
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 w-full">
 

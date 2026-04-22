@@ -289,7 +289,7 @@ export function ProjectModal({
                 <AttachmentButton
                   attachedUrl={project.attachedUrl}
                   taskId={formData.id}
-                  passURL={(url) => {console.log(url,"URL")}}
+                  
                   isProject={true}
                 />
               </div>

@@ -1,20 +1,19 @@
-import { Middleware, UnknownAction } from "@reduxjs/toolkit";
+import { Middleware, isRejectedWithValue } from "@reduxjs/toolkit";
+import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
 export const errorMiddleware: Middleware =
-  () => (next) => (action: UnknownAction) => {
-
+  () => (next) => (action) => {
     const result = next(action);
 
-    if (action.type.endsWith("/rejected")) {
-
-      const errorAction = action as {
-        payload?: string;
-        error?: { message?: string };
-      };
-
-  
+    // Safe way using RTK helper
+    if (isRejectedWithValue(action)) {
+      const message =
+        typeof action.payload === "string"
+          ? action.payload
+          : action.error?.message || "Something went wrong";
 
       // toast.error(message);
+      catchErrorHandle(message,"something went to wrong")
     }
 
     return result;

@@ -26,6 +26,7 @@ import {SubtaskButton} from "../components/Subtask"
 import {SubtaskPage} from "../pages/SubtaskPage";
 import { toast } from "react-toastify";
 import {KanbanApiTask, KanbanTask} from"../types/workspaceTypes"
+import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
 
 
@@ -157,8 +158,9 @@ const handleNotification = (data: { taskId: string }) => {
 
     try {
       await apiService.patch(`task/status/${draggedTask.id}`, { status: apiStatus });
-    } catch  {
-console.log("Failed to drag")
+    } catch (error)  {
+const err=catchErrorHandle(error,"Failed to drag");
+throw new Error(err)
     }
 
     setDraggedTask(null);
