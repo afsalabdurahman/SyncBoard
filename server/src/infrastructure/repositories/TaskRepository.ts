@@ -5,6 +5,7 @@ import {  NotFoundError } from "../../utils/errors";
 import { TaskModel } from "../database/models/TaskModel";
 import { commentType } from "../../types/taskTypes";
 import { ProjectModel } from "../database/models/ProjectModel";
+import { donetChartData, projectSpecifyTaskCount } from "../../application/dto/TaskDTOs";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -218,4 +219,154 @@ export class TaskRepository implements ITaskRepository {
       ]
     );
   }
+
+
+
+
+
+async findTaskCountByProjectId(
+  projectId: string
+): Promise<projectSpecifyTaskCount> {
+  const today = new Date().toISOString().split("T")[0];
+
+  const result = await TaskModel.aggregate([
+    {
+      $match: {
+        projectId: projectId, // string match in tasks collection
+      },
+    },
+
+    {
+      $addFields: {
+        projectObjectId: { $toObjectId: "$projectId" },
+      },
+    },
+
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectObjectId",
+        foreignField: "_id",
+        as: "projectData",
+      },
+    },
+
+    {
+      $unwind: {
+        path: "$projectData",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $group: {
+        _id: null,
+
+        total_task: { $sum: 1 },
+
+        completed_task: {
+          $sum: {
+            $cond: [{ $eq: ["$status", "Completed"] }, 1, 0],
+          },
+        },
+
+        overdue_task: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $lt: ["$deadline", today] },
+                  { $ne: ["$status", "Completed"] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+        },
+
+        total_members: {
+          $first: {
+            $size: {
+              $ifNull: ["$projectData.assignedUsers", []],
+            },
+          },
+        },
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        total_task: 1,
+        completed_task: 1,
+        overdue_task: 1,
+        total_members: 1,
+      },
+    },
+  ]);
+
+  console.log(result);
+
+  return (
+    result[0] || {
+      total_task: 0,
+      completed_task: 0,
+      overdue_task: 0,
+      total_members: 0,
+    }
+  );
+}
+async donetChartData(projectId: string): Promise<donetChartData> {
+
+  const result = await TaskModel.aggregate([
+    {
+      $match: {
+        projectId: projectId.toString(),
+      },
+    },
+
+    {
+      $group: {
+        _id: null,
+
+        todo: {
+          $sum: {
+            $cond: [{ $eq: ["$status", "To Do"] }, 1, 0],
+          },
+        },
+
+        inprogress: {
+          $sum: {
+            $cond: [{ $eq: ["$status", "In Progress"] }, 1, 0],
+          },
+        },
+
+        completed: {
+          $sum: {
+            $cond: [{ $eq: ["$status", "Completed"] }, 1, 0],
+          },
+        },
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        todo: 1,
+        inprogress: 1,
+        completed: 1,
+      },
+    },
+  ]);
+
+  return (
+    result[0] || {
+      todo: 0,
+      inprogress: 0,
+      completed: 0,
+    }
+  );
+}
+
 }

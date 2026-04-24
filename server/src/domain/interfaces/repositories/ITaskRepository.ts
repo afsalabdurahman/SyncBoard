@@ -1,6 +1,7 @@
 import { Task } from "../../entities/Task";
 import { commentType } from "../../../types/taskTypes";
 import { Types } from "mongoose";
+import { donetChartData, projectSpecifyTaskCount } from "../../../application/dto/TaskDTOs";
 export interface ITaskRepository {
   create(dto: Task): Promise<Task | null>;
   getAlltask(): Promise<Task[] | null>;
@@ -21,5 +22,7 @@ export interface ITaskRepository {
     getTaskbyId(taskId:string):Promise<Task|null>;
     deleteAttachment(taskId:string,url:string):Promise<Task|null>
   deleteSubTask(taskId:Types.ObjectId,subtask:string):Promise<void>;
-  updateSubTask (taskId:Types.ObjectId,title:string):Promise<void>
+  updateSubTask (taskId:Types.ObjectId,title:string):Promise<void>;
+  findTaskCountByProjectId(projectId:string):Promise<projectSpecifyTaskCount>;
+  donetChartData(projectId:string):Promise<donetChartData>
 }

@@ -27,4 +27,7 @@ router.get('/comments/:id', taskController.getCommentsById.bind(taskController))
 router.patch('/attachment/delete/:taskid', taskController.deleteAttachment.bind(taskController))
 router.patch('/delete/subtask/:taskid', taskController.deleteSubTask.bind(taskController))
 router.patch("/update/subtask/status/:taskid", taskController.updateSubtask.bind(taskController))
+router.get("/count/dashboard/:projectid",taskController.dashBoardSpecifyTask.bind(taskController))
+router.get("/count/dashboard/donet/:projectid",taskController.donetChartData.bind(taskController))
+
 export default router;

@@ -54,3 +54,15 @@ export interface commentsDTO {
   timestamp:Date | string;
   attachments?: string[] 
 }
+export interface projectSpecifyTaskCount{
+  total_task:number;
+  total_members:number;
+  overdue_task:number;
+  completed_task:number;
+  projectProgress?:number;
+}
+export interface donetChartData{
+  todo:number;
+  inprogress:number;
+  completed:number;
+}

@@ -91,4 +91,10 @@ export class ProjectController {
     await this._projectUsecase.deleteAttachment(projectId, url)
     res.status(HttpStatusCode.OK).json({ message: ResponseMessages.DELETED })
   }
+  async findAllProjectsName(req:Request,res:Response):Promise<void>{
+    console.log("calling....")
+    const workspaceId = req.params.workspaceId as string;
+const projectNamesAndId =await this._projectUsecase.findAllAvilableProjectName(workspaceId);
+res.status(HttpStatusCode.OK).json({projectNamesAndId})
+  }
 }

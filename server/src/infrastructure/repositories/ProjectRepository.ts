@@ -4,7 +4,7 @@ import { ProjectModel, ProjectDocument } from "../database/models/ProjectModel"
 import { NotFoundError } from "../../utils/errors"
 import { BaseRepository } from "./BaseRepository"
 import mongoose, { Types } from "mongoose"
-import { ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
+import { ProjectNamesAndId, ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
 import { stringToMongoObj } from "../../utils/convertMongoObject"
 
 
@@ -111,5 +111,15 @@ async pushToAttachments(urls: string[], projectId: string): Promise<void> {
       runValidators: true  
     }
   );
+}
+async AllprojectNames(
+  workspaceId: Types.ObjectId
+): Promise<ProjectNamesAndId[] | null> {
+  const projectNames = await ProjectModel.find(
+    { workspaceId },
+    { name: 1, _id: 1 }
+  ).lean<ProjectNamesAndId[]>();
+
+  return projectNames.length ? projectNames : null;
 }
 }

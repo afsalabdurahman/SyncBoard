@@ -16,4 +16,5 @@ router.patch('/update/:id',adminAuth,projectController.updateProject.bind(projec
 router.delete('/delete/:id',adminAuth,projectController.deleteProject.bind(projectController))
 router.get('/myprojects/:workspaceId',adminAuth,projectController.pagination.bind(projectController))
 router.patch('/delete/attachment/:projectId',adminAuth,projectController.deleteAttahedURL.bind(projectController))
+router.get('/name/all/:workspaceId',adminAuth,projectController.findAllProjectsName.bind(projectController))
 export default router;

@@ -42,3 +42,7 @@ export interface ProjectAttchementRemoveDTO{
   projectId:string;
   encodedUrl:string;
 }
+export interface ProjectNamesAndId {
+  name: string;
+  _id: string;
+}

@@ -1,6 +1,6 @@
 import { Task } from "../../domain/entities/Task";
 import { commentType } from "../../types/taskTypes";
-import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, donetChartData, projectSpecifyTaskCount, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 export interface ITaskUseCase {
     execute(taskEntiry:TaskRequestDTO):Promise<TaskResponseDTO>
     getAllTasks():Promise<Task[]>
@@ -17,5 +17,8 @@ export interface ITaskUseCase {
       getTaskComments(taskId:string):Promise<commentsDTO[]|null>
       deleteAttachment(taskId:string,url:string):Promise<string>;
       deleteSubTask(taskId:string,subTask:string):Promise<void>;
-      updateSubtask(taskId:string,title:string):Promise<void>
-}
+      updateSubtask(taskId:string,title:string):Promise<void>;
+  findTaskCountByProjectId(projectId:string):Promise<projectSpecifyTaskCount>
+  findDonetChartData(projectId:string):Promise<donetChartData>
+
+    }

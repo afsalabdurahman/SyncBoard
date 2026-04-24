@@ -3,7 +3,7 @@ import { inject, injectable } from "tsyringe";
 import { IProjectRepository } from "../../../domain/interfaces/repositories/IProjectRepository";
 import { ConflictError, NotFoundError, ValidationError } from "../../../utils/errors";
 import { io } from "../../../server";
-import { ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
+import { ProjectNamesAndId, ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
 import { ProjectMapper } from "../../mappers/ProjectMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { ActivityMapper } from "../../mappers/ActivityMapper";
@@ -87,5 +87,10 @@ await this._projectRepository.pushToAttachments(urls,projectId)
   }
  async deleteAttachment(projectId: string, url: string): Promise<void> {
     await this._projectRepository.deleteAttachedURl(stringToMongoObj(projectId),url)
+  }
+  async findAllAvilableProjectName(workspaceId: string): Promise<ProjectNamesAndId[]> {
+    const projectName = await this._projectRepository.AllprojectNames(stringToMongoObj(workspaceId));
+    if(!projectName) throw new NotFoundError("No Projects found")
+    return projectName 
   }
 }
