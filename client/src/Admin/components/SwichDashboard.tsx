@@ -68,7 +68,7 @@ useEffect(() => {
 
 
 
-console.log(taskDistribution,"DashBoardd")
+console.log(approvalData,"++++++++","DashBoardd")
   return (
     <div >
       
@@ -196,7 +196,7 @@ console.log(taskDistribution,"DashBoardd")
  <STaskBoard taskList={taskList}/>
  </div>
   <div className="w-full mt-5 rounded-3xl bg-gray-100 p-6">
-<TaskApprovalSection/>
+<TaskApprovalSection approvalData={approvalData}/>
   </div>
  
     {/* end Prohect progress */}

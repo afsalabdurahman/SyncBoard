@@ -163,7 +163,14 @@ export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
         );
     }
   }
-
+function getInitials(name) {
+  return name
+    .trim()
+    .split(" ")
+    .map(word => word.slice(0, 1).toUpperCase())
+    .join("")
+    .slice(0, 2);
+}
   return (
     <Sidebar>
       <SidebarHeader>
@@ -188,6 +195,9 @@ export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
 
                 {getSubscriptionKey(planKey)}
               </div>
+              <span class="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 shadow-sm">
+  {getInitials("AFSAL KP")}
+</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

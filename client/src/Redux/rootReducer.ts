@@ -7,6 +7,7 @@ import usersliceReducer from "./feature/user/userSlice";
 import logsliceReducer from "./feature/logs/logSlice"
 import projectReducer from './feature/project/projectSlice';
 import alluserReducer from "./feature/users/AlluserSlice";
+import switchReducer from "./feature/swichProjectSlice"
 import subscriptionReducer from "./feature/subscription/subscriptionSlice";
 import forwardReducer from "./feature/ForwardSlice"
 import countReducer from "./feature/count/countSlice"
@@ -15,6 +16,7 @@ import {workspaceDataApi} from "../SuperAdmin/apis/fetchApi"
 import {adminDataHandleApi} from "../Admin/apis/rtqApi"
 import authReducer from "./feature/AuthSlice"
 const rootReducer = combineReducers({
+  switch:switchReducer,
   register: registerReducer,
   status: StatusSliceReducer,
   workspace: workspaceReducer,

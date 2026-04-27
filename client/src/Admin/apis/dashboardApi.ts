@@ -18,6 +18,7 @@ export const projectSpecifyDashboard = async(projectId:string)=>{
              apiService.get(`/project/mebers/names/${projectId}`),
               apiService.get(`/project/burndown/chart/${projectId}`),
               apiService.get(`/task/project/list/${projectId}`),
+              apiService.get(`/task/project/approval/${projectId}`),
 
         ])
        return result

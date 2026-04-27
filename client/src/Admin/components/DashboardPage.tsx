@@ -35,9 +35,21 @@ import { useEffect, useState } from "react";
 import SwichDashboard from "./SwichDashboard";
 import { fetchProjectNames } from "../apis/dashboardApi";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
+import {setSwitchProject} from "../../Redux/feature/swichProjectSlice";
+import { useDispatch } from "react-redux";
 export function DashboardPage() {
+  const dispatch = useDispatch();
+  // dispatch(setSwitchProject({
+    
+  // })) 
+
+
   const workspaceId = useWorkspaceid();
+  const isSwitch= useSelector((state)=>state.switch.isSwitch);
+  const projectID=useSelector((state)=>state.switch.projectId);
+  console.log(isSwitch,"isSwich",projectID)
   const initialState = useSelector((state: RootState) => {
+    console.log(state,"stateee")
     const countProject = state.projects.list.length;
     const countProjectCompleted = state.projects.list.filter((project) => project.status == "Completed");
     const countProjectInProgress = state.projects.list.filter((project) => project.status == "In Progress");
@@ -96,7 +108,7 @@ useEffect(() => {
   }
 
   fetchAllprojects(workspaceId);
-}, []);
+}, [workspaceId]);
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -111,12 +123,12 @@ useEffect(() => {
         {/* Project Selector */}
         <div className="relative">
          <select
-    value={selectedProject}
-    onChange={(e) => setSelectedProject(e.target.value)}
+    value={projectID}
+    onChange={(e) => dispatch(setSwitchProject({projectId:e.target.value,projectName:e.target.name,isSwitch:true}))}
     className="appearance-none bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
   >
     {projects.map((project) => (
-      <option key={project._id} value={project._id}>
+      <option key={project._id} value={project._id}  >
         {project.name}
       </option>
     ))}
@@ -141,7 +153,7 @@ useEffect(() => {
 
 
       </div>
-      {selectedProject? <SwichDashboard selectedProject={selectedProject} /> :
+      {projectID? <SwichDashboard selectedProject={projectID} /> :
         <aside>
           {/* divisio start from here........................................ */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
