@@ -13,7 +13,7 @@ export interface ITaskRepository {
   updateApprovalStatus(taskId: string, status: string, msg?: string | null): Promise<void>
   findTaskByProjectId(projectId: string,taskfilter:string|null): Promise<Task[] | null>;
   countTask(): Promise<number>
-  getPagenationaTask(workspaceId:Types.ObjectId,page: number, limit: number, skip: number): Promise<{
+  getPagenationaTask(workspaceId:Types.ObjectId,page: number, limit: number, skip: number,projectId:string|null): Promise<{
     items: Task[];
     totalItems: number
  }>;
@@ -24,5 +24,7 @@ export interface ITaskRepository {
   deleteSubTask(taskId:Types.ObjectId,subtask:string):Promise<void>;
   updateSubTask (taskId:Types.ObjectId,title:string):Promise<void>;
   findTaskCountByProjectId(projectId:string):Promise<projectSpecifyTaskCount>;
-  donetChartData(projectId:string):Promise<donetChartData>
+  donetChartData(projectId:string):Promise<donetChartData>;
+  burnoutChartTask(projectId:string):Promise<Task[]>;
+  findTaskApprovalstatus(projectId:string):Promise<Task[]>
 }

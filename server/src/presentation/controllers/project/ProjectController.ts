@@ -97,4 +97,14 @@ export class ProjectController {
 const projectNamesAndId =await this._projectUsecase.findAllAvilableProjectName(workspaceId);
 res.status(HttpStatusCode.OK).json({projectNamesAndId})
   }
+  async findProjectMemebrs(req:Request,res:Response):Promise<void>{
+    const projectId=req.params.projectId as string;
+   const memebers= await this._projectUsecase.projectMembers(projectId);
+   res.status(HttpStatusCode.OK).json(memebers)
+  }
+  async burnDownChart(req:Request,res:Response):Promise<void>{
+    const projectId=req.params.projectId as string;
+   const chartData= await this._projectUsecase.burnoutChartData(projectId);
+   res.status(HttpStatusCode.OK).json(chartData)
+  }
 }

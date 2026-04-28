@@ -21,10 +21,10 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
       return users
 
    }
-   async paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<{ items: UserDoument[] | null, totalItems: number }> {
+   async paginationWorkspace(slug: string, page: number, limit: number, skip: number,projectId:string|null): Promise<{ items: UserDoument[] | null, totalItems: number }> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-      const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip)
+      const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip,projectId)
       return { items: items, totalItems }
    }
   async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{

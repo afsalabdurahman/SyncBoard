@@ -3,7 +3,7 @@ import { inject, injectable } from "tsyringe";
 import { IProjectRepository } from "../../../domain/interfaces/repositories/IProjectRepository";
 import { ConflictError, NotFoundError, ValidationError } from "../../../utils/errors";
 import { io } from "../../../server";
-import { ProjectNamesAndId, ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
+import {  BurnDownData, ProjectMembersNames, ProjectNamesAndId, ProjectRepositoryDTO, ProjectRequstDTO, ProjectResponseDTO } from "../../dto/ProjectDTOs";
 import { ProjectMapper } from "../../mappers/ProjectMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { ActivityMapper } from "../../mappers/ActivityMapper";
@@ -11,12 +11,14 @@ import { IActivityRepository } from "../../../domain/interfaces/repositories/IAc
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { ActivityLogMessage } from "../../../types/activityTypes";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
+import { ITaskRepository } from "../../../domain/interfaces/repositories/ITaskRepository";
 @injectable()
 export class ProjectUsecase implements IProjectUsecase {
   constructor(
     @inject("ProjectRepository") private _projectRepository: IProjectRepository,
     @inject("ActivityRepository") private _activityRepository: IActivityRepository,
-    @inject("UserRepository") private _userRepository: IUserRepository
+    @inject("UserRepository") private _userRepository: IUserRepository,
+     @inject("TaskRepository") private _taskRepository: ITaskRepository
   ) { }
 
   async excute(dto: ProjectRequstDTO, workspaceId: string): Promise<ProjectResponseDTO> {
@@ -92,5 +94,58 @@ await this._projectRepository.pushToAttachments(urls,projectId)
     const projectName = await this._projectRepository.AllprojectNames(stringToMongoObj(workspaceId));
     if(!projectName) throw new NotFoundError("No Projects found")
     return projectName 
+  }
+  async projectMembers(projectId: string): Promise<ProjectMembersNames[]> {
+    const data=await this._projectRepository.projectMemebrs(stringToMongoObj(projectId))
+   const countMap = new Map<string, number>();
+   if(!data) throw new NotFoundError("Members not found")
+   for (const name of data) {
+    countMap.set(name, (countMap.get(name) || 0) + 1);
+  }
+  return Array.from(countMap.keys()).map((name) => ({
+    name,
+    role: countMap.get(name)! > 1 ? "ADMIN" : "MEMBER",
+  }));
+  }
+
+  async burnoutChartData(projectId: string): Promise<BurnDownData[]> {
+    const project = await this._projectRepository.burndownChartProject(stringToMongoObj(projectId))
+    const tasks = await this._taskRepository.burnoutChartTask(projectId);
+    console.log(project,tasks);
+      const startDate = new Date(project?.createdAt || new Date());
+  const endDate = new Date(project?.deadline ? project.deadline.toString() : new Date());
+  const totalTasks = tasks.length;
+   const oneDay = 1000 * 60 * 60 * 24;
+     const totalDays =
+    Math.ceil((endDate.getTime() - startDate.getTime()) / oneDay) + 1;
+ const data: { day: string; value: number }[] = [];
+const stepDays = 15;
+  for (let i = 0; i < totalDays; i+=stepDays) {
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + i);
+
+    // const formattedDate = currentDate.toISOString().split("T")[0];
+
+    // completed tasks till this day
+    const completed  = tasks.filter((task) => {
+      return (
+        task.status === "Completed" &&
+        task.updatedAt && new Date(task.updatedAt) <= currentDate
+      );
+    }).length;
+
+    const remaining = totalTasks - completed ;
+
+    const day = currentDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })
+
+   data.push({
+      day,
+      value: remaining,
+    });
+  }
+  return data
   }
 }

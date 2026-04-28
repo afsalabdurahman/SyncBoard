@@ -50,6 +50,7 @@ export class TaskController {
   ): Promise<void> {
     const alltask = req.query.count as string
     const userName = req.params.username as string
+ 
     if (!req.params.username) throw new NotFoundError("User " + ResponseMessages.NO_CONTENT);
     if (alltask == "all") {
       await this._taskUsecase.myTask(userName, alltask);
@@ -109,7 +110,9 @@ export class TaskController {
     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
-    const { items, totalItems } = await this._taskUsecase.paginationTask(workspaceId, page, limit, skip)
+     const projectId = (req.query.projectId as string | null) ?? null;
+    console.log(projectId,"Id PROJECT PAASSS")
+    const { items, totalItems } = await this._taskUsecase.paginationTask(workspaceId, page, limit, skip,projectId)
     res.status(200).json({
       items,
       currentPage: page,
@@ -159,6 +162,18 @@ export class TaskController {
   async donetChartData(req: Request, res: Response): Promise<void> {
     const projectId = req.params.projectid as string;
     const chartData = await this._taskUsecase.findDonetChartData(projectId);
-    res.status(HttpStatusCode.OK).json({ "To Do": chartData.todo, "In Progress": chartData.inprogress, "Completed": chartData.completed })
+    res.status(HttpStatusCode.OK).json({ todo: chartData.todo, inprogress: chartData.inprogress, completed: chartData.completed })
   }
+
+async taskChart(req:Request,res:Response):Promise<void>{
+     const projectId = req.params.projectid as string;
+     const list_chart =await this._taskUsecase.findTasksByProjectId(projectId);
+     res.status(HttpStatusCode.OK).json(list_chart)
+}
+async ApprovalStatus(req:Request,res:Response):Promise<void>{
+   const projectId = req.params.projectid as string;
+   const tasks=await this._taskUsecase.findTaskApprovalStatus(projectId);
+   res.status(HttpStatusCode.OK).json(tasks)
+}
+
 }

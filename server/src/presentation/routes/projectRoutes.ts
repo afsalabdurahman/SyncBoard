@@ -17,4 +17,8 @@ router.delete('/delete/:id',adminAuth,projectController.deleteProject.bind(proje
 router.get('/myprojects/:workspaceId',adminAuth,projectController.pagination.bind(projectController))
 router.patch('/delete/attachment/:projectId',adminAuth,projectController.deleteAttahedURL.bind(projectController))
 router.get('/name/all/:workspaceId',adminAuth,projectController.findAllProjectsName.bind(projectController))
+router.get("/mebers/names/:projectId",projectController.findProjectMemebrs.bind(projectController))
+
+router.get("/burndown/chart/:projectId",projectController.burnDownChart.bind(projectController))
+
 export default router;

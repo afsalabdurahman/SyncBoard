@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { ProjectNamesAndId, ProjectRepositoryDTO } from "../../../application/dto/ProjectDTOs";
+import { ProjectMembersNames, ProjectNamesAndId, ProjectRepositoryDTO } from "../../../application/dto/ProjectDTOs";
 import { Project } from "../../entities/Project";
 import { IBaseRepository } from "./IBaseReposiory";
 export interface IProjectRepository extends IBaseRepository <Project> {
@@ -14,4 +14,6 @@ export interface IProjectRepository extends IBaseRepository <Project> {
 deleteAttachedURl(projectId:Types.ObjectId,url:string):Promise<void>;
 pushToAttachments(urls:string[],projectId:string):Promise<void>;
 AllprojectNames(workspaceId:Types.ObjectId):Promise<ProjectNamesAndId[]|null>
+projectMemebrs(projectId:Types.ObjectId):Promise<string[]|null>;
+burndownChartProject(projectId:Types.ObjectId):Promise<Project>
 }

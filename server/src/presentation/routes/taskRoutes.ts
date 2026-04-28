@@ -29,5 +29,6 @@ router.patch('/delete/subtask/:taskid', taskController.deleteSubTask.bind(taskCo
 router.patch("/update/subtask/status/:taskid", taskController.updateSubtask.bind(taskController))
 router.get("/count/dashboard/:projectid",taskController.dashBoardSpecifyTask.bind(taskController))
 router.get("/count/dashboard/donet/:projectid",taskController.donetChartData.bind(taskController))
-
+router.get("/project/list/:projectid",taskController.taskChart.bind(taskController))
+router.get ("/project/approval/:projectid",taskController.ApprovalStatus.bind(taskController))
 export default router;

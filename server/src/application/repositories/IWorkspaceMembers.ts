@@ -5,6 +5,6 @@ import { UserResponseDTO } from "../dto/SuperDTO";
 export interface IWokspaceMember {
      getMembers(slug:string,query:string):Promise<UserResponseDTO[]>
     getWorkspceDate(slug: string): Promise<User[] | null>
-    paginationWorkspace(slug: string, page: number, limit: number, skip: number): Promise<{ items: UserDoument[] | null, totalItems: number }>
+    paginationWorkspace(slug: string, page: number, limit: number, skip: number,projectId:string|null): Promise<{ items: UserDoument[] | null, totalItems: number }>
 
 }

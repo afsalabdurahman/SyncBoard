@@ -2,6 +2,8 @@ import { Types } from "mongoose";
 
 import { TaskPriority, TaskStatus } from "../mappers/TaskMapper";
 import { Task as TaskEntity } from "../../domain/entities/Task";
+import { priorityType } from "../../types/taskTypes";
+import { Schema } from "zod";
 export interface TaskRequestDTO {
   name?: string;
   description?: string;
@@ -65,4 +67,37 @@ export interface donetChartData{
   todo:number;
   inprogress:number;
   completed:number;
+}
+export interface TaskResponseChartDTO{
+ id: number;
+  title: string;
+  status: "todo" | "inprogress" | "completed";
+  priority: "Low" | "Medium" | "High";
+  date: string;
+  assignee: string;
+  color: string;
+  open: boolean;
+  subtasks: SubTask[];
+}
+interface SubTask {
+  id: number;
+  title: string;
+  done: boolean;
+}
+export interface FormattedSubTask {
+  id: number;
+  title: string;
+  done: boolean;
+}
+
+export interface FormattedTask {
+  id: string | Types.ObjectId | undefined;
+  title: string | undefined;
+  status: string;
+  priority: priorityType | undefined;
+  date: string;
+  assignee: string;
+  color: string;
+  open: boolean;
+  subtasks: FormattedSubTask[];
 }

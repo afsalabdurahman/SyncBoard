@@ -7,6 +7,8 @@ import { Types, ObjectId, Date } from "mongoose";
 import { ValidationError } from "../../utils/errors";
 import mongoose from "mongoose";
 import { UserResponseDTO } from "../../application/dto/SuperDTO";
+import { ProjectModel } from "../database/models/ProjectModel";
+import { stringToMongoObj } from "../../utils/convertMongoObject";
 @injectable()
 export class UserMongooseRepository extends BaseRepository<User,UserDoument> implements IUserRepository {
   constructor() {
@@ -144,20 +146,39 @@ export class UserMongooseRepository extends BaseRepository<User,UserDoument> imp
     const countUser = await this.model.countDocuments()
     return countUser;
   }
-  async paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number): Promise<{ items: UserDoument[] | null, totalItems: number }> {
-    const totalItems = await UserModel.countDocuments() - 1;
-    const items = await UserModel.find({
-      "workspace.workspaceId": workspaceId,
-      isSuperAdmin: { $ne: true },
-    })
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-    return { items, totalItems }
+async paginationUser(
+  workspaceId: string | ObjectId,
+  page: number,
+  limit: number,
+  skip: number,
+  projectId: string | null
+): Promise<{ items: UserDoument[] | null; totalItems: number }> {
 
+  let filter: any = {
+    "workspace.workspaceId": workspaceId,
+    isSuperAdmin: { $ne: true },
+  };
 
+  // If project selected
+  if (projectId) {
 
+    const converTOmongoObject = stringToMongoObj( projectId)
+    const project = await ProjectModel.findById(converTOmongoObject);
+console.log(project,"roject")
+    const assignedUsers = project?.assignedUsers || [];
+
+    filter.name = { $in: assignedUsers };
   }
+
+  const totalItems = await UserModel.countDocuments(filter);
+
+  const items = await UserModel.find(filter)
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  return { items, totalItems };
+}
   async changeOnlineStatus(userId: Types.ObjectId): Promise<boolean> {
 
     const isUpdated = await UserModel.findByIdAndUpdate(userId, { isOnline: false }, { new: true })

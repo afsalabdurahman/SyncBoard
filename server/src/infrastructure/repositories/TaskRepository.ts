@@ -125,7 +125,7 @@ export class TaskRepository implements ITaskRepository {
     const countTask = TaskModel.countDocuments();
     return countTask
   }
-  async getPagenationaTask(workspaceId: Types.ObjectId, page: number, limit: number, skip: number): Promise<{
+  async getPagenationaTask(workspaceId: Types.ObjectId, page: number, limit: number, skip: number,projectId:string|null): Promise<{
     items: Task[];
     totalItems: number;
   }> {
@@ -136,8 +136,12 @@ export class TaskRepository implements ITaskRepository {
     await TaskModel.find({ projectId: projects?._id });
 
     // END 
-    const totalItems = await TaskModel.countDocuments();
-    const items = await TaskModel.find()
+const totalItems = await TaskModel.countDocuments(
+  projectId ? { projectId } : {}
+);
+   const items = await TaskModel.find(
+  projectId ? { projectId } : {}
+)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
@@ -368,5 +372,12 @@ async donetChartData(projectId: string): Promise<donetChartData> {
     }
   );
 }
-
+async burnoutChartTask(projectId: string): Promise<Task[]> {
+  const tasks = await TaskModel.find({ projectId }).lean()
+  return tasks
+}
+async findTaskApprovalstatus(projectId: string): Promise<Task[]> {
+  const tasks = await TaskModel.find({ projectId, approvalStatus: "Waiting" }).lean().exec();
+  return tasks;
+}
 }

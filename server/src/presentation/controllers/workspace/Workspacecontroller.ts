@@ -50,12 +50,13 @@ export class WorkspaceController {
       res.status(HttpStatusCode.OK).json(workspaceData);
   }
   async pagination(req: Request, res: Response): Promise<void> {
-
+console.log("userIsCalling...")
     const slug = req.params.workspaceslug as string
     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
-    const { items, totalItems } = await this._workspaceUsecase.paginationWorkspace(slug, page, limit, skip)
+      const projectId = (req.query.projectId as string | null) ?? null;
+    const { items, totalItems } = await this._workspaceUsecase.paginationWorkspace(slug, page, limit, skip,projectId)
     res.status(200).json({
       items,
       currentPage: page,

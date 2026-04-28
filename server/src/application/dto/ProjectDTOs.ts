@@ -46,3 +46,11 @@ export interface ProjectNamesAndId {
   name: string;
   _id: string;
 }
+export interface ProjectMembersNames{
+  name:string;
+  role:string;
+}
+export interface BurnDownData {
+       day:string;
+       value:number;
+}

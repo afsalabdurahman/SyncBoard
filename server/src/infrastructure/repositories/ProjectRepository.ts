@@ -4,7 +4,7 @@ import { ProjectModel, ProjectDocument } from "../database/models/ProjectModel"
 import { NotFoundError } from "../../utils/errors"
 import { BaseRepository } from "./BaseRepository"
 import mongoose, { Types } from "mongoose"
-import { ProjectNamesAndId, ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
+import {  ProjectNamesAndId, ProjectRepositoryDTO } from "../../application/dto/ProjectDTOs"
 import { stringToMongoObj } from "../../utils/convertMongoObject"
 
 
@@ -121,5 +121,21 @@ async AllprojectNames(
   ).lean<ProjectNamesAndId[]>();
 
   return projectNames.length ? projectNames : null;
+}
+async projectMemebrs(projectId: Types.ObjectId): Promise<string[] | null> {
+  const project = await ProjectModel.findById(projectId)
+    .populate("projectAdminId", "name")
+    .lean();
+
+  if (!project) return null;
+
+  return [
+    ...project.assignedUsers,
+    (project.projectAdminId as unknown as { name: string }).name
+  ];
+}
+async burndownChartProject(projectId: Types.ObjectId): Promise<Project> {
+ const project = await ProjectModel.findById(projectId).lean<Project>()
+ return project as Project
 }
 }

@@ -1,6 +1,6 @@
 import { Task } from "../../domain/entities/Task";
 import { taskType } from "../../types/taskTypes";
-import { commentsDTO, CompletedTaskResponseDTO, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, FormattedTask, TaskRequestDTO, TaskResponseChartDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 import { z } from "zod";
 
 export const TaskStatusSchema = z.enum(["To Do", "In Progress", "Completed"]);
@@ -101,5 +101,79 @@ export class TaskMapper {
       })
     })
     return comments ?? null
+  }
+  static mapToListtaskDashboard(tasks: Task[]): FormattedTask[] {
+    return tasks.map((task): FormattedTask => ({
+      id:
+        typeof task.id === "string"
+          ? task.id
+          : task.id?.toString(),
+      title: task.name,
+
+      status:
+        task.status === "To Do"
+          ? "todo"
+          : task.status === "Completed"
+            ? "completed"
+            : "inprogress",
+
+      priority: task.priority,
+
+      date: new Date(task.deadline as string).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+      }),
+
+      assignee: (task.assignedUser || "")
+        .split(" ")
+        .map((word: string) => word[0])
+        .join("")
+        .toUpperCase(),
+
+      color:
+        task.priority === "High"
+          ? "bg-red-500"
+          : task.priority === "Medium"
+            ? "bg-green-500"
+            : "bg-blue-500",
+
+      open: true,
+
+      subtasks: (task.subTask || []).map(
+        (
+          sub: {
+            title: string;
+            status: "Completed" | "Pending";
+            estimate: number;
+          },
+          subIndex: number
+        ) => ({
+          id: subIndex + 1,
+          title: sub.title,
+          done: sub.status === "Completed",
+        })
+      ),
+    }));
+  }
+  static mapToApprovalTask(tasks: Task[]) {
+    const formattedData = tasks.map((task:Task) => {
+      return {
+        id: task.id,
+        title: task.name,
+        user: task.assignedUser,
+        status: task.status,
+        date: new Date(task.updatedAt ?? Date.now()).toLocaleString("en-IN", {
+          day: "numeric",
+          month: "short",
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        }),
+        resone: ""
+      }
+
+    })
+    console.log(formattedData, "formatted")
+
   }
 }
