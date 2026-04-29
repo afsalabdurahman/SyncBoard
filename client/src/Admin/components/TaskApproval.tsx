@@ -19,6 +19,7 @@ import { PaginationState, Task } from "../types/taskTypes";
 
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { TablePagination } from "@mui/material";
+import { useSelector } from "react-redux";
 
 
 
@@ -30,6 +31,7 @@ export const TaskApproval = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const projectID=useSelector((state)=>state.switch.projectId);
 
   const [pagination, setPagination] = useState<PaginationState>({
     page: 1,
@@ -40,9 +42,16 @@ export const TaskApproval = () => {
 
   /* ---------------- LOAD TASKS ---------------- */
 
-  const loadTasks = async (page = pagination.page) => {
+ 
+
+
+
+
+useEffect(()=>{
+
+ const loadTasks = async (page = pagination.page) => {
     try {
-      const res = await fetchTasks(workspaceid, page, pagination.rowPerpage);
+      const res = await fetchTasks(workspaceid, page, pagination.rowPerpage,projectID);
 
       setTasks(res.items);
 
@@ -58,10 +67,11 @@ export const TaskApproval = () => {
       setError("Failed to load tasks. Please try again later.");
     }
   };
+  loadTasks()
 
-  useEffect(() => {
-    loadTasks();
-  }, );
+
+},[projectID])
+
 
   /* ---------------- PAGINATION ---------------- */
 

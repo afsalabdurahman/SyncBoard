@@ -16,11 +16,12 @@ interface TaskResponse {
 export const fetchTasks = async (
   workspaceId: string,
   page: number,
-  limit: number
+  limit: number,
+  projectId:string,
 ): Promise<TaskResponse> => {
 
   const { data } = await apiService.get<TaskResponse>(
-    `task/completed/${workspaceId}`,
+    `task/completed/${workspaceId}?projectId=${projectId??""}`,
     {
       params: { page, limit },
     }
