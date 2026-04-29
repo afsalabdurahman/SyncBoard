@@ -123,15 +123,12 @@ useEffect(()=>{
 
                   <div className="flex items-center gap-3">
                     <div
-                      className={`h-8 w-8 rounded-full text-white text-xs flex items-center justify-center ${task.color}`}
+                      className={`h-8 w-12 rounded-full text-white text-sm flex items-center justify-center ${task.color}`}
                     >
-                      {task.assignee}
+                      {task.userName}
                     </div>
 
-                    <MoreHorizontal
-                      size={18}
-                      className="text-gray-500 cursor-pointer"
-                    />
+                   
 
                     <button onClick={() => toggleOpen(task.id)}>
                       {task.open ? (
@@ -157,15 +154,8 @@ useEffect(()=>{
                         key={sub.id}
                         className="flex items-center justify-between"
                       >
-                        <label className="flex items-center gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={sub.done}
-                            onChange={() =>
-                              toggleSubtask(task.id, sub.id)
-                            }
-                            className="h-4 w-4 rounded"
-                          />
+                        <label className="flex items-center gap-3 ">
+                        
 
                           <span
                             className={
@@ -178,9 +168,7 @@ useEffect(()=>{
                           </span>
                         </label>
 
-                        <span className="text-sm text-gray-500">
-                          Priya Patel
-                        </span>
+                      
                       </div>
                     ))}
                   </div>

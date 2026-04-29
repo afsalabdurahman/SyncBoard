@@ -47,7 +47,8 @@ export function DashboardPage() {
   const workspaceId = useWorkspaceid();
   const isSwitch= useSelector((state)=>state.switch.isSwitch);
   const projectID=useSelector((state)=>state.switch.projectId);
-  console.log(isSwitch,"isSwich",projectID)
+   const projectName=useSelector((state)=>state.switch.projectName);
+  console.log(isSwitch,"isSwich",projectID,projectName)
   const initialState = useSelector((state: RootState) => {
     console.log(state,"stateee")
     const countProject = state.projects.list.length;
@@ -117,14 +118,30 @@ useEffect(() => {
 
         {/* Logo */}
         <div className="text-xl font-bold text-gray-800">
-          <h4 className="text-3xl font-bold tracking-tight"> {selectedProject.name} Overview</h4>
+<h4 className="text-2xl md:text-3xl font-medium tracking-tight text-slate-800 font-sans flex items-center gap-2">
+  <span>Overview</span>
+  <span className="text-slate-400">:</span>
+  <span className="text-slate-600 font-medium">{projectName}</span>
+</h4>
         </div>
 
         {/* Project Selector */}
-        <div className="relative">
+        {/* <div className="relative">
          <select
     value={projectID}
-    onChange={(e) => dispatch(setSwitchProject({projectId:e.target.value,projectName:e.target.name,isSwitch:true}))}
+onChange={(e) => {
+  const selectedProject = projects.find(
+    (project) => project._id === e.target.value
+  );
+
+  dispatch(
+    setSwitchProject({
+      projectId: selectedProject?._id||"",
+      projectName: selectedProject?.name||"",
+      isSwitch: true,
+    })
+  );
+}}
     className="appearance-none bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
   >
     {projects.map((project) => (
@@ -149,7 +166,7 @@ useEffect(() => {
               />
             </svg>
           </div>
-        </div>
+        </div> */}
 
 
       </div>

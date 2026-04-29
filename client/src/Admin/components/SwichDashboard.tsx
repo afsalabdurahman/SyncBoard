@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../Custom/ui/card";
-import { Users, FolderOpen, AlertTriangle, CheckCircle } from "lucide-react";
+import { Users, FolderOpen, AlertTriangle, CheckCircle, ArrowRight } from "lucide-react";
 import { OverviewCard } from '../../Custom/reusecomponents/OverviewCard';
 import{ProjectProgressCard} from "./ProjectProgressCard"
 import { MembersCard, TeamCard } from './SProjectMembersList';
@@ -15,6 +15,7 @@ import { BurndownChart } from './SBurnoutChart';
 import { TaskDistribution } from './STaskStatus';
 import { TaskApprovalSection } from './StaskApproval';
 import { projectSpecifyDashboard } from '../apis/dashboardApi';
+import { useNavigate } from 'react-router-dom';
 interface props{
 name:string,
 _id:string
@@ -29,6 +30,7 @@ const [memebrList, setMemebrList] = useState([]);
 const [burnDown, setBurnDown] = useState([]);
 const [taskList, setTaskList] = useState([]);
 const [approvalData, setApprovalData] = useState(null);
+const navigate = useNavigate();
 
 useEffect(() => {
   async function fecthProjectDashboard(selectedProject: string) {
@@ -68,7 +70,7 @@ useEffect(() => {
 
 
 
-console.log(approvalData,"++++++++","DashBoardd")
+
   return (
     <div >
       
@@ -192,12 +194,56 @@ console.log(approvalData,"++++++++","DashBoardd")
  <div className="w-full mt-5 rounded-3xl bg-gray-100 p-6">
   <BurndownChart burndown={burnDown}/>
  </div>
-   <div className="w-full mt-5 rounded-3xl bg-gray-100 p-6">
- <STaskBoard taskList={taskList}/>
- </div>
-  <div className="w-full mt-5 rounded-3xl bg-gray-100 p-6">
-<TaskApprovalSection approvalData={approvalData}/>
+
+ {/* cut */}
+<div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-5 w-full">
+
+  {/* Daily Updates - Task Board */}
+  <div className="rounded-3xl bg-white shadow-md border border-gray-200 p-6">
+
+    <div className="flex items-center justify-between mb-5">
+      <h2 className="text-xl font-semibold text-gray-800 tracking-tight">
+        Daily Updates
+      </h2>
+
+      <button
+        onClick={() => navigate("/tasks")}
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
+      >
+        View Tasks
+        <ArrowRight size={16} />
+      </button>
+    </div>
+
+    <div className="max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+      <STaskBoard taskList={taskList} />
+    </div>
   </div>
+
+
+  {/* Daily Updates - Approval Board */}
+  <div className="rounded-3xl bg-white shadow-md border border-gray-200 p-6">
+
+    <div className="flex items-center justify-between mb-5">
+      <h2 className="text-xl font-semibold text-gray-800 tracking-tight">
+        Daily Updates
+      </h2>
+
+      <button
+        onClick={() => navigate("/approvals")}
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all"
+      >
+        View Approvals
+        <ArrowRight size={16} />
+      </button>
+    </div>
+
+    <div className="max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+      <TaskApprovalSection approvalData={approvalData} />
+    </div>
+  </div>
+
+</div>
  
     {/* end Prohect progress */}
     

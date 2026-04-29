@@ -48,7 +48,8 @@ import { toast } from "react-toastify";
 /* ---------------- COMPONENT ---------------- */
 
 export function UsersPage() {
-
+  const projectID=useSelector((state)=>state.switch.projectId);
+  
   const dispatch = useDispatch<AppDispatch>();
 
   const users = useUsers();
@@ -82,9 +83,10 @@ export function UsersPage() {
         page,
         limit: rowPerPage,
         workspaceslug: workspaceSlug,
+        projectId:projectID
       })
     );
-  }, [dispatch, refreshKey, page, rowPerPage, workspaceSlug]);
+  }, [dispatch, refreshKey, page, rowPerPage, workspaceSlug,projectID]);
 
   /* ---------------- PAGINATION ---------------- */
 

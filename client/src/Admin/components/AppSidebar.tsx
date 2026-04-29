@@ -34,6 +34,7 @@ import {
 
 import { fetchSubscription } from "../../Redux/feature/subscription/subscriptionTunks";
 import { useEffect } from "react";
+import { SwapProject } from "./SwapProject";
 
 interface MenuItem {
   title: string;
@@ -90,7 +91,8 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
-
+  const projectID = useSelector((state) => state.switch.projectId);
+  const projectName = useSelector((state) => state.switch.projectName);
   const dispatch = useDispatch<AppDispatch>();
 
   const planKey = useSelector(
@@ -163,14 +165,14 @@ export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
         );
     }
   }
-function getInitials(name) {
-  return name
-    .trim()
-    .split(" ")
-    .map(word => word.slice(0, 1).toUpperCase())
-    .join("")
-    .slice(0, 2);
-}
+  function getInitials(name) {
+    return name
+      .trim()
+      .split(" ")
+      .map(word => word.slice(0, 1).toUpperCase())
+      .join("")
+      .slice(0, 2);
+  }
   return (
     <Sidebar>
       <SidebarHeader>
@@ -195,10 +197,16 @@ function getInitials(name) {
 
                 {getSubscriptionKey(planKey)}
               </div>
-              <span class="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 shadow-sm">
-  {getInitials("AFSAL KP")}
-</span>
+
             </SidebarMenuButton>
+            <div className="flex flex-1 items-center justify-end gap-3 text-sm leading-tight border-x border-gray-500 px-4 py-2">
+              <p className="text-lg font-medium text-slate-700 m-0">
+                {projectName}
+              </p>
+
+              <SwapProject />
+            </div>
+
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

@@ -30,7 +30,7 @@ import {
 } from "../../Custom/ui/select";
 import { Edit, Trash2, Plus, Calendar,MessageCircle } from "lucide-react";
 import { setTaskPage } from "../../Redux/feature/task/taskSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
   import { addTaskApi, deleteTaskApi, fetchTaskData, updateTaskApi } from "../../Redux/feature/task/taskThunks";
 import { usePaginationTask, useTasks } from "../hooks/taskhooks";
 import { useProjects } from "../hooks/projectshooks";
@@ -69,11 +69,11 @@ export function TasksPage() {
   const workspaceid = useWorkspaceid()
   const [loader, setLoader] = useState("");
 const dispatch: AppDispatch = useDispatch();
-
+ const projectID=useSelector((state)=>state.switch.projectId);
 const tasks = useTasks()
 useEffect(()=>{
-dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
-},[dispatch,rowPerPage,page,workspaceid])
+dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage,projectId:projectID}))
+},[dispatch,rowPerPage,page,workspaceid,projectID])
 
 
 const handleChangePage = (event, newPage) => {

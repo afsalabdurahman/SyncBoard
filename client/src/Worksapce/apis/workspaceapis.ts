@@ -147,7 +147,7 @@ export const updateSubTaskStatus = async (taskId: string, title: string) => {
 
     }
 }
-export const sendInvitation = async (emails: string, invitationLink: string, workspaceId: string) => {
+export const sendInvitation = async (emails: string | string[], invitationLink: string, workspaceId: string) => {
     try {
         const response: AxiosResponse<boolean> = await apiService.post(
             "workspace/invite",
@@ -159,9 +159,11 @@ export const sendInvitation = async (emails: string, invitationLink: string, wor
             },
             { withCredentials: true }
         );
+        console.log(response, "REponsapiii")
         return response
     } catch (error) {
-        catchErrorHandle(error, "Send failed")
+        const err = catchErrorHandle(error, "Send failed");
+        throw (err)
     }
 }
 export const chatOnline = async (workspaceid: string) => {

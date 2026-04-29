@@ -4,10 +4,10 @@ import apiService from "../../../Services/apiServices/apiService";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
 
-export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async ({ page, limit, workspaceslug }: { page: number, limit: number, workspaceslug: string }, { rejectWithValue }) => {
+export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async ({ page, limit, workspaceslug,projectId }: { page: number, limit: number, workspaceslug: string,projectId:string|null  }, { rejectWithValue }) => {
   try {
 
-    const response = await apiService.get(`workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}`);
+    const response = await apiService.get(`workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}&projectId=${projectId}`);
     if (response.status == 200) {
 
       return response.data;
