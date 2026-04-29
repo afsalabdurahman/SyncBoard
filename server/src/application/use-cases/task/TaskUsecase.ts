@@ -59,10 +59,10 @@ export class TaskUsecase implements ITaskUseCase {
   async updateTaskStatus(taskId: string, status: string): Promise<void> {
     await this._taskRepository.updateTaskStatus(taskId, status);
   }
-  async completedTask(workspaceid: string, page: number, limit?: number, skip?: number): Promise<{ items: CompletedTaskResponseDTO, totalItems: number }> {
+  async completedTask(workspaceid: string, page: number, limit?: number, skip?: number,projectId?:string|null): Promise<{ items: CompletedTaskResponseDTO, totalItems: number }> {
 
     const { completedTasks, taskReject, totalItems } =
-      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid), page, limit, skip);
+      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid), page, limit, skip,projectId);
     const tasks = [
       ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
       ...(Array.isArray(taskReject) ? taskReject : [taskReject]),

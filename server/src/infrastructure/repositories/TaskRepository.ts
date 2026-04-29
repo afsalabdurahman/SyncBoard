@@ -73,11 +73,14 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async allCompletedTasks(workspaceid: Types.ObjectId, page?: number, limit?: number, skip?: number): Promise<{ completedTasks: Task[], taskReject: Task[], totalItems: number }> {
-
+  async allCompletedTasks(workspaceid: Types.ObjectId, page?: number, limit?: number, skip?: number,projectId?:string|null): Promise<{ completedTasks: Task[], taskReject: Task[], totalItems: number }> {
+console.log(projectId,"projectIDD")
     if (!limit) throw new NotFoundError("not found")
-    const completedTasks = await TaskModel.find({ status: "Completed" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
-    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
+const completedTasks = await TaskModel.find({
+  status: "Completed",
+  ...(projectId?.trim() ? { projectId } : {})
+});
+      const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
     const totalItems = await TaskModel.countDocuments();
     // const items = await TaskModel.find()
     //   .skip(skip)

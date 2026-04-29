@@ -153,21 +153,39 @@ async paginationUser(
   skip: number,
   projectId: string | null
 ): Promise<{ items: UserDoument[] | null; totalItems: number }> {
+  console.log("calling filters");
 
-  let filter: any = {
+  const filter: {
+    "workspace.workspaceId": string | ObjectId;
+    isSuperAdmin: { $ne: boolean };
+    name?: { $in: string[] };
+  } = {
     "workspace.workspaceId": workspaceId,
     isSuperAdmin: { $ne: true },
   };
 
-  // If project selected
-  if (projectId) {
+  // Apply project filter only if valid projectId exists
+  if (
+    projectId &&
+    projectId.trim() !== "" &&
+    projectId !== "null" &&
+    projectId !== "undefined"
+  ) {
+    const convertToMongoObject = stringToMongoObj(projectId);
 
-    const converTOmongoObject = stringToMongoObj( projectId)
-    const project = await ProjectModel.findById(converTOmongoObject);
-console.log(project,"roject")
-    const assignedUsers = project?.assignedUsers || [];
+    const project = await ProjectModel.findById(convertToMongoObject);
 
-    filter.name = { $in: assignedUsers };
+    console.log(project, "project");
+
+    if (project) {
+      const assignedUsers: string[] = project.assignedUsers || [];
+
+      if (assignedUsers.length > 0) {
+        filter.name = { $in: assignedUsers };
+      } else {
+        return { items: [], totalItems: 0 };
+      }
+    }
   }
 
   const totalItems = await UserModel.countDocuments(filter);

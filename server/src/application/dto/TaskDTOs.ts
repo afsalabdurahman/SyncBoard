@@ -94,6 +94,7 @@ export interface FormattedTask {
   id: string | Types.ObjectId | undefined;
   title: string | undefined;
   status: string;
+  userName:string;
   priority: priorityType | undefined;
   date: string;
   assignee: string;

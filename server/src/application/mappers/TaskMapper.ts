@@ -123,7 +123,7 @@ export class TaskMapper {
         month: "short",
         day: "2-digit",
       }),
-
+      userName: task.assignedUser || "",
       assignee: (task.assignedUser || "")
         .split(" ")
         .map((word: string) => word[0])
@@ -156,7 +156,7 @@ export class TaskMapper {
     }));
   }
   static mapToApprovalTask(tasks: Task[]) {
-    const formattedData = tasks.map((task:Task) => {
+    const formattedData = tasks.map((task: Task) => {
       return {
         id: task.id,
         title: task.name,
