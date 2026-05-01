@@ -3,7 +3,6 @@ import { Types } from "mongoose";
 import { TaskPriority, TaskStatus } from "../mappers/TaskMapper";
 import { Task as TaskEntity } from "../../domain/entities/Task";
 import { priorityType } from "../../types/taskTypes";
-import { Schema } from "zod";
 export interface TaskRequestDTO {
   name?: string;
   description?: string;

@@ -35,7 +35,7 @@ export class RegisterUseCase implements IAuth {
     const isValid = AuthMapper.registerValidation(input);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const existingUser = await this._userRepository.findByEmail(input.email);
-    console.log(existingUser, "udreEXISTTT")
+   
 
     if (existingUser) {
       if (existingUser.isVerified) {
@@ -46,43 +46,25 @@ export class RegisterUseCase implements IAuth {
       }
 
     }
-    // if(!existingUser?.isVerified&&existingUser?._id){
-    //    console.log("isworking....")
-    //       await this._userRepository.deleteuserById(stringToMongoObj(existingUser?._id));
-
-    //     }else{
-    // if (existingUser) throw new ConflictError  (ResponseMessages.USER_EXISTS);
-
-    //     }
+  
 
     const hashedPassword = await this._authService.hashPassword(input.password as string);
     input.password = hashedPassword;
     const AdminEntity = AuthMapper.mapUserToEntity(input)
 
-    console.log(AdminEntity, "entity")
     const savedUser = await this._userRepository.create(AdminEntity);
     //    const findOTP = await this._otpRepository.findOTPbyEMAIL(input.email);
     //   if (findOTP) {
     //   await this._otpRepository.deleteOTP(input.email)
     // }
-    console.log(savedUser, "Save")
+    
     const otp = this._otpRepository.generateOTP();
       await this._emailService.sendOtp(input.email, otp);
 
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);
     if (!savedUser) throw new NotFoundError(ResponseMessages.NO_CONTENT);
-    // const token = this._authService.generateToken({
-    //   id: savedUser._id!,
-    //   email: savedUser.email!,
-    //   role: savedUser.role!,
-    // });
-    // const refreshToken = this._authService.generateRefreshToken({
-    //   id: savedUser._id!,
-    //   email: savedUser.email!,
-    //   role: savedUser.role!,
-    // });
-    // await this._userRepository.updateOnlineStatus(savedUser._id??"")
+
     return savedUser
 
   }

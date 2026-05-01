@@ -8,9 +8,7 @@ import { stringToMongoObj } from "../../../utils/convertMongoObject";
 @injectable()
 export class ChatUsecase implements IChatUsecase {
   constructor(
-    @inject("ChatRepository") private _chatRepository: IChatRepository,
-
-  ) { }
+    @inject("ChatRepository") private _chatRepository: IChatRepository) {}
   async sendMessage(dto: ChatRequestDTO): Promise<void> {
     const messageEntity = ChatMapper.chatToEntity(dto)
     await this._chatRepository.saveChats(messageEntity);

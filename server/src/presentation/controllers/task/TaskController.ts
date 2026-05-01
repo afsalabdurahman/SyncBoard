@@ -75,7 +75,6 @@ export class TaskController {
     const skip = (page - 1) * limit;
      
      const projectId = (req.query.projectId as string | null) ?? null;
-      console.log(projectId,"Id PROJECT PAASSS")
     const { items, totalItems } = await this._taskUsecase.completedTask(workspaceid, page, limit, skip,projectId);
     res.status(HttpStatusCode.OK).json({
       items,
@@ -114,7 +113,6 @@ export class TaskController {
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
      const projectId = (req.query.projectId as string | null) ?? null;
-    console.log(projectId,"Id PROJECT PAASSS")
     const { items, totalItems } = await this._taskUsecase.paginationTask(workspaceId, page, limit, skip,projectId)
     res.status(200).json({
       items,

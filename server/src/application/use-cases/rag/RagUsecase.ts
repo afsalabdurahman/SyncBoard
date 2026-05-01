@@ -7,11 +7,8 @@ import {IRagOrchestartorService} from "../../../domain/interfaces/services/IRagO
 @injectable()
 export class RagUseCase implements IRagUsecase  {
     constructor(@inject("RagOrchestrator")private _ragOrchestartor:IRagOrchestartorService ){}
-
 async execute(input: RagQueryRequestDTO): Promise<string> {
     const result=await this._ragOrchestartor.search(input.user,input.query)
 return result
-
 }
-
 }

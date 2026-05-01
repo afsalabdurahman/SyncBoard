@@ -40,7 +40,6 @@ export class NotFoundError extends CustomError {
 
 export class ConflictError extends CustomError {
   constructor(message: string = ResponseMessages.CONFLICT) {
-    console.log(message,"message")
     super(message, HttpStatusCode.CONFLICT);
   }
 }

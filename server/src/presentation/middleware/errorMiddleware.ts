@@ -11,7 +11,6 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log(err,"err")
   if (err instanceof CustomError) {
     
     res.status(err.statusCode).json({

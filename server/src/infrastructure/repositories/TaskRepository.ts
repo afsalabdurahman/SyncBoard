@@ -74,7 +74,6 @@ export class TaskRepository implements ITaskRepository {
     }
   }
   async allCompletedTasks(workspaceid: Types.ObjectId, page?: number, limit?: number, skip?: number,projectId?:string|null): Promise<{ completedTasks: Task[], taskReject: Task[], totalItems: number }> {
-console.log(projectId,"projectIDD")
     if (!limit) throw new NotFoundError("not found")
 const completedTasks = await TaskModel.find({
   status: "Completed",
@@ -313,7 +312,6 @@ async findTaskCountByProjectId(
     },
   ]);
 
-  console.log(result);
 
   return (
     result[0] || {

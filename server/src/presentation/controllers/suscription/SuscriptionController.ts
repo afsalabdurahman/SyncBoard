@@ -39,7 +39,6 @@ export class SubscriptionController {
 
       }
       const checkoutLink = await this._planUsecase.excute(input);
-      console.log(checkoutLink,"in controller link")
       res.status(HttpStatusCode.OK).json(checkoutLink)
 
   }
@@ -88,7 +87,6 @@ await this._suscriptionUsecase.updateHistory(session?.metadata?.userId.toString(
         if (invoice.customer_name && invoice.customer_email && invoice.hosted_invoice_url) {
           await this._suscriptionUsecase.sendReceipt(invoice.customer_name, invoice.customer_email, invoice.hosted_invoice_url)
         }
-console.log(event,"envents")
         res.sendStatus(200);
         break; }
     }

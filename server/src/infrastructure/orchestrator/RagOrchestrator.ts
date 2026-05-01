@@ -18,12 +18,10 @@ export class RagOrchestrator implements IRagOrchestartorService {
     let refinedPrompt: string = ""
     if (/tasks?/i.test(query)) {
       refinedPrompt = await this._llmProvider.refinePrompt(user, query, INTENT_TASK_PROMPT)
-      console.log(refinedPrompt, "Refined propmt")
       const { key, value, model }: { key: string | null, value: string, model?: string } = hybridFilter(refinedPrompt)
       if (!key && value && !model) { return value }
       if (!key || !model) return value
       const results = await this._vectorStore.findFromdb(user, key, value, model)
-      console.log(results, "resuktdesdssssss")
       const response = await this._llmProvider.responseMessage(query, results, RESPONSE_Task_PROMPT)
 
       return response

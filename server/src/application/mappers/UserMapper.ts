@@ -29,7 +29,7 @@ export class UserMapper{
    static updateProfileValidator(
   merge: Partial<ProfileUpdateDTO>
 ) {
-console.log(merge,"merge")
+
   const onlyLettersNumbersWithSpace = z
   .string()
   .trim()

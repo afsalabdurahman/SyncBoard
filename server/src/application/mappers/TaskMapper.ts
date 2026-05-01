@@ -1,6 +1,6 @@
 import { Task } from "../../domain/entities/Task";
 import { taskType } from "../../types/taskTypes";
-import { commentsDTO, CompletedTaskResponseDTO, FormattedTask, TaskRequestDTO, TaskResponseChartDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, FormattedTask, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 import { z } from "zod";
 
 export const TaskStatusSchema = z.enum(["To Do", "In Progress", "Completed"]);
@@ -156,7 +156,7 @@ export class TaskMapper {
     }));
   }
   static mapToApprovalTask(tasks: Task[]) {
-    const formattedData = tasks.map((task: Task) => {
+     tasks.map((task: Task) => {
       return {
         id: task.id,
         title: task.name,
@@ -173,7 +173,7 @@ export class TaskMapper {
       }
 
     })
-    console.log(formattedData, "formatted")
+    
 
   }
 }

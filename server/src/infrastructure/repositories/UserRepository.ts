@@ -153,7 +153,6 @@ async paginationUser(
   skip: number,
   projectId: string | null
 ): Promise<{ items: UserDoument[] | null; totalItems: number }> {
-  console.log("calling filters");
 
   const filter: {
     "workspace.workspaceId": string | ObjectId;
@@ -175,7 +174,6 @@ async paginationUser(
 
     const project = await ProjectModel.findById(convertToMongoObject);
 
-    console.log(project, "project");
 
     if (project) {
       const assignedUsers: string[] = project.assignedUsers || [];

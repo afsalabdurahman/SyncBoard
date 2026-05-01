@@ -82,21 +82,11 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   }
 
   async updateWorkspaceData(id: string, merge: Record<string, string>): Promise<void> {
-console.log(id,"mergeiDDDDDDDDDCALLING??",merge)
     const isValid=WorkspaceMapper.workspaceUpdateValidator(merge);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
 if(merge.planKey){
-  
   this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id),merge.planKey,"active")
-  
- 
-
-    // if (merge.plan) {
-    //   await this._suscriptionRepository.updateSubscriptionPlanBysuper(merge.name, merge.plan);
-
-    // } else {
-
-    }
+ }
       await this._workspaceRepository.updateWorkspaceDate(id, merge)
    
 

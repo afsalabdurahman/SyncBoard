@@ -22,7 +22,6 @@ export class MemberRegisterUsecase implements IMemberRegister {
           @inject("InvitaionRepository") private _invitaionRepository: IinvitationRepository,
     
   ) {}
-
   async execute(
     dto: MemeberRegisterRequestDTO
   ): Promise<MemberRegisterResposeDTO> {
@@ -43,9 +42,7 @@ export class MemberRegisterUsecase implements IMemberRegister {
       );
     
     const newMember = AuthMapper.mapMemebrToEntity(dto);
-console.log(newMember,"new member registerzusecase after map")
     const createMember = await this._userRepository.create(newMember);
-    console.log(createMember,"created MERE")
     if (!createMember || !createMember._id)
       throw new ValidationError(ResponseMessages.CONFLICT);
     const token = this._authService.generateToken({

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { ProjectMembersNames, ProjectNamesAndId, ProjectRepositoryDTO } from "../../../application/dto/ProjectDTOs";
+import {  ProjectNamesAndId, ProjectRepositoryDTO } from "../../../application/dto/ProjectDTOs";
 import { Project } from "../../entities/Project";
 import { IBaseRepository } from "./IBaseReposiory";
 export interface IProjectRepository extends IBaseRepository <Project> {

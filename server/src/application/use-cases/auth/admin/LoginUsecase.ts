@@ -75,7 +75,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    console.log(ticket)
+  
     const payload = ticket.getPayload();
     if (!payload?.sub || !payload?.email) throw new ValidationError("Invalid Google token payload");
     const googleId = payload.sub;

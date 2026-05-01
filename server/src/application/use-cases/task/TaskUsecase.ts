@@ -4,7 +4,7 @@ import { NotFoundError, ValidationError } from "../../../utils/errors";
 import { ITaskRepository } from "../../../domain/interfaces/repositories/ITaskRepository";
 import { ITaskUseCase } from "../../repositories/ITask";
 import { io } from "../../../server";
-import { commentsDTO, CompletedTaskResponseDTO, donetChartData, FormattedTask, projectSpecifyTaskCount, TaskRequestDTO, TaskResponseChartDTO, TaskResponseDTO } from "../../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, donetChartData, FormattedTask, projectSpecifyTaskCount, TaskRequestDTO,  TaskResponseDTO } from "../../dto/TaskDTOs";
 import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { commentType, taskType } from "../../../types/taskTypes";
@@ -131,14 +131,12 @@ export class TaskUsecase implements ITaskUseCase {
   async findTasksByProjectId(projectId: string): Promise<FormattedTask[]> {
     const tasks = await this._taskRepository.burnoutChartTask(projectId);
     const formattedTasks = TaskMapper.mapToListtaskDashboard(tasks)
-console.log(formattedTasks,"tasksssssssss")
   return formattedTasks
 
   }
   async findTaskApprovalStatus(projectId: string): Promise<Task[]> {
     const tasks = await this._taskRepository.findTaskApprovalstatus(projectId);
     TaskMapper.mapToApprovalTask(tasks)
-    console.log(tasks,"taskssssssss")
 return tasks
   }
 

@@ -63,7 +63,7 @@ export class ProjectUsecase implements IProjectUsecase {
   ): Promise<ProjectResponseDTO | null> {
     // eslint-disable-next-line prefer-const
     let merged = Object.assign({}, ...args);
-    console.log(merged,"mergedd")
+  
 if(merged.attachedUrl.length==0){
 delete merged.attachedUrl
 }else{
@@ -111,7 +111,7 @@ await this._projectRepository.pushToAttachments(urls,projectId)
   async burnoutChartData(projectId: string): Promise<BurnDownData[]> {
     const project = await this._projectRepository.burndownChartProject(stringToMongoObj(projectId))
     const tasks = await this._taskRepository.burnoutChartTask(projectId);
-    console.log(project,tasks);
+
       const startDate = new Date(project?.createdAt || new Date());
   const endDate = new Date(project?.deadline ? project.deadline.toString() : new Date());
   const totalTasks = tasks.length;

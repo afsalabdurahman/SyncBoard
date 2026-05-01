@@ -19,10 +19,10 @@ export class OTPService implements IOTP {
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private _authService: IAuthService,
 
-  ) { }
+  ) {}
 
   async sendOTP(input: MailRequestDTO): Promise<string> {
-console.log(input,"input value email")
+
     const isValid = AuthMapper.registerValidation(input as AdminSignupRequestDTO)
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const user = await this._userRepository.findByEmail(input.email)
@@ -33,12 +33,9 @@ console.log(input,"input value email")
     }
     const otp = this._otpRepository.generateOTP();
      await this._emailService.sendOtp(input.email, otp);
-    console.log(user, otp, "otppp")
+   
     const SaveOtp = new OTP(input.email, otp);
-    console.log(SaveOtp, "OTPSSSVE")
     await this._otpRepository.save(SaveOtp);
-
-
     return otp;
   }
   async verifyOTP(input: MailRequestDTO): Promise<AdminSignupResponseDTO> {
