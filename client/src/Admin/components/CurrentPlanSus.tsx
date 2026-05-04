@@ -39,7 +39,6 @@ export default function CurrentPlanOverview({
 
   const filterPlan = plans.filter((plan) => plan.key === currentPlan);
 
- 
 if(plans.length ==0) return <><LoadingSpinner/></>
   return (
     <Card className='w-full'>
@@ -70,24 +69,23 @@ if(plans.length ==0) return <><LoadingSpinner/></>
           </div>
         </div>
         <div className='space-y-3'>
-
-          {
-   plans
-  .filter(plan => plan.key !== currentPlan)
-  .sort((a, b) => a.priceCents - b.priceCents)
-  .map(plan => (
-    <Button
-      key={plan.key}
-      onClick={() => onUpgrade(plan.key)}
-      disabled={isProcessing}
-      className="w-full"
-      size="lg"
-    >
-      Upgrade to {plan.name} $ {plan.priceCents / 100}
-    </Button>
-  ))
-          }
-        </div>
+  {
+    plans
+      .filter(plan => plan.key !== "free" && plan.key !== currentPlan)
+      .sort((a, b) => a.priceCents - b.priceCents)
+      .map(plan => (
+        <Button
+          key={plan.key}
+          onClick={() => onUpgrade(plan.key)}
+          disabled={isProcessing}
+          className="w-full"
+          size="lg"
+        >
+          Upgrade to {plan.name} $ {plan.priceCents / 100}
+        </Button>
+      ))
+  }
+</div>
 
         {/* <div className='space-y-3'>
           {currentPlan === "free" && (

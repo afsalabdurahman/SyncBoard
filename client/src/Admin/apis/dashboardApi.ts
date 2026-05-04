@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
@@ -22,7 +23,7 @@ export const projectSpecifyDashboard = async(projectId:string)=>{
 
         ])
        return result
-    } catch (error) {
-        console.log(error,"err")
+    } catch  {
+        toast.error("failed")
     }
 }

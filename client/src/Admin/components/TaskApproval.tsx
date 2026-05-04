@@ -19,13 +19,12 @@ import { PaginationState, Task } from "../types/taskTypes";
 
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { TablePagination } from "@mui/material";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 
 
 
 export const TaskApproval = () => {
   const workspaceid = useWorkspaceid();
-
   const [tasks, setTasks] = useState<Task[]>([]);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -70,7 +69,7 @@ useEffect(()=>{
   loadTasks()
 
 
-},[projectID])
+},[pagination.page, pagination.rowPerpage, projectID, workspaceid])
 
 
   /* ---------------- PAGINATION ---------------- */

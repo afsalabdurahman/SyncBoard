@@ -147,6 +147,17 @@ export const updateSubTaskStatus = async (taskId: string, title: string) => {
 
     }
 }
+export const ApprovalCriteria = async (taskId: string, title: string) => {
+    try {
+        await apiService.patch(`task/update/approval/criteria/status/${taskId}`, {
+            title
+        })
+    } catch (error) {
+        const err: string = catchErrorHandle(error, "Task not found")
+        throw new Error(err)
+
+    }
+}
 export const sendInvitation = async (emails: string | string[], invitationLink: string, workspaceId: string) => {
     try {
         const response: AxiosResponse<boolean> = await apiService.post(
@@ -159,7 +170,7 @@ export const sendInvitation = async (emails: string | string[], invitationLink: 
             },
             { withCredentials: true }
         );
-        console.log(response, "REponsapiii")
+        
         return response
     } catch (error) {
         const err = catchErrorHandle(error, "Send failed");
@@ -180,5 +191,13 @@ export const chatHistory = async (workspaceid: string) => {
         return response
     } catch (error) {
         catchErrorHandle(error, "Failed to connect ")
+    }
+}
+export const taskDetailsApi=async(taskId:string)=>{
+    try {
+        const task = await apiService.get(`/task/details/${taskId}`)
+        return task?.data?.taskUI
+    } catch (err) {
+  catchErrorHandle(err,"Not found")
     }
 }

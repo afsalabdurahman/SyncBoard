@@ -13,20 +13,25 @@ import { logout } from "../../Worksapce/apis/workspaceapis";
 import { useUser } from "../../Worksapce/hooks/workspacehooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-const ProjectsPage = lazy(()=>import("../components/ProjectsPage"));
+const ProjectsPage = lazy(() => import("../components/ProjectsPage"));
 export default function AdminDashboard() {
   const navigate = useNavigate()
-  const isForward = useSelector((state) => state.forward);
- 
+  const isForward = useSelector((state) => state.forward.isForward);
+  
+  const { title } = useSelector(
+    (state: RootState) => state.forward
+  );
   const [currentPage, setCurrentPage] = useState("dashboard");
-const user=useUser()
+  const user = useUser()
   useEffect(() => {
-    if (isForward) {
-      setCurrentPage("suscription");
+    if (title) {
+      
+      setCurrentPage(title);
+
     } else {
       setCurrentPage("dashboard");
     }
-  }, [isForward]);
+  }, [isForward, title]);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -35,32 +40,32 @@ const user=useUser()
       case "users":
         return <UsersPage />;
       case "projects":
-       return (
+        return (
           <Suspense fallback={<div className="p-4">Loading Settings...</div>}>
-            <ProjectsPage/>
+            <ProjectsPage />
           </Suspense>
         );
       case "tasks":
         return <TasksPage />;
       case "logout":
-         logout(user?._id).then((res)=>{
-          if(res==204){
-            const id="logout-success"
-            if(!toast.isActive(id)){
-  toast.success("Logout success", { toastId: id });
+        logout(user?._id).then((res) => {
+          if (res == 204) {
+            const id = "logout-success"
+            if (!toast.isActive(id)) {
+              toast.success("Logout success", { toastId: id });
             }
-               
+
             navigate("/admin")
-       
+
           }
-         })
-       break;
+        })
+        break;
       case "approval":
         return <TaskApproval />;
       case "suscription":
         return <SubscriptionPage />;
-        case "tikets":
-          return <Tikets/>
+      case "tikets":
+        return <Tikets />
       default:
         return <DashboardPage />;
     }

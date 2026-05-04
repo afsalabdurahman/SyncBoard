@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   Sparkles,
   ChevronDown,
   ChevronUp,
-  MoreHorizontal,
   CalendarDays,
 } from "lucide-react";
 
 export const STaskBoard = ({taskList}) => {
-  console.log(taskList,"taskListsssssss")
   const [activeTab, setActiveTab] = useState("todo");
 useEffect(()=>{
   setTasks(taskList)
@@ -29,20 +27,7 @@ useEffect(()=>{
     );
   };
 
-  const toggleSubtask = (taskId, subtaskId) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              subtasks: task.subtasks.map((sub) =>
-                sub.id === subtaskId ? { ...sub, done: !sub.done } : sub
-              ),
-            }
-          : task
-      )
-    );
-  };
+
 
   return (
     <div className="w-full rounded-2xl border border-gray-200 bg-[#f7f8fa] shadow-sm overflow-hidden">

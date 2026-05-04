@@ -9,15 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 
-const data = [
-  { day: "May 1", value: 38 },
-  { day: "May 4", value: 31 },
-  { day: "May 7", value: 25 },
-  { day: "May 10", value: 18 },
-  { day: "May 13", value: 12 },
-  { day: "May 16", value: 6 },
-  { day: "May 18", value: 0 },
-];
+
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -33,7 +25,6 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export const BurndownChart = ({burndown}) => {
-  console.log(burndown,"downnnn")
   return (
     <div >
       {/* Header */}

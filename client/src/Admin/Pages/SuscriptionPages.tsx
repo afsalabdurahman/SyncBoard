@@ -1,9 +1,9 @@
 
-import { useState } from "react"
+import {  useState } from "react"
 import CurrentPlanOverview from "../components/CurrentPlanSus"
 import UsageMetricsComponent from "../components/UsagesInSus"
 import PaymentInfoComponent from "../components/PaymentInfoSus"
-import { useSelector } from "react-redux"
+import {  useSelector } from "react-redux"
 import { checkoutapi } from "../apis/checkoutApi"
 import { RootState } from "../../Redux/store"
 export type Plan = "Free" | "Pro" | "Enterprise"
@@ -37,7 +37,6 @@ export default function SubscriptionPage() {
   // const planStatus = useSelector((state) => {
   //   return state.subscriptions.subscription.status
   // })
-
 
   const [currentPlan, ] = useState<Plan>(myPlan)
   const [paymentInfo, ] = useState<PaymentInfo | null>(null)

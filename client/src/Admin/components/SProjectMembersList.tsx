@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Search, Mail } from "lucide-react";
 import apiService from "../../Services/apiServices/apiService";
 import { updateProjectApi } from "../../Redux/feature/project/projectThunks";
@@ -7,19 +7,19 @@ import { toast } from "react-toastify";
 import { useWorkspaceid, useWorkspaceSlug } from "../../Worksapce/hooks/workspacehooks";
 import { sendInvitation } from "../../Worksapce/apis/workspaceapis";
 import Loader from "../../Custom/reusecomponents/Loader";
+import { members } from "../types/userTypes";
 const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
-export const MembersCard = (memberProps: any) => {
+export const MembersCard = (memberProps: {memebrList:members[]}) => {
    const projectId=useSelector((state)=>state.switch.projectId);
  const workspaceId=useWorkspaceid()
    const slug = useWorkspaceSlug()
-   console.log(workspaceId,slug)
   const dispatch =useDispatch()
   const [showInvite, setShowInvite] = useState(false);
   const [search, setSearch] = useState("");
   const [email, setEmail] = useState("");
  const [load, setLoad] = useState(false);
-  const [members, setMembers] = useState<any[]>([]);
-  const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
+  const [members, setMembers] = useState<members[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState([]);
   const [loading, setLoading] = useState(false);
  const [invitationLink] = useState<string>(
     `${INVITE_MEMBER_}${slug}` 
@@ -28,7 +28,7 @@ export const MembersCard = (memberProps: any) => {
   useEffect(() => {
     if (memberProps?.memebrList?.length) {
       const formattedMembers = memberProps.memebrList.map(
-        (member: any, index: number) => ({
+        (member: members, index: number) => ({
           id: index + 1,
           name: member.name,
           role: member.role,
@@ -45,6 +45,24 @@ export const MembersCard = (memberProps: any) => {
     }
   }, [memberProps?.memebrList]);
 
+  /* Backend Search API */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const searchUsers = async (keyword: string) => {
+    try {
+      setLoading(true);
+
+      const res = await apiService.get(
+        `/workspace/members/find/${slug}?query=${keyword}`
+      );
+
+      setSearchedUsers(res.data || []);
+    } catch {
+      setSearchedUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   /* Debounce Search */
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -56,28 +74,10 @@ export const MembersCard = (memberProps: any) => {
     }, 500);
 
     return () => clearTimeout(delay);
-  }, [search]);
-
-  /* Backend Search API */
- const searchUsers = async (keyword: string) => {
-  try {
-    setLoading(true);
-
-    const res = await apiService.get(
-      `/workspace/members/find/${slug}?query=${keyword}`
-    );
-
-    setSearchedUsers(res.data || []);
-    
-  } catch (error) {
-    setSearchedUsers([]);
-  } finally {
-    setLoading(false);
-  }
-};
+  }, [search, searchUsers]);
 
   /* Add User */
- const addUser = async (user: any) => {
+ const addUser = async (user: members) => {
   try {
     const words = user.name.split(" ");
 
@@ -116,20 +116,19 @@ if (exists) {
     setSearch("");
     setSearchedUsers([]);
     setShowInvite(false);
-  } catch (error) {
-    console.log(error);
+  } catch  {
+   toast.error("Failed")
   }
 };
 
   const inviteEmail = async() => {
     if (!email) return;
-let emails=[];
+const emails=[];
 emails.push(email)
  try {
   setLoad(true)
   const response = await sendInvitation(emails,invitationLink,workspaceId)
 
-console.log(response,"res+++++++++++ponse")
       if (response.status == 200 || response.status ==201) {
         setLoad(false);
   
@@ -145,7 +144,7 @@ setLoad(false);
   };
 
   return (
-    <div className="w-[320px] h-[280px] rounded-2xl border border-gray-200 bg-[#f7f8fa] shadow-sm overflow-hidden flex flex-col">
+    <div className="w-[320px] h-[280px] rounded-2xl border border-slate-700/50 border-gray-200 bg-[#f5f5f5]  shadow-sm overflow-hidden flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-5 border-b border-gray-200 shrink-0">
         <h3 className="text-[15px] font-semibold text-[#111827]">
@@ -194,7 +193,7 @@ setLoad(false);
               )}
 
               {!loading &&
-                searchedUsers.map((user: any) => (
+                searchedUsers.map((user) => (
                   <button
                     key={user._id}
                     onClick={() => addUser(user)}

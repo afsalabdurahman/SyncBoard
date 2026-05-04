@@ -91,7 +91,6 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
-  const projectID = useSelector((state) => state.switch.projectId);
   const projectName = useSelector((state) => state.switch.projectName);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -107,11 +106,17 @@ export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
     (state: RootState) => state.user.user?._id
   );
 
+  // const isForward = useSelector((state) => state?.forward?.isForward);
+
+// console.log(adminId,"AdminID")
+
+
   useEffect(() => {
     if (adminId) {
       dispatch(fetchSubscription(adminId));
     }
-  }, [adminId, dispatch]);
+  
+  }, [adminId,dispatch]);
 
   function getSubscriptionKey(planKey: string) {
     if (suscriptionStatus !== "active") {
@@ -165,14 +170,7 @@ export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
         );
     }
   }
-  function getInitials(name) {
-    return name
-      .trim()
-      .split(" ")
-      .map(word => word.slice(0, 1).toUpperCase())
-      .join("")
-      .slice(0, 2);
-  }
+ 
   return (
     <Sidebar>
       <SidebarHeader>

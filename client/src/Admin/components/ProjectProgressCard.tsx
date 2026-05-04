@@ -12,18 +12,17 @@ export const ProjectProgressCard = ({
   projectProgress,
 }: Props) => {
  
-  const progress = 25;
   const radius = 52;
   const stroke = 10;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (progress / 100) * circumference;
+  const offset = circumference - (projectProgress / 100) * circumference;
 
   return (
    <>
     <div className=" rounded-2xl border border-slate-700/50 border-gray-200 bg-[#f5f5f5] p-5 shadow-sm">
-      <p className="mb-5 text-[12px] uppercase tracking-widest text-gray-500">
+      <h3 className="mb-7 text-[15px] font-semibold text-[#111827">
         Project Progress
-      </p>
+      </h3>
 
       <div className="relative mx-auto h-[140px] w-[140px]">
         <svg className="h-full w-full -rotate-90">
@@ -53,8 +52,8 @@ export const ProjectProgressCard = ({
 
         {/* Center Text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <h2 className="text-[38px] font-bold leading-none text-gray-900">
-            {Math.ceil(projectProgress)}%
+          <h2 className="text-[25px] font-bold leading-none text-gray-900">
+            {Math.ceil(projectProgress??0)}%
           </h2>
           <p className="mt-1 text-sm text-gray-500">complete</p>
         </div>

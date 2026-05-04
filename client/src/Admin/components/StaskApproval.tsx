@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   CheckCircle2,
   XCircle,
   Eye,
-  Clock3,
   MessageSquare,
 } from "lucide-react";
 
 export const TaskApprovalSection = ({approvalData}) => {
 const [tasks,setTasks]=useState([])
-  console.log(approvalData,"Apprival task")
 useEffect(()=>{
 setTasks(approvalData)
 },[approvalData])

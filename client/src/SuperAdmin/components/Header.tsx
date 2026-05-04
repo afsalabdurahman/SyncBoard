@@ -1,7 +1,6 @@
 
-import { Search,LogOut } from "lucide-react"
+import { LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
-import { Input } from "../../Custom/ui/input"
 
 import { useUser } from "../../Worksapce/hooks/workspacehooks"
 import { logout } from "../../Worksapce/apis/workspaceapis"
@@ -36,13 +35,19 @@ const handleLogout = () =>{
       <div className="flex h-full items-center justify-between px-6">
         {/* Search */}
         <div className="flex items-center flex-1 max-w-md">
-          <div className="relative w-full">
+          {/* <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
               placeholder="Search workspaces, users, or tickets..."
               className="pl-10 bg-gray-50 border-0 focus:bg-white focus:ring-2 focus:ring-blue-500"
             />
-          </div>
+          </div> */}
+   <h2 className="text-3xl font-extrabold tracking-tight">
+  Sync Workspace{" "}
+  <span className="text-base font-medium text-gray-500">
+    Pvt Ltd
+  </span>
+</h2>
         </div>
 
         {/* Right side */}

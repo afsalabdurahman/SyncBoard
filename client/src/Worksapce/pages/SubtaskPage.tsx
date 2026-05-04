@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 export const  SubtaskPage =({isOpensub,setOpensub,completed,total,taskId}) =>{
       const allDone = completed === total;

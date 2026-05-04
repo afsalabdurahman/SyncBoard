@@ -169,6 +169,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
     setSubtasks((p) => p.filter((s) => s.id !== id));
 
   const deleteSubTask = async (subTask) => {
+    setSubtasks((p) => p.filter((s) => subTask.id !== s.id));
 
     try {
       await deleteSubTaskApi(taskId, subTask);
@@ -177,7 +178,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
       dispacth(deleteSubTaskRedux(subTask))
       toast.success("Delete success")
     } catch  {
-      toast.info("try again later")
+      throw ("Deletion failed")
     }
 
 

@@ -25,6 +25,7 @@ import { useProjects } from "../hooks/projectshooks";
 import { Upload } from "./Upload";
 import { uploadAttachment } from "../../Services/Cloudinary";
 import { AttachmentButton } from "./AttachmentButton";
+import { CriteriaSection } from "./AccetanceTask";
 
 
 interface Task {
@@ -38,7 +39,8 @@ interface Task {
   priority: "Low" | "Medium" | "High";
   projectId: string;
   attachedURLs: string[];
-  subTask?:object[]
+  subTask?: object[]
+  acceptanceCriteria?: object[]
 }
 
 interface TaskModalProps {
@@ -52,7 +54,8 @@ interface TaskModalProps {
 
 export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
   const [selectAttachmanet, setAttachements] = useState<string>()
-  const [subTask,setSubTask]=useState([])
+  const [subTask, setSubTask] = useState([])
+  const [criteria, setCriteria] = useState([])
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -64,7 +67,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
     priority: "Medium" as "Low" | "Medium" | "High",
     projectId: "",
     attachedURLs: [],
-    subTask:[]
+    subTask: [],
+    acceptanceCriteria: [],
 
   });
 
@@ -90,7 +94,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
         priority: task.priority,
         projectId: task.projectId,
         attachedURLs: task.attachedURLs ?? [],
-        subTask:task.subTask??[]
+        subTask: task.subTask ?? [],
+        acceptanceCriteria: task.acceptanceCriteria ?? [],
       });
     } else {
       setFormData({
@@ -104,7 +109,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
         priority: "Medium",
         projectId: "",
         attachedURLs: [],
-        subTask:[]
+        subTask: [],
+        acceptanceCriteria: [],
       });
     }
   }, [task, isOpen]);
@@ -119,7 +125,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
   }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    formData.subTask=subTask
+    formData.subTask = subTask
+    formData.acceptanceCriteria=criteria
     if (uploads.length > 0) {
       const uploadPromises = uploads.map((file: File) => uploadAttachment(file.file));
       const uploadedUrls = await Promise.all(uploadPromises);
@@ -223,7 +230,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                 </SelectContent>
               </Select>
             </div>
-           
+
 
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='assignedUser' className='text-right'>
@@ -323,11 +330,17 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
 
 
             </div>
-             <div className='grid grid-cols-4 items-center gap-4'>
+            <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='subTask' className='text-right'>
                 Subtask
               </Label>
-              <SubtaskSection setSubTask={setSubTask} subTask={task?.subTask??[]} taskId={task?._id??""} />
+              <SubtaskSection setSubTask={setSubTask} subTask={task?.subTask ?? []} taskId={task?._id ?? ""} />
+            </div>
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='subTask' className='text-right'>
+                Criteria
+              </Label>
+              <CriteriaSection setCriteria={setCriteria} criteria={task?.acceptanceCriteria ?? []} taskId={task?._id ?? ""} />
             </div>
           </div>
           <DialogFooter>

@@ -98,7 +98,6 @@ const handleChangePage = (event, newPage) => {
    
  try {
  
-
  setLoader("Creating new task ...");
 
     const newTask = {

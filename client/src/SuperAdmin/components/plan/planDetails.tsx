@@ -62,7 +62,6 @@ const emptyPlan: Omit<Plan, "id"> = {
 export const PlanDetails = () => {
   const { data, isLoading, error, refetch } = useFetchAllPlansQuery("");
   const [loading, setLoading] = useState(false)
-  const [ setPlans] = useState<Plan[]>([]);
   const [open, setOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
   const [form, setForm] = useState(emptyPlan);
@@ -107,11 +106,8 @@ try {
     } else {
    
 
-      const newPlan: Plan = {
-        id: crypto.randomUUID(),
-        ...form,
-      };
-      setPlans((prev) => [...prev, newPlan]);
+    
+      //  setPlans((prev) => [...prev, newPlan]);
       try {
         await createPlan(form);
         setLoading(false)

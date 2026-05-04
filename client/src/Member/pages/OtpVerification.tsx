@@ -14,7 +14,7 @@ const OtpVerification = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const forward = useSelector((state: RootState) => state.forward);
+  const forward = useSelector((state: RootState) => state.forward.isForward);
 
   const userData = useSelector((state: RootState) => state.user?.user);
 

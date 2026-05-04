@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import {
   Card,
   CardContent,
@@ -7,32 +7,31 @@ import {
   CardTitle,
 } from "../../Custom/ui/card";
 import { Users, FolderOpen, AlertTriangle, CheckCircle, ArrowRight } from "lucide-react";
-import { OverviewCard } from '../../Custom/reusecomponents/OverviewCard';
 import{ProjectProgressCard} from "./ProjectProgressCard"
-import { MembersCard, TeamCard } from './SProjectMembersList';
+import { MembersCard } from './SProjectMembersList';
 import { STaskBoard } from './STaskshows';
 import { BurndownChart } from './SBurnoutChart';
 import { TaskDistribution } from './STaskStatus';
 import { TaskApprovalSection } from './StaskApproval';
 import { projectSpecifyDashboard } from '../apis/dashboardApi';
-import { useNavigate } from 'react-router-dom';
+import { setTitle } from '../../Redux/feature/ForwardSlice';
+import { useDispatch } from 'react-redux';
 interface props{
 name:string,
 _id:string
 }
 
 function SwichDashboard({selectedProject}:props) {
-  const { _id, name } = selectedProject;
-console.log(selectedProject,"PROJECTSSSSSSS")
 const [dashboardCard, setDashboardCard] = useState(null);
 const [taskDistribution, setTaskDistribution] = useState(null);
 const [memebrList, setMemebrList] = useState([]);
 const [burnDown, setBurnDown] = useState([]);
 const [taskList, setTaskList] = useState([]);
 const [approvalData, setApprovalData] = useState(null);
-const navigate = useNavigate();
+const dispatch = useDispatch()
 
 useEffect(() => {
+
   async function fecthProjectDashboard(selectedProject: string) {
     const result = await projectSpecifyDashboard(selectedProject);
 
@@ -207,7 +206,8 @@ useEffect(() => {
       </h2>
 
       <button
-        onClick={() => navigate("/tasks")}
+      
+        onClick={() => dispatch(setTitle("tasks"))}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
       >
         View Tasks
@@ -230,7 +230,7 @@ useEffect(() => {
       </h2>
 
       <button
-        onClick={() => navigate("/approvals")}
+        onClick={() => dispatch(setTitle("approval"))}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all"
       >
         View Approvals

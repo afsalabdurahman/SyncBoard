@@ -36,3 +36,10 @@ export interface DialogMessage {
   title: string | null;
   description: string | null;
 }
+export interface members{
+  id: string|number
+          name: string;
+          role: string;
+          initials: string;
+          color:string
+}

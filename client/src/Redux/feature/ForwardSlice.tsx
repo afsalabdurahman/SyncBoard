@@ -1,19 +1,34 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: boolean = false;
+interface ForwardState {
+  isForward: boolean;
+  title: string;
+}
+
+const initialState: ForwardState = {
+  isForward: false,
+  title: "",
+};
 
 const forwardSlice = createSlice({
   name: "forward",
   initialState,
   reducers: {
     setForward: (state, action: PayloadAction<boolean>) => {
-      return action.payload; // return new boolean value
+      state.isForward = action.payload;
     },
+
     toggleForward: (state) => {
-      return !state; // flip true/false
+      state.isForward = !state.isForward;
+    },
+
+    setTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload;
     },
   },
 });
 
-export const { setForward, toggleForward } = forwardSlice.actions;
+export const { setForward, toggleForward, setTitle } =
+  forwardSlice.actions;
+
 export default forwardSlice.reducer;

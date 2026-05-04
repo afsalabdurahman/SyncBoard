@@ -11,7 +11,6 @@ export const SubscriptionsPage = () => {
   const [sidebarCollapsed] = useState(false)
   const [changePage, setChangePage] = useState(1)
   const { data, isLoading, refetch } = useFetchSubscriptionPageQuery(changePage)
-
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
   const [plan, setPlan] = useState("all")
@@ -25,7 +24,6 @@ export const SubscriptionsPage = () => {
       setMock(data.data)
     }
   }, [data])
-
   const handleChangePage = (page) => {
     setChangePage(page);
     refetch()

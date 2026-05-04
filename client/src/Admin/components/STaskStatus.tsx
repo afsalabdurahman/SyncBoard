@@ -41,10 +41,10 @@ useEffect(() => {
 
   return (
    <>
-    <div className="border border-slate-700/50 rounded-2xl p-5 ">
+    <div className="border border-slate-700/50 rounded-2xl p-5  ">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-semibold text-slate-200">
+        <span className="text-sm font-semibold  text-[#111827]">
           Task Distribution
         </span>
 
@@ -84,7 +84,7 @@ useEffect(() => {
       </ResponsiveContainer>
 
       {/* Legend */}
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-2 mt-2 ">
         {pieData.map((item) => (
           <div
             key={item.name}

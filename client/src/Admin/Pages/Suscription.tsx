@@ -5,7 +5,7 @@ import { X, Check, Users, Shield, Zap } from "lucide-react"
 import { Button } from "../../Custom/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../Custom/ui/card"
 import { Badge } from "../../Custom/ui/badge"
-import {setForward} from "../../Redux/feature/ForwardSlice"
+import { setTitle} from "../../Redux/feature/ForwardSlice"
 import { useDispatch } from "react-redux"
 interface ModalProps {
   isOpen: () => void;
@@ -117,7 +117,7 @@ const handleClose = () =>{
                 </CardContent>
 
                 <CardFooter>
-                  <Button onClick={()=>dispacth(setForward(true))}
+                  <Button onClick={()=>dispacth(setTitle("suscription"))}
                     className={`w-full ${plan.popular ? "bg-primary hover:bg-primary/90" : ""}`}
                     variant={plan.popular ? "default" : "outline"}
                   >

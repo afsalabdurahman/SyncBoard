@@ -63,6 +63,7 @@ import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 
 import { ProjectFormData } from "../types/projetctTypes";
 import { toast } from "react-toastify";
+import { setTitle, toggleForward } from "../../Redux/feature/ForwardSlice";
 
 export default function ProjectsPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -124,7 +125,8 @@ export default function ProjectsPage() {
           limit: rowPerPage,
         })
       );
-
+       dispatch(setTitle("projects"))
+  dispatch(toggleForward())
       toast.success("Created project successfully 🎉");
       setIsModalOpen(false);
     } catch (error: unknown) {
@@ -132,6 +134,7 @@ export default function ProjectsPage() {
     } finally {
       setLoader("");
     }
+   
   };
 
   const handleEditProject = async (projectData: ProjectFormData) => {
@@ -171,6 +174,8 @@ export default function ProjectsPage() {
         limit: rowPerPage,
       })
     );
+    dispatch(setTitle("projects"))
+     dispatch(toggleForward())
   };
 
   const openAddModal = () => {

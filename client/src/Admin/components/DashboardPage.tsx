@@ -35,22 +35,17 @@ import { useEffect, useState } from "react";
 import SwichDashboard from "./SwichDashboard";
 import { fetchProjectNames } from "../apis/dashboardApi";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
-import {setSwitchProject} from "../../Redux/feature/swichProjectSlice";
-import { useDispatch } from "react-redux";
 export function DashboardPage() {
-  const dispatch = useDispatch();
   // dispatch(setSwitchProject({
-    
+
   // })) 
 
+  const titles = useSelector((state) => state?.isForward?.title);
 
   const workspaceId = useWorkspaceid();
-  const isSwitch= useSelector((state)=>state.switch.isSwitch);
-  const projectID=useSelector((state)=>state.switch.projectId);
-   const projectName=useSelector((state)=>state.switch.projectName);
-  console.log(isSwitch,"isSwich",projectID,projectName)
+  const projectID = useSelector((state) => state.switch.projectId);
+  const projectName = useSelector((state) => state.switch.projectName);
   const initialState = useSelector((state: RootState) => {
-    console.log(state,"stateee")
     const countProject = state.projects.list.length;
     const countProjectCompleted = state.projects.list.filter((project) => project.status == "Completed");
     const countProjectInProgress = state.projects.list.filter((project) => project.status == "In Progress");
@@ -87,29 +82,29 @@ export function DashboardPage() {
     { name: "Done", value: initialState.countTaskCompleted, fill: "#10b981" },
   ];
 
-const [projects, setProjects] = useState<{ name: string; _id: string }[]>([
-  {
-    name: "All",
-    _id: "",
-  },
-]);
-const [selectedProject, setSelectedProject] = useState<string|null>("");
-useEffect(() => {
-  async function fetchAllprojects(workspaceId: string) {
-    try {
-      const names = await fetchProjectNames(workspaceId);
+  const [ setProjects] = useState<{ name: string; _id: string }[]>([
+    {
+      name: "All Projects",
+      _id: "",
+    },
+  ]);
+  const [setSelectedProject] = useState<string | null>("");
+  useEffect(() => {
+    async function fetchAllprojects(workspaceId: string) {
+      try {
+        const names = await fetchProjectNames(workspaceId);
 
-      setProjects([
-        { name: "All", _id: "" },
-        ...names,
-      ]);
-    } catch{
-     setSelectedProject("")
+        setProjects([
+          { name: "All Projects", _id: "" },
+          ...names,
+        ]);
+      } catch {
+        setSelectedProject("")
+      }
     }
-  }
 
-  fetchAllprojects(workspaceId);
-}, [workspaceId]);
+    fetchAllprojects(workspaceId);
+  }, [workspaceId, titles, setProjects, setSelectedProject]);
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -118,11 +113,11 @@ useEffect(() => {
 
         {/* Logo */}
         <div className="text-xl font-bold text-gray-800">
-<h4 className="text-2xl md:text-3xl font-medium tracking-tight text-slate-800 font-sans flex items-center gap-2">
-  <span>Overview</span>
-  <span className="text-slate-400">:</span>
-  <span className="text-slate-600 font-medium">{projectName}</span>
-</h4>
+          <h4 className="text-2xl md:text-3xl font-medium tracking-tight text-slate-800 font-sans flex items-center gap-2">
+            <span>Overview</span>
+            <span className="text-slate-400">:</span>
+            <span className="text-slate-600 font-medium">{projectName}</span>
+          </h4>
         </div>
 
         {/* Project Selector */}
@@ -170,7 +165,7 @@ onChange={(e) => {
 
 
       </div>
-      {projectID? <SwichDashboard selectedProject={projectID} /> :
+      {projectID ? <SwichDashboard selectedProject={projectID} /> :
         <aside>
           {/* divisio start from here........................................ */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

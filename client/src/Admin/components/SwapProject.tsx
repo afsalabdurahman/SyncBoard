@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchProjectNames } from "../apis/dashboardApi";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { setSwitchProject } from "../../Redux/feature/swichProjectSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 type Project = {
   name: string;
@@ -23,21 +23,19 @@ function getInitials(name: string) {
 export const SwapProject = () => {
    const dispatch = useDispatch();
   const workspaceId = useWorkspaceid();
-
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [projects, setProjects] = useState<Project[]>([
     {
-      name: "All",
+      name: "All Projects",
       _id: "",
     },
   ]);
 
   const [selectedProject, setSelectedProject] = useState<Project>({
-    name: "All",
+    name: "All Projects",
     _id: "",
   });
-console.log(selectedProject,"selectedProject")
   function getColors(name: string) {
     const colors = [
       "bg-rose-500",
@@ -50,14 +48,15 @@ console.log(selectedProject,"selectedProject")
     const index = name.length % colors.length;
     return colors[index];
   }
-
+  const isForward = useSelector((state) => state?.forward?.isForward);
   useEffect(() => {
+    
     async function fetchAllprojects() {
       try {
         const names = await fetchProjectNames(workspaceId);
 
         const updatedProjects = [
-          { name: "All", _id: "" },
+          { name: "All Projects", _id: "" },
           ...names,
         ];
 
@@ -72,7 +71,9 @@ console.log(selectedProject,"selectedProject")
     if (workspaceId) {
       fetchAllprojects();
     }
-  }, [workspaceId]);
+  }, [workspaceId,isForward]);
+
+
 
   return (
     <div className="relative">

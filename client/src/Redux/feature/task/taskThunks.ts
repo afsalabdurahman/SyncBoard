@@ -6,7 +6,6 @@ import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
 
 export const fetchTaskData = createAsyncThunk('/adminTaskData/fetchTasks', async ({workspaceid, page, limit,projectId }: {workspaceid:string, page: number, limit: number,projectId:string|null }, { rejectWithValue }) => {
   try {
-    console.log(projectId,"projecTSD TASK")
 
     const response = await apiService.get(`task/mytasks/${workspaceid}?page=${page}&limit=${limit}&projectId=${projectId??""}`);
 
