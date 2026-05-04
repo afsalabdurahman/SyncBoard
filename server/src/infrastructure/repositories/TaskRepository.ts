@@ -1,11 +1,11 @@
 import mongoose, { Types } from "mongoose";
 import { Task } from "../../domain/entities/Task";
 import { ITaskRepository } from "../../domain/interfaces/repositories/ITaskRepository";
-import {  NotFoundError } from "../../utils/errors";
+import { NotFoundError } from "../../utils/errors";
 import { TaskModel } from "../database/models/TaskModel";
 import { commentType } from "../../types/taskTypes";
 import { ProjectModel } from "../database/models/ProjectModel";
-import { donetChartData, projectSpecifyTaskCount } from "../../application/dto/TaskDTOs";
+import { DbTaskUI, donetChartData, projectSpecifyTaskCount } from "../../application/dto/TaskDTOs";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -73,13 +73,13 @@ export class TaskRepository implements ITaskRepository {
       );
     }
   }
-  async allCompletedTasks(workspaceid: Types.ObjectId, page?: number, limit?: number, skip?: number,projectId?:string|null): Promise<{ completedTasks: Task[], taskReject: Task[], totalItems: number }> {
+  async allCompletedTasks(workspaceid: Types.ObjectId, page?: number, limit?: number, skip?: number, projectId?: string | null): Promise<{ completedTasks: Task[], taskReject: Task[], totalItems: number }> {
     if (!limit) throw new NotFoundError("not found")
-const completedTasks = await TaskModel.find({
-  status: "Completed",
-  ...(projectId?.trim() ? { projectId } : {})
-});
-      const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
+    const completedTasks = await TaskModel.find({
+      status: "Completed",
+      ...(projectId?.trim() ? { projectId } : {})
+    });
+    const taskReject = await TaskModel.find({ approvalStatus: "Rejected" }).skip(skip ?? 0).limit(Math.ceil(limit / 2)).sort({ createdAt: -1 }).lean().exec()
     const totalItems = await TaskModel.countDocuments();
     // const items = await TaskModel.find()
     //   .skip(skip)
@@ -127,7 +127,7 @@ const completedTasks = await TaskModel.find({
     const countTask = TaskModel.countDocuments();
     return countTask
   }
-  async getPagenationaTask(workspaceId: Types.ObjectId, page: number, limit: number, skip: number,projectId:string|null): Promise<{
+  async getPagenationaTask(workspaceId: Types.ObjectId, page: number, limit: number, skip: number, projectId: string | null): Promise<{
     items: Task[];
     totalItems: number;
   }> {
@@ -138,12 +138,12 @@ const completedTasks = await TaskModel.find({
     await TaskModel.find({ projectId: projects?._id });
 
     // END 
-const totalItems = await TaskModel.countDocuments(
-  projectId ? { projectId } : {}
-);
-   const items = await TaskModel.find(
-  projectId ? { projectId } : {}
-)
+    const totalItems = await TaskModel.countDocuments(
+      projectId ? { projectId } : {}
+    );
+    const items = await TaskModel.find(
+      projectId ? { projectId } : {}
+    )
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
@@ -226,159 +226,211 @@ const totalItems = await TaskModel.countDocuments(
     );
   }
 
+  async updateApprovalCriteria(
+    taskId: Types.ObjectId,
+    title: string
+  ): Promise<void> {
+
+    const task = await TaskModel.findById(taskId);
+
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    if (!task.acceptanceCriteria?.length) {
+      throw new Error(
+        "No acceptance criteria found"
+      );
+    }
+
+    if (!title) {
+      throw new Error(
+        "Title is required"
+      );
+    }
+
+    const criteria =
+      task.acceptanceCriteria.find(
+        (item) =>
+          item?.title?.trim() ===
+          title?.trim()
+      );
+
+    if (!criteria) {
+      throw new Error(
+        "Acceptance criteria not found"
+      );
+    }
+
+    criteria.status =
+      criteria.status === "Completed"
+        ? "Pending"
+        : "Completed";
+
+      await task.save();
+
+
+
+  }
 
 
 
 
-async findTaskCountByProjectId(
-  projectId: string
-): Promise<projectSpecifyTaskCount> {
-  const today = new Date().toISOString().split("T")[0];
+  async findTaskCountByProjectId(
+    projectId: string
+  ): Promise<projectSpecifyTaskCount> {
+    const today = new Date().toISOString().split("T")[0];
 
-  const result = await TaskModel.aggregate([
-    {
-      $match: {
-        projectId: projectId, // string match in tasks collection
-      },
-    },
-
-    {
-      $addFields: {
-        projectObjectId: { $toObjectId: "$projectId" },
-      },
-    },
-
-    {
-      $lookup: {
-        from: "projects",
-        localField: "projectObjectId",
-        foreignField: "_id",
-        as: "projectData",
-      },
-    },
-
-    {
-      $unwind: {
-        path: "$projectData",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-
-    {
-      $group: {
-        _id: null,
-
-        total_task: { $sum: 1 },
-
-        completed_task: {
-          $sum: {
-            $cond: [{ $eq: ["$status", "Completed"] }, 1, 0],
-          },
+    const result = await TaskModel.aggregate([
+      {
+        $match: {
+          projectId: projectId, // string match in tasks collection
         },
+      },
 
-        overdue_task: {
-          $sum: {
-            $cond: [
-              {
-                $and: [
-                  { $lt: ["$deadline", today] },
-                  { $ne: ["$status", "Completed"] },
-                ],
+      {
+        $addFields: {
+          projectObjectId: { $toObjectId: "$projectId" },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "projects",
+          localField: "projectObjectId",
+          foreignField: "_id",
+          as: "projectData",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$projectData",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $group: {
+          _id: null,
+
+          total_task: { $sum: 1 },
+
+          completed_task: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "Completed"] }, 1, 0],
+            },
+          },
+
+          overdue_task: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    { $lt: ["$deadline", today] },
+                    { $ne: ["$status", "Completed"] },
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+
+          total_members: {
+            $first: {
+              $size: {
+                $ifNull: ["$projectData.assignedUsers", []],
               },
-              1,
-              0,
-            ],
-          },
-        },
-
-        total_members: {
-          $first: {
-            $size: {
-              $ifNull: ["$projectData.assignedUsers", []],
             },
           },
         },
       },
-    },
 
-    {
-      $project: {
-        _id: 0,
-        total_task: 1,
-        completed_task: 1,
-        overdue_task: 1,
-        total_members: 1,
-      },
-    },
-  ]);
-
-
-  return (
-    result[0] || {
-      total_task: 0,
-      completed_task: 0,
-      overdue_task: 0,
-      total_members: 0,
-    }
-  );
-}
-async donetChartData(projectId: string): Promise<donetChartData> {
-
-  const result = await TaskModel.aggregate([
-    {
-      $match: {
-        projectId: projectId.toString(),
-      },
-    },
-
-    {
-      $group: {
-        _id: null,
-
-        todo: {
-          $sum: {
-            $cond: [{ $eq: ["$status", "To Do"] }, 1, 0],
-          },
-        },
-
-        inprogress: {
-          $sum: {
-            $cond: [{ $eq: ["$status", "In Progress"] }, 1, 0],
-          },
-        },
-
-        completed: {
-          $sum: {
-            $cond: [{ $eq: ["$status", "Completed"] }, 1, 0],
-          },
+      {
+        $project: {
+          _id: 0,
+          total_task: 1,
+          completed_task: 1,
+          overdue_task: 1,
+          total_members: 1,
         },
       },
-    },
+    ]);
 
-    {
-      $project: {
-        _id: 0,
-        todo: 1,
-        inprogress: 1,
-        completed: 1,
+
+    return (
+      result[0] || {
+        total_task: 0,
+        completed_task: 0,
+        overdue_task: 0,
+        total_members: 0,
+      }
+    );
+  }
+  async donetChartData(projectId: string): Promise<donetChartData> {
+
+    const result = await TaskModel.aggregate([
+      {
+        $match: {
+          projectId: projectId.toString(),
+        },
       },
-    },
-  ]);
 
-  return (
-    result[0] || {
-      todo: 0,
-      inprogress: 0,
-      completed: 0,
-    }
-  );
-}
-async burnoutChartTask(projectId: string): Promise<Task[]> {
-  const tasks = await TaskModel.find({ projectId }).lean()
-  return tasks
-}
-async findTaskApprovalstatus(projectId: string): Promise<Task[]> {
-  const tasks = await TaskModel.find({ projectId, approvalStatus: "Waiting" }).lean().exec();
-  return tasks;
-}
+      {
+        $group: {
+          _id: null,
+
+          todo: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "To Do"] }, 1, 0],
+            },
+          },
+
+          inprogress: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "In Progress"] }, 1, 0],
+            },
+          },
+
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "Completed"] }, 1, 0],
+            },
+          },
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          todo: 1,
+          inprogress: 1,
+          completed: 1,
+        },
+      },
+    ]);
+
+    return (
+      result[0] || {
+        todo: 0,
+        inprogress: 0,
+        completed: 0,
+      }
+    );
+  }
+  async burnoutChartTask(projectId: string): Promise<Task[]> {
+    const tasks = await TaskModel.find({ projectId }).lean()
+    return tasks
+  }
+  async findTaskApprovalstatus(projectId: string): Promise<Task[]> {
+    const tasks = await TaskModel.find({ projectId, approvalStatus: "Waiting" }).lean().exec();
+    return tasks;
+  }
+
+
+  async findTaskById(taskId: Types.ObjectId): Promise<DbTaskUI | null> {
+    const task = await TaskModel.findById(taskId).lean()
+    return task as unknown as DbTaskUI ?? null
+  }
 }

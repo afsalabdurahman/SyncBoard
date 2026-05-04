@@ -1,10 +1,10 @@
-import express, {  Response, Request,  } from "express";
+import express, { Response, Request, } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "reflect-metadata";
 import { envConfig } from "./infrastructure/config/env.config";
 import dotenv from "dotenv";
-import { createServer,  } from "http";
+import { createServer, } from "http";
 import authRoutes from "./presentation/routes/authRoutes";
 import workspaceRoutes from "./presentation/routes/workspaceRoutes";
 import ragRoutes from "./presentation/routes/ragRoutes"
@@ -22,15 +22,9 @@ import { initSocketServer } from "./infrastructure/services/SocketService"
 import superRoutes from "./presentation/routes/superRoutes";
 import ticketRoutes from "./presentation/routes/TicketRoutes"
 import suscriptionRoutes from "./presentation/routes/subscriptionRoutes"
-
-
-
+import { requestLogger } from "./presentation/middleware/reqestLogger";
 
 dotenv.config();
-
-
-
-
 const app = express();
 app.use("/api/checkout", stripehookRoutes);
 
@@ -46,6 +40,7 @@ const io = new Server(httpServer, {
   },
 });
 
+app.use(requestLogger);
 
 
 app.use(express.json());

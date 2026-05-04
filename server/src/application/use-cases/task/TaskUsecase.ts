@@ -4,7 +4,7 @@ import { NotFoundError, ValidationError } from "../../../utils/errors";
 import { ITaskRepository } from "../../../domain/interfaces/repositories/ITaskRepository";
 import { ITaskUseCase } from "../../repositories/ITask";
 import { io } from "../../../server";
-import { commentsDTO, CompletedTaskResponseDTO, donetChartData, FormattedTask, projectSpecifyTaskCount, TaskRequestDTO,  TaskResponseDTO } from "../../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, donetChartData, FormattedTask, projectSpecifyTaskCount, TaskRequestDTO, TaskResponseDTO, UIresponseTask } from "../../dto/TaskDTOs";
 import { TaskMapper } from "../../mappers/TaskMapper";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { commentType, taskType } from "../../../types/taskTypes";
@@ -14,13 +14,11 @@ import { taskFilter } from "../../../utils/taskFilter";
 export class TaskUsecase implements ITaskUseCase {
   constructor(
     @inject("TaskRepository") private _taskRepository: ITaskRepository
-  ) { }
+  ) {}
 
   async execute(input: TaskRequestDTO): Promise<TaskResponseDTO> {
     const isValid = TaskMapper.validateTask(input);
-
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
-    //const vectors= await addToVectors(input)
     const vectors = [1]
     const taskEntity = TaskMapper.mapTaskToEntity(input, vectors);
 
@@ -59,10 +57,10 @@ export class TaskUsecase implements ITaskUseCase {
   async updateTaskStatus(taskId: string, status: string): Promise<void> {
     await this._taskRepository.updateTaskStatus(taskId, status);
   }
-  async completedTask(workspaceid: string, page: number, limit?: number, skip?: number,projectId?:string|null): Promise<{ items: CompletedTaskResponseDTO, totalItems: number }> {
+  async completedTask(workspaceid: string, page: number, limit?: number, skip?: number, projectId?: string | null): Promise<{ items: CompletedTaskResponseDTO, totalItems: number }> {
 
     const { completedTasks, taskReject, totalItems } =
-      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid), page, limit, skip,projectId);
+      await this._taskRepository.allCompletedTasks(stringToMongoObj(workspaceid), page, limit, skip, projectId);
     const tasks = [
       ...(Array.isArray(completedTasks) ? completedTasks : [completedTasks]),
       ...(Array.isArray(taskReject) ? taskReject : [taskReject]),
@@ -90,11 +88,11 @@ export class TaskUsecase implements ITaskUseCase {
 
     return projectTask;
   }
-  async paginationTask(workspaceId: string, page: number, limit: number, skip: number,projectId:string|null): Promise<{
+  async paginationTask(workspaceId: string, page: number, limit: number, skip: number, projectId: string | null): Promise<{
     items: Task[];
     totalItems: number
   }> {
-    const { items, totalItems } = await this._taskRepository.getPagenationaTask(stringToMongoObj(workspaceId), page, limit, skip,projectId)
+    const { items, totalItems } = await this._taskRepository.getPagenationaTask(stringToMongoObj(workspaceId), page, limit, skip, projectId)
     return { items: items, totalItems }
   }
   async addComment(taskId: string, comment: commentType): Promise<void> {
@@ -119,10 +117,14 @@ export class TaskUsecase implements ITaskUseCase {
   async updateSubtask(taskId: string, title: string): Promise<void> {
     await this._taskRepository.updateSubTask(stringToMongoObj(taskId), title)
   }
+   async updateCriteria(taskId: string, title: string): Promise<void> {
+    await this._taskRepository.updateApprovalCriteria(stringToMongoObj(taskId), title.trim())
+  }
+
   async findTaskCountByProjectId(projectId: string): Promise<projectSpecifyTaskCount> {
     const result = await this._taskRepository.findTaskCountByProjectId(projectId);
-    result.projectProgress = ( result.completed_task/ result.total_task) * 100 || 0
-    return result 
+    result.projectProgress = (result.completed_task / result.total_task) * 100 || 0
+    return result
   }
   async findDonetChartData(projectId: string): Promise<donetChartData> {
     const result = await this._taskRepository.donetChartData(projectId);
@@ -131,13 +133,20 @@ export class TaskUsecase implements ITaskUseCase {
   async findTasksByProjectId(projectId: string): Promise<FormattedTask[]> {
     const tasks = await this._taskRepository.burnoutChartTask(projectId);
     const formattedTasks = TaskMapper.mapToListtaskDashboard(tasks)
-  return formattedTasks
+    return formattedTasks
 
   }
   async findTaskApprovalStatus(projectId: string): Promise<Task[]> {
     const tasks = await this._taskRepository.findTaskApprovalstatus(projectId);
     TaskMapper.mapToApprovalTask(tasks)
-return tasks
+    return tasks
+  }
+  async findTaskDetailsBYId(taskId: string): Promise<UIresponseTask> {
+    const task = await this._taskRepository.findTaskById(stringToMongoObj(taskId))
+    if(!task) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+    const UiData= TaskMapper.convertTaskForUImapper(task)
+return UiData
+ 
   }
 
 }

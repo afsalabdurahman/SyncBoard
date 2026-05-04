@@ -14,6 +14,7 @@ export interface TaskRequestDTO {
   project?: string;
   attachedURLs?:string[];
  subTask?: { title: string; status: "Pending" | "Completed" ,estimate:number}[];
+  acceptanceCriteria?:{title: string; status: "Pending" | "Completed"}[];
 }
 
 export interface TaskResponseDTO{
@@ -100,4 +101,83 @@ export interface FormattedTask {
   color: string;
   open: boolean;
   subtasks: FormattedSubTask[];
+}
+export interface DbTaskUI {
+  _id: Types.ObjectId;
+  name: string;
+  assignedUser: string;
+  description: string;
+  deadline: string;
+  priority: string;
+  status: string;
+  project: string;
+
+  comments: {
+    name: string;
+    text: string;
+    urls: string[];
+    timestamp: string;
+  }[];
+
+  attachedURLs: string[];
+
+  subTask: {
+    title: string;
+    estimate: number;
+    status: string;
+  }[];
+
+  acceptanceCriteria: {
+    title: string;
+    status: string;
+  }[];
+}
+export interface UIresponseTask{
+
+  _id: string;
+  name: string;
+  description: string;
+
+  assignedUser: {
+    name: string;
+    email: string;
+  };
+
+  project: {
+    name: string;
+  };
+
+  deadline: string;
+  priority: string;
+  status: string;
+  approvalStatus: string;
+
+  subTask: {
+    id: number;
+    title: string;
+    estimate: number;
+    done: boolean;
+    status: string;
+  }[];
+
+  approvalCriteria: {
+    id: number;
+    title: string;
+    completed: boolean;
+  }[];
+
+  comments: {
+    id: number;
+    user: string;
+    text: string;
+    time: string;
+    attachments: string[];
+  }[];
+
+  attachedURLs: {
+    id: number;
+    label: string;
+    link: string;
+  }[];
+
 }

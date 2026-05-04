@@ -1,17 +1,10 @@
-import { ILogger } from '../../application/repositories/ilogger/ILogger';
-import { WinstonLogger } from './WinstonLogger';
+// infrastructure/logger/WinstonLoggerImpl.ts
+import { ILogger } from '../../application/repositories/ilogger/ILogger'; 
+import { WinstonLogger } from './WingtonLogger';
 
 export class WinstonLoggerImpl implements ILogger {
   info(message: string): void {
     WinstonLogger.info(message);
-  }
-
-  error(message: string | Error): void {
-    if (message instanceof Error) {
-      WinstonLogger.error(message.stack || message.message);
-    } else {
-      WinstonLogger.error(message);
-    }
   }
 
   warn(message: string): void {
@@ -20,5 +13,13 @@ export class WinstonLoggerImpl implements ILogger {
 
   debug(message: string): void {
     WinstonLogger.debug(message);
+  }
+
+  error(message: string | Error): void {
+    if (message instanceof Error) {
+      WinstonLogger.error(message); // Winston handles stack automatically
+    } else {
+      WinstonLogger.error(message);
+    }
   }
 }

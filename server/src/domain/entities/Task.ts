@@ -18,6 +18,7 @@ export class Task {
   comments?:commentType[];
   attachedURLs?:string[];
    subTask?: { title: string; status: "Pending" | "Completed",estimate:number }[];
+   acceptanceCriteria?:{title:string;status:"Pending"|"Completed"}[];
   updatedAt?:string
 
   constructor({
@@ -36,6 +37,7 @@ export class Task {
     comments,
     attachedURLs,
     subTask,
+    acceptanceCriteria,
     updatedAt
   }: {
     id?: ObjectId | string;
@@ -53,6 +55,7 @@ export class Task {
     comments?:commentType[],
     attachedURLs?:string[],
      subTask?: { title: string; status: "Pending" | "Completed" ,estimate:number}[];
+     acceptanceCriteria?:{title:string;status:"Pending"|"Completed"}[];
     updatedAt?:string
   }) {
     this.id = id;
@@ -71,5 +74,6 @@ export class Task {
     this.attachedURLs=attachedURLs;
     this.updatedAt = updatedAt;
     this.subTask =subTask;
+    this.acceptanceCriteria=acceptanceCriteria
   }
 }

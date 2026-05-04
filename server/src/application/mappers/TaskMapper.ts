@@ -1,6 +1,6 @@
 import { Task } from "../../domain/entities/Task";
 import { taskType } from "../../types/taskTypes";
-import { commentsDTO, CompletedTaskResponseDTO, FormattedTask, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
+import { commentsDTO, CompletedTaskResponseDTO, DbTaskUI, FormattedTask, TaskRequestDTO, TaskResponseDTO } from "../dto/TaskDTOs";
 import { z } from "zod";
 
 export const TaskStatusSchema = z.enum(["To Do", "In Progress", "Completed"]);
@@ -24,7 +24,8 @@ export class TaskMapper {
       projectId: input.projectId,
       embedding: vector,
       attachedURLs: input.attachedURLs,
-      subTask: input.subTask
+      subTask: input.subTask,
+      acceptanceCriteria:input.acceptanceCriteria,
 
     })
   }
@@ -175,5 +176,92 @@ export class TaskMapper {
     })
     
 
+  }
+  
+   static convertTaskForUImapper = (
+  dbTask: DbTaskUI
+) => {
+  return {
+    _id: dbTask._id.toString(),
+
+    name: dbTask.name,
+
+    description: dbTask.description,
+
+    assignedUser: {
+      name: dbTask.assignedUser,
+      email: "No Email Available",
+    },
+
+    project: {
+      name: dbTask.project,
+    },
+
+    deadline: dbTask.deadline,
+
+    priority: dbTask.priority,
+
+    status:
+      dbTask.status === "To Do"
+        ? "Todo"
+        : dbTask.status,
+
+    approvalStatus: "Pending Review",
+
+    /* Subtasks */
+    subTask: dbTask.subTask?.map(
+      (item, index) => ({
+        id: index + 1,
+        title: item.title,
+        estimate: item.estimate,
+        done:
+          item.status === "Completed",
+
+        status:
+          item.status === "Completed"
+            ? "Done"
+            : "Todo",
+      })
+    ) || [],
+
+    /* Acceptance Criteria */
+    approvalCriteria:
+      dbTask.acceptanceCriteria?.map(
+        (item, index) => ({
+          id: index + 1,
+          title: item.title,
+
+          completed:
+            item.status === "Completed",
+        })
+      ) || [],
+
+    /* Comments */
+    comments:
+      dbTask.comments?.map(
+        (item, index) => ({
+          id: index + 1,
+          user: item.name,
+          text: item.text,
+
+          time: new Date(
+            item.timestamp
+          ).toLocaleString(),
+
+          attachments:
+            item.urls || [],
+        })
+      ) || [],
+
+    /* Attachments */
+    attachedURLs:
+      dbTask.attachedURLs?.map(
+        (url, index) => ({
+          id: index + 1,
+          label: `Attachment ${index + 1}`,
+          link: url,
+        })
+      ) || [],
+  };
   }
 }

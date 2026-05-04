@@ -17,6 +17,7 @@ export interface TaskDocument extends Document {
   comments: commentType[];
   attachedURLs: string[];
   subTask?: { title: string; status: "Pending" | "Completed", estimate: number }[];
+  acceptanceCriteria?:{title:string,status:"Pending"|"Completed"}[];
 }
 
 const TaskSchema = new Schema<TaskDocument>(
@@ -56,7 +57,16 @@ const TaskSchema = new Schema<TaskDocument>(
           default: 2
         }
       }
-    ]
+    ],
+    acceptanceCriteria:[{
+      _id:false,
+      title:{type:String},
+      status:{
+        type:String,
+        enum:["Pending", "Completed"],
+        default:"Pending"
+      }
+    }]
   },
   { timestamps: true, collection: "Task" }
 );
