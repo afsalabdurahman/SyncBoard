@@ -1,11 +1,12 @@
 import { toast } from "react-toastify";
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
+import { ROUTES } from "../../Constants/routeConstan";
 
 export const fetchProjectNames = async(workspaceId:string)=>{
     try {
 
-       const response = await apiService.get(`/project/name/all/${workspaceId}`);
+       const response = await apiService.get(ROUTES.PROJECTS.FETCH_PROJECT_NAMES.replace(":workspaceId",workspaceId));
        return response.data?.projectNamesAndId
     } catch (error) {
         catchErrorHandle(error,"Not found")
@@ -14,12 +15,12 @@ export const fetchProjectNames = async(workspaceId:string)=>{
 export const projectSpecifyDashboard = async(projectId:string)=>{
     try {
         const result = await Promise.allSettled([
-            apiService.get(`/task/count/dashboard/${projectId}`),
-            apiService.get(`/task/count/dashboard/donet/${projectId}`),
-             apiService.get(`/project/mebers/names/${projectId}`),
-              apiService.get(`/project/burndown/chart/${projectId}`),
-              apiService.get(`/task/project/list/${projectId}`),
-              apiService.get(`/task/project/approval/${projectId}`),
+            apiService.get(ROUTES.PROJECTS.COUNT_DASHBOARD.replace(":projectId",projectId)),
+            apiService.get(ROUTES.PROJECTS.DONET_CHART.replace(":projectId",projectId)),
+             apiService.get(ROUTES.PROJECTS.MEMBERS_LIST.replace(":projectId",projectId)),
+              apiService.get(ROUTES.PROJECTS.CHART.replace(":projectId",projectId)),
+              apiService.get(ROUTES.PROJECTS.LIST.replace(":projectId",projectId)),
+              apiService.get(ROUTES.PROJECTS.APPROVAL.replace(":projectId",projectId)),
 
         ])
        return result

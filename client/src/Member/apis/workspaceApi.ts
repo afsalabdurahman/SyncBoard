@@ -1,9 +1,9 @@
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle"
-
+import {ROUTES} from "../../Constants/routeConstan"
 export const createWorkspace = async(email:string,workspaceName:string,slug:string,title:string,role:string,ownerId:string) =>{
     try {
-        const response = await apiService.post("workspace/create",{
+        const response = await apiService.post(ROUTES.WORKSPACE.CREATE_WORKSPACE,{
             email,
           workspaceName,
           slug,
@@ -19,7 +19,7 @@ export const createWorkspace = async(email:string,workspaceName:string,slug:stri
 }
 export const sendInvitaionMail = async(emails:string|null,invitationLink:string)=>{
      try {
-         const response = await apiService.post(  "workspace/invite",{
+         const response = await apiService.post( ROUTES.WORKSPACE.INVITATION_LINK,{
             emails,
             invitationLink
          })

@@ -1,4 +1,5 @@
 import { User } from "../../Admin/types/userTypes";
+import { ROUTES } from "../../Constants/routeConstan";
 import api from "../../Services/apiServices/apiService";
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
@@ -9,7 +10,7 @@ export const updateUser = async (userId: string, updatedProfile: User) => {
     }
 
     const axiosResponse = await api.patch(
-      `member/profile/update/${userId}`,
+      ROUTES.SUPER_ADMIN.UPDATE_USER.replace(":userId",userId),
       {
         profileData: updatedProfile,
       },

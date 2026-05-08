@@ -3,11 +3,12 @@ import apiService from "../../../Services/apiServices/apiService";
 import { ProjectFormData } from "../../../Admin/types/projetctTypes"
 import { uploadAttachment } from '../../../services/Cloudinary';
 import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
+import { ROUTES } from "../../../Constants/routeConstan";
 
 export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProjects', async ({ workspaceId, page, limit }: {workspaceId:string, page: number, limit: number }) => {
   try {
 
-    const response = await apiService.get(`project/myprojects/${workspaceId}?page=${page}&limit=${limit}`);
+    const response = await apiService.get(ROUTES.PROJECTS.FETCH_PROJECTS.replace(":workspaceId",workspaceId)+`?page=${page}&limit=${limit}`);
     return {
       list: response.data.items,
       totalPages: response.data.totalPages,
@@ -23,7 +24,7 @@ export const fetchProjectData = createAsyncThunk('/adminProjectData/fetchProject
 });
 export const deleteProject = createAsyncThunk("adminProjectData/delete", async (projectId: string, { rejectWithValue }) => {
   try {
-    const response = await apiService.delete(`project/delete/${projectId}`);
+    const response = await apiService.delete(ROUTES.PROJECTS.DELETE_PEOJECT.replace(":projectId",projectId));
 
     if (response.status == 200) {
       return projectId
@@ -71,7 +72,7 @@ export const createProject = createAsyncThunk("adminProjectData/create", async (
     };
     delete newProject.attachment;
     delete newProject._id;
-    const response = await apiService.post(`project/create/${workspaceid}?activityId=${logId}`, {
+    const response = await apiService.post(ROUTES.PROJECTS.CREATE_PROJECT.replace(":workspaceid",workspaceid)+`?activityId=${logId}`, {
       newProject,
     });
 
@@ -109,7 +110,7 @@ export const updateProjectApi = createAsyncThunk("adminProjectData/update", asyn
   };
   delete updatedProject.attachment;
 
-  const response = await apiService.patch(`project/update/${projectId}`, {
+  const response = await apiService.patch(ROUTES.PROJECTS.UPDATE_PROJECT.replace(":projectId",projectId), {
     editingProject: updatedProject,
   });
   if (response.status == 200) {

@@ -3,11 +3,12 @@ import apiService from "../../../Services/apiServices/apiService";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
+import { ROUTES } from "../../../Constants/routeConstan";
 
 export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async ({ page, limit, workspaceslug,projectId }: { page: number, limit: number, workspaceslug: string,projectId:string|null  }, { rejectWithValue }) => {
   try {
 
-    const response = await apiService.get(`workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}&projectId=${projectId}`);
+    const response = await apiService.get(ROUTES.WORKSPACE.FECTCH_ALL_USERS.replace(":workspaceslug",workspaceslug)+`?page=${page}&limit=${limit}&projectId=${projectId}`);
     if (response.status == 200) {
 
       return response.data;
@@ -26,7 +27,7 @@ export const removeUser = createAsyncThunk('/adminUserData/removeuser', async ({
   try {
 
     const response = await apiService.patch(
-      `member/profile/update/${deleteUser}`,
+      ROUTES.MEMBER.REMOVE_MEMBER.replace(":deleteUser",deleteUser),
       {
         profileData: updatedProfile, // Use the up-to-date object
       },
@@ -48,7 +49,7 @@ export const removeUser = createAsyncThunk('/adminUserData/removeuser', async ({
 export const softDeleteUser = createAsyncThunk("/adminUserData/undelete", async (deleteUser, updatedProfile) => {
   try {
     const response = await apiService.patch(
-      `member/profile/update/${deleteUser}`,
+           ROUTES.MEMBER.REMOVE_MEMBER.replace(":deleteUser",deleteUser),
       {
         profileData: updatedProfile, // Use the up-to-date object
       },
@@ -65,7 +66,7 @@ export const updateUser = createAsyncThunk("/adminUserData/update", async ({ use
 
   try {
     const response = await apiService.patch(
-      `member/profile/update/${userId}`,
+    ROUTES.MEMBER.UPDATE_MEMBER.replace(":userId",userId),
       {
         profileData: updatedData,
       },

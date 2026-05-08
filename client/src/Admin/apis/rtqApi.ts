@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { ROUTES } from "../../Constants/routeConstan";
 const BASE_URL=import.meta.env.VITE_BASE_API_URL
 
 export const adminDataHandleApi = createApi({
@@ -10,20 +11,20 @@ export const adminDataHandleApi = createApi({
   tagTypes:["Tickets"],
   endpoints:(builder)=>({
     getTickets: builder.query({
-      query: (workspaceId) => `ticket/mytickets/${workspaceId}`,
+      query: (workspaceId) => ROUTES.TICKETS.MY_TICKETS.replace(":workspaceId",workspaceId),
       
       providesTags: ['Tickets'],
   }),
   createTickets:builder.mutation({
     query:(ticket)=>({
-         url:`ticket/create`,
+         url:ROUTES.TICKETS.CREATE,
          method:'POST',
          body:ticket,
     }),invalidatesTags:["Tickets"]
   }),
   updateMsg:builder.mutation({
     query:({msg,id})=>({
-      url:`ticket/update/message/${id}`,
+      url:ROUTES.TICKETS.UPDATE_MEG.replace(":id",id),
       method:'POST',
       body:msg
     }),invalidatesTags:["Tickets"]

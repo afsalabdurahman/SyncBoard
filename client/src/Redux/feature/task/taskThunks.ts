@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiService from "../../../Services/apiServices/apiService";
 import { catchErrorHandle } from "../../../Utility/catchErrorHandle";
+import { ROUTES } from "../../../Constants/routeConstan";
 
 
 
@@ -30,7 +31,7 @@ export const fetchTaskData = createAsyncThunk('/adminTaskData/fetchTasks', async
 
 export const addTaskApi = createAsyncThunk("/adminTaskData/add", async (newTask) => {
   try {
-    const response = await apiService.post("task/create", { newTask })
+    const response = await apiService.post(ROUTES.TASKS.CREATE, { newTask })
 
     return response.data
 
@@ -45,7 +46,7 @@ export const updateTaskApi = createAsyncThunk("adminTaskData/update", async (upd
   try {
     const id = updatedTask.id
 
-    const response = await apiService.patch(`task/update/${id}`, {
+    const response = await apiService.patch(ROUTES.TASKS.UPDATE.replace(":id",id), {
       updatedTask
     });
 
@@ -58,7 +59,7 @@ export const updateTaskApi = createAsyncThunk("adminTaskData/update", async (upd
 export const deleteTaskApi = createAsyncThunk("adminTaskData/delete", async (deleteTaskId: string) => {
   try {
 
-    const response = await apiService.delete(`task/delete/${deleteTaskId}`);
+    const response = await apiService.delete(ROUTES.TASKS.DELETE.replace("deleteTaskId",deleteTaskId));
     if (response.status == 200) {
       return deleteTaskId
     }

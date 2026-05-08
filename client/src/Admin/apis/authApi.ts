@@ -1,3 +1,4 @@
+import { ROUTES } from "../../Constants/routeConstan";
 import apiService from "../../Services/apiServices/apiService";
 import { AdminLoginResponse } from "../types/adminTypes";
 
@@ -9,7 +10,7 @@ export const adminLogin = async (
 ): Promise<AdminLoginResponse> => {
   try {
     const { data } = await apiService.post<AdminLoginResponse>(
-      "auth/admin/login",
+      ROUTES.PUBLIC.ADMIN_LOGIN,
       { email, password },
       { withCredentials: true }
     );
@@ -26,7 +27,7 @@ export const googleAdminAuth = async (credential: string,
 ): Promise<AdminLoginResponse> => {
   try {
     const { data } = await apiService.post<AdminLoginResponse>(
-      "auth/admin/google",
+      ROUTES.PUBLIC.GOOGLE_ADMIN_AUTH,
      {credential}
     );
     return data;

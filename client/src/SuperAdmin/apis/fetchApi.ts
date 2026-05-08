@@ -2,9 +2,10 @@
 import apiService from "../../Services/apiServices/apiService";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
+import { ROUTES } from "../../Constants/routeConstan";
 const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 export const superLoginApi = async (email: string, password: string) => {
-  const response = await apiService.post("auth/super/login", {
+  const response = await apiService.post(ROUTES.PUBLIC.SUPER_AUTH, {
     email,
     password
   },
@@ -19,7 +20,7 @@ export const superLoginApi = async (email: string, password: string) => {
 
 
 export const dashBordDataApi = async () => {
-  const response = await apiService.get("super/counts", { withCredentials: true })
+  const response = await apiService.get(ROUTES.SUPER_ADMIN.DASHBOARD, { withCredentials: true })
 
   if (response.status == 200) { return response.data.data }
 
@@ -27,7 +28,7 @@ export const dashBordDataApi = async () => {
 
 export const downloadExcel = async () => {
   try {
-    const response = await apiService.get('workspace/download/workspace', {
+    const response = await apiService.get(ROUTES.SUPER_ADMIN.DOWNLOAD_EXCEL, {
       responseType: 'arraybuffer',     // ← Change to 'arraybuffer' (more reliable)
       withCredentials: true,
       // Optional: still add this to be extra safe
@@ -62,7 +63,7 @@ export const downloadExcel = async () => {
 
 export const createPlan = async (form) =>{
 try {
-  await apiService.post("super/create/plan",{form})
+  await apiService.post(ROUTES.SUPER_ADMIN.CREATE_PLAN,{form})
 } catch (error) {
       const err: string = catchErrorHandle(error, "Failed to create plan")
               throw new Error(err)
@@ -71,7 +72,7 @@ try {
 
 export const  updatePlan = async (form,id) =>{
   try {
-    await apiService.post(`super/update/plan/${id}`,{form})
+    await apiService.post(ROUTES.SUPER_ADMIN.UPDATE_PLAN.replace(":id",id),{form})
   } catch (error) {
      const err: string = catchErrorHandle(error, "Failed to update plan")
               throw new Error(err)
@@ -79,7 +80,7 @@ export const  updatePlan = async (form,id) =>{
 }
 export const removePlan = async (id)=>{
   try {
-    await apiService.patch(`super/plan/remove/${id}`)
+    await apiService.patch(ROUTES.SUPER_ADMIN.REMOVE_PLAN.replace(":id",id))
   } catch (error) {
      const err: string = catchErrorHandle(error, "Failed to change plan")
               throw new Error(err)
@@ -88,7 +89,7 @@ export const removePlan = async (id)=>{
 
 export const deletePlan =async(id)=>{
   try {
-    await apiService.delete(`super/plan/delete/${id}`)
+    await apiService.delete(ROUTES.SUPER_ADMIN.DELETE_PLAN.replace(":id",id))
   } catch (error) {
      const err: string = catchErrorHandle(error, "Failed to change plan")
               throw new Error(err)
@@ -104,34 +105,34 @@ export const workspaceDataApi = createApi({
   tagTypes: ['Workspace', 'Members', 'Tickets'],
   endpoints: (builder) => ({
     getWorkspaceCount: builder.query({
-      query: ({page=1,query="",filter="all",plan="all"}) => `super/count/workspace?search=${query}&filter=${filter}&plan=${plan}&page=${page}&limit=${5}`,
+      query: ({page=1,query="",filter="all",plan="all"}) => ROUTES.SUPER_ADMIN.SUPER_ADMIN_WORKSPACE_DATA+`?search=${query}&filter=${filter}&plan=${plan}&page=${page}&limit=${5}`,
       invalidatesTags: ['Workspace',]
     }),
     getAlluserList: builder.query({
-      query: ({ workspaceslug, page, limit }) => `workspace/member/pagination/data/${workspaceslug}?page=${page}&limit=${limit}`
+      query: ({ workspaceslug, page, limit }) => ROUTES.SUPER_ADMIN.SUPER_ADMIN_USER_LIST.replace(":workspaceslug",workspaceslug)+`?page=${page}&limit=${limit}`
     }),
     updateWorkspace: builder.mutation({
       query: ({ id, merge }) => ({
-        url: `workspace/update/${id}`,
+        url: ROUTES.SUPER_ADMIN.SUPER_ADMIN_UPDATE_WORKSPACE.replace(":id",id),
         method: 'PATCH',
         body: merge, // { name, description, etc. }
       }),
       invalidatesTags: ['Workspace'], // auto refetch if needed
     }),
     fetchUserPage: builder.query({
-      query: (page) => `super/count/users?page=${page}&limit=${5}`,
+      query: (page) => ROUTES.SUPER_ADMIN.USER_PAGE+`?page=${page}&limit=${5}`,
       providesTags: (result, error, id) => [{ type: "User", id }]
     }),
     fetchSubscriptionPage: builder.query({
-      query: (page) => `super/count/subscription?page=${page}&limit=${5}`
+      query: (page) => ROUTES.SUPER_ADMIN.SUBSCRIPTION_PAGE+`?page=${page}&limit=${5}`
     }),
     fetchAbuseReportPage: builder.query({
-      query: ({ page, limit }) => `workspace/abuse/reports?page=${page}&limit=${limit}`
+      query: ({ page, limit }) => ROUTES.SUPER_ADMIN.ABUSE_REPORT_PAGE+`?page=${page}&limit=${limit}`
     }),
     updateAbuseReportStatus: builder.mutation({
       query: ({ reportId, report }) => ({
 
-        url: `workspace/abuse/report/status/${reportId}`,
+        url: ROUTES.SUPER_ADMIN.UPDATE_ABUSE_REPORT.replace(":reportId",reportId),
         method: 'POST',
         body: report
       }), invalidatesTags: ['Workspace'],
@@ -141,7 +142,7 @@ export const workspaceDataApi = createApi({
     }),
     updateTicketStatus: builder.mutation({
       query: ({ ticketId, newStatus }) => ({
-        url: `ticket/update/status/${ticketId}?status=${newStatus}`,
+        url: ROUTES.SUPER_ADMIN.UPDATE_TICKET_STATUS.replace(":ticketId",ticketId)+`?status=${newStatus}`,
         method: 'PATCH',
       }),
       invalidatesTags: ["Tickets"],
@@ -149,7 +150,7 @@ export const workspaceDataApi = createApi({
  
 
          fetchAllPlans:builder.query({
-query: () => `super/plans`
+query: () => ROUTES.SUPER_ADMIN.SUPER_PLANS
     }),
 
   }),
@@ -163,7 +164,7 @@ export const { useGetWorkspaceCountQuery, useGetAlluserListQuery, useUpdateWorks
 
 export const fetchRevenue = async()=>{
  try {
-   const revenueData = await apiService.get("/super/revenue/subscription");
+   const revenueData = await apiService.get(ROUTES.SUPER_ADMIN.FETCH_REVENUE);
    return revenueData.data
  } catch (error) {
 const err=catchErrorHandle(error,"failed to fetch") ;
@@ -174,7 +175,7 @@ throw Error(err)
 }
 export const fetchUserGrowth = async()=>{
  try {
-   const userData = await apiService.get("/super/user/growth");
+   const userData = await apiService.get(ROUTES.SUPER_ADMIN.GROWTH_CHART);
    return userData.data
  } catch (error) {
 const err=catchErrorHandle(error,"failed to fetch") ;

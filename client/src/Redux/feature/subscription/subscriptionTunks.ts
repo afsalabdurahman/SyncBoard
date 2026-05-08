@@ -3,6 +3,7 @@ import apiService from "../../../Services/apiServices/apiService";
 
 import { Subscription, PartialSubscriptionUpdate } from "./subscriptionSlice"
 import { RootState } from "../../store";
+import { ROUTES } from "../../../Constants/routeConstan";
 export const fetchSubscription = createAsyncThunk<
   Subscription,
   string,
@@ -10,7 +11,7 @@ export const fetchSubscription = createAsyncThunk<
 >("subscription/fetch", async (userId, thunkAPI) => {
   try {
 
-    const res = await apiService.get(`subscription/mysubscription/${(userId)}`, {
+    const res = await apiService.get(ROUTES.SUSCRIPTIONS.FETCH_SUBSCRIPTION.replace(":userId",userId), {
       method: "GET",
 
     });
@@ -32,7 +33,7 @@ export const updateSubscription = createAsyncThunk<
 >("subscription/update", async ({ id, changes }, thunkAPI) => {
   try {
     const token = thunkAPI.getState()?.auth?.token;
-    const res = await fetch(`/api/subscriptions/${encodeURIComponent(id)}`, {
+    const res = await fetch(ROUTES.SUSCRIPTIONS.UPDATE_SUBSCRIPTION+encodeURIComponent(id), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

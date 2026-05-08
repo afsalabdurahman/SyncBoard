@@ -1,18 +1,18 @@
-import  { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import apiService from "../../Services/apiServices/apiService";
 import { commentType, SignupResponse } from "../types/authType"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 import { AdminLoginResponse, User, Workspace } from "../../Admin/types/adminTypes";
-
+import { ROUTES } from "../../Constants/routeConstan";
 interface ErrorResponse {
   message: string;
 }
 
 
-export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null > => {
+export const signupApi = async (email: string, name: string, password: string): Promise<SignupResponse | null> => {
   try {
     const response: AxiosResponse<SignupResponse | null> = await apiService.post(
-      "auth/user/sendotp",
+      ROUTES.MEMBER.REGISTER_USER,
       { email, name, password }
     );
 
@@ -23,12 +23,12 @@ export const signupApi = async (email: string, name: string, password: string): 
 
   } catch (err: unknown) {
 
-  
+
     let errorMessage = "Something went wrong";
 
     if (err && typeof err === "object" && "isAxiosError" in err) {
       const axiosError = err as AxiosError<ErrorResponse>;
-    
+
       errorMessage = axiosError.response?.data?.message || axiosError.message;
     } else if (err instanceof Error) {
       errorMessage = err.message;
@@ -40,12 +40,12 @@ export const signupApi = async (email: string, name: string, password: string): 
 }
 
 
-export const loginApi = async (email: string, password: string): Promise<{workspace:Workspace,user:User}|null> => {
+export const loginApi = async (email: string, password: string): Promise<{ workspace: Workspace, user: User } | null> => {
   try {
     const response: AxiosResponse<AdminLoginResponse> = await apiService.post(
-      "auth/user/login",
+      ROUTES.PUBLIC.LOGIN,
       { email, password },
-   
+
     );
 
     if (response.status === 200) {
@@ -58,26 +58,27 @@ export const loginApi = async (email: string, password: string): Promise<{worksp
   } catch (err: unknown) {
 
 
-    if(err.status == 403 && err.response.data.message == "Create a new workspace"){
-      
-      const data=JSON.stringify(err.response.data.data)
-       throw new Error(data);
-    }else{
+    if (err.status == 403 && err.response.data.message == "Create a new workspace") {
 
-    
+      const data = JSON.stringify(err.response.data.data)
+      throw new Error(data);
+    } else {
 
-    let errorMessage = "Failed to login";
 
-    if (err && typeof err === "object" && "isAxiosError" in err) {
-      const axiosError = err as AxiosError<ErrorResponse>;
-    
-      errorMessage = axiosError.response?.data?.message || axiosError.message;
-    } else if (err instanceof Error) {
-      errorMessage = err.message;
+
+      let errorMessage = "Failed to login";
+
+      if (err && typeof err === "object" && "isAxiosError" in err) {
+        const axiosError = err as AxiosError<ErrorResponse>;
+
+        errorMessage = axiosError.response?.data?.message || axiosError.message;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      throw new Error(errorMessage);
     }
-
-    throw new Error(errorMessage);
-  }}
+  }
   return null;
 };
 export const sendComment = async (
@@ -87,8 +88,8 @@ export const sendComment = async (
   urls: string[] = [] // default to empty array
 ): Promise<boolean> => {
   try {
-   
-    const response = await apiService.post(`/task/send/comment/${taskId}`, {
+
+    const response = await apiService.post(ROUTES.WORKSPACE.SEND_COMMENT.replace(':taskId', taskId), {
       name,
       text,
       urls, // better name: plural
@@ -103,41 +104,41 @@ export const sendComment = async (
     return false;
   } catch {
 
-   
+
     return false; // or throw error if you prefer
   }
 
 };
 export const fetchComments = async (taskId: string): Promise<commentType[]> => {
-  const response = await apiService.get(`/task/comments/${taskId}`);
+  const response = await apiService.get(ROUTES.WORKSPACE.FETCH_COMMENT.replace(':taskId', taskId));
 
   return response.data.data as commentType[];
 };
 export const verifyOTP = async (
   email: string,
   otp: string
-)=> {
+) => {
   try {
     const response: AxiosResponse = await apiService.post(
-      "auth/user/verifyotp",
+      ROUTES.MEMBER.VERIFY_OTP,
       {
         email,
         otp,
       }
     );
 
-    
-     return  response.data.user
-    
 
-  } catch  {
+    return response.data.user
+
+
+  } catch {
     throw new Error("Invalid OTP");
   }
 };
 
 export const findEmail = async (email: string) => {
   try {
-    const response = await apiService.get(`/member/find/user/${email}`);
+    const response = await apiService.get(ROUTES.MEMBER.FIND_EMAIL.replace(':email', email));
     return response.data.user
   } catch (error) {
     const err: string = catchErrorHandle(error, "User not found")
@@ -146,16 +147,16 @@ export const findEmail = async (email: string) => {
 }
 export const reSendOTP = async (email: string) => {
   try {
-    await apiService.post("/auth/user/forgot/password", { email: email })
+    await apiService.post(ROUTES.MEMBER.RESEND_OTP, { email: email })
   } catch (error) {
     const err: string = catchErrorHandle(error, "Failed to send OTP")
     throw new Error(err)
   }
 }
-export const changePassword = async (userId:string,currentPassword:string,newPassword:string) =>{
+export const changePassword = async (userId: string, currentPassword: string, newPassword: string) => {
   try {
-    await apiService.patch( `member/change/password/${userId}`,
-       { currentPassword, newPassword }
+    await apiService.patch(ROUTES.MEMBER.CHANGE_PASSWORD.replace(':userId', userId),
+      { currentPassword, newPassword }
     )
     return true
   } catch (error) {
@@ -163,39 +164,39 @@ export const changePassword = async (userId:string,currentPassword:string,newPas
     throw new Error(err)
   }
 }
-export const registerUser = async (name:string,email:string,password:string,)=>{
-  try{
-    const response = await apiService.post("/auth/user/register",{
-         email,
-          password,
-          name,
-          role:"Admin"
-        })
+export const registerUser = async (name: string, email: string, password: string,) => {
+  try {
+    const response = await apiService.post(ROUTES.MEMBER.REGISTER_USER, {
+      email,
+      password,
+      name,
+      role: "Admin"
+    })
     return response.data.user
-    
-  }catch(error){
- const err: string = catchErrorHandle(error, "Failed to send OTP")
+
+  } catch (error) {
+    const err: string = catchErrorHandle(error, "Failed to send OTP")
     throw new Error(err)
   }
 
 
 }
-export const resetPassword  = (userId:string,password:string)=>{
+export const resetPassword = (userId: string, password: string) => {
   try {
-    apiService.post(`/member/reset/password/${userId}`,{
+    apiService.post(ROUTES.MEMBER.RESET_PASSWORD.replace(':userId', userId), {
       password
     })
   } catch (error) {
-     const err: string = catchErrorHandle(error, "Failed to send OTP")
+    const err: string = catchErrorHandle(error, "Failed to send OTP")
     throw new Error(err)
   }
 }
-export const googleAuth = async(credentialResponse:{credential:string}) =>{
-try {
-          const response = await apiService.post('/auth/google', { credential: credentialResponse.credential, })
-         return response
+export const googleAuth = async (credentialResponse: { credential: string }) => {
+  try {
+    const response = await apiService.post(ROUTES.PUBLIC.GOOGLE_AUTH, { credential: credentialResponse.credential, })
+    return response
 
-} catch (error) {
-  catchErrorHandle(error,"Failed to signup")
-}
+  } catch (error) {
+    catchErrorHandle(error, "Failed to signup")
+  }
 }

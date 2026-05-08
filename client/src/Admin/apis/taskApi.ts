@@ -1,3 +1,4 @@
+import { ROUTES } from "../../Constants/routeConstan";
 import apiService from "../../Services/apiServices/apiService";
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 import { Task } from "../types/taskTypes";
@@ -21,12 +22,13 @@ export const fetchTasks = async (
 ): Promise<TaskResponse> => {
 
   const { data } = await apiService.get<TaskResponse>(
-    `task/completed/${workspaceId}?projectId=${projectId??""}`,
+ROUTES.TASKS.FETCH_TASK
+  .replace(":workspaceId", workspaceId) + `?projectId=${projectId ?? ""}`,
     {
       params: { page, limit },
     }
   );
-console.log(data,"acceptnce")
+
   return data;
 };
 
@@ -39,7 +41,7 @@ export const updateTaskStatus = async (
 ): Promise<void> => {
 
   await apiService.patch(
-    `task/update/approval/status/${taskId}`,
+    ROUTES.TASKS.STATUS_UPDATE.replace(":taskId",taskId),
     { status, msg }
   );
 
@@ -55,7 +57,7 @@ export const deleteAttachmentUrl = async (
   try {
 
     const { data } = await apiService.patch(
-      `task/attachment/delete/${taskId}`,
+      ROUTES.TASKS.DELETE_ATTACHMENTS.replace(":taskId",taskId),
       { attachment: url }
     );
 
@@ -73,7 +75,7 @@ export const deleteAttachmentUrl = async (
 
 export const deleteSubTaskApi = async(taskId,subTask) =>{
 try {
-  await apiService.patch(`task/delete/subtask/${taskId}`,{subTask})
+  await apiService.patch(ROUTES.TASKS.DELETE_SUBTASKS.replace(":taskId",taskId),{subTask})
 } catch (error) {
       const err: string = catchErrorHandle(error, "Updation failed")
       throw new Error(err)   
@@ -81,15 +83,10 @@ try {
 }
 export const deleteProjectAttachment=async (projectId:string,url:string)=>{
 try {
-  await apiService.patch(`project/delete/attachment/${projectId}`,{url})
+  await apiService.patch(ROUTES.TASKS.DELETE_PROJECT_ATTTACHMENT.replace(":projectId",projectId),{url})
   return true
 } catch (error) {
       const err: string = catchErrorHandle(error, "Updation failed")
       throw new Error(err)  
 }
-}
-export const updateTaskCriteria=async(id:string,title:string)=>{
- await apiService.patch(`task/update/approval/criteria/status/${id}`,{
-    title
-  })
 }
