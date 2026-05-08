@@ -67,6 +67,12 @@ export const PlanDetails = () => {
   const [form, setForm] = useState(emptyPlan);
    const [isDialogOpen, setIsDialogOpen] = useState(false);
 const [deletePlanId,setDeletePlanId]= useState(null)
+const [errors, setErrors] = useState({
+  name: "",
+  description: "",
+  priceCents: "",
+  features: "",
+});
   const resetForm = () => {
     setForm(emptyPlan);
     setEditingPlan(null);
@@ -75,57 +81,107 @@ const [deletePlanId,setDeletePlanId]= useState(null)
 
 
   const handleOpenCreate = () => {
+    setErrors({})
     resetForm();
     setOpen(true);
   };
 
   const handleOpenEdit = (plan: Plan) => {
+    setErrors({})
     setEditingPlan(plan);
     setForm(plan);
     setOpen(true);
   };
 
-  const handleSave = async () => {
+const handleSave = async () => {
+  // clear previous errors
+  setErrors({
+    name: "",
+    description: "",
+    priceCents: "",
+    features: "",
+  });
 
-    setLoading(true)
+  const validationErrors = {
+    name: "",
+    description: "",
+    priceCents: "",
+    features: "",
+  };
+
+  let isValid = true;
+
+  // Plan name validation
+  if (!form.name.trim()) {
+    validationErrors.name = "Plan name is required";
+    isValid = false;
+  } else if (form.name.trim().length < 3) {
+    validationErrors.name =
+      "Plan name must be at least 3 characters";
+    isValid = false;
+  }
+
+  // Description validation
+  if (!form.description.trim()) {
+    validationErrors.description = "Description is required";
+    isValid = false;
+  } else if (form.description.trim().length < 10) {
+    validationErrors.description =
+      "Description must be at least 10 characters";
+    isValid = false;
+  }
+
+  // Price validation
+  if (!form.priceCents || form.priceCents <= 0) {
+    validationErrors.priceCents =
+      "Price must be greater than 0";
+    isValid = false;
+  }
+
+  // Features validation
+  const validFeatures = form.features.filter(
+    (feature) => feature.trim() !== ""
+  );
+
+  if (validFeatures.length === 0) {
+    validationErrors.features =
+      "At least one feature is required";
+    isValid = false;
+  }
+
+  if (!isValid) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const updatedForm = {
+      ...form,
+      features: validFeatures,
+    };
+
     if (editingPlan) {
-      
-try {
-  await updatePlan(form,editingPlan._id);
-   setLoading(false)
-        toast.success("New plan is created")
-        refetch()
-} catch (error) {
-   setLoading(false)
-    if (error instanceof Error) {
-       
-          toast.error(error.message)
-        }
-}
-
+      await updatePlan(updatedForm, editingPlan._id);
+    
+      toast.success("Plan updated successfully");
     } else {
-   
-
-    
-      //  setPlans((prev) => [...prev, newPlan]);
-      try {
-        await createPlan(form);
-        setLoading(false)
-        toast.success("New plan is created")
-        refetch()
-      } catch (error) {
-        setLoading(false)
-        if (error instanceof Error) {
-    
-          toast.error(error.message)
-        }
-
-      }
+      await createPlan(updatedForm);
+      toast.success("New plan created successfully");
     }
 
+    refetch();
     setOpen(false);
     resetForm();
-  };
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error(error.message);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   // const handleDelete = (id: string) => {
   //   setPlans((prev) => prev.filter((p) => p.id !== id));
@@ -198,7 +254,7 @@ try {
     <main className={`transition-all duration-300 pt-16 ${sidebarCollapsed ? "ml-16" : "ml-64"}`}>
  <ConfirmDialog
         open={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={() => {setIsDialogOpen(false)}}
         onConfirm={handleConfirmDelete}
         title="Delete Project?"
         description="This project will be permanently deleted."
@@ -337,6 +393,7 @@ try {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
+              <p className="text-red-500 text-sm">{errors.name}</p>
             </div>
 
             <div className="grid gap-2">
@@ -349,6 +406,7 @@ try {
                   setForm({ ...form, description: e.target.value })
                 }
               />
+              <p className="text-red-500 text-sm">{errors.description}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -363,6 +421,7 @@ try {
                     setForm({ ...form, priceCents: Number(e.target.value) })
                   }
                 />
+                <p className="text-red-500 text-sm">{errors.priceCents}</p>
               </div>
 
               <div className="grid gap-2">
@@ -411,6 +470,7 @@ try {
                 >
                   + Add feature
                 </Button>
+                <p className="text-red-500 text-sm">{errors.features}</p>
               </div>
 
               {form.features.map((feature, index) => (

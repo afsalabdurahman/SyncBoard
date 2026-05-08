@@ -19,7 +19,6 @@ export interface ITaskUseCase {
       deleteSubTask(taskId:string,subTask:string):Promise<void>;
       updateSubtask(taskId:string,title:string):Promise<void>;
     updateCriteria(taskId:string,title:string):Promise<void>;
-
   findTaskCountByProjectId(projectId:string):Promise<projectSpecifyTaskCount>
   findDonetChartData(projectId:string):Promise<donetChartData>
     findTasksByProjectId(projectId:string):Promise<FormattedTask[]>

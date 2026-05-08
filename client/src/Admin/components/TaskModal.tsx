@@ -56,6 +56,13 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
   const [selectAttachmanet, setAttachements] = useState<string>()
   const [subTask, setSubTask] = useState([])
   const [criteria, setCriteria] = useState([])
+const [errors, setError] = useState({
+  name: "",
+  description: "",
+  project: "",
+  assignedUser: "",
+  deadline: "",
+});
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -123,22 +130,85 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
   const passURL = (url) => {
     setAttachements(url)
   }
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    formData.subTask = subTask
-    formData.acceptanceCriteria=criteria
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  // update dynamic fields
+  formData.subTask = subTask;
+  formData.acceptanceCriteria = criteria;
+
+  // clear previous errors
+  setError({
+    name: "",
+    description: "",
+    project: "",
+    assignedUser: "",
+    deadline: "",
+  });
+
+  let validationErrors = {
+    name: "",
+    description: "",
+    project: "",
+    assignedUser: "",
+    deadline: "",
+  };
+
+  let isValid = true;
+
+  // Task name validation
+  if (!formData.name.trim()) {
+    validationErrors.name = "Task name is required";
+    isValid = false;
+  }
+
+  // Description validation
+  if (!formData.description.trim()) {
+    validationErrors.description = "Task description is required";
+    isValid = false;
+  }
+
+  // Project validation
+  if (!formData.project.trim()) {
+    validationErrors.project = "Project selection is required";
+    isValid = false;
+  }
+
+  // Assigned user validation
+  if (!formData.assignedUser.trim()) {
+    validationErrors.assignedUser = "Assigned user is required";
+    isValid = false;
+  }
+
+  // Deadline validation
+  if (!formData.deadline) {
+    validationErrors.deadline = "Deadline is required";
+    isValid = false;
+  }
+
+  // Stop submit if validation fails
+  if (!isValid) {
+    setError(validationErrors);
+    return;
+  }
+
+  try {
     if (uploads.length > 0) {
-      const uploadPromises = uploads.map((file: File) => uploadAttachment(file.file));
+      const uploadPromises = uploads.map((file: File) =>
+        uploadAttachment(file.file)
+      );
+
       const uploadedUrls = await Promise.all(uploadPromises);
-      formData.attachedURLs = uploadedUrls
+
+      formData.attachedURLs = uploadedUrls;
       await onSubmit(formData);
     } else {
       await onSubmit(formData);
     }
-
-    // onClose();
-  };
-
+  } catch (error) {
+    console.log(error);
+  }
+};
   const [uploads, setUploads] = useState([]);
   const [showUploadPage, setUploadPage] = useState(false);
   const uploadFiles = () => {
@@ -152,7 +222,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
         (url) => url !== selectAttachmanet
       ),
     }));
-
+   setError({})
     onClose()
   }
   // const setDelete = (url: string) => {
@@ -190,7 +260,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                 required
               />
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
+            <p className="text-red-500 text-sm">{errors.name}</p>
+            <div className='grid grid-cols-4 items-center gap-4 '>
               <Label htmlFor='description' className='text-right'>
                 Description
               </Label>
@@ -203,6 +274,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                 className='col-span-3'
                 required
               />
+              <p className="text-red-500 text-sm">{errors.description}</p>
+
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='project' className='text-right'>
@@ -228,7 +301,10 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                     </SelectItem>
                   ))}
                 </SelectContent>
+                
               </Select>
+              <p className="text-red-500 text-sm">{errors.project}</p>
+
             </div>
 
 
@@ -256,6 +332,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
 
                 </SelectContent>
               </Select>
+              <p className="text-red-500 text-sm">{errors.assignedUser}</p>
+
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='status' className='text-right'>
@@ -311,6 +389,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                 className='col-span-3'
                 required
               />
+              <p className="text-red-500 text-sm">{errors.deadline}</p>
             </div>
             {task?.attachedURLs?.length >= 1 && (
               <div className='grid grid-cols-4 items-center gap-4'>

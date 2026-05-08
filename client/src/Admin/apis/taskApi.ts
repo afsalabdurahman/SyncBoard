@@ -26,7 +26,7 @@ export const fetchTasks = async (
       params: { page, limit },
     }
   );
-
+console.log(data,"acceptnce")
   return data;
 };
 
@@ -87,4 +87,9 @@ try {
       const err: string = catchErrorHandle(error, "Updation failed")
       throw new Error(err)  
 }
+}
+export const updateTaskCriteria=async(id:string,title:string)=>{
+ await apiService.patch(`task/update/approval/criteria/status/${id}`,{
+    title
+  })
 }

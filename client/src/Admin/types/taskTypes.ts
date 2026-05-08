@@ -6,6 +6,7 @@ export interface Task {
   status: 'pending' | 'approved' | 'rejected';
   submittedAt: string;
   rejectionReason?: string;
+  acceptanceCriteria:[]
 }
 export interface taskResponse{
   list : Task[],

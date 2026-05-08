@@ -43,7 +43,18 @@ export function ProjectModal({
   onClose,
   onSubmit,
   project,
+ 
 }: ProjectModalProps) {
+
+const [errors,setError]=useState({
+  name:"",
+  description:"",
+  assigned:"",
+
+})
+
+
+
   // const dispatch = useDispatch<AppDispatch>();
 
   const availableUsers = useSelector((state: RootState) =>
@@ -111,27 +122,73 @@ export function ProjectModal({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    const updatedProject: Project = {
-      _id: formData.id,
-      name: formData.name,
-      clientName: formData.clientName,
-      description: formData.description,
-      assignedUsers: formData.assignedUsers,
-      deadline: formData.deadline,
-      status: formData.status,
-      priority: formData.priority,
-      attachment: uploads ?? [],
-      attachedUrl: formData.attachment,
-    };
+  // Clear previous errors
+  setError({
+    name: "",
+    description: "",
+    assigned: "",
+  });
 
-    await onSubmit(updatedProject);
+  let validationErrors = {
+    name: "",
+    description: "",
+    assigned: "",
   };
 
+  let isValid = true;
+
+  // Name validation
+  if (!formData.name.trim()) {
+    validationErrors.name = "Project name is required";
+    isValid = false;
+  }
+
+  // Description validation
+  if (!formData.description.trim()) {
+    validationErrors.description = "Description is required";
+    isValid = false;
+  }
+
+  // Assigned users validation
+  if (formData.assignedUsers.length === 0) {
+    validationErrors.assigned = "Please assign at least one user";
+    isValid = false;
+  }
+
+  // Stop if validation fails
+  if (!isValid) {
+    setError(validationErrors);
+    return;
+  }
+
+  const updatedProject: Project = {
+    _id: formData.id,
+    name: formData.name,
+    clientName: formData.clientName,
+    description: formData.description,
+    assignedUsers: formData.assignedUsers,
+    deadline: formData.deadline,
+    status: formData.status,
+    priority: formData.priority,
+    attachment: uploads ?? [],
+    attachedUrl: formData.attachment,
+  };
+
+  await onSubmit(updatedProject);
+};
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+<Dialog
+  open={isOpen}
+  onOpenChange={(open) => {
+    if (!open) {
+      setError({})
+      onClose()
+    }
+  }}
+>
       <DialogContent className="max-w-[95vw] sm:max-w-[600px] max-h-[95vh] overflow-y-auto p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
           <DialogTitle className="text-xl">
@@ -158,6 +215,7 @@ export function ProjectModal({
                 placeholder="Enter project name"
                 required
               />
+              <p className="text-red-500 text-sm">{errors.name}</p>
             </div>
 
             {/* Client Name */}
@@ -172,6 +230,7 @@ export function ProjectModal({
                 placeholder="Enter client name"
                 required
               />
+              
             </div>
           </div>
 
@@ -188,6 +247,7 @@ export function ProjectModal({
               rows={4}
               className="resize-y min-h-[100px]"
             />
+            <p className="text-red-500 text-sm">{errors.description}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -279,6 +339,7 @@ export function ProjectModal({
                 <p className="text-sm text-muted-foreground">No users available</p>
               )}
             </div>
+            <p className="text-red-500 text-sm">{errors.assigned}</p>
           </div>
 
           {/* Attachments Section */}

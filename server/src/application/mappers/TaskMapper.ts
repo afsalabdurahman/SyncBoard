@@ -86,6 +86,7 @@ export class TaskMapper {
 
         submittedAt: task.updatedAt,
         rejectionReason: task.rejectionMsg,
+        acceptanceCriteria:task.acceptanceCriteria
       };
     });
     return mappedData as unknown as CompletedTaskResponseDTO

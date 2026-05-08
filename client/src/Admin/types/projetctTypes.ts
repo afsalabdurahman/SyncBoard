@@ -62,4 +62,5 @@ export interface ProjectModalProps {
   onSubmit: (project: Project) => void;
   project?: Project | null;
   setEditproject: React.Dispatch<React.SetStateAction<Project>>;
+  error:string
 }

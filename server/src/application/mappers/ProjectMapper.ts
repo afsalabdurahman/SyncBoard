@@ -55,7 +55,7 @@ static mapEntityToProject(
       name:   z
     .string()
     .trim()
-    .min(1, "Project name is required")
+    .min(4, "Project name is required")
     .max(100, "Word count exceeded")
     .regex(/^[A-Za-z0-9][A-Za-z0-9 ]*$/, {
       message:

@@ -14,14 +14,19 @@ import {
 import { Label } from "../../Custom/ui/label";
 import { Check, X, Clock, CheckCircle } from "lucide-react";
 
-import { fetchTasks, updateTaskStatus } from "../apis/taskApi";
+import { fetchTasks, updateTaskCriteria, updateTaskStatus } from "../apis/taskApi";
 import { PaginationState, Task } from "../types/taskTypes";
 
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { TablePagination } from "@mui/material";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { Item } from "@radix-ui/react-select";
 
-
+interface AcceptanceCriteria {
+  id?: string;
+  title: string;
+  status: "Pending" | "Completed";
+}
 
 export const TaskApproval = () => {
   const workspaceid = useWorkspaceid();
@@ -30,7 +35,10 @@ export const TaskApproval = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const projectID=useSelector((state)=>state.switch.projectId);
+
+  const projectID = useSelector(
+    (state: any) => state.switch.projectId
+  );
 
   const [pagination, setPagination] = useState<PaginationState>({
     page: 1,
@@ -41,16 +49,14 @@ export const TaskApproval = () => {
 
   /* ---------------- LOAD TASKS ---------------- */
 
- 
-
-
-
-
-useEffect(()=>{
-
- const loadTasks = async (page = pagination.page) => {
+  const loadTasks = async (page = pagination.page) => {
     try {
-      const res = await fetchTasks(workspaceid, page, pagination.rowPerpage,projectID);
+      const res = await fetchTasks(
+        workspaceid,
+        page,
+        pagination.rowPerpage,
+        projectID
+      );
 
       setTasks(res.items);
 
@@ -66,15 +72,22 @@ useEffect(()=>{
       setError("Failed to load tasks. Please try again later.");
     }
   };
-  loadTasks()
 
-
-},[pagination.page, pagination.rowPerpage, projectID, workspaceid])
-
+  useEffect(() => {
+    loadTasks();
+  }, [
+    pagination.page,
+    pagination.rowPerpage,
+    projectID,
+    workspaceid,
+  ]);
 
   /* ---------------- PAGINATION ---------------- */
 
-  const handleChangePage = (_: unknown, newPage: number) => {
+  const handleChangePage = (
+    _: unknown,
+    newPage: number
+  ) => {
     loadTasks(newPage + 1);
   };
 
@@ -82,15 +95,21 @@ useEffect(()=>{
 
   const handleApprove = async (taskId: string) => {
     try {
-      await updateTaskStatus(taskId, "Approved", null);
+      await updateTaskStatus(
+        taskId,
+        "Approved",
+        null
+      );
 
       setTasks((prev) =>
         prev.map((task) =>
-          task.id === taskId ? { ...task, status: "approved" } : task
+          task.id === taskId
+            ? { ...task, status: "approved" }
+            : task
         )
       );
     } catch {
-      setError("Failed to approve task. Please try again.");
+      setError("Failed to approve task.");
     }
   };
 
@@ -115,7 +134,11 @@ useEffect(()=>{
       setTasks((prev) =>
         prev.map((task) =>
           task.id === selectedTask.id
-            ? { ...task, status: "rejected", rejectionReason }
+            ? {
+                ...task,
+                status: "rejected",
+                rejectionReason,
+              }
             : task
         )
       );
@@ -124,32 +147,46 @@ useEffect(()=>{
       setSelectedTask(null);
       setRejectionReason("");
     } catch {
-      setError("Failed to reject task. Please try again.");
+      setError("Failed to reject task.");
     }
   };
 
   /* ---------------- STATUS BADGE ---------------- */
 
-  const getStatusBadge = (status: Task["status"]) => {
+  const getStatusBadge = (
+    status: Task["status"]
+  ) => {
     switch (status) {
       case "pending":
         return (
-          <Badge variant="outline" className="text-orange-600 border-orange-600">
-            <Clock className="w-3 h-3 mr-1" /> Pending
+          <Badge
+            variant="outline"
+            className="text-orange-600 border-orange-600"
+          >
+            <Clock className="w-3 h-3 mr-1" />
+            Pending
           </Badge>
         );
 
       case "approved":
         return (
-          <Badge variant="outline" className="text-green-600 border-green-600">
-            <Check className="w-3 h-3 mr-1" /> Approved
+          <Badge
+            variant="outline"
+            className="text-green-600 border-green-600"
+          >
+            <Check className="w-3 h-3 mr-1" />
+            Approved
           </Badge>
         );
 
       case "rejected":
         return (
-          <Badge variant="outline" className="text-red-600 border-red-600">
-            <X className="w-3 h-3 mr-1" /> Rejected
+          <Badge
+            variant="outline"
+            className="text-red-600 border-red-600"
+          >
+            <X className="w-3 h-3 mr-1" />
+            Rejected
           </Badge>
         );
     }
@@ -158,48 +195,41 @@ useEffect(()=>{
   /* ---------------- DATE FORMAT ---------------- */
 
   const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    new Date(date).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
 
   /* ---------------- ERROR UI ---------------- */
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4 bg-gray-50">
-        <div className="w-full max-w-md p-8 text-center bg-white rounded-lg shadow">
-          <h1 className="mb-3 text-2xl font-bold text-red-800">Error</h1>
-          <p className="text-red-600">{error}</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="p-6 bg-white rounded shadow">
+          <h2 className="text-red-600 font-bold">
+            {error}
+          </h2>
         </div>
       </div>
     );
   }
 
-  /* ---------------- EMPTY STATE ---------------- */
+  /* ---------------- EMPTY UI ---------------- */
 
   if (!tasks.length) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4 bg-gray-50">
-        <div className="w-full max-w-md p-8 text-center bg-white rounded-lg shadow">
-          <CheckCircle className="w-16 h-16 mx-auto mb-6 text-green-500" />
-
-          <h1 className="mb-3 text-2xl font-bold text-gray-800">
-            All Clear!
-          </h1>
-
-          <p className="mb-6 text-gray-600">
-            There are no pending task approvals at this time.
-          </p>
-
-          <div className="p-4 border border-green-200 rounded-lg bg-green-50">
-            <p className="text-sm text-green-800">
-              You're up to date with all approvals.
-            </p>
-          </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="p-6 bg-white rounded shadow text-center">
+          <CheckCircle className="w-12 h-12 mx-auto text-green-500 mb-4" />
+          <h2 className="text-xl font-bold">
+            No Pending Approvals
+          </h2>
         </div>
       </div>
     );
@@ -208,89 +238,208 @@ useEffect(()=>{
   /* ---------------- MAIN UI ---------------- */
 
   return (
-    <div className="container p-6 mx-auto space-y-6">
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">
+          Task Approval Panel
+        </h1>
 
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Task Approval Panel</h1>
+        <div className="flex gap-4 text-sm">
+          <span>
+            Pending: {
+              tasks.filter(
+                (t) => t.status === "pending"
+              ).length
+            }
+          </span>
 
-        <div className="flex gap-4 text-sm text-muted-foreground">
-          <span>Pending: {tasks.filter(t => t.status === "pending").length}</span>
-          <span>Approved: {tasks.filter(t => t.status === "approved").length}</span>
-          <span>Rejected: {tasks.filter(t => t.status === "rejected").length}</span>
+          <span>
+            Approved: {
+              tasks.filter(
+                (t) => t.status === "approved"
+              ).length
+            }
+          </span>
+
+          <span>
+            Rejected: {
+              tasks.filter(
+                (t) => t.status === "rejected"
+              ).length
+            }
+          </span>
         </div>
       </div>
 
       <div className="grid gap-4">
+        {tasks.map((task: any) => {
+          const allCriteriaCompleted =
+            task?.acceptanceCriteria?.every(
+              (item: AcceptanceCriteria) =>
+                item.status === "Completed"
+            ) ?? false;
 
-        {tasks.map((task) => (
-          <Card key={task.id}>
+          return (
+            <Card key={task.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle>
+                      {task.taskName}
+                    </CardTitle>
 
-            <CardHeader className="pb-3">
-
-              <div className="flex items-start justify-between">
-
-                <div className="space-y-1">
-
-                  <CardTitle className="text-lg">
-                    {task.taskName}
-                  </CardTitle>
-
-                  <div className="flex gap-4 text-sm text-muted-foreground">
-
-                    <span><strong>Project:</strong> {task.project}</span>
-                    <span><strong>User:</strong> {task.username}</span>
-                    <span><strong>Submitted:</strong> {formatDate(task.submittedAt)}</span>
-
+                    <div className="text-sm text-gray-500 mt-2 flex gap-4">
+                      <span>
+                        Project: {task.project}
+                      </span>
+                      <span>
+                        User: {task.username}
+                      </span>
+                      <span>
+                        Submitted:{" "}
+                        {formatDate(task.submittedAt)}
+                      </span>
+                    </div>
                   </div>
 
+                  {getStatusBadge(task.status)}
                 </div>
+              </CardHeader>
 
-                {getStatusBadge(task.status)}
+              <CardContent>
+                {/* ACCEPTANCE CRITERIA */}
+                {task?.acceptanceCriteria?.length > 0 && (
+                  <div className="mb-5">
+                    <h3 className="font-semibold mb-3">
+                      Acceptance Criteria
+                    </h3>
 
-              </div>
+                    <div className="space-y-2">
+                      {task.acceptanceCriteria.map(
+                        (
+                          criteria: AcceptanceCriteria
+                        ) => (
+                          <div
+                            key={
+                              criteria.id ||
+                              criteria.title
+                            }
+                            className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border"
+                          >
+                            <span>
+                              {criteria.title}
+                            </span>
 
-            </CardHeader>
+<button
+  disabled={task.status === "approved"}
+  onClick={async () => {
+    try {
+      if (task.status === "approved") return;
 
-            <CardContent>
+      await updateTaskCriteria(task.id, criteria.title);
 
-              {task.status === "rejected" && task.rejectionReason && (
-                <div className="p-3 mb-4 border border-red-200 rounded-md bg-red-50">
-                  <p className="mb-1 text-sm font-medium text-red-800">
-                    Rejection Reason:
-                  </p>
+      setTasks((prevTasks) =>
+        prevTasks.map((t: any) => {
+          if (t.id !== task.id) return t;
 
-                  <p className="text-sm text-red-700">
-                    {task.rejectionReason}
-                  </p>
-                </div>
-              )}
+          return {
+            ...t,
+            acceptanceCriteria: t.acceptanceCriteria.map(
+              (item: AcceptanceCriteria) =>
+                item.title === criteria.title
+                  ? {
+                      ...item,
+                      // backend values: Completed / Pending
+                      status:
+                        item.status === "Completed"
+                          ? "Pending"
+                          : "Completed",
+                    }
+                  : item
+            ),
+          };
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      setError("Failed to update acceptance criteria");
+    }
+  }}
+  className={`flex items-center gap-2 ${
+    task.status === "approved"
+      ? "cursor-not-allowed opacity-50"
+      : "cursor-pointer"
+  }`}
+>
+  {criteria.status === "Completed" ? (
+    <>
+      <Check className="w-5 h-5 text-green-600" />
+      <span className="text-green-600 text-sm font-medium">
+        Accepted
+      </span>
+    </>
+  ) : (
+    <>
+      <X className="w-5 h-5 text-red-600" />
+      <span className="text-red-600 text-sm font-medium">
+        Pending
+      </span>
+    </>
+  )}
+</button>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
 
-              {task.status === "pending" && (
-                <div className="flex gap-2">
+                {/* REJECTION REASON */}
+                {task.status === "rejected" &&
+                  task.rejectionReason && (
+                    <div className="p-3 mb-4 bg-red-50 border border-red-200 rounded">
+                      <p className="font-medium text-red-700">
+                        Rejection Reason:
+                      </p>
+                      <p className="text-red-600 text-sm">
+                        {task.rejectionReason}
+                      </p>
+                    </div>
+                  )}
 
-                  <Button
-                    onClick={() => handleApprove(task.id)}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <Check className="w-4 h-4 mr-2" />
-                    Approve
-                  </Button>
+                {/* ACTION BUTTONS */}
+                {task.status === "pending" && (
+                  <div className="flex gap-2">
+                    <Button
+                      disabled={!allCriteriaCompleted}
+                      onClick={() =>
+                        handleApprove(
+                          task.id
+                        )
+                      }
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Check className="w-4 h-4 mr-2" />
+                      Approve
+                    </Button>
 
-                  <Button
-                    variant="destructive"
-                    onClick={() => handleRejectClick(task)}
-                  >
-                    <X className="w-4 h-4 mr-2" />
-                    Reject
-                  </Button>
-
-                </div>
-              )}
-
-            </CardContent>
-
-          </Card>
-        ))}
+                    <Button
+                      variant="destructive"
+                      onClick={() =>
+                        handleRejectClick(
+                          task
+                        )
+                      }
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Reject
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
 
         <TablePagination
           component="div"
@@ -300,56 +449,65 @@ useEffect(()=>{
           onPageChange={handleChangePage}
           rowsPerPageOptions={[]}
         />
-
       </div>
 
       {/* REJECT DIALOG */}
-
-      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+      <Dialog
+        open={rejectDialogOpen}
+        onOpenChange={setRejectDialogOpen}
+      >
         <DialogContent>
-
           <DialogHeader>
-            <DialogTitle>Reject Task</DialogTitle>
+            <DialogTitle>
+              Reject Task
+            </DialogTitle>
 
             <DialogDescription>
-              Provide a reason for rejecting "{selectedTask?.taskName}"
+              Provide a reason for rejecting "
+              {selectedTask?.taskName}"
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-
-            <Label>Rejection Reason</Label>
+            <Label>
+              Rejection Reason
+            </Label>
 
             <Textarea
               value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
+              onChange={(e) =>
+                setRejectionReason(
+                  e.target.value
+                )
+              }
               className="min-h-[100px]"
             />
-
           </div>
 
           <DialogFooter>
-
             <Button
               variant="outline"
-              onClick={() => setRejectDialogOpen(false)}
+              onClick={() =>
+                setRejectDialogOpen(false)
+              }
             >
               Cancel
             </Button>
 
             <Button
               variant="destructive"
-              disabled={!rejectionReason.trim()}
-              onClick={handleRejectConfirm}
+              disabled={
+                !rejectionReason.trim()
+              }
+              onClick={
+                handleRejectConfirm
+              }
             >
               Reject Task
             </Button>
-
           </DialogFooter>
-
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };

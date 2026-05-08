@@ -16,5 +16,6 @@ project:string,
 assignedUser:string,
 approvalStatus:string,
 updatedAt:string,
-rejectionMsg:string
+rejectionMsg:string;
+acceptanceCriteria:[{title:string,status:string}]
 }

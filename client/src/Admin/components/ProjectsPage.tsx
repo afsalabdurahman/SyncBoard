@@ -130,6 +130,7 @@ export default function ProjectsPage() {
       toast.success("Created project successfully 🎉");
       setIsModalOpen(false);
     } catch (error: unknown) {
+    
       toast.error((error as Error).message);
     } finally {
       setLoader("");
@@ -440,6 +441,7 @@ export default function ProjectsPage() {
       onSubmit={editingProject ? handleEditProject : handleAddProject}
       project={editingProject}
       setEditproject={setEditingProject}
+      
     />
 
     {/* ✅ ALSO KEEP DIALOG OUTSIDE */}

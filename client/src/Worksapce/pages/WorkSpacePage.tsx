@@ -51,7 +51,7 @@ function WorkSpacePage() {
       </header>
 
       {/* Main Content Area */}
-      <div className='flex h-screen pt-[2.5rem]'>
+      <div className='flex h-screen '>
         <div className='w-20 bg-gray-800 text-white flex-shrink-0'>
           <SideMenu />
         </div>
