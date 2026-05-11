@@ -79,7 +79,7 @@ const Invite = () => {
       return false;
     }
     try {
-  const response = sendInvitation(emails,invitationLink,workspaceId)
+  const response = await sendInvitation(emails,invitationLink,workspaceId)
 
       if (response) {
         setLoad(false);

@@ -10,6 +10,7 @@ import { adminResponseDTO, LoginRequestDTO, SuperadminLoginResponseDTO, } from "
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { envConfig } from "../../../../infrastructure/config/env.config";
 import { OAuth2Client } from "google-auth-library";
+import { User } from "../../../../domain/entities/User";
 
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
@@ -116,22 +117,24 @@ export class AdminLoginUseCase implements ILoginUseCase {
     return null;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
   async superAdmin(input: LoginRequestDTO): Promise<SuperadminLoginResponseDTO | null> {
-    const superAdmin = await this._userRepository.findByEmail(input.email)
-    if (!superAdmin || !superAdmin.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
-    const token = this._authService.generateToken({
+    const isExist = await this._userRepository.findByEmail(input.email)
+
+    if (!isExist) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+   if( !isExist.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+       const superAdmin = await this._userRepository.findUser(isExist?._id??"") as User
+
+   
+   const isValid = await this._authService.comparePassword(
+      input.password,
+      superAdmin.password??""
+    );
+    console.log(isValid,"validdd")
+
+    if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
+  
+  
+   const token = this._authService.generateToken({
       id: superAdmin._id ?? "",
       email: superAdmin.email!,
       role: superAdmin.role!,

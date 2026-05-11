@@ -1,12 +1,12 @@
-export const formatDate =(dateStr: string): string =>{
+export const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = String(date.getFullYear()).slice(-2);
   return `${day}/${month}/${year}`;
 }
-export const DateInHours= (dateStr:string):string=>{
-  
+export const DateInHours = (dateStr: string): string => {
+
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime(); // difference in milliseconds
@@ -32,7 +32,7 @@ export const DateInHours= (dateStr:string):string=>{
 // jan 10 12:30
 export const formatTime = (input: Date | string): string => {
   let date: Date;
-  
+
   if (typeof input === "string") {
     // Parse ISO string (handles Z correctly)
     date = new Date(input);
@@ -79,11 +79,14 @@ export const formatTime = (input: Date | string): string => {
   });
 };
 
-  export const  formatEstimateShort =(minutes?: number): string =>{
-  if (!minutes) return "";
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m}m`;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}m`;
-}
+export const formatEstimateShort = (minutes?: number): string => {
+  if (!minutes || minutes <= 0) return "";
+
+  const days = Math.floor(minutes / (60 * 24));
+  const hours = Math.floor((minutes % (60 * 24)) / 60);
+  const mins = minutes % 60;
+  if (days > 0) return `${days}d`;
+  if (hours > 0 && mins === 0) return `${hours}h`;
+  if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
+  return `${mins}m`;
+};

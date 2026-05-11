@@ -41,7 +41,7 @@ const TopBar = () => {
         <input
           aria-disabled="true"
           disabled
-          placeholder="ABC ltd"
+      placeholder="SyncBoard Pvt. Ltd."
 
           className="bg-purple-700 text-white placeholder-purple-300 px-3 py-1 rounded w-full focus:outline-none"
         />

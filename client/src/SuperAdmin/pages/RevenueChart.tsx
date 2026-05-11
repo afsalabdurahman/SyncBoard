@@ -17,12 +17,7 @@ const PLAN_COLORS = {
 
 // ─── sample data ────────────────────────────────────────
 
-// const DEFAULT_DATA = [
-//   { plan: "pro", amount: 20 },
-//   { plan: "enterprise", amount: 50 },
-//   { plan: "enterprise", amount: 50 },
-//   { plan: "pro", amount: 20 },
-// ];
+
 
 // ─── helper ─────────────────────────────────────────────
 import { useEffect, useState } from "react";
@@ -92,38 +87,52 @@ fetchChart()
 
   const total = data.reduce((s, g) => s + g.totalRevenue, 0);
 if(error){
-  return(<></>)
+  return(<>no revenue</>)
 }
+
   return (
-    <div className="p-4 border rounded  ">
-      <h3 className="text-sm font-semibold mb-2">
-        Revenue Distribution
-      </h3>
+   <div className="p-4 border rounded">
+  <h3 className="text-sm font-semibold mb-2">
+    Revenue Distribution
+  </h3>
 
-      <ResponsiveContainer width="100%" height={250}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={100}
-            dataKey="totalRevenue"
-          >
-            {/* ✅ FIXED LABEL */}
-            <Label
-              position="center"
-              content={<DonutCenterLabel total={total} />}
-            />
-
-            {data.map((g) => (
-              <Cell key={g.planName} fill={PLAN_COLORS[g.planName]} />
-            ))}
-          </Pie>
-
-          <Tooltip content={<DonutTooltip />} />
-        </PieChart>
-      </ResponsiveContainer>
+  {total <= 0 ? (
+    <div className="h-[250px] flex flex-col items-center justify-center text-center">
+      <p className="text-sm font-medium text-gray-600">
+        No revenue data available
+      </p>
+      <p className="text-xs text-gray-400 mt-1">
+        Revenue insights will appear once transactions are recorded.
+      </p>
     </div>
+  ) : (
+    <ResponsiveContainer width="100%" height={250}>
+      <PieChart>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="50%"
+          innerRadius={70}
+          outerRadius={100}
+          dataKey="totalRevenue"
+        >
+          <Label
+            position="center"
+            content={<DonutCenterLabel total={total} />}
+          />
+
+          {data.map((g) => (
+            <Cell
+              key={g.planName}
+              fill={PLAN_COLORS[g.planName]}
+            />
+          ))}
+        </Pie>
+
+        <Tooltip content={<DonutTooltip />} />
+      </PieChart>
+    </ResponsiveContainer>
+  )}
+</div>
   );
 }

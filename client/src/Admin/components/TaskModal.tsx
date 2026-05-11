@@ -146,7 +146,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     deadline: "",
   });
 
-  let validationErrors = {
+  const validationErrors = {
     name: "",
     description: "",
     project: "",
@@ -205,8 +205,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     } else {
       await onSubmit(formData);
     }
-  } catch (error) {
-    console.log(error);
+  } catch  {
+    throw new Error("Failed to submit ")
   }
 };
   const [uploads, setUploads] = useState([]);

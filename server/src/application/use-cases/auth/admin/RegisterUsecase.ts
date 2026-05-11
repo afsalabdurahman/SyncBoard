@@ -35,7 +35,7 @@ export class RegisterUseCase implements IAuth {
     const isValid = AuthMapper.registerValidation(input);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const existingUser = await this._userRepository.findByEmail(input.email);
-   
+   console.log(existingUser,"user")
 
     if (existingUser) {
       if (existingUser.isVerified) {
@@ -51,7 +51,7 @@ export class RegisterUseCase implements IAuth {
     const hashedPassword = await this._authService.hashPassword(input.password as string);
     input.password = hashedPassword;
     const AdminEntity = AuthMapper.mapUserToEntity(input)
-
+console.log(AdminEntity,"entit7")
     const savedUser = await this._userRepository.create(AdminEntity);
     //    const findOTP = await this._otpRepository.findOTPbyEMAIL(input.email);
     //   if (findOTP) {

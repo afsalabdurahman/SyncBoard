@@ -20,7 +20,6 @@ import { PaginationState, Task } from "../types/taskTypes";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { TablePagination } from "@mui/material";
 import { useSelector } from "react-redux";
-import { Item } from "@radix-ui/react-select";
 
 interface AcceptanceCriteria {
   id?: string;
@@ -37,7 +36,7 @@ export const TaskApproval = () => {
   const [error, setError] = useState<string | null>(null);
 
   const projectID = useSelector(
-    (state: any) => state.switch.projectId
+    (state) => state.switch.projectId
   );
 
   const [pagination, setPagination] = useState<PaginationState>({
@@ -49,7 +48,10 @@ export const TaskApproval = () => {
 
   /* ---------------- LOAD TASKS ---------------- */
 
-  const loadTasks = async (page = pagination.page) => {
+ 
+
+  useEffect(() => {
+     const loadTasks = async (page = pagination.page) => {
     try {
       const res = await fetchTasks(
         workspaceid,
@@ -72,14 +74,13 @@ export const TaskApproval = () => {
       setError("Failed to load tasks. Please try again later.");
     }
   };
-
-  useEffect(() => {
     loadTasks();
   }, [
     pagination.page,
     pagination.rowPerpage,
     projectID,
     workspaceid,
+  
   ]);
 
   /* ---------------- PAGINATION ---------------- */
@@ -272,7 +273,7 @@ export const TaskApproval = () => {
       </div>
 
       <div className="grid gap-4">
-        {tasks.map((task: any) => {
+        {tasks.map((task) => {
           const allCriteriaCompleted =
             task?.acceptanceCriteria?.every(
               (item: AcceptanceCriteria) =>
@@ -339,7 +340,7 @@ export const TaskApproval = () => {
       await updateTaskCriteria(task.id, criteria.title);
 
       setTasks((prevTasks) =>
-        prevTasks.map((t: any) => {
+        prevTasks.map((t) => {
           if (t.id !== task.id) return t;
 
           return {
@@ -360,8 +361,8 @@ export const TaskApproval = () => {
           };
         })
       );
-    } catch (error) {
-      console.log(error);
+    } catch  {
+     
       setError("Failed to update acceptance criteria");
     }
   }}

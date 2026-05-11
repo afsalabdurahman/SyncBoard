@@ -90,3 +90,8 @@ try {
       throw new Error(err)  
 }
 }
+export const updateTaskCriteria=async(id:string,title:string)=>{
+ await apiService.patch(ROUTES.TASKS.UPDATE_ACCEPTANCE_CRITERIA.replace(":id",id),{
+    title
+  })
+}

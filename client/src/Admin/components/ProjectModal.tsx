@@ -132,7 +132,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     assigned: "",
   });
 
-  let validationErrors = {
+  const validationErrors = {
     name: "",
     description: "",
     assigned: "",

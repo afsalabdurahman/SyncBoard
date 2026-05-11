@@ -63,8 +63,8 @@ export const SwapProject = () => {
         setProjects(updatedProjects);
         setSelectedProject(updatedProjects[0]);
       } catch {
-        setProjects([{ name: "All", _id: "" }]);
-        setSelectedProject({ name: "All", _id: "" });
+        setProjects([{ name: "All Projects", _id: "" }]);
+        setSelectedProject({ name: "All Projects", _id: "" });
       }
     }
 
