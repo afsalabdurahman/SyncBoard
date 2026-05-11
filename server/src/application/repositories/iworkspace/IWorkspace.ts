@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import { WorkspaceRequestDTO,WorkspaceResponseDTO } from "../../dto/WorkspaceDTOs";
+import { listWorkspace, WorkspaceRequestDTO,WorkspaceResponseDTO } from "../../dto/WorkspaceDTOs";
 import { Workspace } from "../../../domain/entities/Workspace";
 
 export interface IWorkspace {

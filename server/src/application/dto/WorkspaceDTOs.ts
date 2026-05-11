@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { User } from "../../domain/entities/User";
 import { Workspace } from "../../domain/entities/Workspace";
 
@@ -13,4 +14,8 @@ ownerId:string;
 export interface WorkspaceResponseDTO{
 workspace:Workspace;
 user:User
+}
+export interface listWorkspace{
+name:string,
+id:Types.ObjectId |string
 }

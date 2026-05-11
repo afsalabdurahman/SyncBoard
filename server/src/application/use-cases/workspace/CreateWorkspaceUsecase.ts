@@ -12,6 +12,7 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRe
 import { Types } from "mongoose";
 import { IWorkspace } from "../../repositories/iworkspace/IWorkspace";
 import {
+  listWorkspace,
   WorkspaceRequestDTO,
   WorkspaceResponseDTO,
 } from "../../dto/WorkspaceDTOs";
