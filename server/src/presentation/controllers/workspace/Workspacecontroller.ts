@@ -9,13 +9,13 @@ import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";
 import { IWorkspace } from "../../../application/repositories/iworkspace/IWorkspace";
 import { IAbuseUsecase } from "../../../application/repositories/IAbuse";
 import { AbuseRequestDTO, UpdateAbuseStatusDTO } from "../../../application/dto/AbuseDTO";
+import { stringToMongoObj } from "../../../utils/convertMongoObject";
 
 @injectable()
 export class WorkspaceController {
   constructor(
     @inject("WorkspaceuseCases")
     private _createWorkspceUsecases: IWorkspace,
-    @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("SentInvitaion") private _sentInvitaionUsecase: ISentInvitaion,
     @inject("IWokspaceMember") private _workspaceUsecase: IWokspaceMember,
     @inject("AbuseUsecase") private _abuseUsecase: IAbuseUsecase
@@ -150,6 +150,10 @@ export class WorkspaceController {
    const list= await this._createWorkspceUsecases.listWorkspacesByUserId(userId);
    res.status(HttpStatusCode.OK).json(list)
   }
-
+async findWorkspace(req:Request,res:Response):Promise<void>{
+  const workspaceId=req.params.workspaceId as string;
+const workspace = await this._createWorkspceUsecases.findWorkspace(stringToMongoObj(workspaceId))
+res.status(HttpStatusCode.OK).json(workspace)
+}
 
 }

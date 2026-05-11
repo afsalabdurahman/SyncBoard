@@ -210,3 +210,12 @@ export const listWorkspace = async (userId:string)=>{
         return null
     }
 }
+export const findWorkspaceById=async (workspaceId:string)=>{
+try {
+    const workspace = await apiService.get(`workspace/find/${workspaceId}`);
+    console.log(workspace.data,"reponseDATA")
+ return workspace.data
+} catch (error) {
+    return null
+}
+}

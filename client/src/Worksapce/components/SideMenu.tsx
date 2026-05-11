@@ -10,6 +10,7 @@ import {
 } from "../../Redux/feature/StatusSlice";
 import NotificationBell from "./Notification";
 import { socket } from "../../Services/socket";
+import { ChooseWorkspace } from "../pages/ChooseWorkspace";
 const SideMenu = () => {
   const [message, setMessage] = useState<string | null>(null);
   useEffect(() => {
@@ -80,6 +81,9 @@ const SideMenu = () => {
             <span className='text-[10px]'>{item.name}</span>
           </button>
         ))}
+          <button  className="text-purple-300 hover:text-white">
+             <ChooseWorkspace />
+        </button>
       </div>
 
       {/* Bottom profile icon */}
@@ -99,6 +103,7 @@ const SideMenu = () => {
           <p className='text-[13px] font-mono'>{WorkspaceData?.user?.name}</p>
         </div>
       </button>
+    
     </div>
   );
 };

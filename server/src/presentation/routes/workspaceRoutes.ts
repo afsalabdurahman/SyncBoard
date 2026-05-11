@@ -24,4 +24,5 @@ router.get("/abuse/report/search/:workspaceid/:userid",memberAuth,workspaceContr
 router.get('/download/workspace',adminAuth,workspaceController.downloadWorkerData.bind(workspaceController))
 router.get("/members/find/:slug",memberAuth,workspaceController.findUser.bind(workspaceController))
 router.get("/lists/:id",workspaceController.listWorkspaces.bind(workspaceController))
+router.get("/find/:workspaceId",workspaceController.findWorkspace.bind(workspaceController))
 export default router;

@@ -6,7 +6,9 @@ import {
 } from "../../Worksapce/hooks/workspacehooks";
 import { setSwitchProject } from "../../Redux/feature/swichProjectSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { listWorkspace } from "../apis/workspaceapis";
+import { findWorkspaceById, listWorkspace } from "../apis/workspaceapis";
+import { workspaceDataApi } from "../../SuperAdmin/apis/fetchApi";
+import { setWorkspace as reduxSetWorkspace } from "../../Redux/feature/WorkspaceSlice";
 
 type Workspace = {
   name: string;
@@ -43,6 +45,19 @@ export const ChooseWorkspace = () => {
       name: workspaceName,
       id: workspaceId,
     });
+
+    // useEffect(()=>{
+    //   findWorkspaceById(selectedWorkspace.id)
+    // })
+console.log(selectedWorkspace,"selected wo")
+
+const selectWorkspace = async (sWorkspace)=>{
+  console.log(sWorkspace,"WORKBUTTON")
+  setSelectedWorkspace(sWorkspace)
+  const workspaceData=await findWorkspaceById(sWorkspace.id)
+   dispatch(reduxSetWorkspace(workspaceData))
+     setDropdownOpen(false);
+}
 
   function getColors(name: string) {
     const colors = [
@@ -136,17 +151,17 @@ export const ChooseWorkspace = () => {
                 <button
                   key={workspace.id}
                   onClick={() => {
-                    setSelectedWorkspace(workspace);
+                  
+selectWorkspace(workspace)
+                    // dispatch(
+                    //   setSwitchProject({
+                    //     projectId: workspace.id,
+                    //     projectName: workspace.name,
+                    //     isSwitch: true,
+                    //   })
+                    // );
 
-                    dispatch(
-                      setSwitchProject({
-                        projectId: workspace.id,
-                        projectName: workspace.name,
-                        isSwitch: true,
-                      })
-                    );
-
-                    setDropdownOpen(false);
+                   
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition"
                 >

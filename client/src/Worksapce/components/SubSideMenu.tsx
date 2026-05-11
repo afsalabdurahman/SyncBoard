@@ -68,9 +68,7 @@ dispatch(abuse())
 
 <div className=" text-center flex items-center justify-between pt-[4rem] text-sm font-semibold border-b border-purple-700">
         <span className=' text-lg pt-[2rem] pl-[4rem]'>{WorkspaceData.workspaces.name}</span>
-        <button className="text-purple-300 hover:text-white">
-             <ChooseWorkspace />
-        </button>
+        
       </div>
 
 
