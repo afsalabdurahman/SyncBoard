@@ -27,16 +27,17 @@ import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 import  AddPassword  from "./Worksapce/components/AddPassword";
+import { useSelector } from "react-redux";
 
 function App() {
-
+useSelector((state)=>console.log(state,"ste+++"))
   return (
     <>
     
       <BrowserRouter>
       
       <AuthProvider>
-        q
+        
         <Routes>
           <Route index element={
            

@@ -6,6 +6,7 @@ import {meeting,deactive, activity,channel,invite,mytodo,myproject,abuse  } from
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
 import { Flag } from 'lucide-react';
+import { ChooseWorkspace } from '../pages/ChooseWorkspace';
 const SubSideMenu = () => {
   const WorkspaceData = useSelector((state: RootState) =>{
     const user=state.register;
@@ -64,12 +65,20 @@ dispatch(abuse())
     
     <div className="bg-purple-900 text-white w-64 h-screen flex flex-col">
       {/* Header */}
-      <div className=" text-center flex items-center justify-between pt-[4rem] text-sm font-semibold border-b border-purple-700">
+
+<div className=" text-center flex items-center justify-between pt-[4rem] text-sm font-semibold border-b border-purple-700">
         <span className=' text-lg pt-[2rem] pl-[4rem]'>{WorkspaceData.workspaces.name}</span>
         <button className="text-purple-300 hover:text-white">
-          <FiPlus />
+             <ChooseWorkspace />
         </button>
       </div>
+
+
+
+      
+
+
+
 
       {/* Menu */}
       <div className="flex flex-col text-sm px-2 pt-[3.5rem] space-y-1">

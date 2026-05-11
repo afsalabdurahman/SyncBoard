@@ -75,5 +75,13 @@ static workspaceUpdateValidator(input:Record<string,string>){
     return isValid.safeParse(input);
   
 }
-  
+   static listOfWorkspace(input:Workspace[]){
+    const list = input.map((workspace)=>{
+      return{
+        name:workspace.name,
+        id:workspace?._id,
+      }
+    })
+    return list
+  }
 }

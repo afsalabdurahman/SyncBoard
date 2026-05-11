@@ -10,6 +10,7 @@ import {setWorkspace} from "../../Redux/feature/WorkspaceSlice"
 import { setUserData } from "../../Redux/feature/user/userSlice";
 import { createWorkspace } from "../apis/workspaceApi";
 import { setForward } from "../../Redux/feature/ForwardSlice";
+import { useUser } from "../../Worksapce/hooks/workspacehooks";
 
 interface FormField {
   projectName: string;
@@ -23,7 +24,8 @@ const dispatch =useDispatch()
   const email  = useSelector((state: RootState) => state?.user?.user?.email);
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
-
+const userId=useUser();
+console.log(userId,"userIDD+++",ownerId)
   dispatch(setForward(false));
 
 
@@ -59,7 +61,7 @@ const dispatch =useDispatch()
       return;
     }
     try {
-      const response = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId)
+      const response = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId??userId?._id)
       if (response) {
 dispatch (setWorkspace(response.data.workspaceResponseDTO.workspace))
 dispatch (setUserData(response.data.workspaceResponseDTO.user))

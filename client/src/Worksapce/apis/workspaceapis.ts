@@ -202,3 +202,11 @@ export const taskDetailsApi=async(taskId:string)=>{
   catchErrorHandle(err,"Not found")
     }
 }
+export const listWorkspace = async (userId:string)=>{
+    try {
+      const list= await apiService.get(`workspace/lists/${userId}`);
+       return list
+    } catch  {
+        return null
+    }
+}
