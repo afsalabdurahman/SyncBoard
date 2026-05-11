@@ -158,5 +158,10 @@ if(merge.planKey){
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer as Buffer;
   }
-
+async listWorkspacesByUserId(userId: string): Promise<listWorkspace[]> {
+  const list = await this._workspaceRepository.findWorkspacesByUserId(userId);
+  if(!list) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+  const mappedData= WorkspaceMapper.listOfWorkspace(list)
+  return mappedData as listWorkspace[]
+}
 }

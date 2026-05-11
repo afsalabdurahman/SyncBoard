@@ -8,5 +8,6 @@ export interface IWorkspace {
     findWorkspace(id:Types.ObjectId):Promise<Workspace|null>;
     updateWorkspace(id:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
     updateWorkspaceData(id:string,merge:Record<string, string>):Promise<void>
-     generateWorkspaceExcel(): Promise<Buffer>
+     generateWorkspaceExcel(): Promise<Buffer>;
+      listWorkspacesByUserId(userId:string):Promise<listWorkspace[]>
 }

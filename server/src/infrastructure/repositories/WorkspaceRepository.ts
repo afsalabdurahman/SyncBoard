@@ -71,5 +71,8 @@ return true
     const workspaceData= await WorkspaceModel.find({}).lean().exec()
     return workspaceData 
   }
-  
+  async findWorkspacesByUserId(userId:string):Promise<Workspace[]|null>{
+    const workspaces = await WorkspaceModel.find({ownerId:userId});
+    return workspaces
+  }
 }

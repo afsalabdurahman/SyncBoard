@@ -143,6 +143,13 @@ export class WorkspaceController {
       const user = await this._workspaceUsecase.getMembers(slug, query);
       res.status(HttpStatusCode.OK).json(user);
   }
+ async listWorkspaces(req:Request,res:Response):Promise<void>{
+    console.log("vcalingggg")
+    const userId = req.params.id;
+    console.log(userId)
+   const list= await this._createWorkspceUsecases.listWorkspacesByUserId(userId);
+   res.status(HttpStatusCode.OK).json(list)
+  }
 
 
 }
