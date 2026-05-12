@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { PlanDetails } from "../components/plan/PlanDetails";
+import { PlanDetails } from "../components/plan/planDetails";
 
 
 export const PlanManagementPage = () => {
