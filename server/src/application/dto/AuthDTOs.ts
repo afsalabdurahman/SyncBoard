@@ -5,6 +5,7 @@ import { Workspace } from "../../domain/entities/Workspace";
 export interface LoginRequestDTO {
   email: string;
   password: string;
+  workspaceId?:string;
 }
 
 export interface LoginResponseDTO {

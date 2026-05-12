@@ -6,12 +6,13 @@ import { AdminLoginResponse } from "../types/adminTypes";
 
 export const adminLogin = async (
   email: string,
-  password: string
+  password: string,
+  workspaceId:string,
 ): Promise<AdminLoginResponse> => {
   try {
     const { data } = await apiService.post<AdminLoginResponse>(
       ROUTES.PUBLIC.ADMIN_LOGIN,
-      { email, password },
+      { email, password,workspaceId },
       { withCredentials: true }
     );
     return data;

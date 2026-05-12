@@ -13,6 +13,7 @@ import { GoogleLogin } from "@react-oauth/google";
 // Import Lucide Eye Icons
 import { Eye, EyeOff } from "lucide-react";
 import { CredentialResponse } from "../types/adminTypes";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 
 const AdminLogin = () => {
 
@@ -24,13 +25,13 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false); // New state
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-
+const workspaceId=useWorkspaceid() as string
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await adminLogin(email, password);
+      const response = await adminLogin(email, password,workspaceId);
 
 
       dispatch(setUserAuth(response?.user?._id));

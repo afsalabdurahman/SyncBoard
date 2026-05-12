@@ -11,6 +11,7 @@ import { ResponseMessages } from "../../../../common/erroResponse";
 import { envConfig } from "../../../../infrastructure/config/env.config";
 import { OAuth2Client } from "google-auth-library";
 import { User } from "../../../../domain/entities/User";
+import { stringToMongoObj } from "../../../../utils/convertMongoObject";
 
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
@@ -27,7 +28,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     if (!isExist?._id || !isExist.workspace) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     const user = await this._userRepository.findUser(isExist?._id)
     if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-    const workspceId = user.workspace[0].workspaceId
+    //const workspceId = user.workspace[0].workspaceId
     if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const isValid = await this._authService.comparePassword(
       input.password,
@@ -35,7 +36,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     );
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
-    const workspace = await this._workspceRepository.findByObjectId(workspceId)
+    const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(input.workspaceId??""))
     if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     if (workspace?.status.toLowerCase() == "suspend") throw new ForbiddenError("Workspace not found")
     if (!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
