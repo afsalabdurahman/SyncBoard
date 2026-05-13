@@ -3,6 +3,7 @@ import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle"
 import { ROUTES } from "../../Constants/routeConstan"
 
+
 interface formData {
     type: string
     otherType: string,
@@ -218,4 +219,12 @@ try {
 } catch (error) {
     return null
 }
+}
+export const findTeamsTasks=(workspaceId:string)=>{
+    try {
+        const task= apiService.get(`/task/mytask/kanban/${workspaceId}`)
+        return task
+    } catch (error) {
+        return null
+    }
 }

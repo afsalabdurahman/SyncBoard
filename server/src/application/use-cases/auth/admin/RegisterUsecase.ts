@@ -47,7 +47,6 @@ export class RegisterUseCase implements IAuth {
 
     }
   
-
     const hashedPassword = await this._authService.hashPassword(input.password as string);
     input.password = hashedPassword;
     const AdminEntity = AuthMapper.mapUserToEntity(input)

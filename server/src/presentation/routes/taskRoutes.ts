@@ -33,4 +33,5 @@ router.get("/count/dashboard/donet/:projectid", taskController.donetChartData.bi
 router.get("/project/list/:projectid", taskController.taskChart.bind(taskController))
 router.get("/project/approval/:projectid", taskController.ApprovalStatus.bind(taskController))
 router.get("/details/:taskid", taskController.taskDetailsById.bind(taskController))
+router.get("/mytask/kanban/:workspaceId",taskController.findMytaskByworkspace.bind(taskController))
 export default router;

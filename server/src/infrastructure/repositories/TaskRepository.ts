@@ -6,6 +6,8 @@ import { TaskModel } from "../database/models/TaskModel";
 import { commentType } from "../../types/taskTypes";
 import { ProjectModel } from "../database/models/ProjectModel";
 import { DbTaskUI, donetChartData, projectSpecifyTaskCount } from "../../application/dto/TaskDTOs";
+import { WorkspaceModel } from "../database/models/WorkspaceModel";
+import { stringToMongoObj } from "../../utils/convertMongoObject";
 
 export class TaskRepository implements ITaskRepository {
   async create(dto: Task): Promise<Task | null> {
@@ -433,4 +435,27 @@ export class TaskRepository implements ITaskRepository {
     const task = await TaskModel.findById(taskId).lean()
     return task as unknown as DbTaskUI ?? null
   }
+ async findUserTaskByWorkspaceId(
+  workspaceId: Types.ObjectId
+): Promise<Task[]|null> {
+
+  // Find all projects in this workspace
+  const projects = await ProjectModel.find({
+    workspaceId: workspaceId
+  });
+
+  console.log(projects, "projects");
+
+  // Extract project IDs
+  const projectIds = projects.map((project) => project._id);
+
+  console.log(projectIds, "projectIds");
+
+  // Find all tasks belonging to those projects
+  const tasks = await TaskModel.find({
+    projectId: { $in: projectIds }
+  });
+
+  return tasks ?? null
+}
 }

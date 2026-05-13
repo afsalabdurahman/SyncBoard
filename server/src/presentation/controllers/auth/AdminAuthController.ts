@@ -30,4 +30,5 @@ export class AdminAuthController {
     res.status(HttpStatusCode.OK).json({ user: response.user, workspace: response.workspace, suscribe: response.suscribe });
 
   }
+
 }

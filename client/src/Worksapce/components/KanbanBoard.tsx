@@ -27,6 +27,8 @@ import { SubtaskPage } from "../pages/SubtaskPage";
 import { toast } from "react-toastify";
 import { KanbanApiTask, KanbanTask } from "../types/workspaceTypes"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
+import { findTeamsTasks } from "../apis/workspaceapis";
+import { useWorkspaceid } from "../hooks/workspacehooks";
 
 
 
@@ -34,6 +36,7 @@ import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
 
 export default function KanbanBoard() {
+  const workspaceId = useWorkspaceid()
   const [tasks, setTasks] = useState<KanbanTask[]>([]);
   const [openCommentId, setOpenCommentId] = useState<string | null>(null);
   const [popup, setPopup] = useState(false);
@@ -50,7 +53,7 @@ export default function KanbanBoard() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await apiService.get(`task/mytask/${user.name}`);
+        const res = await findTeamsTasks(workspaceId??"");
         const mappedTasks: KanbanTask[] = res.data.map((data: KanbanApiTask) => ({
           id: data._id.toString(),
           projectName: data.project || "Abcd",
@@ -73,7 +76,7 @@ export default function KanbanBoard() {
         }));
         setTasks(mappedTasks);
       } catch {
-        toast.error("Failed to fetch tasks:",);
+        return null
       }
     };
 

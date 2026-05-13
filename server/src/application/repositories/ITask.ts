@@ -25,4 +25,5 @@ export interface ITaskUseCase {
 findTaskApprovalStatus(projectId:string):Promise<Task[]>
 findTaskDetailsBYId(taskId:string):Promise<UIresponseTask>
 //TaskResponseChartDTO[]
+findMytaskByworkspaceId(workspaceId:string):Promise<Task[]>
     }

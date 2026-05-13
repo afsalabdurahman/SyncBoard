@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { findWorkspaceById, listWorkspace } from "../apis/workspaceapis";
 import { workspaceDataApi } from "../../SuperAdmin/apis/fetchApi";
 import { setWorkspace as reduxSetWorkspace } from "../../Redux/feature/WorkspaceSlice";
-
+import { useNavigate } from "react-router-dom";
 type Workspace = {
   name: string;
   id: string;
@@ -28,7 +28,7 @@ function getInitials(name: string) {
 
 export const ChooseWorkspace = () => {
   const dispatch = useDispatch();
-
+const naviagate = useNavigate()
   const workspaceName = useWorkspaceName();
   const workspaceId = useWorkspaceid();
   const user = useUser();
@@ -190,6 +190,7 @@ selectWorkspace(workspace)
           {/* Create Workspace */}
           <div className="border-t border-gray-100 p-2">
             <button
+            onClick={()=>naviagate("/create/workspace")}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-xl
               hover:bg-blue-50 text-blue-600 transition"
             >

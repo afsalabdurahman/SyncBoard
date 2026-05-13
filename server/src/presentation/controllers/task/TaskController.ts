@@ -189,5 +189,11 @@ export class TaskController {
    const taskUI= await this._taskUsecase.findTaskDetailsBYId(taskId)
    res.status(HttpStatusCode.OK).json({taskUI})
   }
+  async findMytaskByworkspace(req:Request,res:Response):Promise<void>{
+    const workapceId=req.params.workspaceId as string
+
+   const tasks= await this._taskUsecase.findMytaskByworkspaceId(workapceId);
+   res.status(HttpStatusCode.OK).json(tasks)
+  }
 
 }

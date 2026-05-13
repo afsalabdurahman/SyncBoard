@@ -149,5 +149,9 @@ return UiData
  
   }
  
-
+async findMytaskByworkspaceId(workspaceId: string): Promise<Task[]> {
+ const tasks= await this._taskRepository.findUserTaskByWorkspaceId(stringToMongoObj(workspaceId));
+ if(!tasks) throw new NotFoundError(ResponseMessages.TASK_NOT_FOUND);
+ return tasks
+}
 }

@@ -28,5 +28,6 @@ export interface ITaskRepository {
   donetChartData(projectId:string):Promise<donetChartData>;
   burnoutChartTask(projectId:string):Promise<Task[]>;
   findTaskApprovalstatus(projectId:string):Promise<Task[]>;
-  findTaskById(taskId:Types.ObjectId):Promise<DbTaskUI|null>
+  findTaskById(taskId:Types.ObjectId):Promise<DbTaskUI|null>;
+  findUserTaskByWorkspaceId(workspaceId:Types.ObjectId):Promise<Task[]|null>
 }
