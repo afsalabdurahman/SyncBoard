@@ -200,7 +200,7 @@ export const taskDetailsApi=async(taskId:string)=>{
         const task = await apiService.get(ROUTES.TASKS.TASK_DETAILS_BY_ID.replace(":taskId",taskId))
         return task?.data?.taskUI
     } catch (err) {
-  catchErrorHandle(err,"Not found")
+  catchErrorHandle(err,"task")
     }
 }
 export const listWorkspace = async (userId:string)=>{

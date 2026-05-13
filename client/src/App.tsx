@@ -116,9 +116,6 @@ element={
             element={
              
  <CreateWorkspacePage />
-            
-           
-          
           }
           ></Route>
           <Route path='/invite/members' element={
