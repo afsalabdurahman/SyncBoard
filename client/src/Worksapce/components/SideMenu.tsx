@@ -84,6 +84,7 @@ const SideMenu = () => {
           <button  className="text-purple-300 hover:text-white">
              <ChooseWorkspace />
         </button>
+ 
       </div>
 
       {/* Bottom profile icon */}
