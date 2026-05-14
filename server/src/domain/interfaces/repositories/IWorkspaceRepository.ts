@@ -20,5 +20,5 @@ export interface IWorkspaceRepository {
   addlogId?(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
   updateWorkspaceDate(workspaceId:string,merge:Record<string,string>):Promise<Workspace | null>
   findAll():Promise<WorkspaceDoument[]>
-  findWorkspacesByUserId(userId:string):Promise<Workspace[]|null>
+  findWorkspacesByUserId(userId:string):Promise<{ id: string; name: string }[]|null>
 }

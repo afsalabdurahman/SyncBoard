@@ -72,12 +72,17 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     const workspaceData = await WorkspaceModel.find({}).lean().exec()
     return workspaceData
   }
-  async findWorkspacesByUserId(userId: string): Promise<Workspace[] | null> {
+  async findWorkspacesByUserId(userId: string):Promise <{ id: string; name: string }[]|null> {
     const user = await UserModel.findById(userId).populate("workspace.workspaceId", "_id name")
-
+const list = user?.workspace.map((work) => {
+  const workspace = work.workspaceId as unknown as { _id: Types.ObjectId; name: string };
+  return {
+    id: workspace._id.toString(),
+    name: workspace.name,
+  };
+});
+return list??null
   
-    const workspaces = await WorkspaceModel.find({ ownerId: userId }).lean().exec();
-    if (!workspaces || workspaces.length === 0) return null;
-    return workspaces.map(workspace => new Workspace({ ...workspace, _id: workspace._id?.toString(), members: workspace.members.map(m => ({ ...m, permissions: m.permissions as "Admin" | "Viewer" | "Member" | undefined })) }));
+   
   }
 }

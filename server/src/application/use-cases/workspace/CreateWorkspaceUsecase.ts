@@ -39,7 +39,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   ): Promise<WorkspaceResponseDTO> {
 
     const isValid = WorkspaceMapper.validateWorkspace(input);
- 
+
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
 
     const user = await this._userRepository.findByEmail(input.email);
@@ -52,7 +52,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
       input,
       user._id ?? "",
       input.title,
-      
+
     );
 
     const isCreateWorkspace = await this._workspaceRepository.create(workspaceEntity);
@@ -85,16 +85,16 @@ export class CreateWorkspaceUsecases implements IWorkspace {
   }
 
   async updateWorkspaceData(id: string, merge: Record<string, string>): Promise<void> {
-    const isValid=WorkspaceMapper.workspaceUpdateValidator(merge);
+    const isValid = WorkspaceMapper.workspaceUpdateValidator(merge);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
-if(merge.planKey){
-  this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id),merge.planKey,"active")
- }
-      await this._workspaceRepository.updateWorkspaceDate(id, merge)
-   
+    if (merge.planKey) {
+      this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id), merge.planKey, "active")
+    }
+    await this._workspaceRepository.updateWorkspaceDate(id, merge)
 
 
-}
+
+  }
   async generateWorkspaceExcel(): Promise<Buffer> {
     const workspaceData = await this._workspaceRepository.findAll();
 
@@ -161,12 +161,9 @@ if(merge.planKey){
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer as Buffer;
   }
-async listWorkspacesByUserId(userId: string): Promise<listWorkspace[]> {
-  const list = await this._workspaceRepository.findWorkspacesByUserId(userId);
-  if(!list) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
-    console.log(list,"LIST")
-  const mappedData= WorkspaceMapper.listOfWorkspace(list);
-  console.log(mappedData,"MAPPED")
-  return mappedData as listWorkspace[]
-}
+  async listWorkspacesByUserId(userId: string): Promise<listWorkspace[]> {
+    const list = await this._workspaceRepository.findWorkspacesByUserId(userId);
+    if (!list) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+    return list
+  }
 }
