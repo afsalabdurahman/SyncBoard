@@ -100,6 +100,7 @@ dispatch (setUserData(response.data.workspaceResponseDTO.user))
             <div className='mb-6'>
               {formFields.map((field, index) => (
                 <div key={index} className='mb-4'>
+                  <label htmlFor='name' className='block text-sm mb-1'>Name of workapce</label>
                   <input
                     type='text'
                     placeholder='Name of Workspace'
@@ -109,6 +110,8 @@ dispatch (setUserData(response.data.workspaceResponseDTO.user))
                       handleInputChange(index, "projectName", e.target.value)
                     }
                   />
+                                    <label htmlFor='name' className='block text-sm mb-1'>Title</label>
+
                   <input
                     type='text'
                     placeholder='Title'

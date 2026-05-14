@@ -30,6 +30,9 @@ const MemberSchema: Schema = new Schema({
     type:String,
     
   },
+  permissions:{
+    type:String
+  },
   email:{
       type: String,
     }

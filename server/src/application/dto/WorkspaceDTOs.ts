@@ -19,3 +19,6 @@ export interface listWorkspace{
 name:string,
 id:Types.ObjectId |string
 }
+export interface listWorkspacefromDb{
+
+}

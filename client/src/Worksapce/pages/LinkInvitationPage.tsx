@@ -22,7 +22,7 @@ const LinkInvitaionPage = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [role] = useState("Member");
-  const [title, setTitle] = useState("");
+  const [title] = useState("Member");
   const [password, setPassword] = useState("");
   const [conformPassword, setConformPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
@@ -117,38 +117,9 @@ const LinkInvitaionPage = () => {
               required
             />
             <p style={{ color: "red" }}>{error.names ? error.names : null}</p>
-            <label htmlFor='role' className='block text-sm text-gray-700 mb-1'>
-              Role
-            </label>
-            <input
-              id='role'
-              type='text'
-              value='Member'
-              readOnly
-              tabIndex={-1}
-              className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600 cursor-default bg-gray-100'
-              style={{ pointerEvents: "none" }}
-            />
-            <p style={{ color: "red" }}>{error.names ? error.names : null}</p>
-            <label htmlFor='role' className='block text-sm text-gray-700 mb-1'>
-              Title
-            </label>
-            <select
-              id='title'
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600'
-              required
-            >
-              <option value='' disabled>
-                Select your Title...
-              </option>
-              <option value='Designer'>Designer</option>
-              <option value='Nodejs developer'>Nodejs developer</option>
-              <option value='Reactjs developer'>Reactjs developer</option>
-              <option value='Db manager'>Db manager</option>
-              <option value='Other'>Other</option>
-            </select>
+           
+          
+           
           </div>
 
           <div className='mb-6'>

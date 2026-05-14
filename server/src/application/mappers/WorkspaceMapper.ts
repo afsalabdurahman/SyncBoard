@@ -11,8 +11,9 @@ export class WorkspaceMapper {
       role: dto.role,
       slug: dto.slug,
       ownerId: dto.ownerId,
-      members: [{ userId: userID, title }],
+      members: [{ userId: userID, title,permissions:"Admin" }],
       status: "active",
+
       storage: 1,
     })
   }

@@ -77,9 +77,12 @@ export class MemberRegisterUsecase implements IMemberRegister {
         workspace.slug,
         createMember._id,
         dto.role,
+         "Viewer",
         dto.name,
         dto.email,
-        dto.title
+        dto.title,
+       
+        
       );
 if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND);
 

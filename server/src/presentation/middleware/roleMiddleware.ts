@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
+import { findPermision } from '../../utils/findUserPermission';
 
 interface AuthenticatedRequest extends Request {
   user?: {
     role: 'Member' | 'Admin' | 'SuperAdmin';
   };
+  id?:string,
 }
 
 export const roleMiddleware = (roles: Array<'Member' | 'Admin' | 'SuperAdmin'>) => {
@@ -16,3 +18,9 @@ export const roleMiddleware = (roles: Array<'Member' | 'Admin' | 'SuperAdmin'>) 
     next();
   };
 };
+// export const permissionsMiddleware = (roles:Array<'Viewer'|'Admin'|'Member'>)=>{
+//    return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+//    const permission = findPermision(req.user)
+//     next();
+//   };
+// }

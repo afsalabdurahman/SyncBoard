@@ -4,75 +4,80 @@ import { IWorkspaceRepository } from "../../domain/interfaces/repositories/IWork
 import { injectable } from "tsyringe";
 import { Types } from "mongoose";
 import mongoose from "mongoose";
+import { UserModel } from "../database/models/UserModel";
 
 @injectable()
 export class WorkspaceRepository implements IWorkspaceRepository {
-  async create(workspaceEntity: Workspace): Promise<Workspace|null> {
-     const workspace =await WorkspaceModel.create(workspaceEntity)
-     return workspace.toObject() as Workspace??null
+  async create(workspaceEntity: Workspace): Promise<Workspace | null> {
+    const workspace = await WorkspaceModel.create(workspaceEntity)
+    return workspace.toObject() as Workspace ?? null
 
   }
 
   async findByObjectId(id: Types.ObjectId): Promise<Workspace | null> {
-   
+
     const workspace = await WorkspaceModel.findById(id).lean().exec();
-     
-           if (!workspace) return null;
-           return new Workspace({ ...workspace, _id: workspace._id?.toString() });
+
+    if (!workspace) return null;
+    return workspace as Workspace;
 
 
-  
+
   }
 
   async addMemberToWorkspace(
     slug: string,
     userId: string,
-    title: string
+    title: string,
+    permission: string
   ): Promise<Workspace | null> {
-    const data = { userId: userId, title: title };
+    const data = { userId: userId, title: title, permissions: permission };
+    console.log(data, "addTOWorkspace")
     const updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
       { slug },
-      { $push: { members: data } },{new:true}
+      { $push: { members: data } }, { new: true }
     ).lean().exec()
-     if (!updatedWorkspce) return null;
-           return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString() });
+    if (!updatedWorkspce) return null;
+    return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString(), members: updatedWorkspce.members.map(m => ({ ...m, permissions: m.permissions as "Admin" | "Viewer" | "Member" | undefined })) });
 
   }
-  
+
   async findbySlug(slug: string): Promise<Workspace | null> {
-    
-    const workspace = await WorkspaceModel.findOne({ slug: slug }).lean().exec();
-  
- 
-           if (!workspace) return null;
-           return new Workspace({ ...workspace, _id: workspace._id?.toString() });
-  }
- async addlogId(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>{
-    await WorkspaceModel.updateOne({_id:workspaceId},{$set:{logId:logId}},{upsert:true})
 
-return true
+    const workspace = await WorkspaceModel.findOne({ slug: slug }).lean().exec();
+    if (!workspace) return null;
+    return workspace as Workspace;
   }
-  async updateWorkspaceDate(workspaceId: string, merge: Record<string,string>): Promise<Workspace | null> {
-    const objectId = new mongoose.Types.ObjectId(workspaceId); 
+  async addlogId(workspaceId: mongoose.Types.ObjectId, logId: mongoose.Types.ObjectId): Promise<boolean> {
+    await WorkspaceModel.updateOne({ _id: workspaceId }, { $set: { logId: logId } }, { upsert: true })
+
+    return true
+  }
+  async updateWorkspaceDate(workspaceId: string, merge: Record<string, string>): Promise<Workspace | null> {
+    const objectId = new mongoose.Types.ObjectId(workspaceId);
     const updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
-  { _id: objectId },
-  { $set: merge },
-  {
-    new: true,            
-    upsert: true,         
-    runValidators: true,  
-  }
-);
- if (!updatedWorkspce) return null;
-           return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString() });
+      { _id: objectId },
+      { $set: merge },
+      {
+        new: true,
+        upsert: true,
+        runValidators: true,
+      }
+    );
+    if (!updatedWorkspce) return null;
+    return updatedWorkspce as Workspace;
 
   }
   async findAll(): Promise<WorkspaceDoument[]> {
-    const workspaceData= await WorkspaceModel.find({}).lean().exec()
-    return workspaceData 
+    const workspaceData = await WorkspaceModel.find({}).lean().exec()
+    return workspaceData
   }
-  async findWorkspacesByUserId(userId:string):Promise<Workspace[]|null>{
-    const workspaces = await WorkspaceModel.find({ownerId:userId});
-    return workspaces
+  async findWorkspacesByUserId(userId: string): Promise<Workspace[] | null> {
+    const user = await UserModel.findById(userId).populate("workspace.workspaceId", "_id name")
+
+  
+    const workspaces = await WorkspaceModel.find({ ownerId: userId }).lean().exec();
+    if (!workspaces || workspaces.length === 0) return null;
+    return workspaces.map(workspace => new Workspace({ ...workspace, _id: workspace._id?.toString(), members: workspace.members.map(m => ({ ...m, permissions: m.permissions as "Admin" | "Viewer" | "Member" | undefined })) }));
   }
 }

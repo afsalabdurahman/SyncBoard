@@ -23,6 +23,7 @@ import { ISuscription } from "../../../domain/interfaces/repositories/ISuscripti
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
 
 
+
 @injectable()
 export class CreateWorkspaceUsecases implements IWorkspace {
   constructor(
@@ -50,7 +51,8 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     const workspaceEntity = WorkspaceMapper.mapWorkspaceToEntity(
       input,
       user._id ?? "",
-      input.title
+      input.title,
+      
     );
 
     const isCreateWorkspace = await this._workspaceRepository.create(workspaceEntity);
@@ -162,7 +164,9 @@ if(merge.planKey){
 async listWorkspacesByUserId(userId: string): Promise<listWorkspace[]> {
   const list = await this._workspaceRepository.findWorkspacesByUserId(userId);
   if(!list) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
-  const mappedData= WorkspaceMapper.listOfWorkspace(list)
+    console.log(list,"LIST")
+  const mappedData= WorkspaceMapper.listOfWorkspace(list);
+  console.log(mappedData,"MAPPED")
   return mappedData as listWorkspace[]
 }
 }

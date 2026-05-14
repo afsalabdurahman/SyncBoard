@@ -13,6 +13,7 @@ export interface IWorkspaceRepository {
     name: string,
     email: string,
     title:string,
+    permission?:string,
   ): Promise<Workspace | null>;
   allWorkspace?(email: string): Promise<Workspace | null>;
   findByObjectId(id: mongoose.Types.ObjectId): Promise<Workspace | null>;

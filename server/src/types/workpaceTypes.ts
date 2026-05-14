@@ -3,16 +3,19 @@ import { ObjectId } from "mongoose";
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
   role: "Member" | "Admin" | "SuperAdmin";
+  permissions: "Member" | "Admin" | "Viewer";
   joinedAt?: Date;
 }
 export interface Member {
   userId: string;
   title: string;
+  permissions?:'Viewer'|'Member'|'Admin'
 }
 export interface IMember {
   userId: string;
   title: string;
   name:string;
+  permissions?:string
 }
 export type workspaceStatus = "active"|"InActive"|"suspend"|"Deleted"
 export interface WorkspaceProps {
