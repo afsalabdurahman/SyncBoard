@@ -155,5 +155,20 @@ async findWorkspace(req:Request,res:Response):Promise<void>{
 const workspace = await this._createWorkspceUsecases.findWorkspace(stringToMongoObj(workspaceId))
 res.status(HttpStatusCode.OK).json(workspace)
 }
+async updatePermission(req:Request,res:Response):Promise<void>{
+  const workspaceId = req.params.workspaceId as string;
+  const userId=req.body.userId;
+ const permission = req.body.permission;
+await this._createWorkspceUsecases.updatePermission(workspaceId,userId,permission)
+res.status(HttpStatusCode.OK).json(ResponseMessages.UPDATED)
+}
+async findPermission(req:Request,res:Response):Promise<void>{
+  console.log(req.body,"BODYYY")
+  const workspaceId = req.params.workspaceId as string;
+  const userId=req.body.userId;
+console.log(workspaceId,userId,"++++++++++++Controller")
+const permission=await this._createWorkspceUsecases.findPermission(workspaceId,userId)
+res.status(HttpStatusCode.OK).json(permission)
+}
 
 }

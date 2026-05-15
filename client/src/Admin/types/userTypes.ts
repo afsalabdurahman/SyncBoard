@@ -31,6 +31,7 @@ export interface userPage {
   isBlocked: boolean;
   isDeleted: boolean;
   isAdmin?: boolean;
+  permission:string
 }
 export interface DialogMessage {
   title: string | null;

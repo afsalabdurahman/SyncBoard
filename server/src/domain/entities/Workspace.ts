@@ -7,7 +7,7 @@ export class Workspace {
   public name: string;
   public slug: string;
   public role: string;
-  public ownerId: string;
+  public ownerId: string | ObjectId;
   public members?: Member[];
   public status:workspaceStatus;
   public storage:workspaceStorage;

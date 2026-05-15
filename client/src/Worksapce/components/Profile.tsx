@@ -1,4 +1,4 @@
-import { useState, useRef,  } from "react";
+import { useState, useRef, useEffect,  } from "react";
 
 import Loader from "../../Custom/reusecomponents/Loader";
 import axios from "axios";
@@ -30,8 +30,9 @@ import {
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
-import { profilePartialUpdate } from "../apis/workspaceapis";
+import { findPermission, profilePartialUpdate } from "../apis/workspaceapis";
 import { RootState } from "../../Redux/store";
+import { useWorkspaceid } from "../hooks/workspacehooks";
 export default function Profile() {
   //image
   const navigate = useNavigate();
@@ -60,7 +61,6 @@ export default function Profile() {
     return data;
   });
   const userId = Userdata.userData.user._id;
-  const isAdmin= Userdata.userData.user.role=="Admin"?true:false;
   const [activeTab,] = useState("about");
   const [isEditing, setIsEditing] = useState(false);
   const [editSection, setEditSection] = useState(null);
@@ -206,7 +206,16 @@ export default function Profile() {
 const addPassword = ()=>{
   navigate("/add/password");
 }
-
+const [permission,setPermission]=useState("")
+const workspaceid=useWorkspaceid() as string
+useEffect(()=>{
+  async function fetchPermission(){
+ const data=await findPermission(workspaceid,userId);
+ 
+ setPermission(data)
+  }
+  fetchPermission()
+ },[ userId, workspaceid])
   return (
     <div className=' mt-[em] overflow-x-auto overflow-y-auto  '>
       <ToastContainer position='top-center' autoClose={5000} />
@@ -358,7 +367,7 @@ const addPassword = ()=>{
                         <MapPin size={14} className='mr-1' />
                         <span>{profileData.location}</span>
                       </div>
- {isAdmin&&( <div className="go to admin">
+ {permission=="Admin"&&( <div className="go to admin">
     <a 
   href="/admin" 
   target="_blank" 

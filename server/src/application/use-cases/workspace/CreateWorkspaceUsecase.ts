@@ -52,7 +52,6 @@ export class CreateWorkspaceUsecases implements IWorkspace {
       input,
       user._id ?? "",
       input.title,
-
     );
 
     const isCreateWorkspace = await this._workspaceRepository.create(workspaceEntity);
@@ -165,5 +164,15 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     const list = await this._workspaceRepository.findWorkspacesByUserId(userId);
     if (!list) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     return list
+  }
+  async updatePermission(workspaceId: string, userId: string, permission: string): Promise<void> {
+    console.log("calling", workspaceId, userId, permission)
+    await this._workspaceRepository.updatePermissions(stringToMongoObj(workspaceId), stringToMongoObj(userId), permission);
+
+  }
+  async findPermission(workspaceId: string, userId: string): Promise<string> {
+    const permission = await this._workspaceRepository.findPermisssion(stringToMongoObj(workspaceId), stringToMongoObj(userId));
+    console.log(permission, "Permissionsssss")
+    return permission
   }
 }

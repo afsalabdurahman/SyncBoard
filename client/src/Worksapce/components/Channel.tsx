@@ -18,13 +18,14 @@ import {
 import { useSelector } from "react-redux";
 import { socket } from "../../Services/socket";
 import EmojiPicker from "emoji-picker-react"; // npm install emoji-picker-react
-import { useUser, useWorkspaceid } from "../hooks/workspacehooks";
+import {  useUser, useWorkspaceid } from "../hooks/workspacehooks";
 import { audioUpload, uploadAttachment, uploadVideo } from "../../Services/Cloudinary";
 import { toast } from "react-toastify";
 import { channelAttachement } from "../../Utility/attachmentValidation";
 import { RootState } from "../../Redux/store";
 import {Attachment,Message} from "../types/workspaceTypes"
-import { chatHistory, chatOnline } from "../apis/workspaceapis";
+import { chatHistory, chatOnline, findPermission } from "../apis/workspaceapis";
+import { NoPermission } from "../../Custom/reusecomponents/NoPermission";
 
 
 export default function GroupChannel() {
@@ -47,7 +48,7 @@ const workspaceid=useWorkspaceid() as string
   const audioChunksRef = useRef<Blob[]>([]);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
-
+const [permission,setPermission]=useState("")
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -56,6 +57,9 @@ const workspaceid=useWorkspaceid() as string
   content?: string;
   attachments?: string[];
 }
+
+
+
 
   useEffect(() => {
     scrollToBottom();
@@ -368,6 +372,19 @@ if(!isAllow) {toast.error("file not supported")
     }
     return groups;
   }, []);
+
+
+useEffect(()=>{
+ async function fetchPermission(){
+const data=await findPermission(workspaceid,userId);
+
+setPermission(data)
+ }
+ fetchPermission()
+},[ userId, workspaceid])
+if(permission=="Viewer"){
+  return(<><NoPermission/></>)
+}
 
   return (
     <div className="flex h-screen bg-gray-50 mt-[3em]">

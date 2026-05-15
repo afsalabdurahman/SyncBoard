@@ -4,10 +4,8 @@ import {
   useWorkspaceid,
   useWorkspaceName,
 } from "../../Worksapce/hooks/workspacehooks";
-import { setSwitchProject } from "../../Redux/feature/swichProjectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { findWorkspaceById, listWorkspace } from "../apis/workspaceapis";
-import { workspaceDataApi } from "../../SuperAdmin/apis/fetchApi";
 import { setWorkspace as reduxSetWorkspace } from "../../Redux/feature/WorkspaceSlice";
 import { useNavigate } from "react-router-dom";
 type Workspace = {
@@ -77,17 +75,14 @@ const selectWorkspace = async (sWorkspace)=>{
       try {
         const response = await listWorkspace(user?._id ?? "");
 
-        console.log(response, "full api response");
+      
 
         // Handle both array response and {data: []} response
         const workspaceList: Workspace[] = Array.isArray(response)
           ? response
           : response?.data || [];
 
-        console.log(
-          workspaceList,
-          "final workspace list"
-        );
+       
 
         setWorkspaces(workspaceList);
 
@@ -101,7 +96,7 @@ const selectWorkspace = async (sWorkspace)=>{
           setSelectedWorkspace(currentWorkspace);
         }
       } catch (error) {
-        console.log(error);
+       
         setWorkspaces([]);
       }
     }

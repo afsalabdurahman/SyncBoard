@@ -25,4 +25,7 @@ router.get('/download/workspace',adminAuth,workspaceController.downloadWorkerDat
 router.get("/members/find/:slug",memberAuth,workspaceController.findUser.bind(workspaceController))
 router.get("/lists/:id",workspaceController.listWorkspaces.bind(workspaceController))
 router.get("/find/:workspaceId",workspaceController.findWorkspace.bind(workspaceController))
+router.post("/update/permission/:workspaceId",workspaceController.updatePermission.bind(workspaceController))
+router.post("/find/permission/:workspaceId",workspaceController.findPermission.bind(workspaceController))
+
 export default router;

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { ObjectId } from "mongoose";
 export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
@@ -7,15 +7,22 @@ export interface WorkspaceMembership {
   joinedAt?: Date;
 }
 export interface Member {
-  userId: string;
+  userId: string|Types.ObjectId;
   title: string;
-  permissions?:'Viewer'|'Member'|'Admin'
+  permissions?:'Viewer'|'Member'|'Admin',
+  role?:'Admin'|'Member',
+  isBlocked?:boolean,
+  isDeleted?:boolean,
+  isOnline?:boolean
 }
 export interface IMember {
-  userId: string;
+  userId: string | Types.ObjectId;
   title: string;
   name:string;
-  permissions?:string
+  permissions?:string,
+   isBlocked?:boolean,
+  isDeleted?:boolean,
+  isOnline?:boolean
 }
 export type workspaceStatus = "active"|"InActive"|"suspend"|"Deleted"
 export interface WorkspaceProps {

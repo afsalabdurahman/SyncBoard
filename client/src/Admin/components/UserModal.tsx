@@ -25,6 +25,8 @@ import {
 } from "../../Custom/ui/select";
 
 import { updateUser } from "../../Redux/feature/users/AlluserThunks";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
+import { updatePermissionApi } from "../apis/dashboardApi";
 
 /* ---------------- TYPES ---------------- */
 
@@ -35,6 +37,7 @@ interface User {
   role: "Admin" | "Member";
   isBlocked: boolean;
   title?: string;
+  permission?: string
 }
 
 interface UserModalProps {
@@ -50,19 +53,22 @@ interface FormState {
   role: "Admin" | "Member" | "";
   isBlocked: "Yes" | "No" | "";
   isAdmin: boolean;
+  permission: "Viewer" | "Editor" | "Admin"
 }
 
 /* ---------------- COMPONENT ---------------- */
 
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispatch = useDispatch<AppDispatch>();
-
+  const workspaceId = useWorkspaceid()
+console.log(user,"usersssssssss")
   const [formData, setFormData] = useState<FormState>({
     name: "",
     email: "",
     role: "",
     isBlocked: "",
     isAdmin: false,
+    permission: "Editor"
   });
 
   /* ---------------- LOAD USER DATA ---------------- */
@@ -75,6 +81,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
         role: "",
         isBlocked: "",
         isAdmin: false,
+        permission: "Editor"
       });
       return;
     }
@@ -85,11 +92,15 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
       role: user.role,
       isBlocked: user.isBlocked ? "Yes" : "No",
       isAdmin: user.role === "Admin",
+      permission: user.permission == "Member" ? "Editor" : "Viewer"
     });
   }, [user, isOpen]);
 
   /* ---------------- SUBMIT ---------------- */
-
+const apiUpdatePermission=async (permission)=>{
+  console.log(workspaceId,"IDDD")
+await updatePermissionApi(permission,user._id,workspaceId)
+}
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -120,8 +131,8 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
       onClose();
 
     } catch (error) {
-      
-       toast.error(error.message);
+
+      toast.error(error.message);
     }
   };
 
@@ -239,7 +250,37 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
 
               </div>
             )}
+            {/* UPdate permision */}
 
+            <div className="grid grid-cols-4 items-center gap-4">
+
+              <Label className="text-right">Permission</Label>
+
+              <Select
+                value={formData.permission}
+  onValueChange={(value: "Viewer" | "Member" | "Admin") => {
+    setFormData((prev) => ({
+      ...prev,
+      permission: value,
+    }));
+
+    apiUpdatePermission(value);
+  }}
+              >
+
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select Permission" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="Viewer">Viewer</SelectItem>
+                  <SelectItem value="Member">Editor</SelectItem>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                </SelectContent>
+
+              </Select>
+
+            </div>
           </div>
 
           <DialogFooter>

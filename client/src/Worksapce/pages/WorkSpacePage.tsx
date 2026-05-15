@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SideMenu from "../components/SideMenu";
 import SubSideMenu from "../../Worksapce/components/SubSideMenu";
 import ActivityFeed from "../components/ActivityFeed";
@@ -15,10 +15,22 @@ import Abuse from "../pages/AbuseReport"
 import {Sparkles } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../Custom/ui/tooltip"; // Add this import
 import { RootState } from "../../Redux/store";
+import { useUser, useUserBasedWorkspace } from "../hooks/workspacehooks";
+import { useUserId } from "../../Admin/hooks/userhooks";
+import { updatePermission } from "../../Redux/feature/user/userSlice";
 
 function WorkSpacePage() {
   const [profileStatus, setProfileStatus] = useState(false);
   const [isRagOpen, setIsRagOpen] = useState(false);
+const userId = useUser();
+const user = useUserBasedWorkspace(userId?._id);
+const dispatch = useDispatch();
+
+useEffect(() => {
+  if (user?.[0]?.permissions) {
+    dispatch(updatePermission(user[0].permissions));
+  }
+}, [user, dispatch]);
 
   const currentStatusKey = useSelector((state: RootState) => {
     const trueKeys = Object.keys(state.status).filter(

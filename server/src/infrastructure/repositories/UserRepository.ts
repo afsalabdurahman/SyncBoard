@@ -46,9 +46,10 @@ export class UserMongooseRepository extends BaseRepository<User,UserDoument> imp
     userId: string | ObjectId,
     workspaceId: string | ObjectId,
     role: string,
+    permissions:string,
 
   ): Promise<User | null> {
-    const data = { workspaceId, role, joinDate: new Date() };
+    const data = { workspaceId, role,permissions ,joinDate: new Date() };
 
 
     const updatedDocument = await UserModel.findOneAndUpdate(

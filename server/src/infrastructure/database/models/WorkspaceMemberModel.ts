@@ -15,7 +15,7 @@ export const workspaceMembershipSchema = new Schema<WorkspaceMembership>(
     permissions:{
       type:String,
       enum:["Viewer","Admin","Member"],
-      default:"Member"
+      default:"Admin"
     },
     joinedAt: {
       type: Date,

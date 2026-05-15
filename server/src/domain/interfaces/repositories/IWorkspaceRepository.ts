@@ -10,8 +10,6 @@ export interface IWorkspaceRepository {
     slug: string,
     userId: string|mongoose.Types.ObjectId,
     role: string,
-    name: string,
-    email: string,
     title:string,
     permission?:string,
   ): Promise<Workspace | null>;
@@ -21,4 +19,6 @@ export interface IWorkspaceRepository {
   updateWorkspaceDate(workspaceId:string,merge:Record<string,string>):Promise<Workspace | null>
   findAll():Promise<WorkspaceDoument[]>
   findWorkspacesByUserId(userId:string):Promise<{ id: string; name: string }[]|null>
+  updatePermissions(workspaceId:Types.ObjectId,userId:Types.ObjectId,permission:string):Promise<void>
+  findPermisssion(workspaceId:Types.ObjectId,userId:Types.ObjectId):Promise<string>
 }

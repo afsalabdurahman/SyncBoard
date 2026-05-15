@@ -5,10 +5,15 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch } from "../../Redux/store";
 import { Activity, Clock, User, MessageCircle, FolderKanban } from 'lucide-react';
-import { useWorkspaceid } from "../hooks/workspacehooks";
+import { useUser, useUserBasedWorkspace, useWorkspaceid } from "../hooks/workspacehooks";
 import { myLogs } from "../apis/workspaceapis";
+import { updatePermission } from "../../Redux/feature/user/userSlice";
 
 export default function ActivityFeed() {
+
+
+
+  
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const workspaceId = useWorkspaceid() as string
@@ -49,6 +54,20 @@ export default function ActivityFeed() {
 
   useEffect(() => {
   }, [dispatch]);
+
+const userId = useUser();
+const user = useUserBasedWorkspace(userId?._id);
+
+
+useEffect(() => {
+  if (user?.[0]?.permissions) {
+    dispatch(updatePermission(user[0].permissions));
+  }
+}, [user, dispatch]);
+
+
+
+
 
   return (
     <div className='mt-8 w-full bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden max-w-[1000px] mx-auto'>

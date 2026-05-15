@@ -38,6 +38,7 @@ import { setUserPage } from "../../Redux/feature/users/AlluserSlice";
 import { usePaginationUser, useUsers } from "../hooks/userhooks";
 import { DialogMessage, userPage } from "../types/userTypes";
 import { toast } from "react-toastify";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 
 /* ---------------- TYPES ---------------- */
 
@@ -51,7 +52,8 @@ export function UsersPage() {
   const projectID=useSelector((state)=>state.switch.projectId);
   
   const dispatch = useDispatch<AppDispatch>();
-
+const workspaceid = useWorkspaceid();
+console.log(workspaceid,"idddd")
   const users = useUsers();
 
   const { page, rowPerPage, totalItems } = usePaginationUser();
@@ -76,7 +78,7 @@ export function UsersPage() {
   });
 
   /* ---------------- FETCH USERS ---------------- */
-
+console.log(editingUser,"user+++++")
   useEffect(() => {
     dispatch(
       fetchAllUsers({
@@ -197,6 +199,7 @@ toast.success("Update successfull")
                 <TableHead>Title</TableHead>
                 <TableHead>Blocked</TableHead>
                 <TableHead>Removed</TableHead>
+                <TableHead>Permission</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -232,7 +235,15 @@ toast.success("Update successfull")
                       {user.isDeleted ? "Yes" : "No"}
                     </Badge>
                   </TableCell>
-
+<TableCell>
+  <Badge>
+    {
+      user.workspace?.find(
+        (workspace) => workspace.workspaceId === workspaceid
+      )?.permissions || "No Permission"
+    }
+  </Badge>
+</TableCell>
                   <TableCell className="text-right">
 
                     <div className="flex justify-end gap-2">

@@ -6,7 +6,6 @@ import {meeting,deactive, activity,channel,invite,mytodo,myproject,abuse  } from
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
 import { Flag } from 'lucide-react';
-import { ChooseWorkspace } from '../pages/ChooseWorkspace';
 const SubSideMenu = () => {
   const WorkspaceData = useSelector((state: RootState) =>{
     const user=state.register;

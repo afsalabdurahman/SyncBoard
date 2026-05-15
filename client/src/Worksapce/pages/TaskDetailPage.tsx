@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../../Redux/feature/ForwardSlice";
-import {  taskDetailsApi, updateSubTaskStatus } from "../apis/workspaceapis";
+import { taskDetailsApi, updateSubTaskStatus } from "../apis/workspaceapis";
 
 /* ---------------- SAMPLE DATA ---------------- */
 
@@ -66,7 +66,7 @@ export const TaskDetailsPage = ({ id }) => {
   useEffect(() => {
     async function fetchTaskDetails(taskId: string) {
       const task = await taskDetailsApi(taskId);
-     
+
       setTask(task)
       setComments(task?.comments)
     }
@@ -133,7 +133,10 @@ export const TaskDetailsPage = ({ id }) => {
       <div className="max-w-7xl mx-auto mt[4em]">
 
         {/* CLOSE BUTTON */}
-        <button onClick={() => dispatch(setTitle(""))} className="  right-5 z-50 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg ">
+        <button
+          onClick={() => dispatch(setTitle(""))}
+          className="mt-[1em] right-5 z-50 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg"
+        >
           <X size={15} />
         </button>
 

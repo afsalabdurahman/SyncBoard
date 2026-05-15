@@ -1,6 +1,7 @@
-import mongoose, { Schema, Document, ObjectId } from 'mongoose';
+import mongoose, { Schema, Document, ObjectId, Types } from 'mongoose';
 
 import { workspaceStatus,IMember ,workspaceStorage} from '../../../types/workpaceTypes';
+
 
 
 export interface WorkspaceDoument extends Document {
@@ -8,7 +9,7 @@ export interface WorkspaceDoument extends Document {
   name: string;
   slug: string;
   role:string;
-  ownerId: string;
+  ownerId:Types.ObjectId,
   createdAt: Date;
   members: IMember[];
   status:workspaceStatus;
@@ -18,11 +19,13 @@ export interface WorkspaceDoument extends Document {
 }
 const MemberSchema: Schema = new Schema({
   userId: {
-    type: String, 
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   title: {
     type: String,
+    default:'Member',
     
     required: true,
   },
@@ -31,11 +34,26 @@ const MemberSchema: Schema = new Schema({
     
   },
   permissions:{
-    type:String
+    type:String,
+    default:"Admin"
   },
-  email:{
-      type: String,
-    }
+  role:{
+    type:String,
+    default:'Member'
+  },
+  isBlocked:{type:Boolean,
+    default:false
+  },
+  isDeleted:{
+    type:Boolean,
+    default:false
+  },
+  isOnline:{
+    type:Boolean,
+    default:false
+  }
+
+ 
 }, )
 const WorkspaceSchema: Schema<WorkspaceDoument> = new Schema<WorkspaceDoument>({
 
@@ -44,9 +62,7 @@ const WorkspaceSchema: Schema<WorkspaceDoument> = new Schema<WorkspaceDoument>({
     required: true,
     trim: true,
   },
-  role:{
-type:String
-  },
+ 
   slug: {
     type: String,
     required: true,
@@ -55,7 +71,7 @@ type:String
     trim: true,
   },
   ownerId: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
     ref: 'User',
   },

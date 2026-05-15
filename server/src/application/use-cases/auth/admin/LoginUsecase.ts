@@ -36,7 +36,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     );
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
-    const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(input.workspaceId??""))
+    const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(input.workspaceId ?? ""))
     if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     if (workspace?.status.toLowerCase() == "suspend") throw new ForbiddenError("Workspace not found")
     if (!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
@@ -77,7 +77,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-  
+
     const payload = ticket.getPayload();
     if (!payload?.sub || !payload?.email) throw new ValidationError("Invalid Google token payload");
     const googleId = payload.sub;
@@ -122,20 +122,20 @@ export class AdminLoginUseCase implements ILoginUseCase {
     const isExist = await this._userRepository.findByEmail(input.email)
 
     if (!isExist) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
-   if( !isExist.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
-       const superAdmin = await this._userRepository.findUser(isExist?._id??"") as User
+    if (!isExist.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+    const superAdmin = await this._userRepository.findUser(isExist?._id ?? "") as User
 
-   
-   const isValid = await this._authService.comparePassword(
+
+    const isValid = await this._authService.comparePassword(
       input.password,
-      superAdmin.password??""
+      superAdmin.password ?? ""
     );
-    console.log(isValid,"validdd")
+    console.log(isValid, "validdd")
 
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
-  
-  
-   const token = this._authService.generateToken({
+
+
+    const token = this._authService.generateToken({
       id: superAdmin._id ?? "",
       email: superAdmin.email!,
       role: superAdmin.role!,

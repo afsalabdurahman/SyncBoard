@@ -35,7 +35,7 @@ export class RegisterUseCase implements IAuth {
     const isValid = AuthMapper.registerValidation(input);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const existingUser = await this._userRepository.findByEmail(input.email);
-   console.log(existingUser,"user")
+   
 
     if (existingUser) {
       if (existingUser.isVerified) {
@@ -58,7 +58,7 @@ console.log(AdminEntity,"entit7")
     // }
     
     const otp = this._otpRepository.generateOTP();
-      await this._emailService.sendOtp(input.email, otp);
+     // await this._emailService.sendOtp(input.email, otp);
 
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);

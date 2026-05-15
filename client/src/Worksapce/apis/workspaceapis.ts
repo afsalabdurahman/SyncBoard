@@ -228,3 +228,11 @@ export const findTeamsTasks=(workspaceId:string)=>{
         return null
     }
 }
+export const findPermission=async(workspaceId,userId)=>{
+    try {
+      const response = await apiService.post(`/workspace/find/permission/${workspaceId}`,{userId})
+       return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}

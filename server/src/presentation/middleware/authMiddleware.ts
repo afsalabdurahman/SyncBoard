@@ -31,11 +31,22 @@ export const authMiddelware = () => {
       if (!decoded.userId || !decoded.role) {
         throw new AuthenticationError('Invalid token payload');
       }
-      const role = decoded.role as UserRole;
-      if (!Object.values(UserRole).includes(role)) {
-        throw new AuthenticationError('Invalid user role');
-      }
+
+      let role: UserRole = decoded.role as UserRole;
+      // if (!Object.values(UserRole).includes(role)) {
+      //   throw new AuthenticationError('Invalid user role');
+      // }
       const user: User | null = await getUserUseCase.execute(decoded.userId);
+const status = user?.workspace?.some(
+  (workspace) => workspace.permissions === "Admin"
+);
+if(status){
+role = "Admin" as UserRole
+}else if(decoded.role=="SuperAdmin"){
+  req.user = { id: decoded.userId, role };
+        return next()
+}
+
       if (user?.role == "SuperAdmin") {
         req.user = { id: decoded.userId, role };
         return next()

@@ -21,6 +21,7 @@ export interface IUserRepository extends IBaseRepository<User | null> {
     userId: string | ObjectId,
     workspaceId: string | ObjectId,
     role: string,
+    permissions?:string,
     joinDate?: Date
   ): Promise<User | null>;
   userVerified(userId:Types.ObjectId,isVerified:boolean,verificationExpiresAt:Date|null):Promise<User|null>

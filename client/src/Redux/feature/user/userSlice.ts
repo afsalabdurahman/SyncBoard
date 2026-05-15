@@ -24,6 +24,7 @@ interface UserState {
   name?: string;
   email?: string;
   user?: User|null;
+  permissions?:string;
 }
 
 
@@ -47,6 +48,9 @@ const userSlice = createSlice({
         state.user = { ...state.user, ...action.payload };
       }
     },
+     updatePermission:(state,action:PayloadAction<string>)=>{
+        state.permissions=action.payload
+      }
    
   }
 });
@@ -54,7 +58,8 @@ const userSlice = createSlice({
 export const {
   setUserData,
   clearUserData,
-  updateUserPartial
+  updateUserPartial,
+  updatePermission
 
 } = userSlice.actions;
 

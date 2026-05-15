@@ -2,15 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AlertCircle, Search } from 'lucide-react';
 import debounce from 'lodash/debounce';
 import { Pagination } from "@mui/material";
-import { abuseReportList, searchApi, sendAbuse } from '../apis/workspaceapis';
+import { abuseReportList, findPermission, searchApi, sendAbuse } from '../apis/workspaceapis';
 import { useMember } from '../../Member/hooks/memeberhooks';
 import { ToastContainer, toast } from 'react-toastify';
 import { useWorkspaceid } from '../hooks/workspacehooks';
-
+import { NoPermission } from '../../Custom/reusecomponents/NoPermission';
+import { useSelector } from 'react-redux';
 export default function AbuseReportForm() {
   const memeber = useMember();
   const workspace = useWorkspaceid();
-
+const [permission,setPermission]=useState("")
   const [refresh, setRefresh] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -28,8 +29,13 @@ export default function AbuseReportForm() {
 
   const abuseTypes = ['Spam', 'Fraud', 'Harassment', 'Copyright', 'Inappropriate', 'Other'];
   const severityTypes = ['Critical', 'High', 'Medium', 'Low'];
+ const userId = useSelector((state: RootState) => state.user.user?._id);
+ const workspaceid=useWorkspaceid() as string
+ 
 
-  // ✅ FETCH REPORTS (REFRESH BASED)
+
+
+
   useEffect(() => {
     if (search) return; // avoid conflict with search
 
@@ -184,7 +190,17 @@ export default function AbuseReportForm() {
       t.type.toLowerCase().includes(search.toLowerCase()) ||
       t.status.toLowerCase().includes(search.toLowerCase())
   );
-
+ useEffect(()=>{
+  async function fetchPermission(){
+ const data=await findPermission(workspaceid,userId);
+ 
+ setPermission(data)
+  }
+  fetchPermission()
+ },[ userId, workspaceid])
+ if(permission=="Viewer"){
+   return(<><NoPermission/></>)
+ }
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <ToastContainer />

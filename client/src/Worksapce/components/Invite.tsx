@@ -1,11 +1,12 @@
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 import { X, } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { useWorkspaceid } from "../hooks/workspacehooks";
-import { sendInvitation } from "../apis/workspaceapis";
+import { findPermission, sendInvitation } from "../apis/workspaceapis";
+import { NoPermission } from "../../Custom/reusecomponents/NoPermission";
 const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
 const Invite = () => {
   const workspaceName = useSelector((state: RootState) => {
@@ -16,22 +17,11 @@ const Invite = () => {
     return { isAdmin, name, slug };
   });
   const workspaceId=useWorkspaceid()
+  const workspaceid=useWorkspaceid() as string
+const [permission,setPermission]=useState("")
+  const userId = useSelector((state: RootState) => state.user.user?._id);
 
-  if (workspaceName.isAdmin !== true) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-  <div className="text-center p-8 rounded-2xl shadow-md bg-white">
-    <h1 className="text-3xl font-semibold text-gray-800 mb-4">
-      🚫 Access Denied
-    </h1>
-    <p className="text-lg text-gray-600">
-      You are not authorized to access this page.
-    </p>
-  </div>
-</div>
 
-    );
-  }
 
  
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -62,13 +52,7 @@ const Invite = () => {
     return emailRegex.test(email);
   };
 
-  // const handleKeyPress = (e) => {
-  //   if (e.key === "Enter" || e.key === ",") {
-  //     e.preventDefault();
-  //     addEmail(currentEmail.trim());
-  //   }
-  // };
-
+ 
   const handleSend = async () => {
     setLoad(true);
     
@@ -96,7 +80,18 @@ const Invite = () => {
     }
   };
 
-
+ useEffect(()=>{
+  async function fetchPermission(){
+ const data=await findPermission(workspaceid,userId);
+ 
+ setPermission(data)
+  }
+  fetchPermission()
+ },[ userId, workspaceid])
+ 
+ if(permission=="Viewer"){
+   return(<><NoPermission/></>)
+ }
 
   return (
     <div className='mt-6 mx-auto bg-white rounded-lg shadow-lg p-6 relative'>

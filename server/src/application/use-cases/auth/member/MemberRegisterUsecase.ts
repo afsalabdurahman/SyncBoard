@@ -66,7 +66,8 @@ export class MemberRegisterUsecase implements IMemberRegister {
     await this._userRepository.addToWorkspace(
       createMember._id,
       workspace._id,
-      dto.role
+      dto.role,
+      "Viewer",
     );
 
     if (!this._workspaceRepository.addMemberToWorkspace)
@@ -76,14 +77,16 @@ export class MemberRegisterUsecase implements IMemberRegister {
       await this._workspaceRepository.addMemberToWorkspace(
         workspace.slug,
         createMember._id,
-        dto.role,
-         "Viewer",
-        dto.name,
-        dto.email,
-        dto.title,
-       
-        
+         "Member",
+        "Viewer",
+         "Member"  
       );
+
+    //   slug: string,
+    // userId: string,
+    // title: string,
+    // permission: string,
+    // role:string,
 if(!insertToWorkspce) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND);
 
     const response = AuthMapper.mapEntityToMember(

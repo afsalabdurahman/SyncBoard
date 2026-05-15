@@ -58,21 +58,11 @@ interface CommentBoxProps {
 
 
 const CommentBox = ({ isOpen, onClose, taskId }: CommentBoxProps) => {
-  useEffect(()=>{
-  
-
-
-fetchComments(taskId).then((data)=>{
- 
-  setComments([...data])
-})
-  })
-
-// socket.io on commet
-
-
-// 
-
+ useEffect(() => {
+  fetchComments(taskId).then((data) => {
+    setComments(data);
+  });
+}, [taskId]);
 
  
 
@@ -99,108 +89,135 @@ const user = useUser()
     return "other";
   };
 
-  const handleFileSelect = async(e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+const handleFileSelect = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const files = e.target.files;
+  if (!files) return;
+
   const isAllow = channelAttachement(Array.from(files));
-     if(!isAllow){
-      toast.error("File not supported")
-      return false
-     }
-    const newAttachments: Attachment[] = Array.from(files).map((file) => {
-   
+
+  if (!isAllow) {
+    toast.error("File not supported");
+    return;
+  }
+
+  const newAttachments: Attachment[] = Array.from(files).map(
+    (file) => {
       const type = getFileType(file);
-      const attachment: Attachment = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+
+      return {
+        id: `${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2, 11)}`,
         file,
         type,
+        preview:
+          type === "image" || type === "pdf"
+            ? URL.createObjectURL(file)
+            : undefined,
       };
+    }
+  );
 
-      if (type === "image") {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (typeof e.target?.result === "string") {
-            attachment.preview = e.target.result;
-            setAttachments((prev) => [...prev]);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
+  setAttachments((prev) => [...prev, ...newAttachments]);
 
-      return attachment;
-    });
-
-    setAttachments((prev) => [...prev, ...newAttachments]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
+};;
 
   const removeAttachment = (id: string) => {
     setAttachments((prev) => prev.filter((a) => a.id !== id));
   };
+useEffect(() => {
+  socket.emit("join-comment", taskId);
 
+  socket.on("receive-comment", (newComment) => {
+    setComments((prev) => [...prev, newComment]);
+  });
+
+  return () => {
+    socket.off("receive-comment");
+  };
+}, [taskId]);
 const handleCommentSubmit = async () => {
-  
   if (!commentText.trim() && attachments.length === 0) return;
 
-  // Create a temporary comment to show immediately in UI (optimistic update)
-  const titleName = `${user?.name}-${user?.role}`
+  const titleName = `${user?.name}-${user?.role}`;
   const tempId = Date.now();
+
   const newComment: Comment = {
     id: tempId,
     name: titleName,
     text: commentText.trim(),
     timestamp: new Date(),
     attachments: [...attachments],
-    urls: [], // Will be filled later after upload
+    urls: [],
   };
 
-  
-
+  // optimistic UI update
   setComments((prev) => [...prev, newComment]);
+
   setCommentText("");
   setAttachments([]);
 
   try {
+    const uploadPromises = attachments.map((file) =>
+      uploadAttachment(file.file)
+    );
 
-    const uploadPromises = attachments.map((file) => uploadAttachment(file.file));
     const uploadedUrls = await Promise.all(uploadPromises);
-  
- 
 
- const isUpadted=await sendComment(taskId,newComment.name,newComment.text,uploadedUrls)
- if(!isUpadted) toast.error("comment not added")
-    // Now update the comment with the real URLs
+    const isUpdated = await sendComment(
+      taskId,
+      newComment.name,
+      newComment.text,
+      uploadedUrls
+    );
+
+    if (!isUpdated) {
+      toast.error("Comment not added");
+      return;
+    }
+
+    // update preview after upload
     setComments((prev) =>
       prev.map((comment) =>
         comment.id === tempId
-          ? { ...comment, urls: uploadedUrls }
+          ? {
+              ...comment,
+              urls: uploadedUrls,
+              attachments: comment.attachments.map(
+                (file, index) => ({
+                  ...file,
+                  preview: uploadedUrls[index],
+                })
+              ),
+            }
           : comment
       )
     );
 
-
     socket.emit("add-comment", {
-    taskId,
-   commentName : newComment.name,
-    commentText :newComment.text,
-    uploadedUrls
+      taskId,
+      commentName: newComment.name,
+      commentText: newComment.text,
+      uploadedUrls,
+    });
+  } catch (error) {
+    console.log(error);
 
-  });
-  } catch  {
-   
-    // Optionally: show error to user or mark comment as having failed uploads
+    toast.error("Upload failed");
+
     setComments((prev) =>
       prev.map((comment) =>
         comment.id === tempId
-          ? { ...comment, urls: [], uploadError: true } // optional flag
+          ? { ...comment, urls: [] }
           : comment
       )
     );
   }
-    socket.on("join-comment", (taskId) => {
-    socket.join(taskId);
- 
-  });
 };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -277,40 +294,50 @@ const handleCommentSubmit = async () => {
                       </p>
                     )}
 
-                   {comment.urls.length > 0 && (
+{comment.urls.length > 0 && (
   <div className="space-y-2 mt-2">
-  {comment.urls.length > 0 && (
-  <div className="space-y-2 mt-2">
-    {comment.urls.map((url, index) => (
-      <div key={index} className="max-w-full">
-        {/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(url) ? (
-          <img
-            src={url}
-            alt="Attached image"
-            className="max-w-full rounded-lg border border-border object-contain bg-gray-100"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex items-center gap-2 bg-muted/50 rounded-md px-3 py-2 text-xs">
-            {getFileIcon(getFileTypeFromUrl(url))}
-            <span className="truncate max-w-[200px]">
-             
-            </span>
-            
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-auto text-primary hover:underline"
-            >
-              Download
-            </a>
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-)}
+    {comment.urls.map((url, index) => {
+      const fileType = getFileTypeFromUrl(url);
+
+      return (
+        <div key={index}>
+          {/* Image Preview */}
+          {fileType === "image" && (
+            <img
+              src={url}
+              alt="attachment"
+              className="max-w-full rounded-lg border object-contain"
+            />
+          )}
+
+          {/* PDF Preview */}
+          {fileType === "pdf" && (
+            <iframe
+              src={url}
+              title="PDF Preview"
+              className="w-full h-64 rounded-lg border"
+            />
+          )}
+
+          {/* Other files */}
+          {(fileType === "doc" ||
+            fileType === "other") && (
+            <div className="flex items-center gap-2 bg-muted p-2 rounded-lg">
+              {getFileIcon(fileType)}
+
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                Open File
+              </a>
+            </div>
+          )}
+        </div>
+      );
+    })}
   </div>
 )}
                   </div>
@@ -330,9 +357,19 @@ const handleCommentSubmit = async () => {
                   key={att.id}
                   className="relative group w-16 h-16 rounded-lg overflow-hidden border border-border/50 bg-muted/40"
                 >
-                  {att.type === "image" && att.preview ? (
-                    <img src={att.preview} alt="" className="w-full h-full object-cover" />
-                  ) : (
+                 {att.type === "image" && att.preview ? (
+  <img
+    src={att.preview}
+    alt="preview"
+    className="w-full h-full object-cover"
+  />
+) : att.type === "pdf" && att.preview ? (
+  <iframe
+    src={att.preview}
+    title="PDF Preview"
+    className="w-full h-full"
+  />
+) : (
                     <div className="w-full h-full flex items-center justify-center">
                       {getFileIcon(att.type)}
                     </div>
