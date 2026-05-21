@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { findPermision } from '../../utils/findUserPermission';
 
 interface AuthenticatedRequest extends Request {
   user?: {

@@ -1,5 +1,6 @@
 import { ROUTES } from "../../Constants/routeConstan";
 import apiService from "../../Services/apiServices/apiService";
+import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 import { AdminLoginResponse } from "../types/adminTypes";
 
 
@@ -16,13 +17,10 @@ export const adminLogin = async (
       { withCredentials: true }
     );
     return data;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-
-    throw new Error("Admin login failed");
-  }
+  } catch (error) {
+      const err: string = catchErrorHandle(error, "Invalid user or password")
+        throw new Error(err)
+       }
 };
 export const googleAdminAuth = async (credential: string,
 ): Promise<AdminLoginResponse> => {
@@ -32,11 +30,8 @@ export const googleAdminAuth = async (credential: string,
      {credential}
     );
     return data;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-
-    throw new Error("Admin login failed");
+  } catch (error) {
+    const err: string = catchErrorHandle(error, "Invalid user or password")
+        throw new Error(err)
   }
 };

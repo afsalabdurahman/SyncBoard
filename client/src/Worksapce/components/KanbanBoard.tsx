@@ -81,7 +81,7 @@ export default function KanbanBoard() {
     };
 
     if (user?.name) fetchTasks();
-  }, [user?.name, openCommentId, isOpensub]);
+  }, [user?.name, openCommentId, isOpensub, workspaceId]);
 
   const toggleComment = (taskId: string) => {
     setOpenCommentId((prev) => (prev === taskId ? null : taskId));

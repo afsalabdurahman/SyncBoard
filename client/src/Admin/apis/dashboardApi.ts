@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import apiService from "../../Services/apiServices/apiService"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 import { ROUTES } from "../../Constants/routeConstan";
@@ -9,7 +8,8 @@ export const fetchProjectNames = async (workspaceId: string) => {
         const response = await apiService.get(ROUTES.PROJECTS.FETCH_PROJECT_NAMES.replace(":workspaceId", workspaceId));
         return response.data?.projectNamesAndId
     } catch (error) {
-        catchErrorHandle(error, "Not found")
+        const err: string = catchErrorHandle(error, "Projects not found")
+        throw new Error(err)
     }
 }
 export const projectSpecifyDashboard = async (projectId: string) => {
@@ -25,7 +25,7 @@ export const projectSpecifyDashboard = async (projectId: string) => {
         ])
         return result
     } catch {
-        toast.error("failed")
+        return null
     }
 }
 export const updatePermissionApi = async (permission: string, userId: string, workspaceId: string)=>{
@@ -34,7 +34,7 @@ export const updatePermissionApi = async (permission: string, userId: string, wo
             userId,
             permission
         })
-    } catch (error) {
-        console.log(error)
+    } catch  {
+        return null
     }
 }

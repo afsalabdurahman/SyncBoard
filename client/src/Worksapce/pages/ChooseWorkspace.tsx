@@ -32,7 +32,7 @@ const naviagate = useNavigate()
   const user = useUser();
 
   const isForward = useSelector(
-    (state: any) => state?.forward?.isForward
+    (state) => state?.forward?.isForward
   );
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -47,10 +47,10 @@ const naviagate = useNavigate()
     // useEffect(()=>{
     //   findWorkspaceById(selectedWorkspace.id)
     // })
-console.log(selectedWorkspace,"selected wo")
+
 
 const selectWorkspace = async (sWorkspace)=>{
-  console.log(sWorkspace,"WORKBUTTON")
+ 
   setSelectedWorkspace(sWorkspace)
   const workspaceData=await findWorkspaceById(sWorkspace.id)
    dispatch(reduxSetWorkspace(workspaceData))
@@ -95,7 +95,7 @@ const selectWorkspace = async (sWorkspace)=>{
         if (currentWorkspace) {
           setSelectedWorkspace(currentWorkspace);
         }
-      } catch (error) {
+      } catch  {
        
         setWorkspaces([]);
       }

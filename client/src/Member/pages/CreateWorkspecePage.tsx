@@ -25,7 +25,7 @@ const dispatch =useDispatch()
   const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
 const userId=useUser();
-console.log(userId,"userIDD+++",ownerId)
+
   dispatch(setForward(false));
 
 

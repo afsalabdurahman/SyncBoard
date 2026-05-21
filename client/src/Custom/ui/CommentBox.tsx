@@ -205,8 +205,8 @@ const handleCommentSubmit = async () => {
       commentText: newComment.text,
       uploadedUrls,
     });
-  } catch (error) {
-    console.log(error);
+  } catch  {
+    
 
     toast.error("Upload failed");
 

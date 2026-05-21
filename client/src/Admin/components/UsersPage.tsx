@@ -53,7 +53,7 @@ export function UsersPage() {
   
   const dispatch = useDispatch<AppDispatch>();
 const workspaceid = useWorkspaceid();
-console.log(workspaceid,"idddd")
+
   const users = useUsers();
 
   const { page, rowPerPage, totalItems } = usePaginationUser();
@@ -78,7 +78,7 @@ console.log(workspaceid,"idddd")
   });
 
   /* ---------------- FETCH USERS ---------------- */
-console.log(editingUser,"user+++++")
+
   useEffect(() => {
     dispatch(
       fetchAllUsers({

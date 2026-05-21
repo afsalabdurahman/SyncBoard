@@ -61,7 +61,7 @@ interface FormState {
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const workspaceId = useWorkspaceid()
-console.log(user,"usersssssssss")
+
   const [formData, setFormData] = useState<FormState>({
     name: "",
     email: "",
@@ -98,7 +98,7 @@ console.log(user,"usersssssssss")
 
   /* ---------------- SUBMIT ---------------- */
 const apiUpdatePermission=async (permission)=>{
-  console.log(workspaceId,"IDDD")
+ 
 await updatePermissionApi(permission,user._id,workspaceId)
 }
   const handleSubmit = async (e: React.FormEvent) => {

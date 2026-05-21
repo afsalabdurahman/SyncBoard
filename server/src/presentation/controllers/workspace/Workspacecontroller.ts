@@ -2,7 +2,6 @@ import { injectable, inject } from "tsyringe";
 import { Request, Response } from "express";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
-import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
 import { IWokspaceMember } from "../../../application/repositories/IWorkspaceMembers";
 import { WorkspaceRequestDTO } from "../../../application/dto/WorkspaceDTOs";

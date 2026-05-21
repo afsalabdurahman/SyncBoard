@@ -1,5 +1,5 @@
 import axios from "axios";
-import { catchErrorHandle } from "../Utility/catchErrorHandle";
+import {catchErrorHandle} from "../Utility/catchErrorHandle";
 const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 const CLOUDINARY_URL_VIDEO = import.meta.env.VITE_BASE_CLOUDINARY_VIDEO;
 export const uploadAttachment = async (file: File): Promise<string> => {
@@ -11,7 +11,6 @@ export const uploadAttachment = async (file: File): Promise<string> => {
     try {
         const response = await axios.post(
             CLOUDINARY_URL,
-           
             formData
         );
 
@@ -32,7 +31,6 @@ try {
       const response = await axios.post(
             CLOUDINARY_URL_VIDEO,
             formData,{
-     
       timeout: 60000, 
     }
         );
@@ -53,7 +51,6 @@ const formData = new FormData();
  const response = await axios.post(
             CLOUDINARY_URL_VIDEO,
             formData,{
-     
       timeout: 60000, 
     }
         );

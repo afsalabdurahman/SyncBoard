@@ -24,15 +24,14 @@ const [permission,setPermission]=useState("")
 
 
  
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [emails, setEmails] = useState([]);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [currentEmail, setCurrentEmail] = useState("");
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [inviteRole, setInviteRole] = useState("Member");
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [load, setLoad] = useState(false);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [invitationLink,] = useState<string>(
     `${INVITE_MEMBER_}${workspaceName.slug}` // Replace with your actual invitation link
   );

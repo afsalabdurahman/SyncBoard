@@ -16,7 +16,6 @@ import {Sparkles } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../Custom/ui/tooltip"; // Add this import
 import { RootState } from "../../Redux/store";
 import { useUser, useUserBasedWorkspace } from "../hooks/workspacehooks";
-import { useUserId } from "../../Admin/hooks/userhooks";
 import { updatePermission } from "../../Redux/feature/user/userSlice";
 
 function WorkSpacePage() {

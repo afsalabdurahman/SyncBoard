@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Redux/store";
+import { HeaderLanding } from "./Header";
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -37,32 +38,7 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navbar */}
-      <header className="flex justify-between items-center px-4 sm:px-6 py-4 shadow relative">
-        <div className="text-2xl font-bold text-purple-700 flex items-center gap-2">
-          <img
-            className="w-12 h-12"
-            src="/images/company-logo.png"
-            alt="GridSync Logo"
-          />
-          GridSync
-        </div>
-
-        <nav className="hidden md:flex gap-6 items-center text-gray-700 text-sm">
-          <a href="#features">Features</a>
-          <a href="#pricing">Pricing</a>
-          <Link to="/login" className="hover:underline">
-            Log in
-          </Link>
-          <Link
-            to="/signup"
-            className="bg-purple-700 text-white px-4 py-2 rounded-md hover:bg-purple-800 transition"
-          >
-            Start for free
-          </Link>
-        </nav>
-
-        {/* Mobile menu button and dropdown - keep your existing code */}
-      </header>
+     <HeaderLanding/>
 
       {/* Hero Section */}
       <main className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-20 py-12 gap-12">

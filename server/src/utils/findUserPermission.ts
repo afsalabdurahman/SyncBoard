@@ -10,6 +10,6 @@ const workspace = await workspaceUsecase.findWorkspace(stringToMongoObj(workspac
  const user = workspace?.members?.find(
     (member) => member.userId === userId
   );
-return user?.permission as string
+return user?.permissions as string
 
 }

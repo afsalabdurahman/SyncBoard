@@ -92,20 +92,18 @@ export const sendComment = async (
     const response = await apiService.post(ROUTES.WORKSPACE.SEND_COMMENT.replace(':taskId', taskId), {
       name,
       text,
-      urls, // better name: plural
+      urls, 
     });
 
-    // Common success codes: 200 or 201
     if (response.status === 200 || response.status === 201) {
       return true;
     }
 
-    // If status is not success, treat as failure
     return false;
-  } catch {
+  } catch (error){
 
-
-    return false; // or throw error if you prefer
+const err: string = catchErrorHandle(error, "Invalid user or password")
+        throw new Error(err)
   }
 
 };
@@ -131,8 +129,9 @@ export const verifyOTP = async (
     return response.data.user
 
 
-  } catch {
-    throw new Error("Invalid OTP");
+  } catch (error) {
+    const err: string = catchErrorHandle(error, "Invalid OTP")
+        throw new Error(err)
   }
 };
 

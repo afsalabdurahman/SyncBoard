@@ -1,5 +1,6 @@
 import { ROUTES } from "../../Constants/routeConstan";
 import apiService from "../../Services/apiServices/apiService"
+import { catchErrorHandle } from "../../Utility/catchErrorHandle";
 
 export const checkoutapi = async (userId: string, plan: string): Promise<string|boolean> => {
     try {
@@ -9,10 +10,8 @@ export const checkoutapi = async (userId: string, plan: string): Promise<string|
         });
         return data.data as string
     } catch (error) {
-        if (error instanceof Error) {
-            throw new Error(error.message);
-        }
-        return false;
+     const err: string = catchErrorHandle(error, "Failed to checkout please try agin later")
+             throw new Error(err)
     }
 }
 export const fetchAllPlans = async () => {
@@ -21,6 +20,6 @@ export const fetchAllPlans = async () => {
         
         return plants.data
     } catch  {
-       throw new Error("Updation failed")
+       throw new Error("")
     }
 }

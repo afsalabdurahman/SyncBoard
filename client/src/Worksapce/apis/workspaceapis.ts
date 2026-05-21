@@ -214,9 +214,9 @@ export const listWorkspace = async (userId:string)=>{
 export const findWorkspaceById=async (workspaceId:string)=>{
 try {
     const workspace = await apiService.get(`workspace/find/${workspaceId}`);
-    console.log(workspace.data,"reponseDATA")
+   
  return workspace.data
-} catch (error) {
+} catch  {
     return null
 }
 }
@@ -224,7 +224,7 @@ export const findTeamsTasks=(workspaceId:string)=>{
     try {
         const task= apiService.get(`/task/mytask/kanban/${workspaceId}`)
         return task
-    } catch (error) {
+    } catch  {
         return null
     }
 }
@@ -233,6 +233,7 @@ export const findPermission=async(workspaceId,userId)=>{
       const response = await apiService.post(`/workspace/find/permission/${workspaceId}`,{userId})
        return response.data
     } catch (error) {
-        console.log(error)
+        const err: string = catchErrorHandle(error, "Failed to update")
+                throw new Error(err)
     }
 }

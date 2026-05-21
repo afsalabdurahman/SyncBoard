@@ -1,5 +1,4 @@
 import LandingPage from "./Member/pages/LandingPage";
-
 import LoginPage from "./Member/pages/Login";
 import SignupPage from "./Member/pages/SignupPage";
 import PasswordResetPage from "./Member/pages/PasswordResetPage";
@@ -15,7 +14,6 @@ import LinkInvitaionPage from "./Worksapce/pages/LinkInvitationPage";
 import Profile from "./Worksapce/components/Profile";
 import AdminDashboard from "./Admin/Pages/AdminDashboard";
 import AdminLogin from "./Admin/Pages/AdminLogin";
-
 import Invite from "./Worksapce/components/Invite";
 import { Layout } from "./SuperAdmin/Layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
@@ -27,26 +25,19 @@ import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
 // import CheckoutPage from "./Admin/Pages/CheckoutPage";
 import  AddPassword  from "./Worksapce/components/AddPassword";
-import { useSelector } from "react-redux";
+import { Features } from "./Worksapce/components/Features";
+import { PricingPage } from "./Worksapce/components/Prices";
 
 function App() {
-useSelector((state)=>console.log(state,"ste+++"))
+
   return (
     <>
     
       <BrowserRouter>
-      
       <AuthProvider>
-        
         <Routes>
           <Route index element={
-           
-
-  <LandingPage />    
-           
-  
-            
-            } />
+  <LandingPage />} />
           <Route path='/' element={
          <PublicRoute>
 
@@ -59,6 +50,20 @@ useSelector((state)=>console.log(state,"ste+++"))
            
             
             }></Route>
+
+<Route path="/feature" element={
+  <PublicRoute>
+    <Features/>
+  </PublicRoute>
+}
+></Route>
+<Route path="/price" element={
+  <PublicRoute>
+    <PricingPage/>
+  </PublicRoute>
+}
+></Route>
+
           <Route path='/login' element={
             <PublicRoute>
 

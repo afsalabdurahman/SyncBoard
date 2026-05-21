@@ -63,14 +63,10 @@ export const deleteAttachmentUrl = async (
 
     return data?.message ?? "Deleted";
 
-  } catch (error: unknown) {
-
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-
-    throw new Error("Failed to delete attachment");
-  }
+  } catch (error) {
+const err: string = catchErrorHandle(error, "Failed to attach")
+        throw new Error(err)}
+   
 };
 
 export const deleteSubTaskApi = async(taskId,subTask) =>{
