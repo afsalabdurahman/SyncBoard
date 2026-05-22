@@ -1,20 +1,32 @@
-import { useState,useEffect } from "react";
-import { SidebarProvider } from "../../components/ui/sidebar";
+import { useState, useEffect, Suspense, lazy } from "react";
+import { SidebarProvider } from "../../Custom/ui/sidebar";
 import { AppSidebar } from "../components/AppSidebar";
 import { DashboardPage } from "../components/DashboardPage";
 import { UsersPage } from "../components/UsersPage";
-import { ProjectsPage } from "../components/ProjectsPage";
+//import { ProjectsPage } from "../components/ProjectsPage";
 import { TasksPage } from "../components/TasksPage";
-import { SettingsPage } from "../components/SettingsPage";
-import {TaskApproval} from "../components/TaskApproval"
-//import { ThemeProvider } from ""
-
+import { TaskApproval } from "../components/TaskApproval";
+import SubscriptionPage from "../Pages/SuscriptionPages";
+import Tikets from "../Pages/Tikets"
+import { useSelector } from "react-redux";
+import { logout } from "../../Worksapce/apis/workspaceapis";
+import { useUser } from "../../Worksapce/hooks/workspacehooks";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+const ProjectsPage = lazy(()=>import("../components/ProjectsPage"));
 export default function AdminDashboard() {
+  const navigate = useNavigate()
+  const isForward = useSelector((state) => state.forward);
  
-   
-  
-
   const [currentPage, setCurrentPage] = useState("dashboard");
+const user=useUser()
+  useEffect(() => {
+    if (isForward) {
+      setCurrentPage("suscription");
+    } else {
+      setCurrentPage("dashboard");
+    }
+  }, [isForward]);
 
   const renderPage = () => {
     switch (currentPage) {
@@ -23,26 +35,43 @@ export default function AdminDashboard() {
       case "users":
         return <UsersPage />;
       case "projects":
-        return <ProjectsPage />;
+       return (
+          <Suspense fallback={<div className="p-4">Loading Settings...</div>}>
+            <ProjectsPage/>
+          </Suspense>
+        );
       case "tasks":
         return <TasksPage />;
-      case "settings":
-        return <SettingsPage />;
-        case "approval":
-          return <TaskApproval/>;
+      case "logout":
+         logout(user?._id).then((res)=>{
+          if(res==204){
+            const id="logout-success"
+            if(!toast.isActive(id)){
+  toast.success("Logout success", { toastId: id });
+            }
+               
+            navigate("/admin")
+       
+          }
+         })
+       break;
+      case "approval":
+        return <TaskApproval />;
+      case "suscription":
+        return <SubscriptionPage />;
+        case "tikets":
+          return <Tikets/>
       default:
         return <DashboardPage />;
     }
   };
 
   return (
-    // <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
     <SidebarProvider>
-      <div className='flex min-h-screen w-full'>
+      <div className="flex min-h-screen w-full">
         <AppSidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-        <main className='flex-1 overflow-auto'>{renderPage()}</main>
+        <main className="flex-1 overflow-auto">{renderPage()}</main>
       </div>
     </SidebarProvider>
-    // </ThemeProvider>
   );
 }

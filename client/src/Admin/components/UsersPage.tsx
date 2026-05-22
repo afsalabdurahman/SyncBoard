@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
-import { useDispatch } from "react-redux";
-import apiService from "../../services/api";
+import { useEffect, useState } from "react";
+import { Button } from "../../Custom/ui/button";
+import { TablePagination } from "@mui/material";
 
 import {
   Card,
@@ -9,7 +8,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
+
 import {
   Table,
   TableBody,
@@ -17,147 +17,139 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/table";
+
+import { Badge } from "../../Custom/ui/badge";
+import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 import { UserModal } from "./UserModal";
-import { Edit, Trash2, Plus, RotateCcw } from "lucide-react";
-import { useSelector } from "react-redux";
-import { setUsers, addUser } from "../../Redux/features/AlluserSlice";
-import { describe } from "node:test";
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  isBlock: string;
-}
+
+import { Edit, Trash2, RotateCcw } from "lucide-react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Redux/store";
+
+import {
+  fetchAllUsers,
+  removeUser,
+} from "../../Redux/feature/users/AlluserThunks";
+
+import { setUserPage } from "../../Redux/feature/users/AlluserSlice";
+
+import { usePaginationUser, useUsers } from "../hooks/userhooks";
+import { DialogMessage, userPage } from "../types/userTypes";
+import { toast } from "react-toastify";
+
+/* ---------------- TYPES ---------------- */
+
+
+
+
+
+/* ---------------- COMPONENT ---------------- */
 
 export function UsersPage() {
-  //axios
-  let users = useSelector((state: any) => {
-    console.log(state, "stetete");
-    return state.alluser.users;
-  });
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [userss, setUserss] = useState<User[]>();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogMessage,setDialoqMessage]=useState({title:null,description:null})
-  let dispacth = useDispatch();
-  const workspaceslug = useSelector(
-    (state: any) => state.workspace.workspace.slug
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const users = useUsers();
+
+  const { page, rowPerPage, totalItems } = usePaginationUser();
+
+  const workspaceSlug = useSelector(
+    (state: RootState) => state.workspace.workspace.slug
   );
-  console.log(workspaceslug, "slugg");
-  useSelector((state) => {
-    console.log(state, "++++++++");
+
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [editingUser, setEditingUser] = useState<userPage | null>(null);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const [deleteUserId, setDeleteUserId] = useState<string>("");
+
+  const [dialogMessage, setDialogMessage] = useState<DialogMessage>({
+    title: null,
+    description: null,
   });
+
+  /* ---------------- FETCH USERS ---------------- */
 
   useEffect(() => {
-    if (!workspaceslug) return; // prevent empty request
-
-    apiService
-      .get(`workspace/member/data/${workspaceslug}`)
-      .then((response) => {
-        console.log(response.data, "data fetch from api+++");
-        dispacth(setUsers(response.data));
+    dispatch(
+      fetchAllUsers({
+        page,
+        limit: rowPerPage,
+        workspaceslug: workspaceSlug,
       })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [userss,refreshKey]);
+    );
+  }, [dispatch, refreshKey, page, rowPerPage, workspaceSlug]);
 
-  console.log(users, "usersssss");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [deleteUser, setDeleteUser] = useState("");
-  const [restoreUser,setRestoreUser]=useState("")
-  console.log(editingUser, "edit userFuncion return");
-  console.log(users, "users");
-  const handleAddUser = (userData: Omit<User, "id">) => {
-    const newUser = {
-      ...userData,
-      id: Math.max(...users.map((u) => u.id)) + 1,
-    };
-    setUserss([...users, newUser]);
+  /* ---------------- PAGINATION ---------------- */
+
+  const handleChangePage = (_: unknown, newPage: number) => {
+    dispatch(setUserPage(newPage + 1));
   };
 
-  const handleEditUser = (userData: Omit<User, "id">) => {
-    if (editingUser) {
-      setUserss(
-        users.map((user) =>
-          user.id === editingUser.id
-            ? { ...userData, id: editingUser.id }
-            : user
-        )
-      );
-    }
-  };
-  const handleUNDeleteUser = (id: string) => {
-    console.log("undelete");
-    setDeleteUser(id)
-        setDialoqMessage({
-  title: "Do you want to restore",
-  description: "This action cause restore user."
-});
- setIsDialogOpen(true);
-  };
-  const handleDeleteUser = (id: number) => {
-    setDeleteUser(id);
-    setDialoqMessage({
-  title: "Do you want to remove",
-  description: "This action cause remove user."
-});
+  /* ---------------- DELETE ---------------- */
+
+  const handleDeleteUser = (id: string) => {
+    setDeleteUserId(id);
+
+    setDialogMessage({
+      title: "Do you want to remove this user?",
+      description: "This action will remove the user.",
+    });
 
     setIsDialogOpen(true);
-    console.log(id, "delete clicked");
-    // setUserss(users.filter((user) => user.id !== id));
-  };
-  const handleConfirm = async (confirm) => {
-    console.log(confirm,"confir")
-    if(confirm.includes("remove")){
-  let updatedProfile= { isDelete: true };
-   try {
-      const response= await apiService.patch(
-        `member/profile/update/${deleteUser}`,
-        {
-          profileData: updatedProfile, // Use the up-to-date object
-        },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.log(error)
-    }
-    }else{
-        let updatedProfile= { isDelete: false };
-       try {
-      const response= await apiService.patch(
-        `member/profile/update/${deleteUser}`,
-        {
-          profileData: updatedProfile, // Use the up-to-date object
-        },
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.log(error)
-    }
-    }
-  setRefreshKey((prev) => prev + 1);
-   
   };
 
-  const openAddModal = () => {
-    setEditingUser(null);
-    setIsModalOpen(true);
+  /* ---------------- RESTORE ---------------- */
+
+  const handleRestoreUser = (id: string) => {
+    setDeleteUserId(id);
+
+    setDialogMessage({
+      title: "Do you want to restore this user?",
+      description: "This action will restore the user.",
+    });
+
+    setIsDialogOpen(true);
   };
 
-  const openEditModal = (user: User) => {
+  /* ---------------- CONFIRM ---------------- */
+
+  const handleConfirm = async () => {
+
+    const isRestore = dialogMessage.title?.includes("restore");
+
+    await dispatch(
+      removeUser({
+        deleteUser: deleteUserId,
+        updatedProfile: { isDeleted: !isRestore },
+      })
+    ).unwrap();
+toast.success("Update successfull")
+    setRefreshKey((prev) => prev + 1);
+
+    setIsDialogOpen(false);
+  };
+
+  /* ---------------- MODAL ---------------- */
+
+  const openEditModal = (user: userPage) => {
     setEditingUser(user);
     setIsModalOpen(true);
   };
-const closeDialog = () =>{
-  setDialoqMessage({title:null,description:null})
-  setIsDialogOpen(false)
-}
+
+  const closeDialog = () => {
+    setDialogMessage({ title: null, description: null });
+    setIsDialogOpen(false);
+  };
+
+  /* ---------------- BADGES ---------------- */
+
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
       case "Owner":
@@ -172,52 +164,49 @@ const closeDialog = () =>{
         return "default";
     }
   };
-  const getBlockBadgeVariant = (block: string) => {
-    switch (block) {
-      case "Yes":
-        return "destructive";
-      case "No":
-        return "default";
 
-      default:
-        return "default";
-    }
-  };
+  /* ---------------- UI ---------------- */
 
   return (
-    <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
-      <div className='flex items-center justify-between'>
-        <h2 className='text-3xl font-bold tracking-tight'>Users</h2>
-        <Button onClick={openAddModal}>
-          <Plus className='mr-2 h-4 w-4' />
-          Add User
-        </Button>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight">Users</h2>
       </div>
 
       <Card>
+
         <CardHeader>
           <CardTitle>Team Members</CardTitle>
           <CardDescription>
-            Manage your team members and their roles
+            Manage your team members and roles
           </CardDescription>
         </CardHeader>
+
         <CardContent>
+
           <Table>
+
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Title</TableHead>
-                <TableHead>Block/Unblock</TableHead>
-                <TableHead>Remove</TableHead>
-                <TableHead className='text-right'>Actions</TableHead>
+                <TableHead>Blocked</TableHead>
+                <TableHead>Removed</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
+
               {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className='font-medium'>{user.name}</TableCell>
+
+                <TableRow key={user._id}>
+
+                  <TableCell>{user.name}</TableCell>
+
                   <TableCell>{user.email}</TableCell>
 
                   <TableCell>
@@ -225,77 +214,95 @@ const closeDialog = () =>{
                       {user.role}
                     </Badge>
                   </TableCell>
+
                   <TableCell>
                     <Badge>{user.title}</Badge>
                   </TableCell>
+
                   <TableCell>
-                    <Badge
-                      variant={getBlockBadgeVariant(
-                        user.isBlock ? "Yes" : "No"
-                      )}
-                    >
-                      {user.isBlock ? "Yes" : "No"}
+                    <Badge variant={user.isBlocked ? "destructive" : "default"}>
+                      {user.isBlocked ? "Yes" : "No"}
                     </Badge>
                   </TableCell>
+
                   <TableCell>
-                    <Badge
-                      variant={getBlockBadgeVariant(
-                        user.isDelete ? "Yes" : "No"
-                      )}
-                    >
-                      {user.isDelete ? "Yes" : "No"}
+                    <Badge variant={user.isDeleted ? "destructive" : "default"}>
+                      {user.isDeleted ? "Yes" : "No"}
                     </Badge>
                   </TableCell>
-                  <TableCell className='text-right'>
-                    <div className='flex justify-end gap-2'>
+
+                  <TableCell className="text-right">
+
+                    <div className="flex justify-end gap-2">
+
                       <Button
-                        variant='outline'
-                        size='sm'
+                        variant="outline"
+                        size="sm"
                         onClick={() => openEditModal(user)}
                       >
-                        <Edit className='h-4 w-4' />
+                        <Edit className="h-4 w-4" />
                       </Button>
-                      <>
-                        {user.isDelete ? (
+
+                      {!user.isAdmin && (
+                        user.isDeleted ? (
                           <Button
-                            variant='outline'
-                            size='sm'
-                            onClick={() => handleUNDeleteUser(user._id)}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRestoreUser(user._id)}
                           >
-                            <RotateCcw className='h-4 w-4' />
+                            <RotateCcw className="h-4 w-4" />
                           </Button>
                         ) : (
                           <Button
-                            variant='outline'
-                            size='sm'
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleDeleteUser(user._id)}
                           >
-                            <Trash2 className='h-4 w-4' />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        )}
-                      </>
+                        )
+                      )}
+
                     </div>
+
                   </TableCell>
+
                 </TableRow>
-              ))}{" "}
+
+              ))}
+
             </TableBody>
+
           </Table>
+
         </CardContent>
+
       </Card>
 
       <UserModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={editingUser ? handleEditUser : handleAddUser}
+        onSubmit={() => {}}
         user={editingUser}
       />
+
       <ConfirmDialog
         open={isDialogOpen}
-        onClose={() => closeDialog()}
-        onConfirm={()=>handleConfirm(dialogMessage.title)}
+        onClose={closeDialog}
+        onConfirm={handleConfirm}
         title={dialogMessage.title}
         description={dialogMessage.description}
       />
+
+      <TablePagination
+        component="div"
+        count={totalItems}
+        rowsPerPage={rowPerPage}
+        page={page - 1}
+        onPageChange={handleChangePage}
+        rowsPerPageOptions={[]}
+      />
+
     </div>
   );
 }

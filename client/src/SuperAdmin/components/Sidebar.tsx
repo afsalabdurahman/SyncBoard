@@ -3,27 +3,25 @@ import {
   Building2,
   Users,
   CreditCard,
-  BarChart3,
   Shield,
   Headphones,
-  Settings,
-  ToggleLeft,
-  FileText,
+
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+
+import { cn } from "../../Utility/cn"
+import { ChangeEvent, useState } from "react";
 
 interface SidebarProps {
-  currentPage: any;
-  setCurrentPage: any;
+  currentPage: number;
+  setCurrentPage: number;
   collapsed: boolean;
   onToggle: () => void;
 }
 
 export function Sidebar({
-  currentPage,
+  
   setCurrentPage,
   collapsed,
   onToggle,
@@ -33,14 +31,14 @@ export function Sidebar({
     { name: "Workspaces", icon: Building2, active: false },
     { name: "Users", icon: Users, active: false },
     { name: "Subscriptions", icon: CreditCard, active: false },
-    { name: "Analytics", icon: BarChart3, active: false },
+    {name:"Plan Management",icon:CreditCard,active:false},
     { name: "Abuse Reports", icon: Shield, active: false },
     { name: "Support Tickets", icon: Headphones, active: false },
-    { name: "System Settings", icon: Settings, active: false },
-    { name: "Feature Toggles", icon: ToggleLeft, active: false },
-    { name: "Logs", icon: FileText, active: false },
+ 
+ 
+
   ]);
-  const handleClick = (clickedName: any) => {
+  const handleClick = (clickedName: ChangeEvent<HTMLInputElement>) => {
     const updatedItems = navigationItems.map((item) => ({
       ...item,
       active: item.name === clickedName,
@@ -88,7 +86,7 @@ export function Sidebar({
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ",
+                "flex items-center px-3 py-5 text-sm font-medium rounded-lg transition-colors ",
                 item.active
                   ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                   : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"

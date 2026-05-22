@@ -1,73 +1,116 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { Badge } from "../../components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "../../Custom/ui/card"
+import { Badge } from "../../Custom/ui/badge"
+import { DateInHours } from "../../Utility/dateformate"
+import { RevenueChart } from "../pages/RevenueChart";
 
-const recentSignups = [
-  {
-    id: 1,
-    name: "John Smith",
-    email: "john@acme.com",
-    workspace: "Acme Corp",
-    plan: "Pro",
-    time: "2 minutes ago",
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    email: "sarah@techstart.io",
-    workspace: "TechStart",
-    plan: "Enterprise",
-    time: "15 minutes ago",
-  },
-  {
-    id: 3,
-    name: "Mike Chen",
-    email: "mike@designco.com",
-    workspace: "DesignCo",
-    plan: "Basic",
-    time: "1 hour ago",
-  },
-]
+// const recentSignups = [
+//   {
+//     id: 1,
+//     name: "John Smith",
+//     email: "john@acme.com",
+//     workspace: "Acme Corp",
+//     plan: "Pro",
+//     time: "2 minutes ago",
+//   },
+//   {
+//     id: 2,
+//     name: "Sarah Johnson",
+//     email: "sarah@techstart.io",
+//     workspace: "TechStart",
+//     plan: "Enterprise",
+//     time: "15 minutes ago",
+//   },
+//   {
+//     id: 3,
+//     name: "Mike Chen",
+//     email: "mike@designco.com",
+//     workspace: "DesignCo",
+//     plan: "Basic",
+//     time: "1 hour ago",
+//   },
+// ]
 
-const abuseAlerts = [
-  {
-    id: 1,
-    type: "Spam",
-    workspace: "BadActor Inc",
-    severity: "High",
-    time: "5 minutes ago",
-  },
-  {
-    id: 2,
-    type: "Harassment",
-    workspace: "Problem Workspace",
-    severity: "Critical",
-    time: "30 minutes ago",
-  },
-]
+// const abuseAlerts = [
+//   {
+//     id: 1,
+//     type: "Spam",
+//     workspace: "BadActor Inc",
+//     severity: "High",
+//     time: "5 minutes ago",
+//   },
+//   {
+//     id: 2,
+//     type: "Harassment",
+//     workspace: "Problem Workspace",
+//     severity: "Critical",
+//     time: "30 minutes ago",
+//   },
+// ]
 
-const subscriptionChanges = [
-  {
-    id: 1,
-    workspace: "Growing Startup",
-    change: "Upgraded to Enterprise",
-    amount: "+$299/mo",
-    time: "1 hour ago",
-  },
-  {
-    id: 2,
-    workspace: "Small Team",
-    change: "Downgraded to Basic",
-    amount: "-$49/mo",
-    time: "3 hours ago",
-  },
-]
+// const subscriptionChanges = [
+//   {
+//     id: 1,
+//     workspace: "Growing Startup",
+//     change: "Upgraded to Enterprise",
+//     amount: "+$299/mo",
+//     time: "1 hour ago",
+//   },
+//   {
+//     id: 2,
+//     workspace: "Small Team",
+//     change: "Downgraded to Basic",
+//     amount: "-$49/mo",
+//     time: "3 hours ago",
+//   },
+// ]
+interface SubscriptionItem {
+  status: string;
+  workspaceName: string;
+  subscriptionPlan: string;
+  updated: string;
+}
+interface Props {
+ subscription : SubscriptionItem[];
+}
 
-export function RecentActivity() {
+const plan = (key: string): string => {
+  switch (key.toLowerCase()) { 
+    case "free":
+      return "0";
+    case "basic":
+      return "+$10";
+    case "pro":
+      return "+$20";
+    case "enterprise":
+      return "+$50";
+    default:
+      return "-0"; 
+  }
+};
+const upgradeStatus = (plan:string) =>{
+  switch (plan) {
+    case "free":
+      return "It is a Free Version"
+    case "basic":
+      return "Upgrade to Basic"
+    case "pro":
+      return "Upgarde to Pro"
+    case "enterprise":
+      return "Upgrade to Enterprise"  
+    default:
+      return "It is a Free Version"
+      
+  }
+}
+
+
+export function RecentActivity({subscription,abuse}:Props) {
+
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Recent Signups */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Recent Signups</CardTitle>
         </CardHeader>
@@ -96,7 +139,7 @@ export function RecentActivity() {
             </div>
           ))}
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Abuse Alerts */}
       <Card>
@@ -104,21 +147,39 @@ export function RecentActivity() {
           <CardTitle className="text-lg font-semibold">Abuse Alerts</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {abuseAlerts.map((alert) => (
-            <div key={alert.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-900">{alert.type}</p>
-                <p className="text-sm text-gray-600">{alert.workspace}</p>
-              </div>
-              <div className="text-right">
-                <Badge variant="destructive" className="mb-1">
-                  {alert.severity}
-                </Badge>
-                <p className="text-xs text-gray-500">{alert.time}</p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
+  {abuse && abuse.length > 0 ? (
+    abuse.map((alert) => (
+      <div
+        key={alert.id}
+        className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100 hover:shadow-sm transition"
+      >
+        <div>
+          <p className="text-sm font-semibold text-gray-900">
+            {alert.type}
+          </p>
+          <p className="text-xs text-gray-500">
+            Reported issue
+          </p>
+        </div>
+
+        <div className="text-right">
+          <Badge variant="destructive" className="mb-1">
+            {alert.severity}
+          </Badge>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <p className="text-sm font-medium text-gray-700">
+        No reports found
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        Everything looks clean 🎉
+      </p>
+    </div>
+  )}
+</CardContent>
       </Card>
 
       {/* Subscription Changes */}
@@ -126,25 +187,53 @@ export function RecentActivity() {
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Subscription Changes</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {subscriptionChanges.map((change) => (
-            <div key={change.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-900">{change.workspace}</p>
-                <p className="text-sm text-gray-600">{change.change}</p>
-              </div>
-              <div className="text-right">
-                <p
-                  className={`text-sm font-medium ${change.amount.startsWith("+") ? "text-green-600" : "text-red-600"}`}
-                >
-                  {change.amount}
-                </p>
-                <p className="text-xs text-gray-500">{change.time}</p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
+    <CardContent className="space-y-4">
+  {subscription && subscription.length > 0 ? (
+    subscription.map((change, index) => (
+      <div
+        key={index}
+        className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border hover:shadow-sm transition"
+      >
+        {/* Left */}
+        <div>
+          <p className="text-sm font-semibold text-gray-900">
+            {change.workspaceName}
+          </p>
+          <p className="text-xs text-gray-500">
+            {upgradeStatus(change.subscriptionPlan)}
+          </p>
+        </div>
+
+        {/* Right */}
+        <div className="text-right">
+          <p
+            className={`text-sm font-semibold ${
+              change.subscriptionPlan?.startsWith("+")
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {plan(change.subscriptionPlan)}
+          </p>
+          <p className="text-xs text-gray-400">
+            {DateInHours(change.updated)}
+          </p>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <p className="text-sm font-medium text-gray-700">
+        No subscription activity
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        Changes will appear here once users upgrade or downgrade plans
+      </p>
+    </div>
+  )}
+</CardContent>
       </Card>
+      <RevenueChart/>
     </div>
   )
 }

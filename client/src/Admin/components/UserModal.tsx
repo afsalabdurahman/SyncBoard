@@ -1,11 +1,9 @@
-import type React from "react";
-import apiService from "../../services/api";
-import { AxiosResponse } from "axios";
-import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
-import { toast, ToastContainer } from "react-toastify";
-import { useSelector, useDispatch } from "react-redux";
-import { setUsers, clearUsers } from "../../Redux/features/AlluserSlice";
+import React, { useEffect, useState } from "react";
+import { Button } from "../../Custom/ui/button";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../Redux/store";
+
 import {
   Dialog,
   DialogContent,
@@ -13,197 +11,255 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+} from "../../Custom/ui/dialog";
+
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
+
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "../../Custom/ui/select";
+
+import { updateUser } from "../../Redux/feature/users/AlluserThunks";
+
+/* ---------------- TYPES ---------------- */
 
 interface User {
-  _id?: number;
+  _id?: string;
   name: string;
   email: string;
-  role: string;
-  isBlock: string;
-  title:string;
-  
+  role: "Admin" | "Member";
+  isBlocked: boolean;
+  title?: string;
 }
 
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (user: Omit<User, "id">) => void;
+  onSubmit: (user: User) => void;
   user?: User | null;
 }
 
+interface FormState {
+  name: string;
+  email: string;
+  role: "Admin" | "Member" | "";
+  isBlocked: "Yes" | "No" | "";
+  isAdmin: boolean;
+}
+
+/* ---------------- COMPONENT ---------------- */
+
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
-  let dispatch = useDispatch();
-  const userId = user?._id;
-  console.log(user, "before editing...");
-  const [formData, setFormData] = useState({
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [formData, setFormData] = useState<FormState>({
     name: "",
     email: "",
     role: "",
-    isBlock: "",
+    isBlocked: "",
     isAdmin: false,
   });
-  console.log(formData, "before editing2...");
+
+  /* ---------------- LOAD USER DATA ---------------- */
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isBlock: user.isBlock === true ? "Yes" : "No",
-        isAdmin: user.role === "Admin" ? true : false,
-      });
-    } else {
+    if (!user) {
       setFormData({
         name: "",
         email: "",
         role: "",
-        isBlock: "",
+        isBlocked: "",
         isAdmin: false,
       });
+      return;
     }
+
+    setFormData({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isBlocked: user.isBlocked ? "Yes" : "No",
+      isAdmin: user.role === "Admin",
+    });
   }, [user, isOpen]);
+
+  /* ---------------- SUBMIT ---------------- */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData, "handle sumbimit form");
+
+    if (!user?._id) return;
 
     const updatedData = {
       ...formData,
-      isBlock: formData.isBlock === "Yes" ? true : false,
-      isAdmin: formData.role === "Admin" ? true : false,
+      isBlocked: formData.isBlocked === "Yes",
+      isAdmin: formData.role === "Admin",
     };
 
     try {
-      const axiosResponse: AxiosResponse<any> = await apiService.patch(
-        `member/profile/update/${userId}`,
-        {
-          profileData: updatedData,
-        },
-        { withCredentials: true }
-      );
-      console.log(axiosResponse, "response axioss");
-   
+      await dispatch(
+        updateUser({
+          userId: user._id,
+          updatedData,
+        })
+      ).unwrap();
 
-      console.log(axiosResponse, "axios resposne");
-      setTimeout(() => {
-        toast.success("updated");
-      }, 0);
-      dispatch(clearUsers());
-      onSubmit(formData);
-    } catch (error) {
-      console.log(error, "from axioss");
-    }
+      toast.success("User updated successfully");
 
-    setTimeout(() => {
+      onSubmit({
+        ...user,
+        ...updatedData,
+        role: formData.role as "Admin" | "Member",
+      });
+
       onClose();
-    }, 5000);
+
+    } catch (error) {
+      
+       toast.error(error.message);
+    }
   };
+
+  /* ---------------- UI ---------------- */
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-[425px]'>
-        <ToastContainer position='top-center' autoClose={5000} />
+      <DialogContent className="sm:max-w-[425px]">
+
         <DialogHeader>
-          <DialogTitle>{user ? "Edit User" : "Add New User"}</DialogTitle>
+          <DialogTitle>
+            {user ? "Edit User" : "Add New User"}
+          </DialogTitle>
+
           <DialogDescription>
             {user
               ? "Update user information and role."
-              : "Add a new team member to your organization."}
+              : "Add a new team member."}
           </DialogDescription>
         </DialogHeader>
+
         <form onSubmit={handleSubmit}>
-          <div className='grid gap-4 py-4'>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
-                Name
-              </Label>
+
+          <div className="grid gap-4 py-4">
+
+            {/* NAME */}
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Name</Label>
+
               <Input
-                id='name'
                 value={formData.name}
                 onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
+                  setFormData((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
                 }
-                className='col-span-3'
+                className="col-span-3"
                 required
               />
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='email' className='text-right'>
-                Email
-              </Label>
+
+            {/* EMAIL */}
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Email</Label>
+
               <Input
                 readOnly
-                id='email'
-                type='email'
+                type="email"
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className='col-span-3'
-                required
+                className="col-span-3"
               />
             </div>
-            {formData.isAdmin ? null : (
-              <div className='grid grid-cols-4 items-center gap-4'>
-                <Label htmlFor='role' className='text-right'>
-                  Role
-                </Label>
+
+            {/* ROLE */}
+
+            {!formData.isAdmin && (
+              <div className="grid grid-cols-4 items-center gap-4">
+
+                <Label className="text-right">Role</Label>
+
                 <Select
                   value={formData.role}
                   onValueChange={(value: "Admin" | "Member") =>
-                    setFormData({ ...formData, role: value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      role: value,
+                    }))
                   }
                 >
-                  <SelectTrigger className='col-span-3'>
-                    <SelectValue placeholder='Select a role' />
+
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select role" />
                   </SelectTrigger>
+
                   <SelectContent>
-                    <SelectItem value='Admin'>Admin</SelectItem>
-                    <SelectItem value='Member'>Member</SelectItem>
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="Member">Member</SelectItem>
                   </SelectContent>
+
                 </Select>
+
               </div>
             )}
-            {formData.isAdmin ? null : (
-              <div className='grid grid-cols-4 items-center gap-4'>
-                <Label htmlFor='block' className='text-right'>
-                  Block
-                </Label>
+
+            {/* BLOCK */}
+
+            {!formData.isAdmin && (
+              <div className="grid grid-cols-4 items-center gap-4">
+
+                <Label className="text-right">Block</Label>
+
                 <Select
-                  value={formData.isBlock}
-                  onValueChange={(value: "No" | "Yes") =>
-                    setFormData({ ...formData, isBlock: value })
+                  value={formData.isBlocked}
+                  onValueChange={(value: "Yes" | "No") =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isBlocked: value,
+                    }))
                   }
                 >
-                  <SelectTrigger className='col-span-3'>
-                    <SelectValue placeholder='Want to Block' />
+
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Block user?" />
                   </SelectTrigger>
+
                   <SelectContent>
-                    <SelectItem value='No'>No</SelectItem>
-                    <SelectItem value='Yes'>Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="Yes">Yes</SelectItem>
                   </SelectContent>
+
                 </Select>
+
               </div>
             )}
+
           </div>
+
           <DialogFooter>
-            <Button type='button' variant='outline' onClick={onClose}>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+            >
               Cancel
             </Button>
-            <Button type='submit'>{user ? "Update User" : "Add User"}</Button>
+
+            <Button type="submit">
+              {user ? "Update User" : "Add User"}
+            </Button>
+
           </DialogFooter>
+
         </form>
+
       </DialogContent>
     </Dialog>
   );

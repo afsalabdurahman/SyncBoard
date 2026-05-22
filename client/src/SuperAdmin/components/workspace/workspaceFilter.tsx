@@ -1,9 +1,8 @@
-"use client"
 
-import { Search, Download, Plus } from "lucide-react"
-import { Button } from "../../../components/ui/button"
-import { Input } from "../../../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
+
+import { Search, } from "lucide-react"
+import { Input } from "../../../Custom/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
 
 interface WorkspaceFiltersProps {
   searchTerm: string
@@ -23,8 +22,7 @@ export const WorkspaceFilters=({
   onStatusFilterChange,
   planFilter,
   onPlanFilterChange,
-  onExport,
-  onCreateWorkspace,
+  
 }: WorkspaceFiltersProps) =>{
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
@@ -50,8 +48,7 @@ export const WorkspaceFilters=({
               <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="suspended">Suspended</SelectItem>
-              <SelectItem value="trial">Trial</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
+             
             </SelectContent>
           </Select>
 
@@ -71,14 +68,11 @@ export const WorkspaceFilters=({
 
       {/* Actions */}
       <div className="flex gap-2">
-        <Button variant="outline" onClick={onExport} className="flex items-center gap-2 bg-transparent">
+        {/* <Button variant="outline" onClick={onExport} className="flex items-center gap-2 bg-transparent">
           <Download className="h-4 w-4" />
           Export
-        </Button>
-        <Button onClick={onCreateWorkspace} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Create Workspace
-        </Button>
+        </Button> */}
+       
       </div>
     </div>
   )

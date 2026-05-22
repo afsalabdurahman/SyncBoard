@@ -1,0 +1,48 @@
+name: Deploy Backend to EC2 (Tiket)
+
+on:
+  push:
+    branches:
+      - Tiket
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            set -e
+
+            echo "➡️ Go to project"
+            cd /home/ubuntu/SyncBoard
+
+            echo "➡️ Pull latest code (Tiket)"
+            git checkout Tiket
+            git pull origin Tiket
+
+            echo "➡️ Remove client folder (save CPU)"
+            rm -rf Client client frontend Frontend || true
+
+            echo "➡️ Go to Server"
+            cd Server
+
+            echo "➡️ Install dependencies"
+
+            npm install 
+
+            echo "➡️ Build backend (low memory)"
+            NODE_OPTIONS="--max-old-space-size=1024" npm run build
+
+            echo "➡️ Restart PM2"
+            pm2 restart server || pm2 start dist/server.js --name server
+
+            pm2 save

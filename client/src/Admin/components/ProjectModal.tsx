@@ -1,8 +1,10 @@
-import type React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
-import { deadlineCovert } from "../../components/page-components/utility/date/dateConverter";
+import { RootState } from "../../Redux/store";
+
+import { Button } from "../../Custom/ui/button";
+import { deadlineCovert } from "../../Utility/dateConverter";
+
 import {
   Dialog,
   DialogContent,
@@ -10,41 +12,30 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
+} from "../../Custom/ui/dialog";
+
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
+import { Textarea } from "../../Custom/ui/textarea";
+
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Upload } from "./Upload";
-import { FileText, Image, Paperclip, X } from "lucide-react";
-import { Popup } from "../../components/ui/Popup";
-import { data } from "react-router";
-interface Project {
-  _id: string;
-  name: string;
-  clientName: string;
-  description: string;
-  assignedUsers: string[];
-  deadline: string;
-  status: "Planning" | "In Progress" | "Completed" | "On Hold";
-  priority?: "High" | "Medium" | "Low";
-  attachment?: any;
-  attachedUrl?: [string];
-}
+} from "../../Custom/ui/select";
 
-interface ProjectModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (project: Project) => void;
-  project?: Project | null;
-  setEditproject: React.Dispatch<React.SetStateAction<Project>>;
+import { Checkbox } from "../../Custom/ui/checkbox";
+import { Upload } from "./Upload";
+
+import { AttachmentButton } from "./AttachmentButton";
+
+import { Priority, Project, ProjectModalProps, ProjectStatus } from "../types/projetctTypes";
+
+interface User {
+  name: string;
+  role: string;
 }
 
 export function ProjectModal({
@@ -52,315 +43,297 @@ export function ProjectModal({
   onClose,
   onSubmit,
   project,
-  setEditproject,
 }: ProjectModalProps) {
-  const [uploads, setUploads] = useState(null);
+  // const dispatch = useDispatch<AppDispatch>();
+
+  const availableUsers = useSelector((state: RootState) =>
+    state.alluser.users.filter((user: User) => user.role !== "Owner")
+  );
+
+  const [uploads, setUploads] = useState<string[] | null>(null);
+  const [showUploadPage, setShowUploadPage] = useState(false);
+
   const [formData, setFormData] = useState({
-    id: project ? project._id : undefined,
-    clientName: "",
+    id: "",
     name: "",
+    clientName: "",
     description: "",
     assignedUsers: [] as string[],
     deadline: "",
-    priority: "Low" as "High" | "Medium" | "Low",
-    status: "Planning" as "Planning" | "In Progress" | "Completed" | "On Hold",
-    attachment: uploads || null,
+    priority: "Low" as Priority,
+    status: "Planning" as ProjectStatus,
+    attachment: [] as string[],
   });
 
-  const availableUsers = useSelector((state: any) => {
-    return state.alluser.users.filter((user: any) => user.role !== "Owner");
-  });
-
-  const [showUploadPage, setUploadPage] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  let uploadFiles = () => {
-    setUploadPage(true);
-  };
-  let [isPopup, setPopup] = useState(false);
-  let onSubmitFiles = (data: any) => {
-    setUploads(data);
-  };
-  //Check Extention...
-  const isImage = (filename: string) =>
-    /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
-  const isPdf = (filename: string) => /\.pdf$/i.test(filename);
-  let hasPdf = false;
-  let hasImage = false;
-  if (formData.attachment) {
-    hasPdf = formData?.attachment.some(isPdf);
-    hasImage = formData?.attachment.some(isImage);
-  }
-
+  /* ---------- LOAD PROJECT DATA ---------- */
   useEffect(() => {
     if (project) {
       setFormData({
-        id: project._id,
+        id: project._id || "",
+        name: project.name || "",
         clientName: project.clientName || "",
-        name: project.name,
-        description: project.description,
-        assignedUsers: project.assignedUsers,
-        deadline: deadlineCovert(project.deadline),
-        status: project.status,
+        description: project.description || "",
+        assignedUsers: project.assignedUsers || [],
+        deadline: deadlineCovert(project.deadline) || "",
+        status: project.status || "Planning",
         priority: project.priority || "Low",
-        attachment: project.attachedUrl, // Default to Low if not provided
+        attachment: project.attachedUrl || [],
       });
     } else {
+      // Reset form when adding new project
       setFormData({
-        id: project ? project._id : undefined,
-        clientName: "",
+        id: "",
         name: "",
+        clientName: "",
         description: "",
-        priority: "Low",
         assignedUsers: [],
         deadline: "",
+        priority: "Low",
         status: "Planning",
-        attachment: null,
+        attachment: [],
       });
+      setUploads(null);
     }
-  }, [project, isOpen, refreshKey]);
-  console.log(project?.attachedUrl, "URLLLLLLe^^^");
+  }, [project]);
 
-  let imageArry = formData.attachment?.filter(
-    (url: string) => url.includes(".jpg") || url.includes(".png")
-  );
-  let pdfArry = formData.attachment?.map((url: string) => {
-    if (url.includes(".pdf")) return url;
-  });
+  /* ---------- HANDLERS ---------- */
+  const onSubmitFiles = (data: string[]) => {
+    setUploads(data);
+    setShowUploadPage(false);
+  };
+
+  const handleUserToggle = (user: string, checked: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      assignedUsers: checked
+        ? [...prev.assignedUsers, user]
+        : prev.assignedUsers.filter((u) => u !== user),
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Prepare data to match Omit<Project, "id">
-    const updatedData = {
-      _id: formData.id ?? "", // fallback to empty string if undefined
-      clientName: formData.clientName,
+    const updatedProject: Project = {
+      _id: formData.id,
       name: formData.name,
+      clientName: formData.clientName,
       description: formData.description,
-      assignedUsers: formData.assignedUsers.map((user: any) =>
-        typeof user === "string" ? user : user.name
-      ),
+      assignedUsers: formData.assignedUsers,
       deadline: formData.deadline,
       status: formData.status,
       priority: formData.priority,
-      attachment: uploads,
+      attachment: uploads ?? [],
+      attachedUrl: formData.attachment,
     };
-    onSubmit(updatedData);
-    onClose();
+
+    await onSubmit(updatedProject);
   };
-
-  const handleUserToggle = (user: string, checked: boolean) => {
-    if (checked) {
-      setFormData({
-        ...formData,
-        assignedUsers: [...formData.assignedUsers, user],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        assignedUsers: formData.assignedUsers.filter((u) => u !== user),
-      });
-    }
-  };
-
-  const deletedSingleUrl = (deleteUrl: string) => {
-    formData.attachment =
-      formData.attachment?.filter((url) => url !== deleteUrl) ?? null;
-
-    // setRefreshKey((prev) => prev + 1);
-  };
-  console.log(formData, "formdata after delete$$$");
-
-  console.log(project, "relaproject");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-[525px]'>
-        <DialogHeader>
-          <DialogTitle>
-            {project ? "Edit Project" : "Add New Project"}
+      <DialogContent className="max-w-[95vw] sm:max-w-[600px] max-h-[95vh] overflow-y-auto p-0">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b">
+          <DialogTitle className="text-xl">
+            {project ? "Edit Project" : "Create New Project"}
           </DialogTitle>
           <DialogDescription>
             {project
-              ? "Update project information and assignments."
-              : "Create a new project and assign team members."}
+              ? "Update project details and team assignments."
+              : "Fill in the details to create a new project."}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className='grid gap-4 py-4'>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
-                Name
-              </Label>
+
+        <form onSubmit={handleSubmit} className="px-6 py-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Project Name */}
+            <div className="space-y-2">
+              <Label htmlFor="name">Project Name</Label>
               <Input
-                id='name'
+                id="name"
                 value={formData.name}
                 onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
-                className='col-span-3'
-                required
-              />
-            </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
-                Client Name
-              </Label>
-              <Input
-                id='Client'
-                value={formData.clientName}
-                onChange={(e) =>
-                  setFormData({ ...formData, clientName: e.target.value })
-                }
-                className='col-span-3'
+                placeholder="Enter project name"
                 required
               />
             </div>
 
-            <div className='grid grid-cols-4 items-start gap-4'>
-              <Label htmlFor='description' className='text-right mt-2'>
-                Description
-              </Label>
-              <Textarea
-                id='description'
-                value={formData.description}
+            {/* Client Name */}
+            <div className="space-y-2">
+              <Label htmlFor="clientName">Client Name</Label>
+              <Input
+                id="clientName"
+                value={formData.clientName}
                 onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
+                  setFormData((prev) => ({ ...prev, clientName: e.target.value }))
                 }
-                className='col-span-3'
-                rows={3}
+                placeholder="Enter client name"
+                required
               />
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
-                Preiority
-              </Label>
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, description: e.target.value }))
+              }
+              placeholder="Project description..."
+              rows={4}
+              className="resize-y min-h-[100px]"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Priority */}
+            <div className="space-y-2">
+              <Label>Priority</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value: "High" | "Medium" | "Low") =>
-                  setFormData({ ...formData, priority: value })
+                onValueChange={(value: Priority) =>
+                  setFormData((prev) => ({ ...prev, priority: value }))
                 }
               >
-                <SelectTrigger className='col-span-3'>
-                  <SelectValue placeholder='Select priority' />
+                <SelectTrigger>
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='Low'>Low</SelectItem>
-                  <SelectItem value='Medium'>Medium</SelectItem>
-                  <SelectItem value='High'>High</SelectItem>
+                  <SelectItem value="Low">Low</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="High">High</SelectItem>
                 </SelectContent>
-              </Select>{" "}
+              </Select>
             </div>
-            <div className='grid grid-cols-4 items-start gap-4'>
-              <Label className='text-right mt-2'>Assigned Users</Label>
-              <div className='col-span-3 space-y-2'>
-                {availableUsers.map((user: string) => (
-                  <div key={user} className='flex items-center space-x-2'>
+
+            {/* Status */}
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value: ProjectStatus) =>
+                  setFormData((prev) => ({ ...prev, status: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Planning">Planning</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="On Hold">On Hold</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Deadline */}
+            <div className="space-y-2">
+              <Label htmlFor="deadline">Deadline</Label>
+              <Input
+                id="deadline"
+                type="date"
+                value={formData.deadline}
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, deadline: e.target.value }))
+                }
+                required
+              />
+            </div>
+          </div>
+
+          {/* Assigned Users */}
+          <div className="space-y-3">
+            <Label>Assigned Users</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-52 overflow-y-auto border rounded-md p-4 bg-muted/30">
+              {availableUsers.length > 0 ? (
+                availableUsers.map((user) => (
+                  <div
+                    key={user.name}
+                    className="flex items-center space-x-3 py-1"
+                  >
                     <Checkbox
-                      id={user}
+                      id={`user-${user.name}`}
                       checked={formData.assignedUsers.includes(user.name)}
                       onCheckedChange={(checked) =>
                         handleUserToggle(user.name, checked as boolean)
                       }
                     />
-                    <Label htmlFor={user} className='text-sm font-normal'>
+                    <Label
+                      htmlFor={`user-${user.name}`}
+                      className="text-sm font-medium cursor-pointer flex-1"
+                    >
                       {user.name}
                     </Label>
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='deadline' className='text-right'>
-                Deadline
-              </Label>
-              <Input
-                id='deadline'
-                type='date'
-                value={formData.deadline}
-                onChange={(e) =>
-                  setFormData({ ...formData, deadline: e.target.value })
-                }
-                className='col-span-3'
-                required
-              />
-            </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='status' className='text-right'>
-                Status
-              </Label>
-              <Select
-                value={formData.status}
-                onValueChange={(
-                  value: "Planning" | "In Progress" | "Completed" | "On Hold"
-                ) => setFormData({ ...formData, status: value })}
-              >
-                <SelectTrigger className='col-span-3'>
-                  <SelectValue placeholder='Select status' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='Planning'>Planning</SelectItem>
-                  <SelectItem value='In Progress'>In Progress</SelectItem>
-                  <SelectItem value='Completed'>Completed</SelectItem>
-                  <SelectItem value='On Hold'>On Hold</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className='flex items-center gap-4'>
-              <Label htmlFor='status' className='text-right'>
-                Attachment
-              </Label>
-
-              <Button type='button' onClick={uploadFiles}>
-                Upload
-              </Button>
-
-              {uploads ? (
-                <p className='text-red-500 text-sm'>
-                  {uploads.length} file(s) attached
-                </p>
+                ))
               ) : (
-                <div className='flex items-start gap-4 text-sm text-red-500'>
-                  {hasPdf && (
-                    <div className='relative'>
-                      <FileText className='w-6 h-6 text-red-500' />
-                    </div>
-                  )}
-
-                  {hasImage && (
-                    <div className='relative'>
-                      <Popup
-                        isOpen={isPopup}
-                        onClose={() => setPopup(false)}
-                        Url={imageArry}
-                        type='image'
-                        projectId={formData.id}
-                        deletdAUrl={deletedSingleUrl}
-                      />
-
-                      <Image
-                        onClick={() => setPopup(true)}
-                        className='w-6 h-6 text-gray-500'
-                      />
-                    </div>
-                  )}
-                </div>
+                <p className="text-sm text-muted-foreground">No users available</p>
               )}
-             
             </div>
           </div>
-          <DialogFooter>
-            <Button type='button' variant='outline' onClick={onClose}>
+
+          {/* Attachments Section */}
+          <div className="space-y-4">
+            {project?.attachedUrl && project.attachedUrl.length > 0 && (
+              <div className="space-y-2">
+                <Label>Existing Attachments</Label>
+                <AttachmentButton
+                  attachedUrl={project.attachedUrl}
+                  taskId={formData.id}
+                  passURL={(url) => {console.log(url,"URL")}}
+                  isProject={true}
+                />
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <Label className="sm:min-w-[80px]">New Upload</Label>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowUploadPage(true)}
+                className="w-full sm:w-auto"
+              >
+                Choose Files to Upload
+              </Button>
+
+              {uploads && uploads.length > 0 && (
+                <p className="text-sm text-green-600 font-medium">
+                  {uploads.length} file(s) ready to attach
+                </p>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter className="pt-6 border-t flex flex-col sm:flex-row gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
-            <Button type='submit'>
-              {project ? "Update Project" : "Add Project"}
+            <Button type="submit" className="w-full sm:w-auto">
+              {project ? "Update Project" : "Create Project"}
             </Button>
           </DialogFooter>
         </form>
+
+        {/* Upload Modal */}
         <Upload
           isOpen={showUploadPage}
-          onClose={() => setUploadPage(false)}
+          removeUpload={setUploads}
+          onClose={() => setShowUploadPage(false)}
           onSubmit={onSubmitFiles}
         />
       </DialogContent>

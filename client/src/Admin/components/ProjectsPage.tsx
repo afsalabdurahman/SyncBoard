@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch } from "../../Redux/store";
-import { toast, ToastContainer } from "react-toastify";
-import { uploadAttachment } from "../../services/Cloudinary";
-import { Suscription } from "../Pages/Suscription";
-import ProjectLoader from "../../components/page-components/utility/loadingPages/ProjectLoader";
-import {
-  addProject,
-  updateProject,
-  removeProject,
-  fetchProjectData,
-} from "../../Redux/workspace/admin/ProjectSlice";
-import api from "../../services/api";
-import { AxiosResponse } from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Redux/store";
 
-import { Button } from "../../components/ui/button";
+import { Suscription } from "../Pages/Suscription";
+import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
+
+import {
+  fetchProjectData,
+  deleteProject,
+  createProject,
+  updateProjectApi,
+} from "../../Redux/feature/project/projectThunks";
+
+import { setPage } from "../../Redux/feature/project/projectSlice";
+
+import { TablePagination } from "@mui/material";
+import { findLimit } from "../../Utility/upgradeSubscription";
+
+import { Button } from "../../Custom/ui/button";
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
+
 import {
   Table,
   TableBody,
@@ -29,9 +34,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/table";
+
+import { Badge } from "../../Custom/ui/badge";
 import { ProjectModal } from "./ProjectModal";
+
 import {
   Edit,
   Trash2,
@@ -41,163 +48,143 @@ import {
   User,
   Paperclip,
 } from "lucide-react";
-import apiService from "../../services/api";
-import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
 
-export function ProjectsPage() {
-  const dispatch: AppDispatch = useDispatch();
-  let [suscription, setSuscription] = useState(false);
+import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
 
-  // Select Redux state directly
-  const [refreshKey, setRefreshKey] = useState(0);
+import {
+  useAdminId,
+  useAdminName,
+  usePagination,
+  usePlankey,
+  useProjects,
+} from "../hooks/projectshooks";
+
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
+
+import { ProjectFormData } from "../types/projetctTypes";
+import { toast } from "react-toastify";
+
+export default function ProjectsPage() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const plankey = usePlankey();
+  const adminId = useAdminId();
+  const adminName = useAdminName();
+  const projects = useProjects();
+  const workspaceid = useWorkspaceid();
+
+  const { page, rowPerPage, totalItems } = usePagination();
+
+  const logId = useSelector((state: RootState) => state.workspace.workspace.logId);
+
   const [loader, setLoader] = useState("");
-  const adminId = useSelector((state: any) => state?.user?.user?._id);
-  const adminName = useSelector((state: any) => state?.user?.user?.name);
-  const projects = useSelector((state: any) => state.projects.list);
-const logId=useSelector((state)=>{
-  return state.workspace.workspace.logId
-})
-console.log(logId,"ad++++")
+  const [suscription, setSuscription] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
-  // Fetch projects when adminId available
+  const [deleteProjectId, setDeleteProjectId] = useState("");
+
+  const mylimit = findLimit(plankey);
+
   useEffect(() => {
     if (adminId) {
-      dispatch(fetchProjectData(adminId));
+      dispatch(
+        fetchProjectData({
+          workspaceId: workspaceid,
+          page,
+          limit: rowPerPage,
+        })
+      );
     }
-  }, [dispatch, adminId, refreshKey]);
+  }, [dispatch, adminId, page, rowPerPage, workspaceid]);
 
-  const handleAddProject = async (projectData: Omit<Project, "id">) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
+    dispatch(setPage(newPage + 1));
+    dispatch(
+      fetchProjectData({
+        workspaceId: workspaceid,
+        page: newPage + 1,
+        limit: rowPerPage,
+      })
+    );
+  };
+
+  const handleAddProject = async (projectData: Omit<ProjectFormData, "_id">) => {
     try {
       setLoader("Creating project ...");
-      let attachedUrl = [];
-     
-      if (projectData.attachment) {
-        for (const files of projectData.attachment) {
-          let result = await uploadAttachment(files.file);
-       
-          attachedUrl.push(result);
-        }
-      }
 
-      delete projectData.attachment;
-      delete projectData._id;
-      projectData = {
-        ...projectData,
-        projectAdminId: adminId,
-        attachedUrl,
-      };
-      toast.success("Created project successfully");
+      await dispatch(
+        createProject({ workspaceid, logId, projectData, adminId })
+      ).unwrap();
 
-      const response: AxiosResponse<any, any> = await api.post(
-        `project/create/${adminName}?activityId=${logId}`,
-        
-        { newProject: projectData, },
-        {
-
-    // withCredentials: true // Uncomment if needed
-  }
-        // { withCredentials: true }
+      dispatch(
+        fetchProjectData({
+          workspaceId: workspaceid,
+          page,
+          limit: rowPerPage,
+        })
       );
-      setLoader("");
-      setRefreshKey((prev) => prev + 1);
-    
 
-    
-    } catch (error) {
-      console.error("Error creating project:", error);
+      toast.success("Created project successfully 🎉");
+      setIsModalOpen(false);
+    } catch (error: unknown) {
+      toast.error((error as Error).message);
+    } finally {
+      setLoader("");
     }
   };
 
   const handleEditProject = async (projectData: any) => {
-   setLoader("Updating project ...");
-   console.log(projectData,"edit updates")
-   let attachedUrl=[];
-   if(projectData.attachment){
-    for (const files of projectData.attachment) {
-            let result=  await uploadAttachment(files.file);
-            console.log(result,"$$$$$$$results")
-      attachedUrl.push(result)
-   }}
-   delete projectData.attachment;
-   let id=projectData._id;
-    projectData={
-       ...projectData,
-       projectAdminId:adminId,
-       attachedUrl};
-       let response = await apiService.patch(
-       `project/update/${id}`,
-       { editingProject: projectData }
-     );
-     console.log(response,"from axios")
-setLoader("")
-toast.success("Project updated successfully");
-setRefreshKey((prev) => prev + 1);
-    // try {
-    // setLoader("Updating project ...")
-    //  let attachedUrl=[]
-
-    //        if(projectData.attachment){
-    //    for (const files of projectData.attachment) {
-    //        let result=  await uploadAttachment(files.file);
-    //        console.log(result,"$$$$$$$results")
-    //  attachedUrl.push(result)
-    //        }
-    //        }
-
-    //  delete projectData.attachment
-    // let id=projectData._id
-    //  projectData={
-    //   ...projectData,
-    //   projectAdminId:adminId,
-    //   attachedUrl}
-    // let response = await apiService.put(
-    //   `/api/project/update/${id}`,
-    //   { editingProject: projectData }
-    // );
-    // setLoader("")
-    // console.log(response, "Project updated successfully");
-    // toast.success("Project updated successfully");
-    // setRefreshKey((prev) => prev + 1);
-    // console.log(refreshKey, "Refresh key after upd00000000000ate:", refreshKey);
-    // } catch (error) {
-    //   console.error("Error updating project:", error);
-    // }
-    // }
-  };
-  const handleDeleteProject = async (id: string) => {
-    setIsDialogOpen(true);
-    setDeleteProjectId(id);
-   
-    // You can implement delete API logic here
-  };
-  const handleConfirmDelete = async () => {
     try {
-      let response = await apiService.delete(
-        `project/delete/${deleteProjectId}`
-      );
-      setRefreshKey((prev) => prev + 1);
-      toast.success("Project deleted successfully");
-    } catch (error) {
-      console.log("Error deleting project:", error);
-    }
-    // call your delete function here
-  };
-  const openAddModal = () => {
-    if (projects.length > 5) {
-      setSuscription(true);
-    } else {
-      setEditingProject(null);
-      setIsModalOpen(true);
-    }
-  };
-  console.log(editingProject, "edit$$$");
-  const openEditModal = (project: Project) => {
-    console.log("Editing project222222222:", project);
-    setEditingProject(project);
+      setLoader("Updating project ...");
 
+      await dispatch(
+        updateProjectApi({
+          projectId: projectData._id,
+          projectData,
+        })
+      ).unwrap();
+
+      toast.success("Project updated successfully");
+      setIsModalOpen(false);
+    } catch (error: unknown) {
+      toast.error((error as Error).message);
+    } finally {
+      setLoader("");
+    }
+  };
+
+  const handleDeleteProject = (id: string) => {
+    setDeleteProjectId(id);
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await dispatch(deleteProject(deleteProjectId)).unwrap();
+
+    toast.success("Project deleted successfully");
+
+    dispatch(
+      fetchProjectData({
+        workspaceId: workspaceid,
+        page,
+        limit: rowPerPage,
+      })
+    );
+  };
+
+  const openAddModal = () => {
+    if (projects.length >= mylimit.maxProjects) {
+      setSuscription(true);
+      return;
+    }
+
+    setEditingProject(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (project: Project) => {
+    setEditingProject(project);
     setIsModalOpen(true);
   };
 
@@ -216,22 +203,85 @@ setRefreshKey((prev) => prev + 1);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-  if (loader) {
-    return <ProjectLoader title={loader} />;
-  }
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString();
+
+  if (loader) return <ProjectLoader title={loader} />;
+
   return (
-    <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
-      <div className='flex items-center justify-between'>
-        <h2 className='text-3xl font-bold tracking-tight'>Projects</h2>
+    
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      {projects.length==0?       <div className="flex items-center justify-center h-[60vh] bg-gray-50 border border-dashed border-gray-200 rounded-xl">
+
+  
+  <div className="text-center max-w-xl w-full px-6">
+    
+    {/* Illustration Container */}
+    <div className="mx-auto w-24 h-24 rounded-2xl bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+      <svg
+        className="w-12 h-12 text-indigo-600"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-6h13M9 11l-4 4m0 0l4 4m-4-4h13" />
+      </svg>
+    </div>
+
+    {/* Heading */}
+    <h2 className="mt-6 text-2xl font-semibold text-gray-900">
+      Create your first project
+    </h2>
+
+    {/* Description */}
+    <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+      Projects help you organize tasks, track progress, and collaborate with your team in one place.
+    </p>
+
+    {/* Actions */}
+    <div className="mt-6 flex items-center justify-center gap-3">
+      
+      {/* Primary CTA */}
+      <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow hover:bg-indigo-700 transition" onClick={openAddModal}>
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        New Project
+      </button>
+
+      {/* Secondary CTA */}
+      <button className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+        Learn more
+      </button>
+
+    </div>
+
+    {/* Bottom Hint */}
+    <p className="mt-6 text-xs text-gray-400">
+      Tip: You can invite team members after creating a project.
+    </p>
+
+  </div>
+</div>:
+      <div className="wrap">
+
+      
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
+
         <Button onClick={openAddModal}>
-          <Plus className='mr-2 h-4 w-4' />
+          <Plus className="mr-2 h-4 w-4" />
           Add Project
         </Button>
       </div>
-      <ToastContainer position='top-center' autoClose={5000} />
+
       <Card>
         <CardHeader>
           <CardTitle>Active Projects</CardTitle>
@@ -239,6 +289,7 @@ setRefreshKey((prev) => prev + 1);
             Manage your organization's projects and assignments
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <Table>
             <TableHeader>
@@ -251,85 +302,89 @@ setRefreshKey((prev) => prev + 1);
                 <TableHead>Project Manager</TableHead>
                 <TableHead>Client Name</TableHead>
                 <TableHead>Attachment</TableHead>
-                <TableHead className='text-right'>Actions</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {projects?.length > 0 ? (
+              {projects.length ? (
                 projects.map((project: Project) => (
-                  <TableRow key={project.id}>
+                  <TableRow key={project._id}>
                     <TableCell>
                       <div>
-                        <div className='font-medium'>{project.name}</div>
-                        <div className='text-sm text-muted-foreground'>
+                        <div className="font-medium">{project.name}</div>
+                        <div className="text-sm text-muted-foreground">
                           {project.description}
                         </div>
                       </div>
                     </TableCell>
+
                     <TableCell>
-                      <div className='flex flex-wrap gap-1'>
-                        {project.assignedUsers
-                          .filter((user: any) => user.role !== "Owner")
-                          .map((user: any, index: number) => (
-                            <Badge
-                              key={index}
-                              variant='outline'
-                              className='text-xs'
-                            >
-                              {user.name || user}
-                            </Badge>
-                          ))}
+                      <div className="flex flex-wrap gap-1">
+                       {project.assignedUsers?.length > 0 &&
+  project.assignedUsers.map((user, i) => (
+    <Badge key={i} variant="outline" className="text-xs">
+      {user}
+    </Badge>
+  ))
+}
                       </div>
                     </TableCell>
+
                     <TableCell>
                       <Badge variant={getStatusBadgeVariant(project.status)}>
                         {project.status}
                       </Badge>
                     </TableCell>
+
                     <TableCell>
-                      <div className='flex items-center gap-2'>
-                        <Calendar className='h-4 w-4 text-muted-foreground' />
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
                         {formatDate(project.deadline)}
                       </div>
                     </TableCell>
+
                     <TableCell>
-                      <Badge variant='secondary' className='text-xs'>
-                        High
-                      </Badge>
+                      <Badge variant="secondary">{project.priority}</Badge>
                     </TableCell>
+
                     <TableCell>
-                      <span className='flex items-center gap-2 text-xs'>
-                        <UserCog className='h-4 w-4' />
-                        {adminName || "Project Manager Not Assigned"}
+                      <span className="flex items-center gap-2 text-xs">
+                        <UserCog className="h-4 w-4" />
+                        {adminName || "Not Assigned"}
                       </span>
                     </TableCell>
+
                     <TableCell>
-                      <span className='flex items-center gap-2 text-xs'>
-                        <User className='h-4 w-4' />
-                        {project.clientName || "Client Name Not Provided"}
+                      <span className="flex items-center gap-2 text-xs">
+                        <User className="h-4 w-4" />
+                        {project.clientName || "Not Provided"}
                       </span>
                     </TableCell>
+
                     <TableCell>
-                      <div className='flex items-center gap-2'>
-                        <Paperclip className='h-4 w-4 text-muted-foreground' />
-                        {project.attachedUrl.length ? "Attached" : "No"}
+                      <div className="flex items-center gap-2">
+                        <Paperclip className="h-4 w-4 text-muted-foreground" />
+                        {project.attachedUrl?.length ? "Attached" : "No"}
                       </div>
                     </TableCell>
-                    <TableCell className='text-right'>
-                      <div className='flex justify-end gap-2'>
+
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
                         <Button
-                          variant='outline'
-                          size='sm'
+                          variant="outline"
+                          size="sm"
                           onClick={() => openEditModal(project)}
                         >
-                          <Edit className='h-4 w-4' />
+                          <Edit className="h-4 w-4" />
                         </Button>
+
                         <Button
-                          variant='outline'
-                          size='sm'
+                          variant="outline"
+                          size="sm"
                           onClick={() => handleDeleteProject(project._id)}
                         >
-                          <Trash2 className='h-4 w-4' />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -337,14 +392,15 @@ setRefreshKey((prev) => prev + 1);
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8}>No projects found.</TableCell>
+                  <TableCell colSpan={9}>No projects found.</TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-          {suscription ? (
+
+          {suscription && (
             <Suscription isOpen={() => setSuscription(false)} />
-          ) : null}
+          )}
         </CardContent>
       </Card>
 
@@ -360,9 +416,35 @@ setRefreshKey((prev) => prev + 1);
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onConfirm={handleConfirmDelete}
-        title='Delete Project?'
-        description='This project will be permanently deleted.'
+        title="Delete Project?"
+        description="This project will be permanently deleted."
       />
+
+      <TablePagination
+        component="div"
+        count={totalItems}
+        rowsPerPage={rowPerPage || 0}
+        page={page - 1}
+        onPageChange={handleChangePage}
+        rowsPerPageOptions={[]}
+      />
+      </div>}
+      <ProjectModal
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      onSubmit={editingProject ? handleEditProject : handleAddProject}
+      project={editingProject}
+      setEditproject={setEditingProject}
+    />
+
+    {/* ✅ ALSO KEEP DIALOG OUTSIDE */}
+    <ConfirmDialog
+      open={isDialogOpen}
+      onClose={() => setIsDialogOpen(false)}
+      onConfirm={handleConfirmDelete}
+      title="Delete Project?"
+      description="This project will be permanently deleted."
+    />
     </div>
   );
 }

@@ -1,19 +1,12 @@
-"use client"
 
-import { MoreHorizontal, Users, Calendar, DollarSign, AlertTriangle } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent } from "../../../components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table"
+
+import {  Users, DollarSign, AlertTriangle,Pencil,Eye } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Badge } from "../../../Custom/ui/badge"
+import { Button } from "../../../Custom/ui/button"
+import { Card, CardContent } from "../../../Custom/ui/card"
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
 
 export interface Workspace {
   id: string
@@ -60,16 +53,9 @@ export const WorkspaceTable = ({
   workspaces,
   onViewWorkspace,
   onEditWorkspace,
-  onSuspendWorkspace,
-  onDeleteWorkspace,
+
 }: WorkspaceTableProps) =>{
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })
-  }
+
 
   const formatStorage = (used: number, limit: number) => {
     const percentage = (used / limit) * 100
@@ -79,6 +65,9 @@ export const WorkspaceTable = ({
       isNearLimit: percentage > 80,
     }
   }
+const uniqueWorkspaces = workspaces.filter((workspace, index, arr) =>
+  index === arr.findIndex(w => w.id === workspace.id)
+)
 
   return (
     <Card>
@@ -93,12 +82,12 @@ export const WorkspaceTable = ({
               <TableHead>Members</TableHead>
               <TableHead>Revenue</TableHead>
               <TableHead>Storage</TableHead>
-              <TableHead>Last Activity</TableHead>
+             
               <TableHead className="w-12"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {workspaces.map((workspace) => {
+            {uniqueWorkspaces.map((workspace) => {
               const storage = formatStorage(workspace.storage.used, workspace.storage.limit)
               return (
                 <TableRow key={workspace.id} className="hover:bg-gray-50">
@@ -110,15 +99,22 @@ export const WorkspaceTable = ({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={workspace.owner.avatar || "/placeholder.svg"} alt={workspace.owner.name} />
-                        <AvatarFallback>
-                          {workspace.owner.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
+                     <Avatar className="h-8 w-8">
+  <AvatarImage
+    src={workspace?.owner?.avatar || "/placeholder.svg"}
+    alt={workspace?.owner?.name || "User"}
+  />
+
+  <AvatarFallback>
+    {workspace?.owner?.name
+      ? workspace.owner.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+      : "?"}
+  </AvatarFallback>
+</Avatar>
+
                       <div>
                         <div className="font-medium text-gray-900">{workspace.owner.name}</div>
                         <div className="text-sm text-gray-500">{workspace.owner.email}</div>
@@ -126,9 +122,12 @@ export const WorkspaceTable = ({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={planColors[workspace.plan]} variant="secondary">
+                    {workspace.plan?
+   <Badge className={planColors[workspace.plan]} variant="secondary">
                       {workspace.plan.charAt(0).toUpperCase() + workspace.plan.slice(1)}
                     </Badge>
+                    :"free"}
+                 
                   </TableCell>
                   <TableCell>
                     <Badge className={statusColors[workspace.status]} variant="secondary">
@@ -159,34 +158,36 @@ export const WorkspaceTable = ({
                       ></div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{formatDate(workspace.lastActivity)}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onViewWorkspace(workspace)}>View Details</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEditWorkspace(workspace)}>Edit Workspace</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onSuspendWorkspace(workspace)} className="text-orange-600">
-                          {workspace.status === "suspended" ? "Reactivate" : "Suspend"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDeleteWorkspace(workspace)} className="text-red-600">
-                          Delete Workspace
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                
+ <TableCell className="text-right w-20">
+  <div className="flex items-center justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-8 w-8"
+      onClick={(e) => {
+        e.stopPropagation();
+        onViewWorkspace(workspace);
+      }}
+      title="View Details"
+    >
+      <Eye className="h-4 w-4 text-black" />
+    </Button>
+
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-8 w-8"
+      onClick={(e) => {
+        e.stopPropagation();
+        onEditWorkspace(workspace);
+      }}
+      title="Edit Workspace"
+    >
+      <Pencil className="h-4 w-4 text-black" />
+    </Button>
+  </div>
+</TableCell>
                 </TableRow>
               )
             })}

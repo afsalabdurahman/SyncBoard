@@ -1,9 +1,8 @@
-"use client";
 
 import type React from "react";
-
+import { SubtaskSection } from "../components/SubTask"
 import { useState, useEffect } from "react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../Custom/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,29 +10,35 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+} from "../../Custom/ui/dialog";
+import { Input } from "../../Custom/ui/input";
+import { Label } from "../../Custom/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { useSelector } from "react-redux";
+} from "../../Custom/ui/select";
+
+import { useProjects } from "../hooks/projectshooks";
+import { Upload } from "./Upload";
+import { uploadAttachment } from "../../Services/Cloudinary";
+import { AttachmentButton } from "./AttachmentButton";
 
 
 interface Task {
-  _id?:string ;
+  _id?: string;
   name: string;
-  description:string;
+  description: string;
   project: string;
   assignedUser: string;
   status: "To Do" | "In Progress" | "Completed";
   deadline: string;
   priority: "Low" | "Medium" | "High";
-  projectId:""
+  projectId: string;
+  attachedURLs: string[];
+  subTask?:object[]
 }
 
 interface TaskModalProps {
@@ -46,67 +51,114 @@ interface TaskModalProps {
 
 
 export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
+  const [selectAttachmanet, setAttachements] = useState<string>()
+  const [subTask,setSubTask]=useState([])
   const [formData, setFormData] = useState({
-    id:"",
+    id: "",
     name: "",
-    description:"",
+    description: "",
     project: "",
     assignedUser: "",
     status: "To Do" as "To Do" | "In Progress" | "Completed",
     deadline: "",
     priority: "Medium" as "Low" | "Medium" | "High",
-    projectId:"",
-  });
-useSelector((state)=>{
-  console.log(state,"state fromredux+++")
-})
+    projectId: "",
+    attachedURLs: [],
+    subTask:[]
 
-let projects=useSelector(state=>state.projects.list)
-let users = new Set(
-  projects.map((user: { id: number; name: string; assignedUsers: string[] }) => {
-    return user.assignedUsers.map((name: string) => {
-      return name;
-    });
-  }).flat()
-);
+  });
+
+  const projects = useProjects()
+  const users = new Set(
+    projects.map((user: { id: number; name: string; assignedUsers: string[] }) => {
+      return user.assignedUsers.map((name: string) => {
+        return name;
+      });
+    }).flat()
+  );
 
   useEffect(() => {
     if (task) {
       setFormData({
-        id:task._id||"123",
+        id: task._id || "123",
         name: task.name,
-        description:task.description,
+        description: task.description,
         project: task.project,
         assignedUser: task.assignedUser,
         status: task.status,
         deadline: task.deadline,
         priority: task.priority,
-        projectId:task.projectId
+        projectId: task.projectId,
+        attachedURLs: task.attachedURLs ?? [],
+        subTask:task.subTask??[]
       });
     } else {
       setFormData({
-        id:"",
+        id: "",
         name: "",
-        description:"",
+        description: "",
         project: "",
         assignedUser: "",
         status: "To Do",
         deadline: "",
         priority: "Medium",
-        projectId:""
+        projectId: "",
+        attachedURLs: [],
+        subTask:[]
       });
     }
   }, [task, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-    onClose();
+
+  const onSubmitFiles = (files: File[]) => {
+    setUploads(files);
   };
 
+  const passURL = (url) => {
+    setAttachements(url)
+  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    formData.subTask=subTask
+    if (uploads.length > 0) {
+      const uploadPromises = uploads.map((file: File) => uploadAttachment(file.file));
+      const uploadedUrls = await Promise.all(uploadPromises);
+      formData.attachedURLs = uploadedUrls
+      await onSubmit(formData);
+    } else {
+      await onSubmit(formData);
+    }
+
+    // onClose();
+  };
+
+  const [uploads, setUploads] = useState([]);
+  const [showUploadPage, setUploadPage] = useState(false);
+  const uploadFiles = () => {
+    setUploadPage(true);
+  };
+  const closeTaskModel = () => {
+    setUploads([])
+    setFormData((prev) => ({
+      ...prev,
+      attachedURLs: prev.attachedURLs.filter(
+        (url) => url !== selectAttachmanet
+      ),
+    }));
+
+    onClose()
+  }
+  // const setDelete = (url: string) => {
+
+
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     attachedURLs: prev.attachedURLs.filter((existingUrl) => existingUrl !== url)
+  //   }));
+  // };
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-[525px]'>
+    <Dialog open={isOpen} onOpenChange={closeTaskModel}>
+      <DialogContent className="sm:max-w-[525px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{task ? "Edit Task" : "Add New Task"}</DialogTitle>
           <DialogDescription>
@@ -133,7 +185,7 @@ let users = new Set(
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='description' className='text-right'>
-               Description
+                Description
               </Label>
               <textarea
                 id='description'
@@ -150,14 +202,13 @@ let users = new Set(
                 Project
               </Label>
               <Select
-                  value={JSON.stringify({ name: formData.project, id: formData.projectId })}
-                onValueChange={(value) =>
-                {
-                   const { name, id } = JSON.parse(value);
-                   console.log(value,"values")
-                   setFormData({ ...formData, project: name,projectId:id })
+                value={JSON.stringify({ name: formData.project, id: formData.projectId })}
+                onValueChange={(value) => {
+                  const { name, id } = JSON.parse(value);
+
+                  setFormData({ ...formData, project: name, projectId: id })
                 }
-                  
+
                 }
               >
                 <SelectTrigger className='col-span-3'>
@@ -172,6 +223,8 @@ let users = new Set(
                 </SelectContent>
               </Select>
             </div>
+           
+
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='assignedUser' className='text-right'>
                 Assigned User
@@ -186,13 +239,13 @@ let users = new Set(
                   <SelectValue placeholder='Select a user' />
                 </SelectTrigger>
                 <SelectContent>
-{Array.from(users).map((name) => (
-  <SelectItem key={name as string} value={name as string}>
-    {name as string}
-  </SelectItem>
-))}
-    
-  
+                  {Array.from(users).map((name) => (
+                    <SelectItem key={name as string} value={name as string}>
+                      {name as string}
+                    </SelectItem>
+                  ))}
+
+
 
                 </SelectContent>
               </Select>
@@ -252,14 +305,44 @@ let users = new Set(
                 required
               />
             </div>
+            {task?.attachedURLs?.length >= 1 && (
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label htmlFor='status' className='text-right'>
+                  Attachmented
+                </Label>
+                <AttachmentButton attachedUrl={task?.attachedURLs} taskId={task?._id} passURL={passURL} />
+              </div>)}
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='status' className='text-right'>
+                Attachment
+              </Label>
+              <Button type='button' onClick={uploadFiles}>
+                Upload
+              </Button>
+              {uploads.length > 0 ? <p className="text-red-700">files attached</p> : null}
+
+
+            </div>
+             <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='subTask' className='text-right'>
+                Subtask
+              </Label>
+              <SubtaskSection setSubTask={setSubTask} subTask={task?.subTask??[]} taskId={task?._id??""} />
+            </div>
           </div>
           <DialogFooter>
-            <Button type='button' variant='outline' onClick={onClose}>
+            <Button type='button' variant='outline' onClick={closeTaskModel}>
               Cancel
             </Button>
             <Button type='submit'>{task ? "Update Task" : "Add Task"}</Button>
           </DialogFooter>
         </form>
+        <Upload
+          isOpen={showUploadPage}
+          onClose={() => setUploadPage(false)}
+          onSubmit={onSubmitFiles}
+        />
+
       </DialogContent>
     </Dialog>
   );

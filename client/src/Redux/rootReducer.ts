@@ -1,14 +1,19 @@
 // rootReducer.ts
 import { combineReducers } from '@reduxjs/toolkit';
-import registerReducer from "./features/RegisterSlice"
-import StatusSliceReducer from './workspace/StatusSlice';
-import workspaceReducer from './features/WorkspaceSlice';
-import usersliceReducer from "./features/UserDataSlice";
-import logsliceReducer from "./features/LogSlice"
-import projectReducer from './workspace/admin/ProjectSlice';
-import alluserReducer from "./features/AlluserSlice";
-
-import taskReducer from "./workspace/admin/TaskSlice";
+import registerReducer from "./feature/RegisterSlice"
+import StatusSliceReducer from './feature/StatusSlice';
+import workspaceReducer from './feature/WorkspaceSlice';
+import usersliceReducer from "./feature/user/userSlice";
+import logsliceReducer from "./feature/logs/logSlice"
+import projectReducer from './feature/project/projectSlice';
+import alluserReducer from "./feature/users/AlluserSlice";
+import subscriptionReducer from "./feature/subscription/subscriptionSlice";
+import forwardReducer from "./feature/ForwardSlice"
+import countReducer from "./feature/count/countSlice"
+import taskReducer from "./feature/task/taskSlice";
+import {workspaceDataApi} from "../SuperAdmin/apis/fetchApi"
+import {adminDataHandleApi} from "../Admin/apis/rtqApi"
+import authReducer from "./feature/AuthSlice"
 const rootReducer = combineReducers({
   register: registerReducer,
   status: StatusSliceReducer,
@@ -16,8 +21,14 @@ const rootReducer = combineReducers({
   user: usersliceReducer,
   projects: projectReducer,
   alluser: alluserReducer,
-  task:taskReducer,
-  logs:logsliceReducer
+  task: taskReducer,
+  logs: logsliceReducer,
+  subscriptions: subscriptionReducer,
+  forward: forwardReducer,
+  Supercount: countReducer,
+  auth:authReducer,
+    [workspaceDataApi.reducerPath]: workspaceDataApi.reducer,
+    [adminDataHandleApi.reducerPath]:adminDataHandleApi.reducer
 });
 
 export default rootReducer;

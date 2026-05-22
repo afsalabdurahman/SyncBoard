@@ -1,19 +1,9 @@
-"use client"
-
-import { MoreHorizontal, Mail, Calendar, Shield, AlertTriangle, CheckCircle, Clock, XCircle } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import { Badge } from "../../../components/ui/badge"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent } from "../../../components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table"
+import {  Mail, Calendar, Shield, AlertTriangle, CheckCircle, Clock, XCircle, Eye, Pencil } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../Custom/ui/avatar"
+import { Badge } from "../../../Custom/ui/badge"
+import { Button } from "../../../Custom/ui/button"
+import { Card, CardContent } from "../../../Custom/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../Custom/ui/table"
 
 export interface User {
   id: string
@@ -45,8 +35,8 @@ interface UserTableProps {
 const statusConfig = {
   active: { color: "bg-green-100 text-green-800", icon: CheckCircle },
   inactive: { color: "bg-gray-100 text-gray-800", icon: XCircle },
-  suspended: { color: "bg-red-100 text-red-800", icon: AlertTriangle },
-  pending: { color: "bg-yellow-100 text-yellow-800", icon: Clock },
+  // suspended: { color: "bg-red-100 text-red-800", icon: AlertTriangle },
+  // pending: { color: "bg-yellow-100 text-yellow-800", icon: Clock },
 }
 
 const roleColors = {
@@ -56,20 +46,14 @@ const roleColors = {
   guest: "bg-gray-100 text-gray-800",
 }
 
-const planColors = {
-  basic: "bg-gray-100 text-gray-800",
-  pro: "bg-purple-100 text-purple-800",
-  enterprise: "bg-orange-100 text-orange-800",
-}
 
-export const UserTable =({
+
+export const UserTable = ({
   users,
   onViewUser,
   onEditUser,
-  onSuspendUser,
-  onDeleteUser,
-  onResendInvite,
-}: UserTableProps) =>{
+
+}: UserTableProps) => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -102,12 +86,12 @@ export const UserTable =({
               <TableHead>Security</TableHead>
               <TableHead>Activity</TableHead>
               <TableHead>Joined</TableHead>
-              <TableHead className="w-12"></TableHead>
+              <TableHead className="w-32 text-right">Actions</TableHead> {/* wider for buttons */}
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => {
-              const StatusIcon = statusConfig[user.status].icon
+              const StatusIcon = statusConfig[user.status]?.icon || Clock // fallback icon
               return (
                 <TableRow key={user.id} className="hover:bg-gray-50">
                   <TableCell>
@@ -134,9 +118,10 @@ export const UserTable =({
                   <TableCell>
                     <div>
                       <div className="font-medium text-gray-900">{user.workspace.name}</div>
-                      <Badge className={planColors[user.workspace.plan]} variant="secondary">
+                      {/* Uncomment if you want plan badge */}
+                      {/* <Badge className={planColors[user.workspace.plan]} variant="secondary">
                         {user.workspace.plan.charAt(0).toUpperCase() + user.workspace.plan.slice(1)}
-                      </Badge>
+                      </Badge> */}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -146,14 +131,14 @@ export const UserTable =({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
-                      <Badge className={statusConfig[user.status].color} variant="secondary">
+                      <Badge className={statusConfig[user.status]?.color || "bg-gray-100 text-gray-800"} variant="secondary">
                         <StatusIcon className="h-3 w-3 mr-1" />
                         {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
                       </Badge>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-3">
                       <div className="flex items-center space-x-1">
                         {user.isEmailVerified ? (
                           <CheckCircle className="h-4 w-4 text-green-500" />
@@ -184,30 +169,39 @@ export const UserTable =({
                       <span className="text-sm">{formatDate(user.joinedAt)}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onViewUser(user)}>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEditUser(user)}>Edit User</DropdownMenuItem>
-                        {user.status === "pending" && (
-                          <DropdownMenuItem onClick={() => onResendInvite(user)}>Resend Invite</DropdownMenuItem>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onSuspendUser(user)} className="text-orange-600">
-                          {user.status === "suspended" ? "Unsuspend User" : "Suspend User"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDeleteUser(user)} className="text-red-600">
-                          Delete User
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {/* View Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-3 text-black hover:text-black hover:bg-gray-100 active:bg-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onViewUser(user)
+                        }}
+                      >
+                        <Eye className="h-4 w-4 mr-1 text-black" />
+                        View
+                      </Button>
+
+                      {/* Edit Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-3 text-black hover:text-black hover:bg-gray-100 active:bg-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onEditUser(user)
+                        }}
+                      >
+                        <Pencil className="h-4 w-4 mr-1 text-black" />
+                        Edit
+                      </Button>
+
+                      {/* Optional: Add more buttons later, e.g. */}
+                      {/* <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">Suspend</Button> */}
+                    </div>
                   </TableCell>
                 </TableRow>
               )

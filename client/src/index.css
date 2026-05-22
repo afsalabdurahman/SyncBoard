@@ -2,6 +2,40 @@
 @import "tw-animate-css";
 
 
+/* Base Toast */
+.Toastify__toast {
+  background: #ffffff !important;
+  color: #374151 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  padding: 14px 16px !important;
+  font-weight: 500;
+}
+
+/* Error */
+.Toastify__toast--error {
+  border-left: 4px solid #ef4444 !important;
+}
+
+/* Success */
+.Toastify__toast--success {
+  border-left: 4px solid #22c55e !important;
+}
+
+/* Warning */
+.Toastify__toast--warning {
+  border-left: 4px solid #f59e0b !important;
+}
+
+/* Info */
+.Toastify__toast--info {
+  border-left: 4px solid #3b82f6 !important;
+}
+
+/* Close button */
+.Toastify__close-button {
+  color: #9ca3af !important;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -122,4 +156,32 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* custom */
+/* ----------------------------------------------------
+   FORCE SHOW SCROLLBAR for .custom-scrollbar
+   Overrides all Tailwind base resets + global hides
+---------------------------------------------------- */
+.custom-scrollbar {
+  overflow-y: auto !important;
+  scrollbar-width: auto !important;
+  -ms-overflow-style: auto !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #a1a1aa;
+  border-radius: 4px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #888;
 }

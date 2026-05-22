@@ -1,16 +1,16 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Button } from "../../components/ui/button";
-import { ConfirmDialog } from "../../components/ui/DeleteAlertButton";
+import { Button } from "../../Custom/ui/button";
+import { ConfirmDialog } from "../../Custom/ui/DeleteAlertButton";
+import {TablePagination} from"@mui/material"
+import { AppDispatch } from "../../Redux/store";
+import CommentBox from "../../Custom/ui/CommentBox";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../Custom/ui/card";
 import {
   Table,
   TableBody,
@@ -18,8 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { Badge } from "../../components/ui/badge";
+} from "../../Custom/ui/table";
+import { Badge } from "../../Custom/ui/badge";
 import { TaskModal } from "./TaskModal";
 import {
   Select,
@@ -27,10 +27,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Edit, Trash2, Plus, Calendar } from "lucide-react";
-import apiService from "../../services/api";
-import { updateTask } from "../../Redux/workspace/admin/TaskSlice";
+} from "../../Custom/ui/select";
+import { Edit, Trash2, Plus, Calendar,MessageCircle } from "lucide-react";
+import { setTaskPage } from "../../Redux/feature/task/taskSlice";
+import { useDispatch } from "react-redux";
+  import { addTaskApi, deleteTaskApi, fetchTaskData, updateTaskApi } from "../../Redux/feature/task/taskThunks";
+import { usePaginationTask, useTasks } from "../hooks/taskhooks";
+import { useProjects } from "../hooks/projectshooks";
+import { toast } from "react-toastify";
+import ProjectLoader from "../../Custom/reusecomponents/ProjectLoader";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 interface Task {
   _id: string;
   name: string;
@@ -42,51 +48,43 @@ interface Task {
   priority: "Low" | "Medium" | "High";
 }
 
-const initialTasks: Task[] = [
-  // {
-  //   id: 1,
-  //   name: "Design Homepage",
-  //   project: "Website Redesign",
-  //   assignedUser: "Jane Smith",
-  //   status: "In Progress",
-  //   deadline: "2024-01-25",
-  //   priority: "High",
-  // },
-];
+
 
 export function TasksPage() {
-  let AdminId = useSelector((state: any) => {
-    return state?.user?.user?.id;
-  });
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [tasks, setTasks] = useState<any>(initialTasks);
+
+   const {page,rowPerPage,totalItems} = usePaginationTask()
+     const [openCommentId, setOpenCommentId] = useState<string | null>(null);
+    const toggleComment = (taskId: string) => {
+    setOpenCommentId((prev) => (prev === taskId ? null : taskId));
+  };
+  const closeComment=()=>{
+    setOpenCommentId(null)
+  }
+
+ 
+ 
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await apiService.get(`task/alltasks`);
-        setTasks(response.data);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      }
-    };
+  const [deleteTaskId, setDeleteTaskId] = useState<string>("");
+  const workspaceid = useWorkspaceid()
+  const [loader, setLoader] = useState("");
+const dispatch: AppDispatch = useDispatch();
 
-    fetchTasks();
-  }, [refreshKey]);
+const tasks = useTasks()
+useEffect(()=>{
+dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
+},[dispatch,rowPerPage,page])
 
-  let projects = useSelector((state) => state.projects.list);
-  let users = new Set(
-    projects
-      .map((user: { id: number; name: string; assignedUsers: string[] }) => {
-        return user.assignedUsers.map((name: string) => {
-          return name;
-        });
-      })
-      .flat()
-  );
 
-  console.log(tasks, "taskk");
+const handleChangePage = (event, newPage) => {
+   dispatch(setTaskPage(newPage + 1));
+  dispatch(fetchTaskData({ page: newPage + 1, limit: rowPerPage }));
+  };
+ 
+  const projects = useProjects()
+  ;
+
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -97,28 +95,52 @@ export function TasksPage() {
       : tasks.filter((task) => task.status === statusFilter);
 
   const handleAddTask = async (taskData: Omit<Task, "id">) => {
-    console.log(taskData, "data submitteddd");
+   
+ try {
+ 
+
+ setLoader("Creating new task ...");
+
     const newTask = {
       ...taskData,
       id: Math.max(...tasks.map((t) => t.id)) + 1,
     };
-    setTasks([...tasks, newTask]);
-    try {
-      let response = await apiService.post("task/create", { newTask });
-      console.log(response, "from dba");
-        setRefreshKey((prev) => prev + 1);
-    } catch (error) {
-      console.log(error, "errirorr");
-    }
-  };
+    
+   await dispatch(addTaskApi(newTask)).unwrap()
+
+//  dispatch(fetchTaskData({page,limit:rowPerPage}))
+ await dispatch(fetchTaskData({workspaceid,  page,limit:rowPerPage}))
+
+      toast.success("Created task successfully 🎉");
+ 
+      setLoader("");
+setIsModalOpen(false);
+
+  }catch (error) {
+    setLoader("");
+
+   const message=error.message
+    toast.error(message)
+ }
+
+};
   const handleEditTask = async (taskData) => {
-    console.log(taskData, "editedTakedd");
-    const id = taskData.id;
-    const response = await apiService.patch(`task/update/${id}`, {
-      taskData,
-    });
-    console.log(response, "from edit task ");
-    setRefreshKey((prev) => prev + 1);
+   
+    
+  try {
+    
+   await  dispatch(updateTaskApi(taskData)).unwrap()
+ await dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
+ 
+      toast.success("Updated task successfully 🎉");
+ 
+      setLoader("");
+setIsModalOpen(false);
+  } catch (error) {
+    const message=error.message
+    toast.error(message)
+  }
+  
   };
 
   const handleDeleteTask = (id: string) => {
@@ -126,12 +148,17 @@ export function TasksPage() {
     setDeleteTaskId(id);
   };
   const handleConfirmDelete = async () => {
-    const response = await apiService.delete(`task/delete/${deleteTaskId}`);
-    console.log(response, "responseSXIOD");
-    setRefreshKey((prev) => prev + 1);
+  
+    await dispatch(deleteTaskApi(deleteTaskId)).unwrap()
+    await dispatch(fetchTaskData({workspaceid,page,limit:rowPerPage}))
+    toast.success("Task is deleted")
   };
 
   const openAddModal = () => {
+    if(projects.length==0){
+      toast.info("Project is not found");
+      return false
+    }
     setEditingTask(null);
     setIsModalOpen(true);
   };
@@ -174,9 +201,77 @@ export function TasksPage() {
   const isOverdue = (deadline: string) => {
     return new Date(deadline) < new Date() && deadline !== "";
   };
-
+if (loader) {
+    return <ProjectLoader title={loader} />;
+  }
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
+     {tasks.length==0?
+     
+    <div className="flex items-center justify-center h-[60vh] bg-gray-50 border border-dashed border-gray-200 rounded-xl">
+  
+  <div className="text-center max-w-md px-6">
+    
+    {/* Icon */}
+    <div className="mx-auto w-20 h-20 flex items-center justify-center rounded-2xl bg-white border border-gray-200 shadow-sm">
+      <svg
+        className="w-10 h-10 text-indigo-600"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z" />
+      </svg>
+    </div>
+
+    {/* Title */}
+    <h2 className="mt-5 text-xl font-semibold text-gray-900">
+      No tasks yet
+    </h2>
+
+    {/* Description */}
+    <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+      Break your project into actionable tasks. Assign work, track progress, and stay organized.
+    </p>
+
+    {/* CTA */}
+    <div className="mt-6 flex items-center justify-center gap-3">
+      
+      {/* Primary */}
+      <button
+       onClick={openAddModal}
+        className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow hover:bg-indigo-700 transition"
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Create Task
+      </button>
+
+      {/* Secondary */}
+      <button className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+        View guide
+      </button>
+
+    </div>
+
+    {/* Hint */}
+    <p className="mt-6 text-xs text-gray-400">
+      Tip: Start with a simple task like “Design login page”
+    </p>
+
+  </div>
+</div>:
+    
+ <div className="Wrap">
+   
       <div className='flex items-center justify-between'>
         <h2 className='text-3xl font-bold tracking-tight'>Tasks</h2>
         <Button onClick={openAddModal}>
@@ -257,6 +352,19 @@ export function TasksPage() {
                       )}
                     </div>
                   </TableCell>
+                     <TableCell className='text-right'>
+                    <div className='flex justify-end gap-2'>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        // isOpen={openCommentId === task.id}
+                          onClick={() => toggleComment(task._id)}
+                      >
+                        <MessageCircle className='h-4 w-4' />
+                      </Button>
+                  
+                    </div>
+                  </TableCell>
                   <TableCell className='text-right'>
                     <div className='flex justify-end gap-2'>
                       <Button
@@ -276,12 +384,45 @@ export function TasksPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+             
+             ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
       <ConfirmDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title='Delete Task?'
+        description='This Task will be permanently deleted.'
+      />
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={editingTask ? handleEditTask : handleAddTask}
+        task={editingTask}
+      />
+     <TablePagination
+            
+             component="div"
+             count={totalItems}
+             rowsPerPage={rowPerPage||0}
+             page={page-1}
+             onPageChange={handleChangePage}
+             
+              rowsPerPageOptions={[]}
+              
+           />
+            {openCommentId  && (
+                                   <CommentBox
+                                     isOpen={true}
+                                      onClose={closeComment}
+                                     taskId={openCommentId}
+                                   />
+                                 )}
+    </div>}
+     <ConfirmDialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onConfirm={handleConfirmDelete}

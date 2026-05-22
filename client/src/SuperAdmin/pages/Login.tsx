@@ -1,30 +1,23 @@
-import React, { useState } from "react";
-import apiService from "../../services/api";
-import { useNavigate } from "react-router";
+import React, {  useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../Redux/feature/user/userSlice";
+import { superLoginApi } from "../apis/fetchApi";
 export const Login = () => {
-let navigate=useNavigate()
+  const dispacth=useDispatch()
+const navigate=useNavigate()
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Logging in with:", { email, password });
-try {
-  navigate("/platform/admin")
-  let response=await apiService.post("/super/login",{email,password})
-  console.log(response,"res")
-  if(response.status==200){
-navigate("/platform/admin")
-  }else{
-    setError(true)
-  }
-
-} catch (error) {
- setError(true)
-}
-
+// dispacth(fetchCountData(email,password))
+const response=await superLoginApi(email,password)
+console.log(response,"response")
+dispacth(setUserData(response.data.superAdmin))
+navigate("/platform/admin");
 
    
   };

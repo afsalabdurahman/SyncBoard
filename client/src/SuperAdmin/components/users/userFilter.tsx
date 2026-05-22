@@ -1,10 +1,9 @@
-"use client"
 
-import { Search, Download, Plus, Filter } from "lucide-react"
-import { Button } from "../../../components/ui/button"
-import { Input } from "../../../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
-import { Badge } from "../../../components/ui/badge"
+
+import { Search,  Filter } from "lucide-react"
+import { Input } from "../../../Custom/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../Custom/ui/select"
+import { Badge } from "../../../Custom/ui/badge"
 
 interface UserFiltersProps {
   searchTerm: string
@@ -29,9 +28,7 @@ export const UserFilters = ({
   roleFilter,
   onRoleFilterChange,
   planFilter,
-  onPlanFilterChange,
-  onExport,
-  onInviteUser,
+
   totalUsers,
   filteredCount,
 }: UserFiltersProps) => {
@@ -81,7 +78,7 @@ export const UserFilters = ({
               </SelectContent>
             </Select>
 
-            <Select value={planFilter} onValueChange={onPlanFilterChange}>
+            {/* <Select value={planFilter} onValueChange={onPlanFilterChange}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Plan" />
               </SelectTrigger>
@@ -91,7 +88,7 @@ export const UserFilters = ({
                 <SelectItem value="pro">Pro</SelectItem>
                 <SelectItem value="enterprise">Enterprise</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {activeFiltersCount > 0 && (
               <Badge variant="secondary" className="ml-2">
@@ -103,14 +100,11 @@ export const UserFilters = ({
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button variant="outline" onClick={onExport} className="flex items-center gap-2 bg-transparent">
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
-          <Button onClick={onInviteUser} className="flex items-center gap-2">
+         
+          {/* <Button onClick={onInviteUser} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Invite User
-          </Button>
+          </Button> */}
         </div>
       </div>
 

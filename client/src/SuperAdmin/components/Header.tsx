@@ -1,22 +1,32 @@
 
-import { Search, Bell, ChevronDown } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
+import { Search,LogOut } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "../../Custom/ui/avatar"
+import { Input } from "../../Custom/ui/input"
 
+import { useUser } from "../../Worksapce/hooks/workspacehooks"
+import { logout } from "../../Worksapce/apis/workspaceapis"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 interface HeaderProps {
   sidebarCollapsed: boolean
 }
 
+
+
 export function Header({ sidebarCollapsed }: HeaderProps) {
+const user = useUser()
+console.log(user,"userssssssssssssss")
+const navigate = useNavigate()
+
+const handleLogout = () =>{
+  logout(user?._id).then((res)=>{
+    if(res==204){
+     toast.success("Logout success")
+     navigate("/platform/login")
+    }
+  })
+}
+
   return (
     <header
       className={cn(
@@ -39,38 +49,37 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
         {/* Right side */}
         <div className="flex items-center space-x-4">
           {/* Notifications */}
-          <Button variant="ghost" size="sm" className="relative">
+          {/* <Button variant="ghost" size="sm" className="relative">
             <Bell className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
               3
             </span>
-          </Button>
+          </Button> */}
 
           {/* Profile Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2 px-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Admin" />
-                  <AvatarFallback>AD</AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium">Admin User</p>
-                  <p className="text-xs text-gray-500">admin@company.com</p>
-                </div>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile Settings</DropdownMenuItem>
-              <DropdownMenuItem>Security</DropdownMenuItem>
-              <DropdownMenuItem>Preferences</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600">Sign Out</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+       <div className="flex items-center gap-4">
+  <div className="flex items-center gap-3">
+    <Avatar className="h-8 w-8">
+      <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Admin" />
+      <AvatarFallback>SA</AvatarFallback>
+    </Avatar>
+
+    <div className="hidden md:block text-left">
+      <p className="text-sm font-medium">Super Admin</p>
+      <p className="text-xs text-muted-foreground">gridesync@company.com</p>
+    </div>
+  </div>
+
+  <button
+    onClick={handleLogout}
+    className="text-sm text-red-600 hover:text-red-700 
+               px-3 py-1.5 rounded-md hover:bg-red-50/70 
+               transition-colors flex items-center gap-1.5"
+  >
+    <LogOut className="h-3.5 w-3.5" />
+    Sign Out
+  </button>
+</div>
         </div>
       </div>
     </header>

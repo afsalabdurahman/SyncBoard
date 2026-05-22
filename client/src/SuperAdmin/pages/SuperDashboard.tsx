@@ -1,44 +1,48 @@
-"use client"
 
-import { useState } from "react"
-import { Building2, Users, CreditCard, MessageSquare } from "lucide-react"
-import { Sidebar } from "../components/Sidebar"
-import { Header } from "../components/Header"
+
+import { useEffect, useState } from "react"
+import { Building2, Users, CreditCard } from "lucide-react"
 import { MetricCard } from "../components/MetricCard"
 import { RecentActivity } from "../components/RecentActivity"
-
+import { dashBordDataApi } from "../apis/fetchApi"
+import UserGrowthTrend from "./UserGrowthTrend"
 export default function SuperDashboard() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed] = useState(false)
+  const [data,setData] = useState()
+
+
+useEffect(() => {
+    const fetchDashboardData = async () => {
+      
+        const response = await dashBordDataApi(); // wait for the data
+        setData(response); // now response contains actual data
+     
+    };
+
+    fetchDashboardData();
+  }, []);
+
 
   const metrics = [
     {
       title: "Total Workspaces",
-      value: "2,847",
-      change: "+12% from last month",
-      changeType: "positive" as const,
+      value: data?.workspaceCount??"0",
+  
+     
       icon: Building2,
     },
     {
       title: "Active Users",
-      value: "45,231",
-      change: "+8% from last month",
-      changeType: "positive" as const,
+      value: data?.userCount ?? "0",
+     
       icon: Users,
     },
     {
       title: "Subscribed Plans",
-      value: "1,923",
-      change: "+15% from last month",
-      changeType: "positive" as const,
+      value: data?.subscriptionCount ??"0",
       icon: CreditCard,
     },
-    {
-      title: "Daily Messages",
-      value: "892K",
-      change: "-3% from yesterday",
-      changeType: "negative" as const,
-      icon: MessageSquare,
-    },
+   
   ]
 
   return (
@@ -53,14 +57,17 @@ export default function SuperDashboard() {
           </div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {metrics.map((metric, index) => (
               <MetricCard key={index} {...metric} />
             ))}
+           
           </div>
+ 
 
           {/* Recent Activity */}
-          <RecentActivity />
+          <RecentActivity subscription={data?.subscriptionChanges} abuse={data?.Abuse} />
+        <UserGrowthTrend/>
         </div>
       </main>
     </div>
