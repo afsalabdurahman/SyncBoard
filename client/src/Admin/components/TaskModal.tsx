@@ -55,6 +55,8 @@ interface TaskModalProps {
 export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
   const [selectAttachmanet, setAttachements] = useState<string>()
   const [subTask, setSubTask] = useState([])
+  const [expire,setExpire]=useState("");
+  console.log(expire,"expp")
   const [criteria, setCriteria] = useState([])
 const [errors, setError] = useState({
   name: "",
@@ -281,28 +283,44 @@ const handleSubmit = async (e: React.FormEvent) => {
               <Label htmlFor='project' className='text-right'>
                 Project
               </Label>
-              <Select
-                value={JSON.stringify({ name: formData.project, id: formData.projectId })}
-                onValueChange={(value) => {
-                  const { name, id } = JSON.parse(value);
+           <Select
+  value={JSON.stringify({
+    name: formData.project,
+    id: formData.projectId,
+    deadline: formData.deadline
+  })}
+  onValueChange={(value) => {
+    const { name, id, deadline } = JSON.parse(value);
 
-                  setFormData({ ...formData, project: name, projectId: id })
-                }
+    setFormData({
+      ...formData,
+      project: name,
+      projectId: id,
+      deadline
+    });
 
-                }
-              >
-                <SelectTrigger className='col-span-3'>
-                  <SelectValue placeholder='Select a project' />
-                </SelectTrigger>
-                <SelectContent>
-                  {projects.map((project) => (
-                    <SelectItem key={project.id} value={JSON.stringify({ name: project.name, id: project._id })}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-                
-              </Select>
+    setExpire(deadline);
+  }}
+>
+  <SelectTrigger className="col-span-3">
+    <SelectValue placeholder="Select a project" />
+  </SelectTrigger>
+
+  <SelectContent>
+    {projects.map((project) => (
+      <SelectItem
+        key={project._id}
+        value={JSON.stringify({
+          name: project.name,
+          id: project._id,
+          deadline: project.deadline
+        })}
+      >
+        {project.name}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
               <p className="text-red-500 text-sm">{errors.project}</p>
 
             </div>
@@ -375,22 +393,31 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </SelectContent>
               </Select>
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='deadline' className='text-right'>
-                Deadline
-              </Label>
-              <Input
-                id='deadline'
-                type='date'
-                value={formData.deadline}
-                onChange={(e) =>
-                  setFormData({ ...formData, deadline: e.target.value })
-                }
-                className='col-span-3'
-                required
-              />
-              <p className="text-red-500 text-sm">{errors.deadline}</p>
-            </div>
+          <div className='grid grid-cols-4 items-center gap-4'>
+  <Label htmlFor='deadline' className='text-right'>
+    Deadline
+  </Label>
+
+  <Input
+    id='deadline'
+    type='date'
+    value={formData.deadline}
+    min={new Date().toISOString().split('T')[0]}
+    max={expire ? expire.split('T')[0] : ''}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        deadline: e.target.value
+      })
+    }
+    className='col-span-3'
+    required
+  />
+
+  <p className='text-red-500 text-sm col-span-4 text-center'>
+    {errors.deadline}
+  </p>
+</div>
             {task?.attachedURLs?.length >= 1 && (
               <div className='grid grid-cols-4 items-center gap-4'>
                 <Label htmlFor='status' className='text-right'>
@@ -413,7 +440,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <Label htmlFor='subTask' className='text-right'>
                 Subtask
               </Label>
-              <SubtaskSection setSubTask={setSubTask} subTask={task?.subTask ?? []} taskId={task?._id ?? ""} />
+              <SubtaskSection setSubTask={setSubTask} subTask={task?.subTask ?? []} taskId={task?._id ?? ""} deadLine={formData?.deadline} />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='subTask' className='text-right'>

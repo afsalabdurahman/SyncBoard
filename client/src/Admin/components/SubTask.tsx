@@ -26,12 +26,15 @@ interface Subtask {
 function SubtaskPopup({
   onAdd,
   onClose,
+  taskDeadline
 }: {
   onAdd: (s: Omit<Subtask, "id" | "completed">) => void;
   onClose: () => void;
 }) {
   const [title, setTitle] = useState("");
-  const [estimate, setEst] = useState<number>(null)
+  const [estimate, setEst] = useState<number>(null);
+  const [error,setError]=useState("")
+  console.log(estimate,"Estimate")
   // const [description, setDesc] = useState("");
   // const [priority, setPriority] = useState<Subtask["priority"]>("Medium");
   const titleRef = useRef<HTMLInputElement>(null);
@@ -40,6 +43,16 @@ function SubtaskPopup({
 
   const submit = () => {
     if (!title.trim()) return;
+    const taskDeadlinenew = new Date(taskDeadline);
+      const now = new Date();
+       const estimateInMs = Number(estimate) * 1000;
+       const estimatedFinishTime = new Date(
+    now.getTime() + estimateInMs
+  );
+  if (estimatedFinishTime > taskDeadlinenew) {
+    setError("Estimated task time exceeds task deadline");
+    return;
+  }
     onAdd({ title: title.trim(), status: "Pending", estimate: estimate });
     onClose();
   };
@@ -90,7 +103,7 @@ function SubtaskPopup({
             />
           </div>
 
-          {/* Description */}
+    
           <div>
             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
               Estimate time
@@ -102,6 +115,7 @@ function SubtaskPopup({
               placeholder="eg:1"
               className="w-full resize-none border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-400/25 focus:border-violet-400 placeholder-gray-300 transition-all"
             />
+           <p className="text-red-500">{error}</p>u
           </div>
 
           {/* Priority */}
@@ -153,7 +167,8 @@ function SubtaskPopup({
 }
 
 /* ─── SubtaskSection — drop this inside your form ───── */
-export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
+export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
+  console.log(deadLine,"deadline")
   const [subtasks, setSubtasks] = useState<Subtask[]>(subTask || []);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -188,7 +203,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId }) => {
     <>
       {/* Popup */}
       {showPopup && (
-        <SubtaskPopup onAdd={addSubtask} onClose={() => setShowPopup(false)} />
+        <SubtaskPopup onAdd={addSubtask} onClose={() => setShowPopup(false)} taskDeadline={deadLine}/>
       )}
 
       {/* ── Row: same grid-cols-4 layout as your other fields ── */}

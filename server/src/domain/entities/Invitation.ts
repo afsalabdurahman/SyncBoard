@@ -8,6 +8,7 @@ export class Invitation {
   public status: InvitationStatus;
   public expiresAt: Date;
   public acceptedAt?: Date;
+  public token:number;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -18,15 +19,17 @@ export class Invitation {
     status,
     expiresAt,
     acceptedAt,
+    token,
     createdAt,
     updatedAt,
   }: {
     id?:string;
     workspaceId?: string;
-    invitedTo: string;
+    invitedTo: string 
     status: InvitationStatus;
     expiresAt: Date;
     acceptedAt?: Date;
+    token:number;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -36,6 +39,7 @@ export class Invitation {
     this.status = status;
     this.expiresAt = expiresAt;
     this.acceptedAt = acceptedAt;
+    this.token =token;
     this.createdAt = createdAt || new Date();
     this.updatedAt = updatedAt || new Date();
   }

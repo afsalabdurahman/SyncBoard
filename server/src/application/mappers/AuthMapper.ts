@@ -155,4 +155,10 @@ static PasswordValidator (password:string){
   });
   return passwordSchema.safeParse(password)
 }
+static InvitationLinkValidation(status:string,emailFromDB:string,emailFromUser:string,tokenFromDB:string,tokenFromUser:string):boolean{
+if(status!=="pending") return false;
+if(emailFromDB !== emailFromUser) return false;
+if(tokenFromDB!==tokenFromUser) return false;
+return true
+}
 }

@@ -11,6 +11,7 @@ export interface InvitationDocument extends Document {
   acceptedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+  token: number;
 }
 
 const InvitationSchema = new Schema<InvitationDocument>(
@@ -25,12 +26,14 @@ const InvitationSchema = new Schema<InvitationDocument>(
       required: true,
       trim: true,
       lowercase: true,
+      default: "Viwer",
     },
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
-      
+
     },
+
     expiresAt: {
       type: Date,
       required: true,
@@ -38,11 +41,14 @@ const InvitationSchema = new Schema<InvitationDocument>(
     acceptedAt: {
       type: Date,
     },
+    token: {
+      type: Number
+    }
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
-  
+
 );
 InvitationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 

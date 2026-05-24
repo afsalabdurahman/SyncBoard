@@ -6,6 +6,7 @@ import { ValidationError } from "../../../utils/errors";
 import { IinvitationRepository } from "../../../domain/interfaces/repositories/IInvitationRepository";
 import { Invitation } from "../../../domain/entities/Invitation";
 import { InvitationStatus } from "../../../types/inviteTypes";
+import { generateRandom5Digit } from "../../../utils/tokenGenerator";
 
 @injectable()
 export class SentInvitaionUsecase implements ISentInvitaion {
@@ -19,10 +20,10 @@ export class SentInvitaionUsecase implements ISentInvitaion {
       for (const email of emails) {
          const isValid = AuthMapper.emailValidator(email);
          if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
-
-         const inviteEntity = new Invitation({ workspaceId: workspaceId, status: InvitationStatus.PENDING, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), invitedTo: email, })
+         const randomToken = generateRandom5Digit();
+         const inviteEntity = new Invitation({ workspaceId: workspaceId, status: InvitationStatus.PENDING, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), invitedTo: email, token: randomToken })
          await this._invitaionRepository.create(inviteEntity)
-         await this._EmailService.inviteMembers(email, invitaionLink);
+         await this._EmailService.inviteMembers(email, invitaionLink, randomToken);
       }
       return true
    }

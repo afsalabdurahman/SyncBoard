@@ -37,7 +37,7 @@ export class NodemailerService implements IEmailService {
 
     await this.transporter.sendMail(mailOptions);
   }
-  async inviteMembers(email: string, invitationLink: string): Promise<void> {
+  async inviteMembers(email: string, invitationLink: string, token: number): Promise<void> {
     const mailOptions = {
       from: process.env.EMAIL_USER || "your-email@gmail.com",
       to: email,
@@ -52,7 +52,7 @@ export class NodemailerService implements IEmailService {
       Use the following link to join your workspace. This link is valid for <strong>5 hours</strong>:
     </p>
     <div style="text-align: center; margin: 30px 0;">
-      <a href=${invitationLink}
+      <a href=${invitationLink}/${token}
          style="display: inline-block; padding: 15px 30px; font-size: 18px; letter-spacing: 1px; background-color: #4A90E2; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
         👉 Join Workspace
       </a>

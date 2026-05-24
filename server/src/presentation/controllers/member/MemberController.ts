@@ -61,6 +61,7 @@ export class MemberController {
       role: req.body.role,
       title: req.body.title,
       slug: req.body.workspaceSlug,
+      token:req.body.token
     };
 
 

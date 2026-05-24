@@ -15,6 +15,7 @@ import { setUserAuth } from "../../Redux/feature/AuthSlice";
 
 const LinkInvitaionPage = () => {
   let { workspaceSlug } = useParams();
+  let {token} =useParams()
   workspaceSlug = workspaceSlug?.split("workspace-")[1];
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();

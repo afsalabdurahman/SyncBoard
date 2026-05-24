@@ -3,7 +3,7 @@ import { IinvitationRepository } from "../../domain/interfaces/repositories/IInv
 import { InvitationDocument, InvitationModel } from "../database/models/InvitationModel"
 import { BaseRepository } from "./BaseRepository"
 
-export class InvitaionRepository extends BaseRepository<Invitation,InvitationDocument> implements IinvitationRepository {
+export class InvitaionRepository extends BaseRepository<Invitation, InvitationDocument> implements IinvitationRepository {
   constructor() {
     super(InvitationModel)
   }

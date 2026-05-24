@@ -46,7 +46,8 @@ email:string;
 password:string;
 role:string;
 title:string;
-slug?:string
+slug?:string;
+token:string;
 
 }
 export interface MemberRegisterResposeDTO{

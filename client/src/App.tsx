@@ -27,9 +27,12 @@ import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
 import  AddPassword  from "./Worksapce/components/AddPassword";
 import { Features } from "./Worksapce/components/Features";
 import { PricingPage } from "./Worksapce/components/Prices";
+import { useSelector } from "react-redux";
 
 function App() {
-
+useSelector((state)=>{
+  console.log(state,"state++")
+})
   return (
     <>
     
@@ -139,7 +142,7 @@ element={
             
             }></Route>
           <Route
-            path='/invite-members/:workspaceSlug'
+            path='/invite-members/:workspaceSlug/:token'
             element={
           
   <LinkInvitaionPage />
