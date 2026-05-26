@@ -27,5 +27,6 @@ router.get("/lists/:id",workspaceController.listWorkspaces.bind(workspaceControl
 router.get("/find/:workspaceId",workspaceController.findWorkspace.bind(workspaceController))
 router.post("/update/permission/:workspaceId",workspaceController.updatePermission.bind(workspaceController))
 router.post("/find/permission/:workspaceId",workspaceController.findPermission.bind(workspaceController))
-
+router.post("/invitation/exisit/user",workspaceController.invitationForExistingUser.bind(workspaceController))
+router.post("/invitation/status/update",workspaceController.invitationRejected.bind(workspaceController))
 export default router;

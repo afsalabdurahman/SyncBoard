@@ -77,10 +77,11 @@ export const acceptInvitaionLink = async (name: string,
     password: string,
     role: string,
     title: string,
-    workspaceSlug: string) => {
+    workspaceSlug: string,
+token:string) => {
     try {
         const response = await apiService.post(ROUTES.WORKSPACE.INVITE_REGISTER, {
-            name, email, password, role, title, workspaceSlug
+            name, email, password, role, title, workspaceSlug,token
         })
 
         return response.data
@@ -237,3 +238,23 @@ export const findPermission=async(workspaceId,userId)=>{
                 throw new Error(err)
     }
 }
+export const acceptInvitaion=async(userId:string,slug:string)=>{
+    try {
+        const response = await apiService.post("/workspace/invitation/exisit/user",{
+            userId,
+            slug
+        });
+         console.log(response)
+        return response?.data?.message
+       
+    } catch (error) {
+        console.log(error)
+    }
+}
+ export const rejectInvitaion = async (slug:string,email:string)=>{
+    try {
+        await apiService.post("/workspace/invitation/status/update",{slug,email})
+    } catch (error) {
+        console.log(error)
+    }
+ }

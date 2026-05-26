@@ -1,5 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
@@ -168,6 +168,19 @@ async findPermission(req:Request,res:Response):Promise<void>{
 console.log(workspaceId,userId,"++++++++++++Controller")
 const permission=await this._createWorkspceUsecases.findPermission(workspaceId,userId)
 res.status(HttpStatusCode.OK).json(permission)
+}
+async invitationForExistingUser(req:Request,res:Response):Promise<void>{
+  console.log(req.body,"Controler")
+  const userId=req.body.userId;
+  const slug = req.body.slug;
+  await this._sentInvitaionUsecase.accpetinvitaion(slug,userId);
+  res.status(HttpStatusCode.OK).json({message:`Succefull joined workspace ${slug}`})
+}
+async invitationRejected(req:Request,res:Response):Promise<void>{
+  const slug = req.body.slug;
+  const email=req.body.email;
+  await this._sentInvitaionUsecase.rejectInvitation(slug,email);
+  res.status(HttpStatusCode.OK)
 }
 
 }

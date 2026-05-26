@@ -20,6 +20,9 @@ export class TaskUsecase implements ITaskUseCase {
     console.log(input,"INPUT ALSO")
     const isValid = TaskMapper.validateTask(input);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
+       const validEstimate = TaskMapper.subTaskEstimateValidate(input.subTask ?? [], input.deadline);
+
+    if (!validEstimate.success) throw new ValidationError(validEstimate.error.issues[0].message);
     const vectors = [1]
     const taskEntity = TaskMapper.mapTaskToEntity(input, vectors);
 
@@ -45,7 +48,7 @@ export class TaskUsecase implements ITaskUseCase {
     const updatetask = await this._taskRepository.updatetask(taskId, merged);
     if (!updatetask) throw new NotFoundError(ResponseMessages.TASK_NOT_FOUND)
     const responseDTO = TaskMapper.mapEntityToTask("Task is updated", updatetask)
-    return responseDTO;
+    return responseDTO; 
   }
   async deleteTask(taskId: string): Promise<void> {
     await this._taskRepository.deleteTask(taskId);

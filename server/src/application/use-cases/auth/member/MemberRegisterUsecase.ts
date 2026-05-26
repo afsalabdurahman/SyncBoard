@@ -12,6 +12,7 @@ import {
 import { AuthMapper } from "../../../mappers/AuthMapper";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { IinvitationRepository } from "../../../../domain/interfaces/repositories/IInvitationRepository";
+import { io } from "../../../../server";
 @injectable()
 export class MemberRegisterUsecase implements IMemberRegister {
   constructor(
@@ -26,15 +27,26 @@ export class MemberRegisterUsecase implements IMemberRegister {
     dto: MemeberRegisterRequestDTO
   ): Promise<MemberRegisterResposeDTO> {
    const isValidLink=await this._invitaionRepository.findInvitaionLinkByEmail(dto.email);
+  console.log(isValidLink,"LINKSS");
+  console.log(dto,"DTOOO")
    if(!isValidLink) throw new NotFoundError("Invalid link")
   const status=AuthMapper.InvitationLinkValidation(isValidLink?.status,isValidLink?.invitedTo,dto.email,isValidLink?.token.toString(),dto.token)
+ console.log(status,"status")
    if(!status) throw new NotFoundError("Invalid link")
    const isValid= AuthMapper.memberRegisterValidation(dto)
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);
+  const tokens =dto.token
     const isFound = await this._userRepository.findByEmail(dto.email);
   
-    if (isFound){
-      throw new ConflictError(ResponseMessages.USER_EXISTS)}
+    if (isFound){ 
+     io.emit(tokens, {
+          name: ResponseMessages.NEW_PROJECT_ADDED,
+          message: 'error'
+        });
+throw new ConflictError(ResponseMessages.USER_EXISTS)
+
+
+    }
     const hashedPassword = await this._authService.hashPassword(dto.password);
     dto.password = hashedPassword;
     if (!hashedPassword)

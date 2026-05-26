@@ -13,7 +13,8 @@ interface Subtask {
   // description: string;
   // priority: "Low" | "Medium" | "High";
   // completed: boolean;
-  status: "Pending" | "Completed"
+  status: "Pending" | "Completed",
+  taskDeadline?:string
 }
 
 // const PRIORITY_META = {
@@ -30,11 +31,13 @@ function SubtaskPopup({
 }: {
   onAdd: (s: Omit<Subtask, "id" | "completed">) => void;
   onClose: () => void;
+  taskDeadline:string,
 }) {
   const [title, setTitle] = useState("");
   const [estimate, setEst] = useState<number>(null);
   const [error,setError]=useState("")
   console.log(estimate,"Estimate")
+  console.log(taskDeadline,"popuDEADINE")
   // const [description, setDesc] = useState("");
   // const [priority, setPriority] = useState<Subtask["priority"]>("Medium");
   const titleRef = useRef<HTMLInputElement>(null);
@@ -44,12 +47,12 @@ function SubtaskPopup({
   const submit = () => {
     if (!title.trim()) return;
     const taskDeadlinenew = new Date(taskDeadline);
+ 
       const now = new Date();
-       const estimateInMs = Number(estimate) * 1000;
-       const estimatedFinishTime = new Date(
-    now.getTime() + estimateInMs
-  );
-  if (estimatedFinishTime > taskDeadlinenew) {
+      const estimateMs = estimate * 60 * 1000;
+ const remainingMs = taskDeadlinenew.getTime() - now.getTime();
+ 
+  if (estimateMs > remainingMs) {
     setError("Estimated task time exceeds task deadline");
     return;
   }
@@ -115,7 +118,7 @@ function SubtaskPopup({
               placeholder="eg:1"
               className="w-full resize-none border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-400/25 focus:border-violet-400 placeholder-gray-300 transition-all"
             />
-           <p className="text-red-500">{error}</p>u
+           <p className="text-red-500">{error}</p>
           </div>
 
           {/* Priority */}
@@ -180,11 +183,12 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
   // const toggleSubtask = (id: string) =>
   //   setSubtasks((p) => p.map((s) => s.id === id ? { ...s, completed: !s.completed } : s));
 
-  const removeSubtask = (id: string) =>
-    setSubtasks((p) => p.filter((s) => s.id !== id));
+  // const removeSubtask = (id: string) =>
+  //   setSubtasks((p) => p.filter((s) => s.id !== id));
 
   const deleteSubTask = async (subTask) => {
-    setSubtasks((p) => p.filter((s) => subTask.id !== s.id));
+    
+    setSubtasks((p) => p.filter((s) => subTask !== s.title));
 
     try {
       await deleteSubTaskApi(taskId, subTask);

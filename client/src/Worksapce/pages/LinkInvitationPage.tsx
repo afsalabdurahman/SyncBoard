@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch, } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -63,7 +63,7 @@ const LinkInvitaionPage = () => {
 
 
     try {
-      const response = await acceptInvitaionLink(name,email,password,role,title,workspaceSlug)
+      const response = await acceptInvitaionLink(name,email,password,role,title,workspaceSlug,token)
 
         setLoading(false);
         dispatch(setWorkspace(response?.workspace));

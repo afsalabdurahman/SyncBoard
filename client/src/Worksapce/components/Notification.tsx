@@ -9,13 +9,21 @@ import {
 } from "../../Custom/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "../../Custom/ui/popover";
 import { Badge } from "../../Custom/ui/badge";
-import { Bell, X, User, MessageSquare, Heart, Settings } from "lucide-react";
+import { Bell, X, User, MessageSquare, Heart, Settings,Briefcase } from "lucide-react";
 import { Notification } from "../types/workspaceTypes";
+import { socket } from "../../Services/socket";
+import { useUser, useWorkspaceSlug } from "../hooks/workspacehooks";
+import { acceptInvitaion, rejectInvitaion } from "../apis/workspaceapis";
+import { useDispatch } from "react-redux";
+import { toggleForward } from "../../Redux/feature/ForwardSlice";
 
 
 export default function NotificationBell(props) {
- 
+ const user= useUser()
+const email = user?.email as string
   const [isOpen, setIsOpen] = useState(false);
+  const [apiMgs , setApiMsg] =useState("");
+  const slug = useWorkspaceSlug()
   const [notifications, setNotifications] = useState<Notification[]>([]);
   // To add a new notification from props.message, use an effect or event handler like below:
   useEffect(() => {
@@ -34,6 +42,8 @@ export default function NotificationBell(props) {
         return <User className='w-4 h-4 text-green-500' />;
       case "system":
         return <Settings className='w-4 h-4 text-gray-500' />;
+        case "workspace":
+           return <Briefcase className='w-4 h-4 text-gray-500' />;
       default:
         return <Bell className='w-4 h-4' />;
     }
@@ -56,7 +66,78 @@ export default function NotificationBell(props) {
   const clearAll = () => {
     setNotifications([]);
   };
+const dispatch = useDispatch()
+// useEffect(()=>{
+// socket.on( email,(data:Notification)=>{
+//     setNotifications( [{ message: data.message,workspaceName:data.workspaceName,type:"workspace" }]);
+// })
+// socket.on(slug,(data:Notification)=>{
+//    setNotifications( [{ message: data.message,type:"system" }]);
+// })
+// },[email,slug])
+useEffect(() => {
+  const workspaceHandler = (data: Notification) => {
+    setNotifications((prev) => [
+      ...prev,
+      {
+        message: data.message,
+        workspaceName: data.workspaceName,
+        type: "workspace",
+      },
+    ]);
+  };
 
+  const systemHandler = (data: Notification) => {
+    setNotifications((prev) => [
+      ...prev,
+      {
+        message: data.message,
+        type: "system",
+      },
+    ]);
+  };
+
+  socket.on(email, workspaceHandler);
+  socket.on(slug, systemHandler);
+
+  return () => {
+    socket.off(email, workspaceHandler);
+    socket.off(slug, systemHandler);
+  };
+}, [email, slug,notifications]);
+
+
+
+
+
+const acceptHandle = async(name:string)=>{
+const slug =name.split("-")[1]
+  const response=await acceptInvitaion(user?._id??"",slug);
+console.log(name,notifications,"notifiactions")
+ setNotifications((prev) =>
+    prev.map((notification) =>
+      notification.workspaceName === name
+        ? { ...notification, type: "dea",message: response}
+        : notification
+    )
+  );
+ 
+  dispatch(toggleForward())
+}
+
+const rejectHandle=async(name:string)=>{
+  const slug =name.split("-")[1]
+   setNotifications((prev) =>
+    prev.map((notification) =>
+      notification.workspaceName === name
+        ? { ...notification, type: "dea",message: "Invitation rejected 🚫. Thank you for your response to "+"slug"}
+        : notification
+    )
+  );
+await rejectInvitaion(slug,user?.email??"")
+
+ 
+}
   return (
     <div>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -127,7 +208,7 @@ export default function NotificationBell(props) {
                 </div>
               ) : (
                 <div className='max-h-96 overflow-y-auto'>
-                  {notifications.map((notification) => (
+                  {notifications.map((notification:Notification) => (
                     <div
                       key={notification.id}
                       className={`p-4 border-b last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors ${
@@ -139,22 +220,61 @@ export default function NotificationBell(props) {
                         <div className='flex-shrink-0 mt-1'>
                           {getIcon(notification.type)}
                         </div>
-                        <div className='flex-1 min-w-0'>
-                          <div className='flex items-center justify-between'>
-                            <p className='text-sm font-medium text-gray-900 truncate'>
-                              {notification.title}
-                            </p>
-                            {!notification.read && (
-                              <div className='w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 ml-2' />
-                            )}
-                          </div>
-                          <p className='text-sm text-gray-600 mt-1 line-clamp-2'>
-                            {notification.message}
-                          </p>
-                          <p className='text-xs text-gray-400 mt-2'>
-                            {notification.time}
-                          </p>
-                        </div>
+                       <div className="flex-1 min-w-0">
+  {/* Header */}
+  <div className="flex items-start justify-between gap-2">
+    <p className="text-sm font-semibold text-gray-900 truncate">
+      {notification.title}
+    </p>
+
+    {!notification.read && (
+      <div className="w-2 h-2 rounded-full bg-blue-500 mt-1 flex-shrink-0" />
+    )}
+  </div>
+
+  {/* Message */}
+ <p className="mt-1 text-sm leading-relaxed text-gray-600 line-clamp-2">
+  {notification.message}
+
+  {notification.workspaceName && (
+    <>
+      {" "}
+      <span className="font-semibold text-blue-600">
+        {notification.workspaceName}
+      </span>
+    </>
+  )}
+</p>
+
+  {/* Time */}
+  <p className="mt-2 text-xs font-medium text-gray-400">
+    {notification.time}
+  </p>
+
+  {/* Action Buttons */}
+  {notification.type === "workspace" && (
+    <div className="flex items-center gap-2 mt-4">
+      <button onClick={()=>acceptHandle(notification?.workspaceName??"")}
+        className="px-3 py-1.5 text-sm font-medium text-white transition bg-green-600 rounded-lg hover:bg-green-700"
+      >
+        Accept
+      </button>
+
+      <button onClick={()=>rejectHandle(notification?.workspaceName??"")}
+        className="px-3 py-1.5 text-sm font-medium text-red-600 transition border border-red-200 rounded-lg hover:bg-red-50"
+      >
+        Reject
+      </button>
+        {notification.apiMsg && (
+  <p className="mt-2 text-sm font-medium text-gray-600">
+    {notification.apiMsg}
+  </p>
+)}
+    </div>
+   
+  )}
+ 
+</div>
                       </div>
                     </div>
                   ))}

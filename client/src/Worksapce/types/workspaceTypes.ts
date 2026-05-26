@@ -67,8 +67,10 @@ export interface Notification {
   title?: string;
   message: string;
   time?: string;
-  type?: "message" | "like" | "follow" | "system";
+  type?: "message" | "like" | "follow" | "system" |"workspace";
   read?: boolean;
+  workspaceName?:string;
+  apiMsg?:string
 }
 export interface Subtask {
   

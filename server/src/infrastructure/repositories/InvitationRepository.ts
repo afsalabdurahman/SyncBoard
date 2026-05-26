@@ -1,3 +1,4 @@
+import { Types } from "mongoose"
 import { Invitation } from "../../domain/entities/Invitation"
 import { IinvitationRepository } from "../../domain/interfaces/repositories/IInvitationRepository"
 import { InvitationDocument, InvitationModel } from "../database/models/InvitationModel"
@@ -15,5 +16,18 @@ export class InvitaionRepository extends BaseRepository<Invitation, InvitationDo
     }
     return null
 
+  }
+  async updateStatus(workspaceId: Types.ObjectId, status: string, email: string): Promise<void> {
+   const result = await InvitationModel.updateOne(
+  {
+    workspaceId,
+    invitedTo: email,
+  },
+  {
+    $set: { status },
+  }
+);
+
+console.log("✅ Invitation status updated:", result.modifiedCount);
   }
 }

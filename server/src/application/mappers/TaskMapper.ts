@@ -25,7 +25,7 @@ export class TaskMapper {
       embedding: vector,
       attachedURLs: input.attachedURLs,
       subTask: input.subTask,
-      acceptanceCriteria:input.acceptanceCriteria,
+      acceptanceCriteria: input.acceptanceCriteria,
 
     })
   }
@@ -67,6 +67,48 @@ export class TaskMapper {
     });
     return isValid.safeParse(input);
   }
+  static subTaskEstimateValidate(subtask: { title: string; status:"Completed" | "Pending";estimate: number }[], deadline: string) {
+    const taskSchema = z
+      .object({
+        deadline: z.string(),
+
+        subtasks: z.array(
+          z.object({
+            title: z.string(),
+            estimate: z.number().positive(),
+          })
+        ),
+      })
+      .refine(
+        ({ deadline, subtasks }) => {
+          const now = new Date();
+          const deadlineDate = new Date(deadline);
+
+          // invalid date
+          if (isNaN(deadlineDate.getTime())) {
+            return false;
+          }
+
+          // remaining time until deadline
+          const remainingMs =
+            deadlineDate.getTime() - now.getTime();
+
+          return subtasks.every((task) => {
+            const estimateMs =
+              task.estimate * 60 * 1000;
+
+            return estimateMs <= remainingMs;
+          });
+        },
+        {
+          message:
+            "One or more subtask estimates exceed the deadline remaining time",
+          path: ["subtasks"],
+        }
+      );
+    return taskSchema.safeParse({ deadline, subtasks: subtask });
+  }
+
 
   static MappedCompletdTask(tasks: taskType[]): CompletedTaskResponseDTO {
     const mappedData = tasks.map((task) => {
@@ -86,7 +128,7 @@ export class TaskMapper {
 
         submittedAt: task.updatedAt,
         rejectionReason: task.rejectionMsg,
-        acceptanceCriteria:task.acceptanceCriteria
+        acceptanceCriteria: task.acceptanceCriteria
       };
     });
     return mappedData as unknown as CompletedTaskResponseDTO
@@ -158,7 +200,7 @@ export class TaskMapper {
     }));
   }
   static mapToApprovalTask(tasks: Task[]) {
-     tasks.map((task: Task) => {
+    tasks.map((task: Task) => {
       return {
         id: task.id,
         title: task.name,
@@ -175,94 +217,94 @@ export class TaskMapper {
       }
 
     })
-    
+
 
   }
-  
-   static convertTaskForUImapper = (
-  dbTask: DbTaskUI
-) => {
-  return {
-    _id: dbTask._id.toString(),
 
-    name: dbTask.name,
+  static convertTaskForUImapper = (
+    dbTask: DbTaskUI
+  ) => {
+    return {
+      _id: dbTask._id.toString(),
 
-    description: dbTask.description,
+      name: dbTask.name,
 
-    assignedUser: {
-      name: dbTask.assignedUser,
-      email: "No Email Available",
-    },
+      description: dbTask.description,
 
-    project: {
-      name: dbTask.project,
-    },
+      assignedUser: {
+        name: dbTask.assignedUser,
+        email: "No Email Available",
+      },
 
-    deadline: dbTask.deadline,
+      project: {
+        name: dbTask.project,
+      },
 
-    priority: dbTask.priority,
+      deadline: dbTask.deadline,
 
-    status:
-      dbTask.status === "To Do"
-        ? "Todo"
-        : dbTask.status,
+      priority: dbTask.priority,
 
-    approvalStatus: "Pending Review",
+      status:
+        dbTask.status === "To Do"
+          ? "Todo"
+          : dbTask.status,
 
-    /* Subtasks */
-    subTask: dbTask.subTask?.map(
-      (item, index) => ({
-        id: index + 1,
-        title: item.title,
-        estimate: item.estimate,
-        done:
-          item.status === "Completed",
+      approvalStatus: "Pending Review",
 
-        status:
-          item.status === "Completed"
-            ? "Done"
-            : "Todo",
-      })
-    ) || [],
-
-    /* Acceptance Criteria */
-    approvalCriteria:
-      dbTask.acceptanceCriteria?.map(
+      /* Subtasks */
+      subTask: dbTask.subTask?.map(
         (item, index) => ({
           id: index + 1,
           title: item.title,
-
-          completed:
+          estimate: item.estimate,
+          done:
             item.status === "Completed",
+
+          status:
+            item.status === "Completed"
+              ? "Done"
+              : "Todo",
         })
       ) || [],
 
-    /* Comments */
-    comments:
-      dbTask.comments?.map(
-        (item, index) => ({
-          id: index + 1,
-          user: item.name,
-          text: item.text,
+      /* Acceptance Criteria */
+      approvalCriteria:
+        dbTask.acceptanceCriteria?.map(
+          (item, index) => ({
+            id: index + 1,
+            title: item.title,
 
-          time: new Date(
-            item.timestamp
-          ).toLocaleString(),
+            completed:
+              item.status === "Completed",
+          })
+        ) || [],
 
-          attachments:
-            item.urls || [],
-        })
-      ) || [],
+      /* Comments */
+      comments:
+        dbTask.comments?.map(
+          (item, index) => ({
+            id: index + 1,
+            user: item.name,
+            text: item.text,
 
-    /* Attachments */
-    attachedURLs:
-      dbTask.attachedURLs?.map(
-        (url, index) => ({
-          id: index + 1,
-          label: `Attachment ${index + 1}`,
-          link: url,
-        })
-      ) || [],
-  };
+            time: new Date(
+              item.timestamp
+            ).toLocaleString(),
+
+            attachments:
+              item.urls || [],
+          })
+        ) || [],
+
+      /* Attachments */
+      attachedURLs:
+        dbTask.attachedURLs?.map(
+          (url, index) => ({
+            id: index + 1,
+            label: `Attachment ${index + 1}`,
+            link: url,
+          })
+        ) || [],
+    };
   }
 }

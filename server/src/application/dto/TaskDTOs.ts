@@ -7,7 +7,7 @@ export interface TaskRequestDTO {
   name?: string;
   description?: string;
   assignedUser?: string;
-  deadline?: string;
+  deadline: string;
   status?: TaskStatus;
   priority?: TaskPriority;
   projectId?: string;

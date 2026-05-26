@@ -59,7 +59,7 @@ export const updateTaskApi = createAsyncThunk("adminTaskData/update", async (upd
 export const deleteTaskApi = createAsyncThunk("adminTaskData/delete", async (deleteTaskId: string) => {
   try {
 
-    const response = await apiService.delete(ROUTES.TASKS.DELETE.replace("deleteTaskId",deleteTaskId));
+    const response = await apiService.delete(ROUTES.TASKS.DELETE.replace(":deleteTaskId",deleteTaskId));
     if (response.status == 200) {
       return deleteTaskId
     }
