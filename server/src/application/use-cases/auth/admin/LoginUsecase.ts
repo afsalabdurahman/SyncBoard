@@ -21,7 +21,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     @inject("AuthService") private _authService: IAuthService,
     @inject("WorkspaceRepository") private _workspceRepository: IWorkspaceRepository,
     @inject("SuscriptionRepository") private _suscriptionRepository: ISuscription,
-  ) { }
+  ) {}
 
   async execute(input: LoginRequestDTO): Promise<adminResponseDTO> {
     const isExist = await this._userRepository.findByEmail(input.email);

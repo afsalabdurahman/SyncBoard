@@ -12,7 +12,7 @@ import { io } from "../../../server";
 import { IWorkspaceRepository } from "../../../domain/interfaces/repositories/IWorkspaceRepository";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
 import { ResponseMessages } from "../../../common/erroResponse";
-import { email } from "zod/v4";
+
 
 @injectable()
 export class SentInvitaionUsecase implements ISentInvitaion {

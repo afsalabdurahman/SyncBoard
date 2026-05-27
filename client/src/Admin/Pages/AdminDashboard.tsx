@@ -32,7 +32,21 @@ export default function AdminDashboard() {
       setCurrentPage("dashboard");
     }
   }, [isForward, title]);
+useEffect(() => {
+    // Push current page into history
+    window.history.pushState(null, "", window.location.href);
 
+    const handleBackButton = () => {
+      // Prevent going back
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, []);
   const renderPage = () => {
     switch (currentPage) {
       case "dashboard":
@@ -55,7 +69,7 @@ export default function AdminDashboard() {
               toast.success("Logout success", { toastId: id });
             }
 
-            navigate("/admin")
+            navigate("/admin",{replace:true})
 
           }
         })
