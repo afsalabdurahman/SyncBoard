@@ -195,8 +195,8 @@ toast.success("Update successfull")
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
                 <TableHead>Title</TableHead>
+                <TableHead>Role</TableHead>
                 <TableHead>Blocked</TableHead>
                 <TableHead>Removed</TableHead>
                 <TableHead>Permission</TableHead>
@@ -215,15 +215,14 @@ toast.success("Update successfull")
                   <TableCell>{user.email}</TableCell>
 
                   <TableCell>
+                    <Badge>{user.title}</Badge>
+                  </TableCell>
+ <TableCell>
                     <Badge variant={getRoleBadgeVariant(user.role)}>
                       {user.role}
                     </Badge>
                   </TableCell>
-
-                  <TableCell>
-                    <Badge>{user.title}</Badge>
-                  </TableCell>
-
+                  
                   <TableCell>
                     <Badge variant={user.isBlocked ? "destructive" : "default"}>
                       {user.isBlocked ? "Yes" : "No"}

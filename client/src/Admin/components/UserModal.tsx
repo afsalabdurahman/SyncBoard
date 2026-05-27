@@ -53,7 +53,8 @@ interface FormState {
   role: "Admin" | "Member" | "";
   isBlocked: "Yes" | "No" | "";
   isAdmin: boolean;
-  permission: "Viewer" | "Editor" | "Admin"
+  permission: "Viewer" | "Editor" | "Admin",
+  title:string,
 }
 
 /* ---------------- COMPONENT ---------------- */
@@ -61,14 +62,15 @@ interface FormState {
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const workspaceId = useWorkspaceid()
-
+console.log(user,"userssss")
   const [formData, setFormData] = useState<FormState>({
     name: "",
     email: "",
     role: "",
     isBlocked: "",
     isAdmin: false,
-    permission: "Editor"
+    permission: "Editor",
+    title:""
   });
 
   /* ---------------- LOAD USER DATA ---------------- */
@@ -81,7 +83,8 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
         role: "",
         isBlocked: "",
         isAdmin: false,
-        permission: "Editor"
+        permission: "Editor",
+        title:""
       });
       return;
     }
@@ -92,7 +95,8 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
       role: user.role,
       isBlocked: user.isBlocked ? "Yes" : "No",
       isAdmin: user.role === "Admin",
-      permission: user.permission == "Member" ? "Editor" : "Viewer"
+      permission: user.permission == "Member" ? "Editor" : "Viewer",
+      title:user.title||""
     });
   }, [user, isOpen]);
 
@@ -188,7 +192,22 @@ await updatePermissionApi(permission,user._id,workspaceId)
                 className="col-span-3"
               />
             </div>
+            {/* TITLE */}
+ <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Title</Label>
 
+             <Input
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    title: e.target.value,
+                  }))
+                }
+                className="col-span-3"
+                required
+              />
+            </div>
             {/* ROLE */}
 
             {!formData.isAdmin && (
