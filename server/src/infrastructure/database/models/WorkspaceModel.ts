@@ -37,6 +37,7 @@ const MemberSchema: Schema = new Schema({
     type:String,
     default:"Admin"
   },
+ 
   role:{
     type:String,
     default:'Member'

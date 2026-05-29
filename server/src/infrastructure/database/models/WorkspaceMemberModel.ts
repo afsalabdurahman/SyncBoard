@@ -17,6 +17,10 @@ export const workspaceMembershipSchema = new Schema<WorkspaceMembership>(
       enum:["Viewer","Admin","Member"],
       default:"Admin"
     },
+    title:{
+type:String,
+default:"Member"
+    },
     joinedAt: {
       type: Date,
       default: Date.now,

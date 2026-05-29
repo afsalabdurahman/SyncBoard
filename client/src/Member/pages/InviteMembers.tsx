@@ -143,7 +143,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
           {loader ? <Loader /> : null}
         </div>
 
-        <div className='mb-6'>
+        {/* <div className='mb-6'>
           <p className='text-sm text-gray-500 mb-2'>
             Invite with link (anyone with a @cxnlab.com email)
           </p>
@@ -164,7 +164,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
             </button>
             <ToastContainer position='top-center' autoClose={5000} />
           </div>
-        </div>
+        </div> */}
 
         <div className='mb-6'>
           <p className='text-sm text-gray-500 mb-2'>Invite with email</p>
@@ -181,13 +181,13 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
             </div>
           ))}
 
-          <button
+          {/* <button
             onClick={addEmailField}
             className='text-sm text-gray-600 flex items-center mt-2  cursor-pointer'
           >
             <Plus size={16} className='mr-1' />
             Add another
-          </button>
+          </button> */}
         </div>
 
         <div className='flex justify-between mt-6'>

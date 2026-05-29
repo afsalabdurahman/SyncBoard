@@ -4,6 +4,7 @@ export interface WorkspaceMembership {
   workspaceId: mongoose.Types.ObjectId;
   role: "Member" | "Admin" | "SuperAdmin";
   permissions: "Member" | "Admin" | "Viewer";
+  title:string;
   joinedAt?: Date;
 }
 export interface Member {
