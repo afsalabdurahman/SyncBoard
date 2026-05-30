@@ -1,6 +1,7 @@
 import { ROUTES } from "../../Constants/routeConstan";
 import apiService from "../../Services/apiServices/apiService";
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
+import { FormState } from "../components/UserModal";
 import { Task } from "../types/taskTypes";
 
 /* ---------------- TYPES ---------------- */
@@ -90,4 +91,11 @@ export const updateTaskCriteria=async(id:string,title:string)=>{
  await apiService.patch(ROUTES.TASKS.UPDATE_ACCEPTANCE_CRITERIA.replace(":id",id),{
     title
   })
+}
+export const updateUserInWorkspace =async (workspaceId:string,userId:string,formData:Record<string,any>)=>{
+  try {
+    apiService.post(`/workspace/update/member/profile/${userId}/${workspaceId}`,{formData})
+  } catch (error) {
+   console.log(error) 
+  }
 }

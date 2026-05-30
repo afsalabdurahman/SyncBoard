@@ -1,6 +1,9 @@
 import { User } from "../../domain/entities/User";
 import { z } from "zod";
 import { ProfileUpdateDTO } from "../dto/UserDTO";
+import { Workspace } from "../../domain/entities/Workspace";
+import { Member } from "../../types/workpaceTypes";
+import { permission } from "process";
 export class UserMapper{
     static userResponseDTO(user:User){
         return{
@@ -101,5 +104,17 @@ phone: z
 
   return schema.safeParse(merge);
 }
-
+static mapUserBasedWorkspace (user:User,members:Member){
+  return{
+    _id:members.userId.toString() || "",
+    name:user.name,
+    email:user.email,
+    title:members.title,
+    permission:members.permissions || "Viewer",
+    role:members.role||"Member",
+    isBlocked:members.isBlocked || false,
+    isDeleted:members.isDeleted || false,
+    isOnline:members.isOnline || false
+  }
+}
 }

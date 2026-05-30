@@ -182,5 +182,13 @@ async invitationRejected(req:Request,res:Response):Promise<void>{
   await this._sentInvitaionUsecase.rejectInvitation(slug,email);
   res.status(HttpStatusCode.OK)
 }
+async updateUserInWorkspace(req:Request,res:Response):Promise<void>{
+  const userId =req.params.userId;
+  const workspaceId=req.params.workspaceId;
+  const data = req.body.formData;
+  console.log(req.body)
+  await this._createWorkspceUsecases.updateUserInWorkspace(workspaceId,userId,data);
+    res.status(HttpStatusCode.OK)
+}
 
 }

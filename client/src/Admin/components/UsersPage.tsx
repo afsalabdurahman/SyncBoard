@@ -149,6 +149,7 @@ toast.success("Update successfull")
 
   const closeDialog = () => {
     setDialogMessage({ title: null, description: null });
+    setRefreshKey((prev) => prev + 1);
     setIsDialogOpen(false);
   };
 
@@ -237,9 +238,7 @@ toast.success("Update successfull")
 <TableCell>
   <Badge>
     {
-      user.workspace?.find(
-        (workspace) => workspace.workspaceId === workspaceid
-      )?.permissions || "No Permission"
+      user.permissions|| "No Permission"
     }
   </Badge>
 </TableCell>
@@ -294,7 +293,7 @@ toast.success("Update successfull")
       <UserModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={() => {}}
+        onSubmit={() => {setRefreshKey((prev) => prev + 1)}}
         user={editingUser}
       />
 

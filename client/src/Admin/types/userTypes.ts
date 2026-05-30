@@ -22,6 +22,7 @@ export interface User {
   workspaces?: WorkspaceMembership[];
   isDelete?:boolean;
   isBlock?:boolean; 
+  permissions?:string|null
 }
 export interface userPage {
   _id: string;

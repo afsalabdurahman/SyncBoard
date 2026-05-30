@@ -24,7 +24,8 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
    async paginationWorkspace(slug: string, page: number, limit: number, skip: number,projectId:string|null): Promise<{ items: UserDoument[] | null, totalItems: number }> {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-      const { items, totalItems } = await this.userRepository.paginationUser(workspceData._id, page, limit, skip,projectId)
+      const { items, totalItems } = await this.workspaceRepository.paginationUserInWorkspace(workspceData._id.toString(), page, limit, skip,projectId)
+      console.log(items,"ITESSSSS")
       return { items: items, totalItems }
    }
   async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{

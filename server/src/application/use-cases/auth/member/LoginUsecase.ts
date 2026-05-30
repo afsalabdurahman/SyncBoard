@@ -9,6 +9,7 @@ import { LoginRequestDTO, LoginResponseDTO } from "../../../dto/AuthDTOs";
 import { IWorkspaceRepository } from "../../../../domain/interfaces/repositories/IWorkspaceRepository";
 import { AuthMapper } from "../../../mappers/AuthMapper";
 import { stringToMongoObj } from "../../../../utils/convertMongoObject"
+import { UserMapper } from "../../../mappers/UserMapper";
 @injectable()
 export class LoginUsecase implements ILogin {
   constructor(
@@ -31,10 +32,22 @@ export class LoginUsecase implements ILogin {
     }
 const workspaceId =user?.workspace[0]?.workspaceId;
 const workspaceStatus = await this._workspaceRepository.findByObjectId(workspaceId);
+console.log(workspaceStatus,"Statuss",user,"Users")
+const userId=user._id ??""
+const member = workspaceStatus?.members?.find(
+  (member) => member.userId.toString() === userId.toString()
+)
+if(!member) throw new NotFoundError("Member not avilable")
+const maped = UserMapper.mapUserBasedWorkspace(user,member);
+if(!maped) throw new NotFoundError("Member not avilable")
+  if(maped.isBlocked){
+     throw new CustomError("Create a new workspace",403,user);
+  }
+console.log(maped,"Memberssss")
 if(workspaceStatus && workspaceStatus.status === "suspend")
   throw new ForbiddenError(ResponseMessages.WORKSPACE_NOT_FOUND);
 if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
-    if (user.isDeleted) throw new ForbiddenError(ResponseMessages.USER_DELETED);
+    if (user.isDeleted||maped.isDeleted) throw new ForbiddenError(ResponseMessages.USER_DELETED);
     const isTrue = await this._authService.comparePassword(
       input.password,
       user.password!
@@ -60,7 +73,7 @@ if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
     const workspaceData = await this._workspaceRepository.findByObjectId(user.workspace[0].workspaceId)
     if (!workspaceData) throw new NotFoundError(ResponseMessages.NO_CONTENT);
     delete user.password;
-    return AuthMapper.mapEntityToMember(user, workspaceData, token, refreshToken)
+    return AuthMapper.mapEntityToMember(maped, workspaceData, token, refreshToken)
 
   }
   async logoutUser(userId: string): Promise<void> {

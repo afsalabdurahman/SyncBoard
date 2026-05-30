@@ -27,6 +27,7 @@ import {
 import { updateUser } from "../../Redux/feature/users/AlluserThunks";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { updatePermissionApi } from "../apis/dashboardApi";
+import { updateUserInWorkspace } from "../apis/taskApi";
 
 /* ---------------- TYPES ---------------- */
 
@@ -47,13 +48,13 @@ interface UserModalProps {
   user?: User | null;
 }
 
-interface FormState {
+export interface FormState {
   name: string;
   email: string;
   role: "Admin" | "Member" | "";
   isBlocked: "Yes" | "No" | "";
   isAdmin: boolean;
-  permission: "Viewer" | "Editor" | "Admin",
+  // permissions: "Viewer" | "Editor" | "Admin",
   title:string,
 }
 
@@ -61,15 +62,15 @@ interface FormState {
 
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const workspaceId = useWorkspaceid()
-console.log(user,"userssss")
+const workspaceId = useWorkspaceid()
+console.log(user,"userssss",workspaceId)
   const [formData, setFormData] = useState<FormState>({
     name: "",
     email: "",
     role: "",
     isBlocked: "",
     isAdmin: false,
-    permission: "Editor",
+    // permissions: "Editor",
     title:""
   });
 
@@ -78,12 +79,13 @@ console.log(user,"userssss")
   useEffect(() => {
     if (!user) {
       setFormData({
+        
         name: "",
         email: "",
         role: "",
         isBlocked: "",
         isAdmin: false,
-        permission: "Editor",
+        // permissions: "Editor",
         title:""
       });
       return;
@@ -95,7 +97,7 @@ console.log(user,"userssss")
       role: user.role,
       isBlocked: user.isBlocked ? "Yes" : "No",
       isAdmin: user.role === "Admin",
-      permission: user.permission == "Member" ? "Editor" : "Viewer",
+      // permissions: user.permission == "Member" ? "Editor" : "Viewer",
       title:user.title||""
     });
   }, [user, isOpen]);
@@ -115,14 +117,15 @@ await updatePermissionApi(permission,user._id,workspaceId)
       isBlocked: formData.isBlocked === "Yes",
       isAdmin: formData.role === "Admin",
     };
-
+console.log(updatedData,"UpdatedDaea")
     try {
-      await dispatch(
-        updateUser({
-          userId: user._id,
-          updatedData,
-        })
-      ).unwrap();
+      // await dispatch(
+      //   updateUser({
+      //     userId: user._id,
+      //     updatedData,
+      //   })
+      // ).unwrap();
+      await updateUserInWorkspace(workspaceId??"",user._id,updatedData)
 
       toast.success("User updated successfully");
 

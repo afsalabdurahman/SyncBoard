@@ -1,3 +1,5 @@
+import {  UserInWorkspaceDTO } from "../../../application/dto/UserDTO";
+import { UserDoument } from "../../../infrastructure/database/models/UserModel";
 import { WorkspaceDoument } from "../../../infrastructure/database/models/WorkspaceModel";
 import { Workspace } from "../../entities/Workspace";
 import mongoose, { Types } from "mongoose";
@@ -21,4 +23,14 @@ export interface IWorkspaceRepository {
   findWorkspacesByUserId(userId:string):Promise<{ id: string; name: string }[]|null>
   updatePermissions(workspaceId:Types.ObjectId,userId:Types.ObjectId,permission:string):Promise<void>
   findPermisssion(workspaceId:Types.ObjectId,userId:Types.ObjectId):Promise<string>
+updateUserDataInWorkspace(workspaceId:Types.ObjectId,userId:Types.ObjectId,data:UserInWorkspaceDTO):Promise<void>
+ paginationUserInWorkspace(
+  workspaceId: string | Types.ObjectId,
+  page: number,
+  limit: number,
+  skip: number,
+  projectId: string | null
+): Promise<{ items: UserDoument[] | null; totalItems: number }>
+findUserStatusInWorkspace(userId:Types.ObjectId,workspaceId:Types.ObjectId):Promise<UserInWorkspaceDTO|null>
+
 }

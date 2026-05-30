@@ -4,7 +4,10 @@ import { IWorkspaceRepository } from "../../domain/interfaces/repositories/IWork
 import { injectable } from "tsyringe";
 import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { UserModel } from "../database/models/UserModel";
+import { UserDoument, UserModel } from "../database/models/UserModel";
+import { UserInWorkspaceDTO } from "../../application/dto/UserDTO";
+import { ProjectModel } from "../database/models/ProjectModel";
+import { stringToMongoObj } from "../../utils/convertMongoObject";
 
 @injectable()
 export class WorkspaceRepository implements IWorkspaceRepository {
@@ -140,5 +143,141 @@ async findPermisssion(
   ).lean();
 
   return workspace?.members?.[0]?.permissions ?? "Member";
+}
+
+async updateUserDataInWorkspace(workspaceId: Types.ObjectId, userId: Types.ObjectId, data: UserInWorkspaceDTO): Promise<void> {
+   const setData: Record<string, unknown> = {};
+     Object.entries(data).forEach(([key, value]) => {
+    setData[`members.$.${key}`] = value;
+  });
+  await WorkspaceModel.updateOne(
+    {
+      _id: workspaceId,
+      "members.userId": userId
+    },
+    {
+      $set: setData
+    }
+  );
+
+
+}
+async paginationUserInWorkspace(
+  workspaceId: string | Types.ObjectId,
+  page: number,
+  limit: number,
+  skip: number,
+  projectId: string | null
+): Promise<{ items: UserDoument[] | null; totalItems: number }> {
+
+  const workspace = await WorkspaceModel.findById(workspaceId);
+
+  if (!workspace) {
+    return { items: [], totalItems: 0 };
+  }
+
+  let memberIds = workspace.members
+    .filter(member => !member.isDeleted)
+    .map(member => member.userId);
+
+  // Project filter
+  if (
+    projectId &&
+    projectId.trim() !== "" &&
+    projectId !== "null" &&
+    projectId !== "undefined"
+  ) {
+    const project = await ProjectModel.findById(
+      stringToMongoObj(projectId)
+    );
+
+    if (project) {
+      memberIds = memberIds.filter(id =>
+        project.assignedUsers.includes(id.toString())
+      );
+    }
+  }
+
+  const filter = {
+    _id: { $in: memberIds },
+    isSuperAdmin: { $ne: true },
+  };
+
+  const totalItems = await UserModel.countDocuments(filter);
+
+  const workspaceObjectId =
+    typeof workspaceId === "string"
+      ? stringToMongoObj(workspaceId)
+      : workspaceId;
+
+  const items  = await WorkspaceModel.aggregate([
+  {
+    $match: {
+      _id: workspaceObjectId
+    }
+  },
+  {
+    $unwind: "$members"
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "members.userId",
+      foreignField: "_id",
+      as: "user"
+    }
+  },
+  {
+    $unwind: "$user"
+  },
+  {
+    $project: {
+      _id: "$user._id",
+      name: "$user.name",
+      email: "$user.email",
+      profileImage: "$user.profileImage",
+
+      title: "$members.title",
+      permissions: "$members.permissions",
+      role: "$members.role",
+      isBlocked: "$members.isBlocked",
+      isOnline: "$members.isOnline"
+    }
+  },
+  {
+    $skip: skip
+  },
+  {
+    $limit: limit
+  }
+]);
+
+  return { items, totalItems };
+}
+async findUserStatusInWorkspace(
+  userId: Types.ObjectId,
+  workspaceId: Types.ObjectId
+): Promise<UserInWorkspaceDTO | null> {
+  const workspace = await WorkspaceModel.findById(workspaceId).lean();
+
+  if (!workspace) {
+    return null;
+  }
+
+  const member = workspace.members.find(
+    (member) => member.userId.toString() === userId.toString()
+  );
+
+  if (!member) {
+    return null;
+  }
+
+  return {
+   
+    permission: member.permissions,
+    isBlocked: member.isBlocked,
+    isDeleted: member.isDeleted,
+    isOnline: member.isOnline,
+  };
 }
 }

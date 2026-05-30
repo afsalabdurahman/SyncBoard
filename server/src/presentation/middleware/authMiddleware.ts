@@ -37,6 +37,7 @@ export const authMiddelware = () => {
       //   throw new AuthenticationError('Invalid user role');
       // }
       const user: User | null = await getUserUseCase.execute(decoded.userId);
+      if(!user?._id) throw new NotFoundError("user not fond")
 const status = user?.workspace?.some(
   (workspace) => workspace.permissions === "Admin"
 );
@@ -46,7 +47,7 @@ role = "Admin" as UserRole
   req.user = { id: decoded.userId, role };
         return next()
 }
-
+const workspaceId =req.params.workspaceid
       if (user?.role == "SuperAdmin") {
         req.user = { id: decoded.userId, role };
         return next()
@@ -58,19 +59,21 @@ role = "Admin" as UserRole
       if (!user.workspace || user.workspace.length === 0) {
         throw new ForbiddenError(ResponseMessages.NO_CONTENT);
       }
-      const workspaceId = user.workspace[0].workspaceId;
+      // const workspaceId = user.workspace[0].workspaceId;
+const userStatus = await workspaceUsecse.workspaceUserStatus(stringToMongoObj(workspaceId),stringToMongoObj(user?._id))
+    console.log(userStatus,"FFFFFFFFF")
 
-      if (!workspaceId) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-      const workspace = await workspaceUsecse.findWorkspace(workspaceId);
+if (!workspaceId) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+      const workspace = await workspaceUsecse.findWorkspace(stringToMongoObj(workspaceId));
       if (workspace?.status.toLowerCase() == "suspend") {
        throw new ForbiddenError('Workspace is Suspended')
       }
 
-      if (user.isBlocked) {
+      if (user.isBlocked||userStatus?.isBlocked) {
         await userRepository.changeOnlineStatus(stringToMongoObj(user._id ?? ""))
         throw new ForbiddenError('User is blocked');
       }
-      if (user.isDeleted) {
+      if (user.isDeleted||userStatus?.isDeleted) {
         await userRepository.changeOnlineStatus(stringToMongoObj(user._id ?? ""))
         throw new ForbiddenError('User is removed');
 

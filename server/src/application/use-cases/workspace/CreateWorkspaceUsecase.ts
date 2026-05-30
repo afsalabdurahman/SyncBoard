@@ -21,6 +21,7 @@ import { WorkspaceMapper } from "../../mappers/WorkspaceMapper";
 import { Workspace } from "../../../domain/entities/Workspace";
 import { ISuscription } from "../../../domain/interfaces/repositories/ISuscriptionRepository";
 import { stringToMongoObj } from "../../../utils/convertMongoObject";
+import { UserInWorkspaceDTO } from "../../dto/UserDTO";
 
 
 
@@ -174,5 +175,13 @@ export class CreateWorkspaceUsecases implements IWorkspace {
     const permission = await this._workspaceRepository.findPermisssion(stringToMongoObj(workspaceId), stringToMongoObj(userId));
     console.log(permission, "Permissionsssss")
     return permission
+  }
+  async updateUserInWorkspace(workspaceId: string, userId: string, data: UserInWorkspaceDTO): Promise<void> {
+    console.log(data,userId,workspaceId,"++++++++++")
+    await this._workspaceRepository.updateUserDataInWorkspace(stringToMongoObj(workspaceId),stringToMongoObj(userId),data)
+  }
+  async workspaceUserStatus(workspaceId: Types.ObjectId, userId: Types.ObjectId): Promise<UserInWorkspaceDTO | null> {
+    const status=await this._workspaceRepository.findUserStatusInWorkspace(userId,workspaceId);
+    return status
   }
 }

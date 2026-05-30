@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { WorkspaceMembership } from "../../types/workpaceTypes";
+import { Interface } from "readline";
 
 export interface UserResponseDTO{
 id?:string;
@@ -35,4 +36,12 @@ export interface ProfileUpdateDTO {
   phone?: string | null;
   imageUrl?: string | null;
   skills: string[];
+}
+export interface UserInWorkspaceDTO{
+title?:string;
+permission?:string;
+role?:string;
+isBlocked?:boolean;
+isDeleted?:boolean;
+isOnline?:boolean;
 }
