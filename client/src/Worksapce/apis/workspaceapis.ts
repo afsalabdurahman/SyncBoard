@@ -164,12 +164,12 @@ export const ApprovalCriteria = async (taskId: string, title: string) => {
 export const sendInvitation = async (emails: string | string[], invitationLink: string, workspaceId: string) => {
     try {
         const response: AxiosResponse<boolean> = await apiService.post(
-            ROUTES.WORKSPACE.SEND_INVITAION,
+            ROUTES.WORKSPACE.SEND_INVITAION.replace(":workspaceId",workspaceId),
 
             {
                 emails,
                 invitationLink,
-                workspaceId
+               
             },
             { withCredentials: true }
         );

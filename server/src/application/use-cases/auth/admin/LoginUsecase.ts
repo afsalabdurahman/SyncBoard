@@ -57,13 +57,14 @@ export class AdminLoginUseCase implements ILoginUseCase {
     const token = await this._authService.generateToken({
       id: user._id!,
       email: user.email!,
-      role: user.role!,
+      role:"Admin"
+    
     });
 
     const refreshToken = await this._authService.generateRefreshToken({
       id: user._id!,
       email: user.email!,
-      role: user.role!,
+     role:"Admin"
     });
 
 
@@ -90,12 +91,14 @@ export class AdminLoginUseCase implements ILoginUseCase {
         const token = this._authService.generateToken({
           id: existingUser._id!,
           email: existingUser.email!,
-          role: existingUser.role!,
+          role:"Admin"
+       
         });
         const refreshToken = this._authService.generateRefreshToken({
           id: existingUser._id!,
           email: existingUser.email!,
-          role: existingUser.role!,
+          role:"Admin"
+        
         });
 
         const workspaceData = await this._workspceRepository.findByObjectId(existingUser?.workspace[0].workspaceId)
@@ -138,13 +141,14 @@ export class AdminLoginUseCase implements ILoginUseCase {
     const token = this._authService.generateToken({
       id: superAdmin._id ?? "",
       email: superAdmin.email!,
-      role: superAdmin.role!,
+   role:superAdmin.isSuperAdmin?"SuperAdmin":"Member"
     })
     if (!token) throw new ValidationError(ResponseMessages.INVALID_TOKEN)
     const refreshToken = this._authService.generateRefreshToken({
       id: superAdmin._id!,
       email: superAdmin.email!,
-      role: superAdmin.role!,
+      role:superAdmin.isSuperAdmin?"SuperAdmin":"Member"
+   
     });
     if (!refreshToken) throw new ValidationError(ResponseMessages.USER_NOT_FOUND + 'Refresh Token')
 

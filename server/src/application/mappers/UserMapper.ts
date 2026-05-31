@@ -1,30 +1,25 @@
 import { User } from "../../domain/entities/User";
 import { z } from "zod";
 import { ProfileUpdateDTO } from "../dto/UserDTO";
-import { Workspace } from "../../domain/entities/Workspace";
 import { Member } from "../../types/workpaceTypes";
-import { permission } from "process";
 export class UserMapper{
     static userResponseDTO(user:User){
         return{
              email: user.email,
                 name: user.name,
-                role: user.role,
-                stripeCustomerId: user.stripeCustomerId,
-                currentSubscription: user.currentSubscription,
+               
                 _id: user._id,
-                title: user.title,
+              
                 profileImage: user.imageUrl,
                 workspace: user.workspace,
                 location: user.location,
                 imageUrl: user.imageUrl,
                 about: user.about,
                 phone: user.phone,
-                isAdmin: user.isAdmin,
+                
                 isSuperAdmin: user.isSuperAdmin,
-                isBlocked: user.isBlocked,
-                isDeleted:user.isBlocked,
-                isOnline: user.isOnline,
+              
+           
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt
         }

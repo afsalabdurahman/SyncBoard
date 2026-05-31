@@ -14,12 +14,8 @@ export class GetUserUseCase implements IUserUsecase {
   async execute(id: string): Promise<User | null> {
     const userDetails = await this.userRepository.findById(id);
     if(!userDetails) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
-    if (userDetails.role == "Member") return userDetails;
-    else if (userDetails.role == "Admin") {
-      return userDetails;
-    } else if (userDetails.role == "SuperAdmin") {
-      return userDetails;
-    }
+  
+    return userDetails
     return null;
   }
   async findUserByEmail(email: string): Promise<responseUser> {

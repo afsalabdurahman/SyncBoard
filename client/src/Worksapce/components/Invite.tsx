@@ -17,6 +17,7 @@ const Invite = () => {
     return { isAdmin, name, slug };
   });
   const workspaceId=useWorkspaceid()
+  console.log(workspaceId)
   const workspaceid=useWorkspaceid() as string
 const [permission,setPermission]=useState("")
   const userId = useSelector((state: RootState) => state.user.user?._id);
@@ -62,7 +63,7 @@ const [permission,setPermission]=useState("")
       return false;
     }
     try {
-  const response = await sendInvitation(emails,invitationLink,workspaceId)
+  const response = await sendInvitation(emails,invitationLink,workspaceid)
 
       if (response) {
         setLoad(false);

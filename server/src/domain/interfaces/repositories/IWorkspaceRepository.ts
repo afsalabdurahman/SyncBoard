@@ -16,7 +16,7 @@ export interface IWorkspaceRepository {
     permission?:string,
   ): Promise<Workspace | null>;
   allWorkspace?(email: string): Promise<Workspace | null>;
-  findByObjectId(id: mongoose.Types.ObjectId): Promise<Workspace | null>;
+  findByObjectId(id: Types.ObjectId): Promise<Workspace | null>;
   addlogId?(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
   updateWorkspaceDate(workspaceId:string,merge:Record<string,string>):Promise<Workspace | null>
   findAll():Promise<WorkspaceDoument[]>

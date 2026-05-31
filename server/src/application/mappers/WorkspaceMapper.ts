@@ -3,6 +3,7 @@ import { WorkspaceRequestDTO, WorkspaceResponseDTO } from "../dto/WorkspaceDTOs"
 import { User } from "../../domain/entities/User";
 import { z } from "zod";
 import { Types } from "mongoose";
+import { stringToMongoObj } from "../../utils/convertMongoObject";
 
 export class WorkspaceMapper {
   static mapWorkspaceToEntity(dto: WorkspaceRequestDTO, userID: string, title: string,): Workspace {
@@ -11,10 +12,11 @@ export class WorkspaceMapper {
       name: dto.workspaceName,
       role: dto.role,
       slug: dto.slug,
-      ownerId: dto.ownerId,
-      members: [{ userId: new Types.ObjectId(userID), title, permissions: "Admin", role: "Admin", }],
-      status: "active",
-
+      ownerId: stringToMongoObj( dto.ownerId),
+      members: [{ userId: new Types.ObjectId(userID), title, permissions: "Admin", role: dto.role,isOnline:true }],
+      status: "Active",
+currentSubscription:null,
+stripeCustomerId:"",
       storage: 1,
     })
   }

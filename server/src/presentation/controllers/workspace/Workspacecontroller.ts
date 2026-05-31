@@ -22,6 +22,7 @@ export class WorkspaceController {
   ) { }
 
   async Create(req: Request, res: Response, ): Promise<void> {
+    console.log(req.body,"bodyydd")
     const input: WorkspaceRequestDTO = req.body
       const workspaceResponseDTO = await this._createWorkspceUsecases.createWorkspace(input);
       res
@@ -143,7 +144,7 @@ export class WorkspaceController {
       res.status(HttpStatusCode.OK).json(user);
   }
  async listWorkspaces(req:Request,res:Response):Promise<void>{
-    console.log("vcalingggg")
+    console.log("vc)))))))))))))))))))alingggg")
     const userId = req.params.id;
     console.log(userId)
    const list= await this._createWorkspceUsecases.listWorkspacesByUserId(userId);

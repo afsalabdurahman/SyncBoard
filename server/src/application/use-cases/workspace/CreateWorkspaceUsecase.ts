@@ -45,7 +45,7 @@ export class CreateWorkspaceUsecases implements IWorkspace {
 
     const user = await this._userRepository.findByEmail(input.email);
 
-    if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+    if (!user||!user._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const slugfyied = slugify(input.slug);
     input.slug = slugfyied;
 
@@ -54,15 +54,15 @@ export class CreateWorkspaceUsecases implements IWorkspace {
       user._id ?? "",
       input.title,
     );
-
+console.log(workspaceEntity,"Entyity")
     const isCreateWorkspace = await this._workspaceRepository.create(workspaceEntity);
+    console.log(isCreateWorkspace,"Workspace")
     if (!isCreateWorkspace || !isCreateWorkspace._id)
       throw new ValidationError(ResponseMessages.NO_CONTENT + ' Workspace');
-
+if(!user._id) throw new NotFoundError("user not found")
     const updatedUser = await this._userRepository.addToWorkspace(
-      user._id ?? "",
-      isCreateWorkspace._id,
-      input.title
+      stringToMongoObj(user?._id.toString()??new Types.ObjectId("")) ,
+     stringToMongoObj( isCreateWorkspace._id.toString()), 
     );
     if (!updatedUser) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
 

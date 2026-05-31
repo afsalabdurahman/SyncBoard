@@ -7,8 +7,8 @@ email:string;
 workspaceName:string;
 slug:string;
 title:string;
-role:string;
-ownerId:string;
+role:"Admin"|"Member";
+ownerId:string
 
 }
 export interface WorkspaceResponseDTO{

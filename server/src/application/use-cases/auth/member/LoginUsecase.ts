@@ -18,21 +18,21 @@ export class LoginUsecase implements ILogin {
     @inject("WorkspaceRepository")
     private _workspaceRepository: IWorkspaceRepository,
     @inject('ILogger') private _logger: ILogger
-  ) { }
+  ) {}
 
   async loginUser(input: LoginRequestDTO): Promise<LoginResponseDTO> {
-   
-    if (!input.email || !input.password) throw new ValidationError(ResponseMessages.INVALID_INPUT)
-    const isExist = await this._userRepository.findByEmail(input.email);
+   if (!input.email || !input.password) throw new ValidationError(ResponseMessages.INVALID_INPUT)
+   const isExist = await this._userRepository.findByEmail(input.email);
     if(!isExist || !isExist?._id || !isExist.isVerified) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
-    const user = await this._userRepository.findUser(isExist._id )
+    const user = await this._userRepository.findUser(isExist._id );
+
     this._logger.info(`Login attempt for email: ${input.email}`);
     if (!user||!user.workspace) {
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     }
-const workspaceId =user?.workspace[0]?.workspaceId;
-const workspaceStatus = await this._workspaceRepository.findByObjectId(workspaceId);
-console.log(workspaceStatus,"Statuss",user,"Users")
+const workspaceId =user?.workspace[0];
+const workspaceStatus = await this._workspaceRepository.findByObjectId(stringToMongoObj(workspaceId.toString()));
+
 const userId=user._id ??""
 const member = workspaceStatus?.members?.find(
   (member) => member.userId.toString() === userId.toString()
@@ -43,11 +43,8 @@ if(!maped) throw new NotFoundError("Member not avilable")
   if(maped.isBlocked){
      throw new CustomError("Create a new workspace",403,user);
   }
-console.log(maped,"Memberssss")
-if(workspaceStatus && workspaceStatus.status === "suspend")
-  throw new ForbiddenError(ResponseMessages.WORKSPACE_NOT_FOUND);
-if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
-    if (user.isDeleted||maped.isDeleted) throw new ForbiddenError(ResponseMessages.USER_DELETED);
+
+  
     const isTrue = await this._authService.comparePassword(
       input.password,
       user.password!
@@ -62,18 +59,20 @@ if (user.isBlocked) throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
     const token = await this._authService.generateToken({
       id: user._id!,
       email: user.email!,
-      role: user.role!,
+      role:maped.role
+      
     });
 
     const refreshToken = await this._authService.generateRefreshToken({
       id: user._id!,
       email: user.email!,
-      role: user.role!,
+      role:maped.role
+    
     });
-    const workspaceData = await this._workspaceRepository.findByObjectId(user.workspace[0].workspaceId)
-    if (!workspaceData) throw new NotFoundError(ResponseMessages.NO_CONTENT);
+    
+    if (!workspaceStatus) throw new NotFoundError(ResponseMessages.NO_CONTENT);
     delete user.password;
-    return AuthMapper.mapEntityToMember(maped, workspaceData, token, refreshToken)
+    return AuthMapper.mapEntityToMember(maped, workspaceStatus, token, refreshToken)
 
   }
   async logoutUser(userId: string): Promise<void> {

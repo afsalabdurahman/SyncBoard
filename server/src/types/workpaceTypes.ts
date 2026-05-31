@@ -1,17 +1,13 @@
 import mongoose, { Types } from "mongoose";
 import { ObjectId } from "mongoose";
 export interface WorkspaceMembership {
-  workspaceId: mongoose.Types.ObjectId;
-  role: "Member" | "Admin" | "SuperAdmin";
-  permissions: "Member" | "Admin" | "Viewer";
-  title:string;
-  joinedAt?: Date;
+  workspaceId: Types.ObjectId;
 }
 export interface Member {
-  userId: string|Types.ObjectId;
+  userId: Types.ObjectId;
   title: string;
-  permissions?:'Viewer'|'Member'|'Admin',
-  role?:'Admin'|'Member',
+  permissions:'Viewer'|'Member'|'Admin',
+  role:'Admin'|'Member',
   isBlocked?:boolean,
   isDeleted?:boolean,
   isOnline?:boolean
@@ -25,16 +21,18 @@ export interface IMember {
   isDeleted?:boolean,
   isOnline?:boolean
 }
-export type workspaceStatus = "active"|"InActive"|"suspend"|"Deleted"
+export type workspaceStatus = "Active"|"InActive"|"Suspend"|"Deleted"
 export interface WorkspaceProps {
   name: string;
   slug: string;
   role: string;
-  ownerId: string;
+  ownerId: string|Types.ObjectId;
   members?: Member[];
   status:workspaceStatus;
   storage:workspaceStorage;
   createdAt?: Date;
   _id?: string|ObjectId;
+   stripeCustomerId: string;
+    currentSubscription: Types.ObjectId|null
 }
 export type workspaceStorage = 1|5|10|100

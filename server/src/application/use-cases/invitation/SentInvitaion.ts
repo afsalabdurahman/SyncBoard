@@ -55,7 +55,7 @@ export class SentInvitaionUsecase implements ISentInvitaion {
       console.log(workspace, "spceee")
       if (!workspace?._id) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
       await this._workspaceRepository.addMemberToWorkspace(slug, stringToMongoObj(userId), "Member", "Member", "Viewer");
-      await this._userRepository.addToWorkspace(userId, workspace?._id, "Member", "Viewer")
+      await this._userRepository.addToWorkspace(stringToMongoObj(userId), stringToMongoObj(workspace?._id.toString()),)
    }
    async rejectInvitation(slug: string, email: string): Promise<void> {
       const workspace = await this._workspaceRepository.findbySlug(slug);

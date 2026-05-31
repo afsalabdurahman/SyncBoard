@@ -41,7 +41,7 @@ export const ROUTES = {
    },
    ALL_WORKSPACE_MEMBERS:'workspace/member/data/:slug',
    SEARCH_USERS_BY_SLUG:(slug:string,q:string)=>`workspace/members/find/${slug}?query=${q}`,
-  SEND_INVITAION:'workspace/invite'
+  SEND_INVITAION:'workspace/invite/:workspaceId'
   },
 
 

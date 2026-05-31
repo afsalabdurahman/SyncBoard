@@ -3,7 +3,7 @@ import { AdminSignupRequestDTO, AdminSignupResponseDTO, LoginRequestDTO, Memeber
 import { Workspace } from "../../domain/entities/Workspace";
 import { z } from "zod";
 import { SubscriptionAggregateDTO } from "../dto/SuperDTO";
-import { responseUser, UserRole } from "../../types/userTypes";
+import { responseUser,  } from "../../types/userTypes";
 export class AuthMapper {
   static mapUserToEntity(dto: AdminSignupRequestDTO): User {
    const verificationExpiresAt = new Date(Date.now() + 10 * 60 * 1000)
@@ -11,8 +11,6 @@ export class AuthMapper {
       email: dto.email,
       name: dto.name as string,
       password: dto?.password,
-      role: dto?.role as UserRole,
-      isAdmin: true,
       isVerified:false,
       verificationExpiresAt:verificationExpiresAt
 
@@ -23,7 +21,7 @@ export class AuthMapper {
       user: {
         email: entity.email,
         name: entity.name,
-        role: entity.role,
+      
         id: entity._id || ""
       },
       refreshToken,
@@ -36,8 +34,6 @@ export class AuthMapper {
       email: dto.email,
       name: dto.name,
       password: dto.password,
-      role: "Member",
-      title: dto.title,
       isVerified:true,
 
 

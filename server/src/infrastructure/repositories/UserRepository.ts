@@ -43,20 +43,18 @@ export class UserMongooseRepository extends BaseRepository<User,UserDoument> imp
 
 
   async addToWorkspace(
-    userId: string | ObjectId,
-    workspaceId: string | ObjectId,
-    role: string,
-    permissions:string,
+    userId: Types.ObjectId,
+    workspaceId: Types.ObjectId
 
   ): Promise<User | null> {
-    const data = { workspaceId, role,permissions ,joinDate: new Date() };
+   
 
 
     const updatedDocument = await UserModel.findOneAndUpdate(
       { _id: userId },
       {
-        $set: { title: role },
-        $push: { workspace: data },
+        
+        $push: { workspace: workspaceId },
       },
       { new: true }
     ).lean<User>().exec();
@@ -128,7 +126,7 @@ export class UserMongooseRepository extends BaseRepository<User,UserDoument> imp
     email: doc.email,
     name: doc.name,
     googleId:   doc.googleId ?? undefined,
-    role:doc.role
+    
     } 
     )
   );

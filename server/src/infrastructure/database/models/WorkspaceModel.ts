@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, ObjectId, Types } from 'mongoose';
 
-import { workspaceStatus,IMember ,workspaceStorage} from '../../../types/workpaceTypes';
+import { workspaceStatus,IMember ,workspaceStorage, Member} from '../../../types/workpaceTypes';
 
 
 
@@ -11,10 +11,12 @@ export interface WorkspaceDoument extends Document {
   role:string;
   ownerId:Types.ObjectId,
   createdAt: Date;
-  members: IMember[];
+  members: Member[];
   status:workspaceStatus;
   storage:workspaceStorage;
   logId:Schema.Types.ObjectId;
+  currentSubscription:Types.ObjectId,
+  stripeCustomerId:string
   
 }
 const MemberSchema: Schema = new Schema({
@@ -26,16 +28,11 @@ const MemberSchema: Schema = new Schema({
   title: {
     type: String,
     default:'Member',
-    
     required: true,
-  },
-  name:{
-    type:String,
-    
   },
   permissions:{
     type:String,
-    default:"Admin"
+    default:"Viewer"
   },
  
   role:{
@@ -52,10 +49,11 @@ const MemberSchema: Schema = new Schema({
   isOnline:{
     type:Boolean,
     default:false
-  }
+  },
+  
 
  
-}, )
+}, { _id: false,timestamps:true })
 const WorkspaceSchema: Schema<WorkspaceDoument> = new Schema<WorkspaceDoument>({
 
   name: {
@@ -86,13 +84,19 @@ const WorkspaceSchema: Schema<WorkspaceDoument> = new Schema<WorkspaceDoument>({
   },
   status:{
     type:String,
-    default:"active"
+    default:"Active"
   },
   storage:{
     type:Number,
     default:1
   },
-  logId:{type:Schema.Types.ObjectId}
+ currentSubscription:{
+  type:Schema.Types.ObjectId,
+  ref:'Subscription'
+ },
+ stripeCustomerId:{
+  type:String
+ }
 
 });
 

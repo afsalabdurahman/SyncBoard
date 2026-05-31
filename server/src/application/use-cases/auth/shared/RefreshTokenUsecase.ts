@@ -38,12 +38,15 @@ export class RefreshTokenUsecase implements IRefreshtoken {
             const newAccessToken = await this._authService.generateToken({
                 id: userId,
                 email: userData.email,
-                role: userData.role,
+                role:userRole
+
+            
             });
             const newRefreshToken = await this._authService.generateRefreshToken({
                 id: userId,
                 email: userData.email,
-                role: userData.role,
+                role:userRole
+             
             });
             return { accessToken: newAccessToken, refreshToken: newRefreshToken };
        

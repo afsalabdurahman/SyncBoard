@@ -61,7 +61,7 @@ const userId=useUser();
       return;
     }
     try {
-      const response = await createWorkspace(email,WorkspaceName,slug,title,Userrole,ownerId??userId?._id)
+      const response = await createWorkspace(email,WorkspaceName,slug,title,"Admin",ownerId??userId?._id)
       if (response) {
 dispatch (setWorkspace(response.data.workspaceResponseDTO.workspace))
 dispatch (setUserData(response.data.workspaceResponseDTO.user))

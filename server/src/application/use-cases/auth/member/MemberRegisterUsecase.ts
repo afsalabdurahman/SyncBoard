@@ -13,6 +13,7 @@ import { AuthMapper } from "../../../mappers/AuthMapper";
 import { ResponseMessages } from "../../../../common/erroResponse";
 import { IinvitationRepository } from "../../../../domain/interfaces/repositories/IInvitationRepository";
 import { io } from "../../../../server";
+import { stringToMongoObj } from "../../../../utils/convertMongoObject";
 @injectable()
 export class MemberRegisterUsecase implements IMemberRegister {
   constructor(
@@ -62,12 +63,13 @@ throw new ConflictError(ResponseMessages.USER_EXISTS)
     const token = this._authService.generateToken({
       id: createMember._id!,
       email: createMember.email!,
-      role: createMember.role!,
+   role:"Member"
     });
     const refreshToken = this._authService.generateRefreshToken({
       id: createMember._id!,
       email: createMember.email!,
-      role: createMember.role!,
+      role:"Member"
+    
     });
 
 
@@ -78,10 +80,8 @@ throw new ConflictError(ResponseMessages.USER_EXISTS)
     if (!workspace || !workspace.slug ||!workspace._id )
       throw new NotFoundError(ResponseMessages.NO_CONTENT + "Workspace");
     await this._userRepository.addToWorkspace(
-      createMember._id,
-      workspace._id,
-      dto.role,
-      "Viewer",
+      stringToMongoObj( createMember._id),
+     stringToMongoObj( workspace._id.toString()),
     );
 
     if (!this._workspaceRepository.addMemberToWorkspace)

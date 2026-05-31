@@ -47,16 +47,19 @@ export class OTPService implements IOTP {
     if (isOtp && isOtp.otp === input.otp) {
 
       const savedUser = await this._userRepository.userVerified(stringToMongoObj(user._id), true, null)
+     console.log(savedUser,"SAVEDUSER")
       if (!savedUser) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
       const token = this._authService.generateToken({
         id: savedUser._id!,
         email: savedUser.email!,
-        role: savedUser.role!,
+        role:"Admin"
+        
       });
       const refreshToken = this._authService.generateRefreshToken({
         id: savedUser._id!,
         email: savedUser.email!,
-        role: savedUser.role!,
+        role:"Admin"
+       
       });
       await this._userRepository.updateOnlineStatus(savedUser._id ?? "")
       return AuthMapper.mapEntityToUser(savedUser, token, refreshToken)

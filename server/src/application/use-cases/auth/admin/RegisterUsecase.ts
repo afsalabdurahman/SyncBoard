@@ -93,8 +93,7 @@ console.log(AdminEntity,"entit7")
     // 🧠 2. Check existing user by email (IMPORTANT FIX)
     const existingUser = await this._userRepository.findByEmail(email);
 
-    if(existingUser?.isBlocked) throw new NotFoundError(ResponseMessages.USER_BLOCKED);
-    if(existingUser?.isDeleted) throw new NotFoundError(ResponseMessages.DELETED)
+
     if (existingUser) {
 
       // 🔥 Attach googleId if missing (Account linking)
@@ -110,13 +109,15 @@ console.log(AdminEntity,"entit7")
       const token = this._authService.generateToken({
         id: existingUser._id!,
         email: existingUser.email!,
-        role: existingUser.role!,
+        role:"Admin"
+      
       });
 
       const refreshToken = this._authService.generateRefreshToken({
         id: existingUser._id!,
         email: existingUser.email!,
-        role: existingUser.role!,
+        role:"Admin"
+     
       });
 
       // 🟢 Update online status
@@ -153,7 +154,6 @@ console.log(AdminEntity,"entit7")
       googleId:googleId,
       email:email,
       name:name??"Google user",
-      role:"Admin",
       isVerified:true,
   
 
@@ -173,13 +173,14 @@ console.log(AdminEntity,"entit7")
     const token = this._authService.generateToken({
       id: savedUser._id!,
       email: savedUser.email!,
-      role: savedUser.role!,
+      role:"Admin"
+     
     });
 
     const refreshToken = this._authService.generateRefreshToken({
       id: savedUser._id!,
       email: savedUser.email!,
-      role: savedUser.role!,
+      role:"Admin"
     });
 
     // 🟢 Update online status

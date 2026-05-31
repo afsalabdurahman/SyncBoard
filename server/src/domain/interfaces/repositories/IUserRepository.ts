@@ -18,11 +18,8 @@ export interface IUserRepository extends IBaseRepository<User | null> {
   updateProfile(userId: string,  merge: { profileData: Record<string, string> }): Promise<User | null>;
   changePassword(userId: string, newPassword: string): Promise<boolean>;
   addToWorkspace(
-    userId: string | ObjectId,
-    workspaceId: string | ObjectId,
-    role: string,
-    permissions?:string,
-    joinDate?: Date
+    userId: Types.ObjectId,
+    workspaceId: Types.ObjectId,
   ): Promise<User | null>;
   userVerified(userId:Types.ObjectId,isVerified:boolean,verificationExpiresAt:Date|null):Promise<User|null>
   findUsersInsameWorkspace(worspaceId: Types.ObjectId): Promise<User[] | null>;

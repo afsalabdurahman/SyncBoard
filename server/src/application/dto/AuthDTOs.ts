@@ -32,7 +32,7 @@ export interface AdminSignupResponseDTO {
   user:{
     name:string;
   email:string;
-  role:string
+
   id:string;
   }
   refreshToken:string;

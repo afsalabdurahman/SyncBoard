@@ -43,7 +43,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       { $push: { members: data } }, { new: true }
     ).lean().exec()
     if (!updatedWorkspce) return null;
-    return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString(), ownerId: updatedWorkspce.ownerId.toString(), members: updatedWorkspce.members.map(m => ({ ...m, permissions: m.permissions as "Admin" | "Viewer" | "Member" | undefined })) });
+    return new Workspace({ ...updatedWorkspce, _id: updatedWorkspce._id?.toString(), ownerId: updatedWorkspce.ownerId.toString(), members: updatedWorkspce.members.map(m => ({ ...m, permissions: m.permissions as "Admin" | "Viewer" | "Member"  })) });
 
   }
 
