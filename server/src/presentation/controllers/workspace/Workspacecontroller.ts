@@ -33,7 +33,8 @@ export class WorkspaceController {
     req: Request,
     res: Response,  
   ): Promise<void> {
-    const { emails, invitationLink,workspaceId } = req.body;
+    const { emails, invitationLink } = req.body;
+    const workspaceId = req.params.workspaceId as string
        await this._sentInvitaionUsecase.send(
         emails,
         invitationLink,
@@ -73,7 +74,7 @@ export class WorkspaceController {
   async abuseReport(req: Request, res: Response): Promise<void> {
       const input: AbuseRequestDTO = req.body
       const userId = req.params.id as string
-      const workspaceId = req.params.workspaceid as string
+      const workspaceId = req.params.workspaceId as string
       await this._abuseUsecase.execute(input, userId, workspaceId)
       res.status(HttpStatusCode.CREATED).json(ResponseMessages.CREATED)
     
@@ -103,7 +104,7 @@ export class WorkspaceController {
       const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
       const skip = (page - 1) * limit;
       const userid = req.params.userid;
-      const workspaceid = req.params.workspaceid;
+      const workspaceid = req.params.workspaceId;
 
       const { mappedReponse, docsize } = await this._abuseUsecase.listOfReports(page, limit, skip, userid, workspaceid);
       res.status(HttpStatusCode.OK).json({ data: mappedReponse, count: docsize })
@@ -113,7 +114,7 @@ export class WorkspaceController {
    
       const q = req.query.q as string
       const userid = req.params.userid as string
-      const workspaceid = req.params.workspaceid as string
+      const workspaceid = req.params.workspaceId as string
       const result = await this._abuseUsecase.searchReport(q, workspaceid, userid);
       res.status(HttpStatusCode.OK).json({ data: result })
     
@@ -144,7 +145,7 @@ export class WorkspaceController {
       res.status(HttpStatusCode.OK).json(user);
   }
  async listWorkspaces(req:Request,res:Response):Promise<void>{
-    console.log("vc)))))))))))))))))))alingggg")
+    
     const userId = req.params.id;
     console.log(userId)
    const list= await this._createWorkspceUsecases.listWorkspacesByUserId(userId);

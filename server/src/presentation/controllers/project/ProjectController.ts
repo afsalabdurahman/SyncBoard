@@ -18,7 +18,7 @@ export class ProjectController {
 
   ): Promise<void> {
     const input: ProjectRequstDTO = req.body.newProject as ProjectRequstDTO;
-    const workspaceId = req.params.workspaceid;
+    const workspaceId = req.params.workspaceId as string
     const ResponseDTO = await this._projectUsecase.excute(input, workspaceId);
     res.status(HttpStatusCode.CREATED).json({ message: ResponseDTO });
   }
@@ -26,7 +26,7 @@ export class ProjectController {
     req: Request,
     res: Response,
   ): Promise<void> {
-  const workspaceId = req.params.workspaceid;
+  const workspaceId = req.params.workspaceId as string;
     const projects = await this._projectUsecase.getAllProjects(workspaceId);
     res.status(HttpStatusCode.OK).json(projects);
   }

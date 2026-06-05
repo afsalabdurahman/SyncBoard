@@ -19,4 +19,8 @@ export interface listWorkspace{
 name:string,
 id:Types.ObjectId |string
 }
+export interface PopulatedWorkspace {
+  _id: Types.ObjectId;
+  name: string;
+}
 

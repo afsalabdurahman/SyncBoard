@@ -24,9 +24,10 @@ export class ProjectUsecase implements IProjectUsecase {
   async excute(dto: ProjectRequstDTO, workspaceId: string): Promise<ProjectResponseDTO> {
 
     const isValid = ProjectMapper.ValidateProjectData(dto);
-
+console.log(workspaceId,"ID WORKPSCE IN Usecase")
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const projectEntity = ProjectMapper.mapProjectToEntity(dto, workspaceId);
+    console.log(projectEntity,"Entity Projects")
     const projectData = await this._projectRepository.create(projectEntity);
     if (!projectData || !projectData.workspaceId) throw new ConflictError("Project" + ResponseMessages.CREATION_FAILED);
 

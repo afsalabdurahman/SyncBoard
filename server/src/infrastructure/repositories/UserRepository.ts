@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import { UserResponseDTO } from "../../application/dto/SuperDTO";
 import { ProjectModel } from "../database/models/ProjectModel";
 import { stringToMongoObj } from "../../utils/convertMongoObject";
+import { listWorkspace, PopulatedWorkspace } from "../../application/dto/WorkspaceDTOs";
 @injectable()
 export class UserMongooseRepository extends BaseRepository<User,UserDoument> implements IUserRepository {
   constructor() {
@@ -228,5 +229,24 @@ async paginationUser(
   async deleteuserById(userId: Types.ObjectId): Promise<void> {
     await UserModel.findByIdAndDelete(userId)
   }
+  async findWorkspacesByUserId(
+  userId: string
+): Promise<{ id: string; name: string }[] | null> {
+ const user = await UserModel.findById(userId).populate<{
+  workspace: {
+    _id: Types.ObjectId;
+    name: string;
+  }[];
+}>("workspace", "name");
+
+if (!user) {
+  return null;
+}
+
+return user.workspace.map((workspace) => ({
+  id: workspace._id.toString(),
+  name: workspace.name,
+}));
+}
 }
 

@@ -280,4 +280,18 @@ async findUserStatusInWorkspace(
     isOnline: member.isOnline,
   };
 }
+async findActiveWorkspace(
+  userId: Types.ObjectId
+): Promise<Workspace | null> {
+  return await WorkspaceModel.findOne({
+    status: "Active",
+    members: {
+      $elemMatch: {
+        userId,
+        isDeleted: false,
+        isBlocked: false,
+      },
+    },
+  });
+}
 }

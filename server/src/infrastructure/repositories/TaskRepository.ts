@@ -128,30 +128,48 @@ export class TaskRepository implements ITaskRepository {
     const countTask = TaskModel.countDocuments();
     return countTask
   }
-  async getPagenationaTask(workspaceId: Types.ObjectId, page: number, limit: number, skip: number, projectId: string | null): Promise<{
-    items: Task[];
-    totalItems: number;
-  }> {
+ async getPagenationaTask(
+  workspaceId: Types.ObjectId,
+  page: number,
+  limit: number,
+  skip: number,
+  projectId: string | null
+): Promise<{
+  items: Task[];
+  totalItems: number;
+}> {
 
-    //
-    const projects = await ProjectModel.findOne({ workspaceId: workspaceId }, { _id: 1 })
+  let filter: Record<string, unknown>;
 
-    await TaskModel.find({ projectId: projects?._id });
+  if (projectId) {
+    filter = {
+      projectId: new Types.ObjectId(projectId),
+    };
+  } else {
+    const projects = await ProjectModel.find(
+      { workspaceId },
+      { _id: 1 }
+    ).lean();
 
-    // END 
-    const totalItems = await TaskModel.countDocuments(
-      projectId ? { projectId } : {}
-    );
-    const items = await TaskModel.find(
-      projectId ? { projectId } : {}
-    )
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-    return { items, totalItems }
+    const projectIds = projects.map(project => project._id);
 
-
+    filter = {
+      projectId: { $in: projectIds },
+    };
   }
+
+  const totalItems = await TaskModel.countDocuments(filter);
+
+  const items = await TaskModel.find(filter)
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  return {
+    items,
+    totalItems,
+  };
+}
   async addComments(taskId: string, comments: commentType): Promise<Task | null> {
     const updatedTask = await TaskModel.findByIdAndUpdate(
       taskId,

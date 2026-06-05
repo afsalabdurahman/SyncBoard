@@ -25,9 +25,9 @@ export class AdminLoginUseCase implements ILoginUseCase {
 
   async execute(input: LoginRequestDTO): Promise<adminResponseDTO> {
     const isExist = await this._userRepository.findByEmail(input.email);
-    if (!isExist?._id || !isExist.workspace) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+    if (!isExist?._id || !isExist.workspace?.length) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     const user = await this._userRepository.findUser(isExist?._id)
-    if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+    // if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NO_CONTENT)
     //const workspceId = user.workspace[0].workspaceId
     if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const isValid = await this._authService.comparePassword(
@@ -36,7 +36,8 @@ export class AdminLoginUseCase implements ILoginUseCase {
     );
     if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
-    const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(input.workspaceId ?? ""))
+    const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(input.workspaceId ?? ""));
+    console.log(workspace,"WORKPSCEPE")
     if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     if (workspace?.status.toLowerCase() == "suspend") throw new ForbiddenError("Workspace not found")
     if (!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)

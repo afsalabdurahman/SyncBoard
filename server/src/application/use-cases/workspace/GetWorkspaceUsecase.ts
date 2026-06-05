@@ -30,6 +30,7 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
    }
   async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{
           const workspceData = await this.workspaceRepository.findbySlug(slug);
+          console.log(workspceData,"DATA WORKP IN GET USECSE")
             if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT + ' Workspace');
                const users=await this.userRepository.searchUser(stringToMongoObj(workspceData._id.toString()),query);
                return users

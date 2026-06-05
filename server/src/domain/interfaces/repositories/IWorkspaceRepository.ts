@@ -20,7 +20,6 @@ export interface IWorkspaceRepository {
   addlogId?(workspaceId:mongoose.Types.ObjectId,logId:mongoose.Types.ObjectId):Promise<boolean>
   updateWorkspaceDate(workspaceId:string,merge:Record<string,string>):Promise<Workspace | null>
   findAll():Promise<WorkspaceDoument[]>
-  findWorkspacesByUserId(userId:string):Promise<{ id: string; name: string }[]|null>
   updatePermissions(workspaceId:Types.ObjectId,userId:Types.ObjectId,permission:string):Promise<void>
   findPermisssion(workspaceId:Types.ObjectId,userId:Types.ObjectId):Promise<string>
 updateUserDataInWorkspace(workspaceId:Types.ObjectId,userId:Types.ObjectId,data:UserInWorkspaceDTO):Promise<void>
@@ -32,5 +31,5 @@ updateUserDataInWorkspace(workspaceId:Types.ObjectId,userId:Types.ObjectId,data:
   projectId: string | null
 ): Promise<{ items: UserDoument[] | null; totalItems: number }>
 findUserStatusInWorkspace(userId:Types.ObjectId,workspaceId:Types.ObjectId):Promise<UserInWorkspaceDTO|null>
-
+findActiveWorkspace(userId:Types.ObjectId):Promise<Workspace|null>
 }

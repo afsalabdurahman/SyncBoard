@@ -3,6 +3,8 @@ import {  ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 import { z } from "zod";
 
 import mongoose from "mongoose";
+import { string } from "zod/v4";
+import { stringToMongoObj } from "../../utils/convertMongoObject";
 
 
 export const StatusTypesSchema = z.enum(["Pending", "In Progress", "Completed", "On Hold", "Planning"]);
@@ -23,8 +25,8 @@ export class ProjectMapper {
       priority: input.priority,
       clientName: input.clientName,
       
-      projectAdminId: new mongoose.Types.ObjectId (input.projectAdminId),
-      workspaceId: new  mongoose.Types.ObjectId (workspaceId),
+      projectAdminId: stringToMongoObj(input.projectAdminId),
+      workspaceId: stringToMongoObj (workspaceId),
       attachedUrl: input.attachedUrl
         ? Array.isArray(input.attachedUrl)
           ? input.attachedUrl

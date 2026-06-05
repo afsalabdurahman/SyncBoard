@@ -28,5 +28,7 @@ export interface IUserRepository extends IBaseRepository<User | null> {
   paginationUser(workspaceId: string | ObjectId, page: number, limit: number, skip: number,projectId:string|null): Promise<{ items: UserDoument[] | null, totalItems: number }>
   changeOnlineStatus(userId: Types.ObjectId): Promise<boolean>;
    searchUser(workspaceId:Types.ObjectId,query:string):Promise<UserResponseDTO[]>
-   deleteuserById(userId:Types.ObjectId):Promise<void>
+   deleteuserById(userId:Types.ObjectId):Promise<void>;
+  findWorkspacesByUserId(userId:string):Promise<{ id: string; name: string }[]|null>
+
 }

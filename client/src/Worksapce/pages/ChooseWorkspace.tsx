@@ -50,7 +50,7 @@ const naviagate = useNavigate()
 
 
 const selectWorkspace = async (sWorkspace)=>{
- 
+ console.log(sWorkspace,"SWORKDPSCE")
   setSelectedWorkspace(sWorkspace)
   const workspaceData=await findWorkspaceById(sWorkspace.id)
    dispatch(reduxSetWorkspace(workspaceData))
@@ -145,18 +145,8 @@ const selectWorkspace = async (sWorkspace)=>{
               workspaces.map((workspace) => (
                 <button
                   key={workspace.id}
-                  onClick={() => {
-                  
-selectWorkspace(workspace)
-                    // dispatch(
-                    //   setSwitchProject({
-                    //     projectId: workspace.id,
-                    //     projectName: workspace.name,
-                    //     isSwitch: true,
-                    //   })
-                    // );
-
-                   
+                  onClick={() => {        
+selectWorkspace(workspace)     
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition"
                 >

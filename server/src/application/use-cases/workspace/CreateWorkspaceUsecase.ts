@@ -162,7 +162,7 @@ if(!user._id) throw new NotFoundError("user not found")
     return buffer as Buffer;
   }
   async listWorkspacesByUserId(userId: string): Promise<listWorkspace[]> {
-    const list = await this._workspaceRepository.findWorkspacesByUserId(userId);
+    const list = await this._userRepository.findWorkspacesByUserId(userId);
     if (!list) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
     return list
   }

@@ -69,7 +69,7 @@ export class TaskController {
     res.status(HttpStatusCode.OK);
   }
   async findAllCompletedTasks(req: Request, res: Response): Promise<void> {
-    const workspaceid = req.params.workspaceid as string
+    const workspaceid = req.params.workspaceId as string
     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;
@@ -108,7 +108,7 @@ export class TaskController {
     res.status(HttpStatusCode.OK).json(task);
   }
   async pagination(req: CustomRequest, res: Response): Promise<void> {
-    const workspaceId = req.params.workspaceid as string
+    const workspaceId = req.params.workspaceId as string
     const page = typeof req.query.page === 'string' ? parseInt(req.query.page, 10) : 1;
     const limit = typeof req.query.limit === 'string' ? parseInt(req.query.limit, 10) : 10;
     const skip = (page - 1) * limit;

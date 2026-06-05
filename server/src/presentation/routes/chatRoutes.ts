@@ -9,7 +9,7 @@ const route = Router();
 const memberAuth = [authMiddelware(), roleMiddleware(["Member", "Admin"])];
 const chatController = container.resolve(ChatController);
 
-route.get("/history/:workspaceid", memberAuth, chatController.chatHistory.bind(chatController));
-route.get("/online/:workspaceid", memberAuth, chatController.findOnlineStatus.bind(chatController));
+route.get("/history/:workspaceId", memberAuth, chatController.chatHistory.bind(chatController));
+route.get("/online/:workspaceId", memberAuth, chatController.findOnlineStatus.bind(chatController));
 
 export default route;

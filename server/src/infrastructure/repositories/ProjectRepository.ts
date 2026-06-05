@@ -15,6 +15,7 @@ export class ProjectRepository extends BaseRepository<Project,ProjectDocument> i
 
 
  async getAllProjects(workspaceId:Types.ObjectId): Promise<ProjectRepositoryDTO[]> {
+  console.log(workspaceId,"IN REPOSTITORY PROHECY")
   const projects = await ProjectModel
     .find({workspaceId:workspaceId})
     .sort({ createdAt: -1 })
