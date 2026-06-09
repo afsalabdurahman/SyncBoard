@@ -14,7 +14,7 @@ await this._chatuseCase.sendMessage(message)
 }
 
 async chatHistory(req:Request,res:Response,):Promise<void>{
-    const workapaceid=req.params.workspaceid as string;
+    const workapaceid=req.params.workspaceId as string;
 const historyData=await this._chatuseCase.history(workapaceid)
 res.status(HttpStatusCode.OK).json(historyData)
 }

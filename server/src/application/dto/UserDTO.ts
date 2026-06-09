@@ -25,17 +25,17 @@ location:string;
 }
 export interface ProfileUpdateDTO {
   name: string;
-  role: string;
-  title: string;
-  location: string;
-  status: string;
-  email: string;
-  joinDate: string;
+  role?: string;
+  title?: string;
+  location?: string;
+  status?: string;
+  email?: string;
+  joinDate?: string;
   address?: string | null;
   about?: string | null;
   phone?: string | null;
   imageUrl?: string | null;
-  skills: string[];
+  skills?: string[];
 }
 export interface UserInWorkspaceDTO{
 title?:string;

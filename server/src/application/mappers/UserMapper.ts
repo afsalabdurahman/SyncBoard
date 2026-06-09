@@ -51,8 +51,8 @@ export class UserMapper{
 
   const schema = z.object({
     name: onlyLettersNumbersWithSpace,
-    role: onlyLettersNumbersWithSpace,
-    title: onlyLettersNumbersWithSpace,
+    // role: onlyLettersNumbersWithSpace,
+    // title: onlyLettersNumbersWithSpace,
     location: addressValidation,
     status: onlyLettersNumbersWithSpace,
 
@@ -62,7 +62,7 @@ export class UserMapper{
       message: "Join date is required",
     }),
 
-    address: addressValidation,
+     address: addressValidation,
 
 about: z
   .string()

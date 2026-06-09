@@ -45,7 +45,7 @@ export const handleApiError = (error: AxiosError): void => {
         } else if (isUserLoggedIn && message?.toLowerCase().includes("removed")) {
           toast.error("Your account has been removed.");
           store.dispatch(logoutUserAuth());
-        } else if (isUserLoggedIn && message?.toLowerCase().includes("Suspended")) {
+        } else if (isUserLoggedIn && message?.toLowerCase().includes("suspend")) {
           toast.error("Workspace is suspended")
           store.dispatch(logoutUserAuth());
         }

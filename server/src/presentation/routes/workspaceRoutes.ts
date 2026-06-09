@@ -12,7 +12,7 @@ const superAuh =[authMiddelware(),roleMiddleware(["SuperAdmin"])]
 const workspaceController = container.resolve(WorkspaceController);
 
 router.post("/create",workspaceController.Create.bind(workspaceController));
-router.post("/invite/:workspaceId",adminAuth,workspaceController.inviteMembers.bind(workspaceController));
+router.post("/invite/:workspaceId",memberAuth,workspaceController.inviteMembers.bind(workspaceController));
 router.get("/member/data/:workspaceslug",memberAuth,workspaceController.getAllMembersData.bind(workspaceController));
 router.get("/member/pagination/data/:workspaceslug",memberAuth,workspaceController.pagination.bind(workspaceController))
 router.patch("/update/:id",superAuh, workspaceController.updateWorkspace.bind(workspaceController))

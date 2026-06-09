@@ -61,14 +61,14 @@ const workspaceObjectId = stringToMongoObj(workspaceId);
       }
     const workspaceData = await workspaceUsecse.findWorkspace(workspaceObjectId);
     console.log(workspaceData,"DATA")
-   if(workspaceData?.status == "InActive"){
-    throw  new ForbiddenError('Workspace is Suspended')
+   if(workspaceData?.status == "Suspend"){
+    throw  new ForbiddenError('Workspace is Suspend')
    }
   const memberStatus = workspaceData?.members.find(
   (member) => member.userId.toString() === user._id?.toString()
 );
 if(memberStatus?.isBlocked || memberStatus?.isBlocked){
- throw new ForbiddenError(ResponseMessages.NO_CONTENT);
+ throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
 }
    console.log(memberStatus,"999")
       // if (!user.workspace || user.workspace.length === 0) {

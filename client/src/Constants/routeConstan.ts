@@ -21,7 +21,7 @@ export const ROUTES = {
     CREATE_WORKSPACE:'/workspace/create',
     SEND_COMMENT:'/task/send/comment/:taskId', 
     FETCH_COMMENT:'/task/comments/:taskId',
-    INVITATION_LINK:'/workspace/invite',
+    INVITATION_LINK:'/workspace/invite:workspaceId',
     ACTIVITIES:'/activities/all',
     FECTCH_ALL_USERS:'/workspace/member/pagination/data/:workspaceslug',
     SEARCH_ABUSE_REPORT:'workspace/abuse/report/search/:workspaceid/:userid',

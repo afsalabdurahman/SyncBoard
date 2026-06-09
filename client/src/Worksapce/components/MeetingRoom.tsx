@@ -114,7 +114,7 @@ export default function MeetingRoom() {
                 <div className="flex items-center">
                   <div className="relative mr-3">
                     <img
-                      src={member.imageUrl ?? "/images/user.jpeg"}
+                      src={member?.profileImage ?? "/images/user.jpeg"}
                       alt={member?.name}
                       className="w-10 h-10 rounded-full object-cover border"
                     />
@@ -124,7 +124,7 @@ export default function MeetingRoom() {
                   </div>
                   <div>
                     <p className="text-slate-800 font-medium">{member.name}</p>
-                    <p className="text-xs text-slate-500">{member.role}</p>
+                    <p className="text-xs text-slate-500">{member.title}</p>
                   </div>
                 </div>
 

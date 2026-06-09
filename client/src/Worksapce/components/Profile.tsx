@@ -33,6 +33,7 @@ const CLOUDINARY_URL = import.meta.env.VITE_BASE_CLOUDINARY;
 import { findPermission, profilePartialUpdate } from "../apis/workspaceapis";
 import { RootState } from "../../Redux/store";
 import { useWorkspaceid } from "../hooks/workspacehooks";
+import { getMemberDataBasedWorkspace } from "../../Member/hooks/memeberhooks";
 export default function Profile() {
   //image
   const navigate = useNavigate();
@@ -43,7 +44,8 @@ export default function Profile() {
     fileInputRef.current.click();
   };
 
-
+const member=getMemberDataBasedWorkspace();
+console.log(member,"Member+++")
   const Userdata = useSelector((state: RootState) => {
     const date = new Date(state.workspace.workspace.createdAt);
     const formateDate = date.toLocaleString("en-US", {
@@ -68,11 +70,11 @@ export default function Profile() {
   // Using state to manage profile data so it can be edited
   const [profileData, setProfileData] = useState({
     name: Userdata?.userData?.user?.name || null,
-    role: Userdata?.userData?.user?.role || null,
+    role: member?.role || null,
     status: "NA",
     imageUrl: Userdata?.userData?.user?.imageUrl || null,
     address: Userdata?.userData?.user?.address || null,
-    title: Userdata?.userData?.user?.title || null,
+    title: member?.title|| null,
     location: Userdata?.userData?.user?.location || null,
     email: Userdata?.userData?.user?.email || null,
     phone: Userdata?.userData?.user?.phone || null,

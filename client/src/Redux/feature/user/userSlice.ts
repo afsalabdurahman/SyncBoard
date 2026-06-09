@@ -8,7 +8,6 @@ export interface User {
   role?:string;
   superAdmin?:boolean;
   isAdmin?:boolean;
-  title?:string;
   imageUrl?: string;
   about?: string;
   location?: string;

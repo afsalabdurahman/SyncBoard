@@ -66,14 +66,19 @@ const [permission,setPermission]=useState("")
   const response = await sendInvitation(emails,invitationLink,workspaceid)
 
       if (response) {
+     
         setLoad(false);
-  
-        toast.success("Invitation send");
+  if(response?.message){
+    toast.warning(response.message)
+  }else{
+toast.success("Invitation send");
         setTimeout(() => {
           // dispatch(setLog(response.data.logs))
           // navigate("/workspace");
         }, 5000);
       }
+  }
+        
     } catch  {
       setLoad(false);
       toast.error("Invitation send failed ");

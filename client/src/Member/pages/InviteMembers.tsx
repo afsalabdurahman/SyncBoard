@@ -10,10 +10,11 @@ import { useSelector } from "react-redux";
 import Loader from "../../Custom/reusecomponents/Loader";
 import { sendInvitaionMail } from "../apis/workspaceApi";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
-import { useUser } from "../../Worksapce/hooks/workspacehooks";
+import { useUser, useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { EmailField } from "../types/memberType";
 import { TeamMember } from "../types/memberType";
 import { User } from "../../Admin/types/userTypes";
+import { sendInvitation } from "../../Worksapce/apis/workspaceapis";
 
 
 interface CollabInterfaceProps {
@@ -50,7 +51,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
 
   const link = INVITE_LINK + (workspaceLink || "");
 
-
+const workspaceId = useWorkspaceid() as string
   const [loader, setLoader] = useState(false);
   const [emailss, setEmails] = useState<EmailField[]>(initialEmails);
   const [emails, setSingleEmail] = useState(null)
@@ -102,7 +103,8 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
     } else {
       setLoader(true);
       try {
-        const response = await sendInvitaionMail(emails, invitationLink)
+        const response =await sendInvitation(emails??"",invitationLink,workspaceId);
+                        
         if (response.status == 200) {
           setLoader(false);
 

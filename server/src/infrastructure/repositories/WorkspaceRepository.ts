@@ -235,7 +235,7 @@ async paginationUserInWorkspace(
       _id: "$user._id",
       name: "$user.name",
       email: "$user.email",
-      profileImage: "$user.profileImage",
+      profileImage: "$user.imageUrl",
 
       title: "$members.title",
       permissions: "$members.permissions",

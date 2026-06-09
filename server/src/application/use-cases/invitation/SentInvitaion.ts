@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailServices";
 import { ISentInvitaion } from "../../repositories/imail/ISentInvitation";
 import { AuthMapper } from "../../mappers/AuthMapper";
-import { NotFoundError, ValidationError } from "../../../utils/errors";
+import { CustomError, NotFoundError, ValidationError } from "../../../utils/errors";
 import { IinvitationRepository } from "../../../domain/interfaces/repositories/IInvitationRepository";
 import { Invitation } from "../../../domain/entities/Invitation";
 import { InvitationStatus } from "../../../types/inviteTypes";
@@ -34,6 +34,11 @@ export class SentInvitaionUsecase implements ISentInvitaion {
          const inviteEntity = new Invitation({ workspaceId: workspaceId, status: InvitationStatus.PENDING, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), invitedTo: email, token: randomToken })
          await this._invitaionRepository.create(inviteEntity)
          if (user) {
+           const exists = user.workspace?.some(
+  (id) => id.toString() === workspaceId
+);
+console.log(user,"UserEXIST",exists)
+if(exists) throw new CustomError("User already have this workspace",200)
             const slug = invitaionLink.split("/").pop()?.split(" ")[0]
             io.emit(user.email, {
                message: "Do you want join workspace",

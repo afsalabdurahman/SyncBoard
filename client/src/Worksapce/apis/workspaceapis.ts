@@ -174,7 +174,7 @@ export const sendInvitation = async (emails: string | string[], invitationLink: 
             { withCredentials: true }
         );
         
-        return response
+        return response.data
     } catch (error) {
         const err = catchErrorHandle(error, "Send failed");
         throw (err)
