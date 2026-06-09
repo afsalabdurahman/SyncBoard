@@ -82,7 +82,7 @@ export const ROUTES = {
   },
   TICKETS:{
     MY_TICKETS:'ticket/mytickets/:workspaceId',
-    CREATE:'ticket/create',
+    CREATE:'ticket/create/:workspaceId',
     UPDATE_MEG:'ticket/update/message/:id'
   },
   TASKS:{

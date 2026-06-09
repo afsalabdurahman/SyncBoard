@@ -14,12 +14,13 @@ import { useMember } from "../../Member/hooks/memeberhooks";
 
 import { toast } from "react-toastify";
 import { skipToken } from "@reduxjs/toolkit/query/react";
+import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 
 const Tickets = () => {
   const user = useMember();
 
-  const userId = user._id;
-  const workspaceId = user.workspace[0]?.workspaceId;
+  const userId = user?._id;
+  const workspaceId = useWorkspaceid() as string
 
   const [createTicket] = useCreateTicketsMutation();
   const [updateMsg] = useUpdateMsgMutation();
@@ -113,7 +114,7 @@ const Tickets = () => {
     };
 
     try {
-      await createTicket(ticket).unwrap();
+      await createTicket(ticket,workspaceId).unwrap();
       toast.success("Ticket created successfully");
     } catch (error: unknown) {
       const message =

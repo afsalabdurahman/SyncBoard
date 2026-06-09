@@ -12,6 +12,7 @@ import { TicketDocument } from "../../../infrastructure/database/models/TicketMo
 export class TicketUsecase implements ITicketUsecase{
     constructor(@inject("TicketRepository")private _ticketRepository:ITicketRepository ){}
     async execute(input: ticketRequestDTO): Promise<void> {
+        console.log(input,'INput++++')
         const isValid=TicketMapper.validateTicket(input);
          if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
          const TicketEntity= TicketMapper.ticketToEntity(input)

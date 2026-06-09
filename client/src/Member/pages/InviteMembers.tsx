@@ -105,7 +105,7 @@ const workspaceId = useWorkspaceid() as string
       try {
         const response =await sendInvitation(emails??"",invitationLink,workspaceId);
                         
-        if (response.status == 200) {
+        if (response) {
           setLoader(false);
 
           toast.success("Invitation send");

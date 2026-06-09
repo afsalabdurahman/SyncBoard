@@ -12,6 +12,7 @@ constructor(
     @inject("TicketUsecase")private _ticketUsecases:ITicketUsecase
 ){}
 async createTicket(req:Request,res:Response):Promise<void>{
+        console.log(req.body,"BU))))")
     const input = req.body as ticketRequestDTO
     await this._ticketUsecases.execute(input)
 res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
@@ -21,7 +22,7 @@ res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})
 }
 async findMyTickets(req:Request,res:Response):Promise<void>{
    
-        const workspaceId = req.params.workspaceid as string
+        const workspaceId = req.params.workspaceId as string
         const responseDTO=await this._ticketUsecases.getMyTickets(workspaceId)
         res.status(HttpStatusCode.OK).json(responseDTO)
    

@@ -11,8 +11,8 @@ const superAuth = [authMiddelware(), roleMiddleware(["Admin", "SuperAdmin"])];
 
 const ticketController = container.resolve(TicketController);
 
-router.post("/create",adminAuth,ticketController.createTicket.bind(ticketController));
-router.get("/mytickets/:workspaceid",adminAuth,ticketController.findMyTickets.bind(ticketController))
+router.post("/create/:workspaceId",adminAuth,ticketController.createTicket.bind(ticketController));
+router.get("/mytickets/:workspaceId",adminAuth,ticketController.findMyTickets.bind(ticketController))
 router.post("/update/message/:id",superAuth,ticketController.updateTicketMsg.bind(ticketController))
 router.patch("/update/status/:id",superAuth,ticketController.updateTicketStatus.bind(ticketController))
 

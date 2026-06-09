@@ -17,7 +17,7 @@ export const adminDataHandleApi = createApi({
   }),
   createTickets:builder.mutation({
     query:(ticket)=>({
-         url:ROUTES.TICKETS.CREATE,
+         url:ROUTES.TICKETS.CREATE.replace(":workspaceId",ticket.workspaceId),
          method:'POST',
          body:ticket,
     }),invalidatesTags:["Tickets"]
