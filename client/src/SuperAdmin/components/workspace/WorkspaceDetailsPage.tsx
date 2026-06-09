@@ -18,6 +18,7 @@ import { useGetAlluserListQuery, useUpdateWorkspaceMutation } from "../../apis/f
 import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
 
 export default function WorkspaceDetailsPage(props) {
+  console.log(props,"Propss++")
   const [updateWorkspace, { isLoading: isUpdating }] = useUpdateWorkspaceMutation();
   const { data, isLoading } = useGetAlluserListQuery(
     { workspaceslug: props.viewDetails?.slug, page: 1, limit: 5 },
@@ -37,19 +38,19 @@ export default function WorkspaceDetailsPage(props) {
   };
 
   const statusColors = {
-    active: "bg-green-100 text-green-800",
+    Active: "bg-green-100 text-green-800",
     suspended: "bg-red-100 text-red-800",
-    suspend: "bg-red-100 text-red-800", // in case backend uses "suspend"
+    Suspend: "bg-red-100 text-red-800", // in case backend uses "suspend"
     trial: "bg-blue-100 text-blue-800",
   };
 
   const suspend = () => {
-    setStatusToSet("suspend"); // or "suspend" — match what your backend expects
+    setStatusToSet("Suspend"); // or "suspend" — match what your backend expects
     setIsDialogOpen(true);
   };
 
   const reactivate = () => {
-    setStatusToSet("active");
+    setStatusToSet("Active");
     setIsDialogOpen(true);
   };
 
@@ -100,22 +101,12 @@ export default function WorkspaceDetailsPage(props) {
     return <div className="p-10 text-center">Loading workspace details...</div>;
   }
 
-  const currentStatus = props.viewDetails.status?.toLowerCase() || "active";
+  const currentStatus = props.viewDetails.status || "Active";
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      /> */}
+     
+       
 
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <div className="p-6 space-y-6">
@@ -174,7 +165,7 @@ export default function WorkspaceDetailsPage(props) {
               </div>
 
               <div className="flex items-center gap-3 flex-wrap">
-                {currentStatus === "active" || currentStatus === "trial" ? (
+                {currentStatus === "Active" || currentStatus === "trial" ? (
                   <Button
                     variant="outline"
                     className="border-red-200 text-red-700 hover:bg-red-50 gap-2"

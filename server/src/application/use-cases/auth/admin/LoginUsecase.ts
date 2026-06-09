@@ -124,7 +124,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
 
   async superAdmin(input: LoginRequestDTO): Promise<SuperadminLoginResponseDTO | null> {
     const isExist = await this._userRepository.findByEmail(input.email)
-
+console.log(isExist,"EXTANCE+++++")
     if (!isExist) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     if (!isExist.isSuperAdmin) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const superAdmin = await this._userRepository.findUser(isExist?._id ?? "") as User

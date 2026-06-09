@@ -73,7 +73,7 @@ stripeCustomerId:"",
         .regex(/^[A-Za-z]+(?: [A-Za-z]+)*$/, "Only letters allowed, spaces only in middle").optional(),
 
       plan: z.enum(["free", "basic", "pro", "enterprise"]).optional(),
-      status: z.enum(["active", "suspend"]).optional()
+      status: z.enum(["Active", "Suspend"]).optional()
     });
 
     return isValid.safeParse(input);

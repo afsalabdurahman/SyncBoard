@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, ObjectId, Types } from 'mongoose';
 
-import { workspaceStatus,IMember ,workspaceStorage, Member} from '../../../types/workpaceTypes';
+import { workspaceStatus ,workspaceStorage, Member} from '../../../types/workpaceTypes';
 
 
 

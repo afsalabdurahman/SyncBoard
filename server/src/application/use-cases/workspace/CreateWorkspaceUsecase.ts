@@ -79,7 +79,7 @@ if(!user._id) throw new NotFoundError("user not found")
     logId: Types.ObjectId
   ): Promise<boolean> {
     if (!this._workspaceRepository.addlogId) throw new NotFoundError(ResponseMessages.NO_CONTENT);
-    const result = this._workspaceRepository.addlogId(id, logId);
+    const result = await this._workspaceRepository.addlogId(id, logId);
     if (!result) throw new InternalServerError(ResponseMessages.CONFLICT);
     return true;
   }
@@ -88,8 +88,9 @@ if(!user._id) throw new NotFoundError("user not found")
     const isValid = WorkspaceMapper.workspaceUpdateValidator(merge);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     if (merge.planKey) {
-      this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id), merge.planKey, "active")
+     await this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id), merge.planKey, "Active")
     }
+    console.log(merge,"MergeDATA++")
     await this._workspaceRepository.updateWorkspaceDate(id, merge)
 
 

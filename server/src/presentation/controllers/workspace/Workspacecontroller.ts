@@ -67,6 +67,7 @@ export class WorkspaceController {
   async updateWorkspace(req: Request, res: Response,): Promise<void> {
       const workspaceId = req.params.id as string
       const merge = req.body;
+      console.log(merge,"Merge")
       await this._createWorkspceUsecases.updateWorkspaceData(workspaceId, merge)
       res.status(HttpStatusCode.OK).json({ message: "Updated" })
     
