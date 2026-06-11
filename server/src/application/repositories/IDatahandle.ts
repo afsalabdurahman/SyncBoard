@@ -2,12 +2,12 @@ import { Plan } from "../../domain/entities/Plan"
 import { Ticket } from "../../domain/entities/Ticket"
 import { CountResponseDTO, CountWorkspaceReponseDTO } from "../dto/DatahandleDTO"
 import { PlanRequestDTO } from "../dto/PlanDTO"
-import { RevenuChartReponseDTO, SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../dto/SuperDTO"
+import { RevenuChartReponseDTO, SuperSubscriptionResponseDTO, SuperUserResponseDto, UserDetailsResponseDto, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../dto/SuperDTO"
 export interface IDatahandleUsecase {
     fetchDataCounts(): Promise<CountResponseDTO | null>
     fetchDataworkspace(limit: number, skip: number,search:string,filter:string,plan:string): Promise<{ responseDTO: CountWorkspaceReponseDTO[], totalCount: number }>
     fetchAllUsers(limit: number, skip: number): Promise<{ responseDTO: UserResponseDTO[], totalCount: number }>
-    fetchAUser(userId: string): Promise<UserDetailsResponseDTO>
+    fetchAUser(userId: string): Promise<UserDetailsResponseDto>
     fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[]|[], totalDocCounts: number }>
     fetchTickets(): Promise<Ticket[]>;
     fetchPlans():Promise<Plan[]>;

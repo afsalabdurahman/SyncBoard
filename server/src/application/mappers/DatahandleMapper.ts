@@ -1,7 +1,7 @@
 import { Abuse } from "../../domain/entities/Abuse";
 import { formatDate, getNextMonthEnd } from "../../utils/dateCoverter";
 import {  CountWorkspaceReponseDTO } from "../dto/DatahandleDTO";
-import {  listOfSubscriptionsDTO, SubscriptionAggregateDTO,   SuperSubscriptionResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, UserDetailsResponseDTO, WorkspaceAggResponseDTO } from "../dto/SuperDTO";
+import {  listOfSubscriptionsDTO, SubscriptionAggregateDTO,   SuperSubscriptionResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserDetailsResponseDTO, WorkspaceAggResponseDTO } from "../dto/SuperDTO";
 export class DatahandleMapper {
   static mapSuperEntityToResponse(userCount: number, workspaceCount: number, data: SubscriptionAggregateDTO[], abusereportlas: Abuse[]) {
     const Abuse = abusereportlas.map((report) => ({
@@ -121,26 +121,29 @@ static mapAllUserToResponse(result: UserAggResponseDTO) {
     totalCount,
   };
 }
-  static mapUserDetailsToResponse(result:UserDetailsAggResponseDTO): UserDetailsResponseDTO {
-    return {
-      id: result._id,
-      name: result.name,
-      email: result.email,
-      role: result.role,
-      workspace: {
-        name: result.workspace.name,
-        plan: result.subscriptionDetails.planKey
-      },
-      phone: result.phone,
-      joinedAt: result.createdAt,
-      lastActivity: result.createdAt,
-      loginCount: 0,
-      isEmailVerified: true,
-      twoFactorEnabled: false
+static mapUserDetailsToResponse(result: SuperUserResponseDto) {
+  return {
+    id: result?._id.toString()||"",
+    name: result.name,
+    email: result.email,
+    isVerified: result.isVerified,
+    phone: result.phone || "NA",
+    joinedAt: result.createdAt,
+location:result.location || "NA",
+   workspaces: (result.workspace || []).map((works) => ({
+      id: works._id.toString(),
+      name: works.name,
+      slug: works.slug,
+      createdAt: works.createdAt,
+      status: works.status,
 
+      isOwner:
+        works.ownerId?.toString?.() === result._id?.toString?.(),
 
-    }
-  }
+      membersCount: works.members?.length || 0,
+    })),
+  };
+}
   static mapSubscriptionToResponse(subscriptions:listOfSubscriptionsDTO[],totalDocCounts:number) {
 
     const responseDTO = subscriptions.map((u): SuperSubscriptionResponseDTO => ({

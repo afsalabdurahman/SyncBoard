@@ -114,11 +114,11 @@ export interface AllUserDTO {
   _id: string;
   name: string;
   email: string;
-  avatar: string | null;
-  role: string;
-  status: string;
-  phone:string;
-  imageUrl:string;
+  avatar?: string | null;
+  role?: string;
+  status?: string;
+  phone?:string;
+  imageUrl?:string;
 
   workspaceDetails: {
     name:string,
@@ -242,3 +242,59 @@ export interface UserGrowthChartReponseDTO{
   churned: number  
 }
 
+export interface WorkspaceMemberResponseDto {
+  userId: string;
+  name: string;
+  email: string;
+  title: string;
+  permissions: string;
+  role: string;
+  isBlocked: boolean;
+  isDeleted: boolean;
+  isOnline: boolean;
+}
+
+export interface WorkspaceResponseDto {
+  _id: string;
+  name: string;
+  slug: string;
+  ownerId?: string;
+  status: string;
+  storage?: number;
+  createdAt: Date;
+  currentSubscription?: string | null;
+  members?: WorkspaceMemberResponseDto[];
+}
+
+export interface SuperUserResponseDto {
+  _id: string;
+  name: string;
+  email: string;
+  imageUrl?: string | null;
+  location: string | null;
+  phone: string | null;
+  about?: string | null;
+  isVerified: boolean;
+  isSuperAdmin?: boolean;
+  createdAt: Date;
+  workspace: WorkspaceResponseDto[];
+}
+export interface UserDetailsResponseDto {
+  id: string;
+  name: string;
+  email: string;
+  isVerified: boolean;
+  phone: string;
+  location: string;
+  joinedAt: Date;
+
+  workspaces: {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: Date;
+    status: string;
+    isOwner: boolean;
+    membersCount: number;
+  }[];
+}

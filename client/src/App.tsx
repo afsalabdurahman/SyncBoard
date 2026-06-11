@@ -28,6 +28,7 @@ import  AddPassword  from "./Worksapce/components/AddPassword";
 import { Features } from "./Worksapce/components/Features";
 import { PricingPage } from "./Worksapce/components/Prices";
 import { useSelector } from "react-redux";
+import WorkspaceDetailsPage from "./SuperAdmin/components/workspace/WorkspaceDetailsPage";
 
 function App() {
 useSelector((state)=>{
@@ -174,6 +175,7 @@ element={
           {/* SuperAdmin */}
           <Route path='/platform/login' element={<Login />} />
           <Route path='/platform/admin' element={<Layout />} />
+          <Route path='/workspace/deatils/:id' element={<WorkspaceDetailsPage/>}/>
         </Routes>
         </AuthProvider>
       </BrowserRouter>

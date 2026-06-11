@@ -46,7 +46,7 @@ export default function WorkspaceEditPage({
     name: "",
     description: "",
     planKey: "free",
-    status:"active"
+    status:"Active"
   });
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const confirmStatusChange = async () => {
       }).unwrap();
 
       toast.success(
-        `Workspace ${statusToSet === "active" ? "reactivated" : "suspended"} successfully`
+        `Workspace ${statusToSet === "Active" ? "reactivated" : "suspended"} successfully`
       );
 
       setViewDetails((prev) => ({ ...prev, status: statusToSet }));
@@ -136,18 +136,7 @@ const confirmStatusChange = async () => {
   return (
     <div className="min-h-screen bg-gray-50/70 pb-24 ml-[15em]">
       <form onSubmit={onSubmit} className="mx-auto max-w-6xl px-5 py-18 space-y-8">
-        {/* <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        /> */}
+      
 
         {/* Sticky Header */}
         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b px-6 py-4 -mx-5 md:-mx-0 flex items-center justify-between">
@@ -299,17 +288,17 @@ const confirmStatusChange = async () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {viewDetails.status === "active" ? (
+            {viewDetails.status === "Active" ? (
               <Button
                 variant="destructive"
-                onClick={() => requestStatusChange("suspend")}
+                onClick={() => requestStatusChange("Suspend")}
               >
                 Suspend Workspace
               </Button>
             ) : (
               <Button
                 className="bg-green-600 hover:bg-green-700"
-                onClick={() => requestStatusChange("active")}
+                onClick={() => requestStatusChange("Active")}
               >
                 Reactivate Workspace
               </Button>
@@ -326,7 +315,7 @@ const confirmStatusChange = async () => {
         }}
         onConfirm={confirmStatusChange}
         title={
-          statusToSet === "suspend"
+          statusToSet === "Suspend"
             ? "Suspend Workspace?"
             : "Reactivate Workspace?"
         }

@@ -1,5 +1,5 @@
 
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "../../../Custom/ui/card"
 import { Badge } from "../../../Custom/ui/badge"
@@ -21,9 +21,17 @@ import {
   PauseCircle,
   PlayCircle,
   RefreshCw,
+  MapPin,
+  Calendar,
+  Users,
+  Space,
 } from "lucide-react"
 import type { User } from "./userTable"
 import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon"
+import apiService from "../../../Services/apiServices/apiService"
+import { fetchAUserDetails } from "../../apis/fetchApi"
+import { UserDetailsResponseDto } from "../../types/mapData"
+import { formatTimestamp } from "../../../Utility/dateConverter"
 type MemberRole = "owner" | "admin" | "member" | "guest"
 type Plan = "basic" | "pro" | "enterprise"|"free"
 
@@ -62,7 +70,26 @@ function fmtDateTime(d: string) {
 }
 
 export default function UserProfilePage({setPage,user}) {
+  const [userData,setUser]=useState<UserDetailsResponseDto>(null)
   
+const totalWorkspaceCount = userData?.workspaces?.length || 0;
+
+const activeWorkspaceCount =
+  userData?.workspaces?.filter(
+    (workspace) => workspace.status === "Active"
+  ).length || 0;
+
+useEffect(()=>{
+
+  async function fetchUserDetails (){
+  const userDetails = await fetchAUserDetails(user.id)
+  setUser(userDetails)
+  }
+  fetchUserDetails()
+
+},user)
+
+console.log(userData,"Data++++")
   const [sidebarCollapsed, ] = useState(false)
 
 
@@ -115,327 +142,159 @@ const dispatch = useDispatch()
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <div className="p-6 space-y-8">
           {/* Header */}
+{/* UserDetails Header */}
+
+ <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="max-w-7xl mx-auto px-8 py-8">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          {/* Avatar */}
+          <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-5xl font-bold shadow-xl">
+            {userData?.name}
+          </div>
+
+          {/* Info */}
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-2">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">{userData?.name}</h1>
+             
+                <div className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 text-sm font-medium rounded-full flex items-center gap-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                {userData?.isVerified==true?"Verified":"Not verified"}
+                </div>
+             
+            </div>
+            
+            <div className="flex items-center gap-6 text-gray-600 dark:text-gray-400 mb-6">
+              <div className="flex items-center gap-2">
+                <Mail className="w-5 h-5" />
+                <span>{userData?.email}</span>
+              </div>
+              
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  <span>{userData?.location}</span>
+                </div>
+             
+            </div>
+
+            <div className="flex gap-4">
+              {/* <button 
+                onClick={() => setIsEditing(!isEditing)}
+                className="flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-2xl font-medium transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                Edit Profile
+              </button> */}
+            
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4 self-start">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 text-center">
+              <div className="text-3xl font-bold text-indigo-600">{totalWorkspaceCount}</div>
+              <div className="text-sm text-gray-500">Workspaces</div>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-5 text-center">
+              <div className="text-3xl font-bold text-emerald-600">{activeWorkspaceCount}</div>
+              <div className="text-sm text-gray-500">Active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{/* End Header ... */}
+{/* body of user datat */}
+ <div className="flex items-center justify-between mb-10">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Your Workspaces</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">Manage all your team spaces and collaborations</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-1">
+             
+             
+             
+            </div>
+
+           
+          </div>
+        </div>
+{/* end body */}
+{/* WorkspaclISt */}
+{userData?.workspaces?.map((space) => {
+  return (
+    <div
+      key={space.id}
+      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 group"
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl">
+            {space.name.charAt(0)}
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              {space.name}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              @{space.slug}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+            {space.status}
+          </span>
+
+          <span className="px-3 py-1 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full">
+            {space.isOwner ? "Owner" : "Member"}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-6">
+        <div className="flex items-center gap-1.5">
+          <Calendar className="w-4 h-4" />
+          <span>{formatTimestamp(space.createdAt)}</span>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <Users className="w-4 h-4" />
+          <span>{space.membersCount}</span>
+        </div>
+      </div>
+
+      <div className="flex gap-3">
+        <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-xl font-medium transition-colors">
+          Block this user in this workspace
+        </button>
+
+        
+      </div>
+    </div>
+  );
+})}
+
+    
+{/* end List */}
+
+
      <div className="flex justify-end">
         
         <CloseIcon onClose={() => setPage(null)} />
       </div>
-          <div className="rounded-xl bg-white border p-5 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex items-center gap-4 min-w-0">
-                <Avatar className="h-14 w-14">
-                  <AvatarImage
-                    src={userDefault.avatar || "/placeholder.svg?height=80&width=80&query=user-avatar"}
-                    alt={userDefault.name}
-                  />
-                  <AvatarFallback>
-                    {userDefault.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-xl font-semibold text-gray-900 truncate">{userDefault.name}</h1>
-                    <Badge variant="secondary" className={roleColors[userDefault.role]}>
-                      {userDefault.role.charAt(0).toUpperCase() + userDefault.role.slice(1)}
-                    </Badge>
-                    <Badge variant="secondary" className={statusColors[status]}>
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </Badge>
-                    <span className="text-xs rounded bg-gray-100 px-2 py-0.5">ID: {userDefault.id}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600 mt-1 flex-wrap">
-                    <Mail className="h-3.5 w-3.5" />
-                    <span className="truncate">{userDefault.email}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                {status === "suspended" ? (
-                  <Button variant="outline" onClick={reactivate} className="gap-2 bg-transparent">
-                    <PlayCircle className="h-4 w-4" />
-                    Reactivate
-                  </Button>
-                ) : (
-                  <Button variant="outline" onClick={suspend} className="gap-2 bg-transparent">
-                    <PauseCircle className="h-4 w-4" />
-                    Suspend
-                  </Button>
-                )}
-                {!isEmailVerified && (
-                  <Button variant="outline" onClick={resendVerification} className="gap-2 bg-transparent">
-                    <RefreshCw className="h-4 w-4" />
-                    Resend Verification
-                  </Button>
-                )}
-                {/* <Button variant="outline" onClick={messageUser} className="gap-2 bg-transparent">
-                  <MessageSquare className="h-4 w-4" />
-                  Message
-                </Button> */}
-                {/* <Button variant="outline" onClick={editUser} className="gap-2 bg-transparent">
-                  <UserCog className="h-4 w-4" />
-                  Edit User
-                </Button> */}
-              </div>
-            </div>
-          </div>
+         
 
           {/* KPIs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Workspaces</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">1</p>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <UserIcon className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Login Count</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{userDefault.loginCount}</p>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <LogIn className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card> */}
-
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Last Activity</p>
-                    <p className="text-xl font-bold text-gray-900 mt-1">{fmtDate(userDefault.lastActivity)}</p>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Storage Used</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{storageUsedGB}GB</p>
-                    <div className="text-sm text-gray-600">of {storageLimitGB}GB</div>
-                  </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-                  <div className="h-2 rounded-full bg-blue-500" style={{ width: `${storagePct}%` }} />
-                </div>
-              </CardContent>
-            </Card> */}
-          </div>
-
+       
           {/* Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            {/* Left (Profile, Security, Memberships) */}
-            <div className="xl:col-span-2 space-y-6">
-              {/* Profile Details */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profile</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500">Full Name</p>
-                      <p className="text-sm font-medium text-gray-900">{userDefault.name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Email</p>
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-gray-400" />
-                        <p className="text-sm font-medium text-gray-900">{userDefault.email}</p>
-                        {isEmailVerified ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        ) : (
-                          <XCircle className="h-4 w-4 text-red-600" />
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Role</p>
-                      <Badge variant="secondary" className={roleColors[userDefault.role]}>
-                        {userDefault.role.charAt(0).toUpperCase() + userDefault.role.slice(1)}
-                      </Badge>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Status</p>
-                      <Badge variant="secondary" className={statusColors[status]}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </Badge>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Joined</p>
-                      <p className="text-sm font-medium text-gray-900">{fmtDate(userDefault.joinedAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Last Active</p>
-                      <p className="text-sm font-medium text-gray-900">{fmtDateTime(userDefault.lastActivity)}</p>
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="flex flex-wrap gap-2">
-                    {/* <Button variant="outline" className="gap-2 bg-transparent" onClick={resetPassword}>
-                      <KeyRound className="h-4 w-4" />
-                      Send Password Reset
-                    </Button> */}
-                    {/* <Button variant="outline" className="gap-2 bg-transparent" onClick={toggle2FA}>
-                      <Shield className="h-4 w-4" />
-                      {twoFA ? "Disable 2FA" : "Enable 2FA"}
-                    </Button> */}
-                    {!isEmailVerified && (
-                      <Button variant="outline" className="gap-2 bg-transparent" onClick={resendVerification}>
-                        <RefreshCw className="h-4 w-4" />
-                        Resend Verification
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Memberships */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Memberships</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {/* {memberships.map((m) => (
-                    <div
-                      key={m.id}
-                      className="flex items-center justify-between rounded-lg border bg-white p-3 hover:shadow-sm transition-shadow"
-                    >
-                      <div className="min-w-0">
-                        <p className="font-medium text-gray-900 truncate">{m.workspace}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="secondary" className={planColors[m.plan]}>
-                            {m.plan.charAt(0).toUpperCase() + m.plan.slice(1)}
-                          </Badge>
-                          <Badge variant="secondary" className={roleColors[m.role]}>
-                            {m.role.charAt(0).toUpperCase() + m.role.slice(1)}
-                          </Badge>
-                          <Badge
-                            variant="secondary"
-                            className={statusColors[m.status as User["status"]] ?? "bg-gray-100"}
-                          >
-                            {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-600">Joined {fmtDate(m.joinedAt)}</div>
-                    </div>
-                  ))} */}
-                  <div
-                      key={user.id}
-                      className="flex items-center justify-between rounded-lg border bg-white p-3 hover:shadow-sm transition-shadow"
-                    ></div>
-                     <div className="min-w-0">
-                        <p className="font-medium text-gray-900 truncate">{user.workspace.name}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="secondary" className={planColors[user.workspace.plan]}>
-                            {user.workspace.plan.charAt(0).toUpperCase() + user.workspace.plan.slice(1)}
-                          </Badge>
-                          <Badge variant="secondary" className={roleColors[user.role]}>
-                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                          </Badge>
-                          <Badge
-                            variant="secondary"
-                            className={statusColors[user.status as User["status"]] ?? "bg-gray-100"}
-                          >
-                            {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-600">Joined {fmtDate(user.joinedAt)}</div>
-                 
-                    
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Right (Activity + Sessions) */}
-            <div className="space-y-6">
-              {/* Recent Activity */}
-              {/* <Card>
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {activity.map((a) => (
-                    <div key={a.id} className="flex items-start gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-gray-100 flex items-center justify-center">
-                        <a.icon className="h-4 w-4 text-gray-700" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium text-gray-900 truncate">{a.title}</p>
-                          <span className="text-xs text-gray-500">{fmtDateTime(a.time)}</span>
-                        </div>
-                        {a.detail && <p className="text-sm text-gray-600 mt-0.5">{a.detail}</p>}
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card> */}
-
-              {/* Sessions */}
-              {/* <Card>
-                <CardHeader>
-                  <CardTitle>Sessions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {sessions.map((s) => (
-                    <div key={s.id} className="flex items-center justify-between rounded-lg border p-3">
-                      <div className="min-w-0 space-y-0.5">
-                        <div className="flex items-center gap-2">
-                          <Smartphone className="h-4 w-4 text-gray-500" />
-                          <p className="text-sm font-medium text-gray-900">
-                            {s.device} · {s.os} · {s.browser}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <Globe className="h-3.5 w-3.5" />
-                            <span>
-                              {s.ip} · {s.location}
-                            </span>
-                          </div>
-                          <span>Last seen {fmtDateTime(s.lastSeen)}</span>
-                          {s.current && <Badge variant="secondary">Current</Badge>}
-                        </div>
-                      </div>
-                      <div className="shrink-0">
-                        <Button variant="outline" size="sm" onClick={() => revokeSession(s.id)}>
-                          Revoke
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card> */}
-            </div>
-          </div>
+       
         </div>
       </main>
     </div>

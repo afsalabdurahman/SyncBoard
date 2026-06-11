@@ -4,7 +4,7 @@ import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose, { Types } from "mongoose";
 import { TicketDocument, TicketModel } from "../database/models/TicketModel";
-import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, UserAggResponseDTO, UserDetailsAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
+import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
 import { AbuseModel } from "../database/models/AbuseModel";
 import { PlanDocument, PlanModel } from "../database/models/PlanModel";
 import { PlanRequestDTO } from "../../application/dto/PlanDTO";
@@ -182,68 +182,30 @@ result.push(totalDocCount)
   async getAllUsers(limit:number,skip:number): Promise<UserAggResponseDTO> {
    const totalDocCount = await UserModel.countDocuments();
 
-    const result = await UserModel.aggregate([
-      {
-        $match: {
-          role: { $ne: "superAdmin" }   
-        }
-      },
-      {
-        $addFields: {
-          status: {
-            $cond: {
-              if: {
-                $or: [
-                 
-                  { $eq: ["$isDeleted", true] }
-                ]
-              },
-              then: "inactive",
-              else: "active"
-            }
-          }
-        }
-      },
-      {
-        $unwind: "$workspace"
-      },
-      {
-        $lookup: {
-          from: "workspaces",
-          localField: "workspace.workspaceId",
-          foreignField: "_id",
-          as: "workspaceDetails"
-        }
-      },
-      {
-        $unwind: "$workspaceDetails"
-      },
-      {
-        $lookup: {
-          from: "subscriptions",
-          localField: "workspaceDetails._id",
-          foreignField: "workspace",
-          as: "subscriptionDetails"
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          email: 1,
-          imageUrl: 1,
-          role: 1,
-          status: 1,
-          phone:1,
-          createdAt: 1,
-          updatedAt: 1,
-          "workspaceDetails.name": 1,
-          "subscriptionDetails.planKey": 1
-        }
-      },{ $sort: { workspaceCreatedDate: -1 } },
-  { $skip: skip },
-  { $limit: limit }
-    ]);
+   const result = await UserModel.aggregate([
+  {
+    $match: {
+      role: { $ne: "superAdmin" }
+    }
+  },
+  {
+    $project: {
+      _id: { $toString: "$_id" }, // optional: return string id
+      name: 1,
+      email: 1,
+      imageUrl: 1
+    }
+  },
+  {
+    $sort: { createdAt: -1 }
+  },
+  {
+    $skip: skip
+  },
+  {
+    $limit: limit
+  }
+]);
 
 
 
@@ -251,70 +213,19 @@ result.push(totalDocCount)
   }
 
 
-  async  getUserDetails(userId: string):Promise<UserDetailsAggResponseDTO> {
+  async  getUserDetails(userId: string):Promise<SuperUserResponseDto> {
      const id = new mongoose.Types.ObjectId(userId);
-    const result = await UserModel.aggregate([
-      {
-        $match: {
-          _id: id
-        }
-      },
-      {
-        $addFields: {
-          status: {
-            $cond: {
-              if: {
-                $or: [
-                  { $eq: ["$isBlock", true] },
-                  { $eq: ["$isDelete", true] }
-                ]
-              },
-              then: "inactive",
-              else: "active"
-            }
-          }
-        }
-      },
-      {
-        $unwind: "$workspace"
-      },
-      {
-        $lookup: {
-          from: "workspaces",
-          localField: "workspace.workspaceId",
-          foreignField: "_id",
-          as: "workspaceDetails"
-        }
-      },
-      {
-        $unwind: "$workspaceDetails"
-      },
-      {
-        $lookup: {
-          from: "subscriptions",
-          localField: "workspaceDetails._id",
-          foreignField: "workspace",
-          as: "subscriptionDetails"
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          email: 1,
-          role: 1,
-          imageUrl: 1,
-          createdAt: 1,
-          updatedAt:1,
-          status: 1,
-          phone:1,
-          "workspaceDetails.name": 1,
-          "subscriptionDetails.planKey": 1
-        }
-      }
-    ]);
+const user = await UserModel.findById(id)
+  .populate({
+    path: "workspace",
+    populate: {
+      path: "members.userId",
+      select: "name email "
+    }
+  });
 
-    return result[0];
+return user as unknown as SuperUserResponseDto
+
   }
 
   async getSubscription(limit:number,skip:number): Promise<SubscriptionAggResponseDTO> {

@@ -3,7 +3,7 @@ import { CountResponseDTO, CountWorkspaceReponseDTO } from "../../dto/Datahandle
 import { IDatahandleUsecase } from "../../repositories/IDatahandle";
 import { ISuperAdminRepository } from "../../../domain/interfaces/repositories/ISuperAdminRepository";
 import { DatahandleMapper } from "../../mappers/DatahandleMapper";
-import {  RevenuChartReponseDTO, SuperSubscriptionResponseDTO, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
+import {  RevenuChartReponseDTO, SuperSubscriptionResponseDTO, SuperUserResponseDto, UserDetailsResponseDto, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
 import { Ticket } from "../../../domain/entities/Ticket";
 import { TicketMapper } from "../../mappers/TicketMapper";
 import { Plan } from "../../../domain/entities/Plan";
@@ -41,10 +41,12 @@ export class DatahandleUsecase implements IDatahandleUsecase {
         const { responseDTO, totalCount } = DatahandleMapper.mapAllUserToResponse(response);
         return { responseDTO, totalCount }
     }
-    async fetchAUser(userId: string): Promise<UserDetailsResponseDTO> {
-        const result = await this._superAdminRepository.getUserDetails(userId)
-        const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result);
-        return responseDTO
+    async fetchAUser(userId: string): Promise<UserDetailsResponseDto> {
+        const result = await this._superAdminRepository.getUserDetails(userId);
+        console.log(result,"REsultsssssssssss")
+         const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result);
+       return responseDTO
+        // return responseDTO
     }
     async fetchSubscriptions(limit: number, skip: number): Promise<{ responseDTO: SuperSubscriptionResponseDTO[]|[], totalDocCounts: number }> {
         const { subscriptions, totalDocCount } = await this._superAdminRepository.getSubscription(limit, skip)

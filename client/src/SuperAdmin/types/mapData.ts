@@ -19,3 +19,22 @@ export const dataMap=(data)=>{
 
     }
 }
+export interface UserDetailsResponseDto {
+  id: string;
+  name: string;
+  email: string;
+  isVerified: boolean;
+  phone: string;
+  location: string;
+  joinedAt: Date;
+
+  workspaces: {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: Date;
+    status: string;
+    isOwner: boolean;
+    membersCount: number;
+  }[];
+}

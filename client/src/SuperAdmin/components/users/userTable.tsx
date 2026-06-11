@@ -75,17 +75,17 @@ export const UserTable = ({
 
   return (
     <Card>
-      <CardContent className="p-0">
+      <CardContent className="p-5">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>User</TableHead>
-              <TableHead>Workspace</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Security</TableHead>
-              <TableHead>Activity</TableHead>
-              <TableHead>Joined</TableHead>
+            
+              
+             
+             
+             
+             
               <TableHead className="w-32 text-right">Actions</TableHead> {/* wider for buttons */}
             </TableRow>
           </TableHeader>
@@ -115,60 +115,12 @@ export const UserTable = ({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium text-gray-900">{user.workspace.name}</div>
-                      {/* Uncomment if you want plan badge */}
-                      {/* <Badge className={planColors[user.workspace.plan]} variant="secondary">
-                        {user.workspace.plan.charAt(0).toUpperCase() + user.workspace.plan.slice(1)}
-                      </Badge> */}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={roleColors[user.role]} variant="secondary">
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Badge className={statusConfig[user.status]?.color || "bg-gray-100 text-gray-800"} variant="secondary">
-                        <StatusIcon className="h-3 w-3 mr-1" />
-                        {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <div className="flex items-center space-x-1">
-                        {user.isEmailVerified ? (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <XCircle className="h-4 w-4 text-red-500" />
-                        )}
-                        <span className="text-xs">Email</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        {user.twoFactorEnabled ? (
-                          <Shield className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <Shield className="h-4 w-4 text-gray-400" />
-                        )}
-                        <span className="text-xs">2FA</span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="text-sm font-medium">{getTimeAgo(user.lastActivity)}</div>
-                      <div className="text-xs text-gray-500">{user.loginCount} logins</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{formatDate(user.joinedAt)}</span>
-                    </div>
-                  </TableCell>
+               
+               
+                
+                
+               
+              
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       {/* View Button */}
@@ -186,18 +138,9 @@ export const UserTable = ({
                       </Button>
 
                       {/* Edit Button */}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-3 text-black hover:text-black hover:bg-gray-100 active:bg-gray-200"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onEditUser(user)
-                        }}
-                      >
-                        <Pencil className="h-4 w-4 mr-1 text-black" />
-                        Edit
-                      </Button>
+                     
+                      
+                       
 
                       {/* Optional: Add more buttons later, e.g. */}
                       {/* <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">Suspend</Button> */}
