@@ -97,12 +97,14 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
     // Could add toast notification here
   };
   const inviteteams = async () => {
+    console.log("clickeddddd",emailss)
     if (emailss[0].email == "") {
-      toast.error("Please add email");
+      toast.warning("Please add email");
     } else {
       setLoader(true);
       try {
         const response = await sendInvitaionMail(emails, invitationLink)
+        console.log(response,"response+++")
         if (response.status == 200) {
           setLoader(false);
 
@@ -165,7 +167,7 @@ const InviteMembers: React.FC<CollabInterfaceProps> = ({
             <ToastContainer position='top-center' autoClose={5000} />
           </div>
         </div> */}
-
+    <ToastContainer position='top-center' autoClose={5000} />
         <div className='mb-6'>
           <p className='text-sm text-gray-500 mb-2'>Invite with email</p>
 

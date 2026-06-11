@@ -377,7 +377,7 @@ if(!isAllow) {toast.error("file not supported")
 useEffect(()=>{
  async function fetchPermission(){
 const data=await findPermission(workspaceid,userId);
-
+console.log(data,"DATTAAA")
 setPermission(data)
  }
  fetchPermission()

@@ -95,7 +95,7 @@ console.log(user,"userssss")
       role: user.role,
       isBlocked: user.isBlocked ? "Yes" : "No",
       isAdmin: user.role === "Admin",
-      permission: user.permission == "Member" ? "Editor" : "Viewer",
+      permission: user?.workspace[0].permissions == "Member" ? "Editor" : "Viewer",
       title:user.title||""
     });
   }, [user, isOpen]);
@@ -115,7 +115,7 @@ await updatePermissionApi(permission,user._id,workspaceId)
       isBlocked: formData.isBlocked === "Yes",
       isAdmin: formData.role === "Admin",
     };
-
+console.log(updatedData,"UPdatedData")
     try {
       await dispatch(
         updateUser({

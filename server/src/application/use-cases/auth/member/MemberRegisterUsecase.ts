@@ -81,7 +81,7 @@ throw new ConflictError(ResponseMessages.USER_EXISTS)
       createMember._id,
       workspace._id,
       dto.role,
-      "Viewer",
+      "Member",
     );
 
     if (!this._workspaceRepository.addMemberToWorkspace)
@@ -92,7 +92,7 @@ throw new ConflictError(ResponseMessages.USER_EXISTS)
         workspace.slug,
         createMember._id,
          "Member",
-        "Viewer",
+        "Member",
          "Member"  
       );
 

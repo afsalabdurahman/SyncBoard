@@ -54,7 +54,7 @@ export class TaskRepository implements ITaskRepository {
     });
 
 
-
+console.log(myTask,"MYTASK")
     return myTask;
   }
   async updateTaskStatus(taskId: string, updatedStatus: string): Promise<void> {
@@ -452,7 +452,8 @@ export class TaskRepository implements ITaskRepository {
 
   // Find all tasks belonging to those projects
   const tasks = await TaskModel.find({
-    projectId: { $in: projectIds }
+    projectId: { $in: projectIds },
+    approvalStatus:{$ne:"Approved"}
   });
 
   return tasks ?? null

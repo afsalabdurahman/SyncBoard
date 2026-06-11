@@ -27,9 +27,8 @@ import { SubtaskPage } from "../pages/SubtaskPage";
 import { toast } from "react-toastify";
 import { KanbanApiTask, KanbanTask } from "../types/workspaceTypes"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
-import { findTeamsTasks } from "../apis/workspaceapis";
+import { findPermission, findTeamsTasks } from "../apis/workspaceapis";
 import { useWorkspaceid } from "../hooks/workspacehooks";
-
 
 
 
@@ -37,6 +36,8 @@ import { useWorkspaceid } from "../hooks/workspacehooks";
 
 export default function KanbanBoard() {
   const workspaceId = useWorkspaceid()
+   const userId = useSelector((state: RootState) => state.user.user?._id);
+  const workspaceid=useWorkspaceid() as string
   const [tasks, setTasks] = useState<KanbanTask[]>([]);
   const [openCommentId, setOpenCommentId] = useState<string | null>(null);
   const [popup, setPopup] = useState(false);
@@ -59,7 +60,7 @@ export default function KanbanBoard() {
           projectName: data.project || "Abcd",
           taskName: data.name || "Untitled Task",
           description: data.description || "No description provided.",
-          dueDate: data.dueDate || "2024-01-20",
+          dueDate: data.deadline || "",
           approvalStatus: data.approvalStatus,
           rejectionMsg: data.rejectionMsg,
           subTask: data.subTask,
@@ -131,12 +132,16 @@ export default function KanbanBoard() {
   };
 
   const handleDragOver = (e: React.DragEvent) => {
+   
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   };
 
   const handleDrop = async (e: React.DragEvent, newStatus: KanbanTask["status"]) => {
-
+ if(permission == "Viewer"){
+      toast.warning("You don't have permission")
+      return false
+    }
     if (newStatus == "completed") {
       const isFound = draggedTask?.subTask?.filter((task) => {
         return task.status !== "Completed"
@@ -207,7 +212,18 @@ export default function KanbanBoard() {
     { id: "progress", title: "In Progress", status: "progress" as const },
     { id: "completed", title: "Completed", status: "completed" as const },
   ];
+  const [permission,setPermission]=useState("")
+useEffect(()=>{
+ async function fetchPermission(){
+const data=await findPermission(workspaceid,userId);
 
+setPermission(data)
+ }
+ fetchPermission()
+},[ userId, workspaceid])
+// if(permission=="Viewer"){
+//   return(<><NoPermission/></>)
+// }
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
