@@ -7,6 +7,7 @@ import { RootState } from "../../Redux/store";
 import { useWorkspaceid } from "../hooks/workspacehooks";
 import { findPermission, sendInvitation } from "../apis/workspaceapis";
 import { NoPermission } from "../../Custom/reusecomponents/NoPermission";
+import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 const INVITE_MEMBER_ = import.meta.env.VITE_BASE_INVITE_LINK;
 const Invite = () => {
   const workspaceName = useSelector((state: RootState) => {
@@ -18,7 +19,7 @@ const Invite = () => {
   });
   const workspaceId=useWorkspaceid()
   const workspaceid=useWorkspaceid() as string
-const [permission,setPermission]=useState("")
+const [permission,setPermission]=useState(null)
   const userId = useSelector((state: RootState) => state.user.user?._id);
 
 
@@ -79,18 +80,20 @@ const [permission,setPermission]=useState("")
     }
   };
 
- useEffect(()=>{
-  async function fetchPermission(){
- const data=await findPermission(workspaceid,userId);
- 
- setPermission(data)
-  }
-  fetchPermission()
- },[ userId, workspaceid])
- 
- if(permission=="Viewer"){
-   return(<><NoPermission/></>)
+useEffect(()=>{
+ async function fetchPermission(){
+const data=await findPermission(workspaceid,userId);
+
+setPermission(data)
  }
+ fetchPermission()
+},[ userId, workspaceid])
+if(!permission){
+  return (<><LoadingSpinner/></>)
+}
+if(permission=="Viewer"){
+  return(<><NoPermission/></>)
+}
 
   return (
     <div className='mt-6 mx-auto bg-white rounded-lg shadow-lg p-6 relative'>

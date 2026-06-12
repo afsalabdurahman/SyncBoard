@@ -58,10 +58,14 @@ role = "Admin" as UserRole
       if (!user.workspace || user.workspace.length === 0) {
         throw new ForbiddenError(ResponseMessages.NO_CONTENT);
       }
-      const workspaceId = user.workspace[0].workspaceId;
+     const workspaceId =
+  req.params.workspaceId ??
+  req.params.workspaceid ??
+  user.workspace?.[0]?.workspaceId.toString();
+
 
       if (!workspaceId) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-      const workspace = await workspaceUsecse.findWorkspace(workspaceId);
+      const workspace = await workspaceUsecse.findWorkspace(stringToMongoObj(workspaceId));
       if (workspace?.status.toLowerCase() == "suspend") {
        throw new ForbiddenError('Workspace is Suspended')
       }

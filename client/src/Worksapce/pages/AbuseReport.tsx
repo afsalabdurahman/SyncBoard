@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 export default function AbuseReportForm() {
   const memeber = useMember();
   const workspace = useWorkspaceid();
-const [permission,setPermission]=useState("")
+const [permission,setPermission]=useState(null)
   const [refresh, setRefresh] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -198,6 +198,9 @@ const [permission,setPermission]=useState("")
   }
   fetchPermission()
  },[ userId, workspaceid])
+ if(!permission){
+  return(<><p>loading....</p></>)
+ }
  if(permission=="Viewer"){
    return(<><NoPermission/></>)
  }

@@ -26,6 +26,7 @@ import { RootState } from "../../Redux/store";
 import {Attachment,Message} from "../types/workspaceTypes"
 import { chatHistory, chatOnline, findPermission } from "../apis/workspaceapis";
 import { NoPermission } from "../../Custom/reusecomponents/NoPermission";
+import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 
 
 export default function GroupChannel() {
@@ -48,7 +49,7 @@ const workspaceid=useWorkspaceid() as string
   const audioChunksRef = useRef<Blob[]>([]);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
-const [permission,setPermission]=useState("")
+const [permission,setPermission]=useState(null)
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -377,11 +378,14 @@ if(!isAllow) {toast.error("file not supported")
 useEffect(()=>{
  async function fetchPermission(){
 const data=await findPermission(workspaceid,userId);
-console.log(data,"DATTAAA")
+
 setPermission(data)
  }
  fetchPermission()
 },[ userId, workspaceid])
+if(!permission){
+  return (<><LoadingSpinner/></>)
+}
 if(permission=="Viewer"){
   return(<><NoPermission/></>)
 }

@@ -163,7 +163,7 @@ export default function RAG() {
   const sampleQueries = [
     {
       icon: FileText,
-      text: 'What is my pending task',
+      text: 'What is my todo task',
       color: 'bg-blue-50 hover:bg-blue-100 border-blue-200',
       textColor: 'text-gray-800',
     },
