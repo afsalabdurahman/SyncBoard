@@ -96,7 +96,6 @@ export class TaskUsecase implements ITaskUseCase {
     items: Task[];
     totalItems: number
   }> {
-    console.log(workspaceId,"WOKDPCEIDD")
     const { items, totalItems } = await this._taskRepository.getPagenationaTask(stringToMongoObj(workspaceId), page, limit, skip, projectId)
     return { items: items, totalItems }
   }

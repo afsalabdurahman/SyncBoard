@@ -58,7 +58,7 @@ console.log(AdminEntity,"entit7")
     // }
     
     const otp = this._otpRepository.generateOTP();
-    //  await this._emailService.sendOtp(input.email, otp);
+      await this._emailService.sendOtp(input.email, otp);
 
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);
