@@ -19,6 +19,7 @@ export interface UserDoument extends Document {
   isSuperAdmin: boolean;
   isVerified?: boolean;
   verificationExpiresAt: Date
+  isSuspend:boolean
 
 }
 
@@ -43,7 +44,8 @@ const userSchema = new Schema<UserDoument>(
     imageUrl: { type: String },
     isSuperAdmin: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
-    verificationExpiresAt: { type: Date }
+    verificationExpiresAt: { type: Date },
+    isSuspend:{type:Boolean,default:false}
 
   },
   { timestamps: true }

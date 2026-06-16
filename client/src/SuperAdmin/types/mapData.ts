@@ -27,6 +27,7 @@ export interface UserDetailsResponseDto {
   phone: string;
   location: string;
   joinedAt: Date;
+  isSuspend:boolean;
 
   workspaces: {
     id: string;

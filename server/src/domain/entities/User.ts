@@ -18,6 +18,7 @@ export class User {
   updatedAt?: Date;
   isVerified?: boolean;
   verificationExpiresAt?: Date;
+  isSuspend?:boolean;
 
   constructor(params: {
       googleId?:string;
@@ -36,7 +37,8 @@ export class User {
     updatedAt?: Date;
    
  isVerified?: boolean;                 
-  verificationExpiresAt?: Date; 
+  verificationExpiresAt?: Date;
+  isSuspend?:boolean; 
   }) {
     this.googleId =params.googleId;
     this.email = params.email;
@@ -57,5 +59,6 @@ export class User {
     this.updatedAt = params.updatedAt ?? new Date();
     this.isVerified = params.isVerified ?? false;
     this.verificationExpiresAt = params.verificationExpiresAt;
+    this.isSuspend = params.isSuspend;
   }
 }

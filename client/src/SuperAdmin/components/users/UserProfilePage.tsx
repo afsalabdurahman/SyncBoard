@@ -32,6 +32,7 @@ import apiService from "../../../Services/apiServices/apiService"
 import { fetchAUserDetails } from "../../apis/fetchApi"
 import { UserDetailsResponseDto } from "../../types/mapData"
 import { formatTimestamp } from "../../../Utility/dateConverter"
+import { profilePartialUpdate } from "../../../Worksapce/apis/workspaceapis"
 type MemberRole = "owner" | "admin" | "member" | "guest"
 type Plan = "basic" | "pro" | "enterprise"|"free"
 
@@ -83,23 +84,35 @@ useEffect(()=>{
 
   async function fetchUserDetails (){
   const userDetails = await fetchAUserDetails(user.id)
-  setUser(userDetails)
+  setUser(userDetails);
+  setisSuspend(userData.isSuspend)
   }
   fetchUserDetails()
 
-},user)
+},[user])
 
 console.log(userData,"Data++++")
   const [sidebarCollapsed, ] = useState(false)
 
 
+const [isSuspend,setisSuspend]=useState()
   const userDefault = user
   const [status, setStatus] = useState<User["status"]>(userDefault.status)
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(userDefault.isEmailVerified)
 
 
+const suspendUser = async (id)=>{
+  
+  const updatedProfile = {
+         isSuspend:isSuspend?"false":"true"
+        };
+        console.log()
+const status=await profilePartialUpdate(id,updatedProfile);
+console.log(isSuspend,"STataus")
+setisSuspend(false)
 
- 
+}
+ console.log(isSuspend,"isSuspendd")
 const dispatch = useDispatch()
   const suspend = async() => {
     setStatus("suspended")
@@ -288,8 +301,11 @@ const dispatch = useDispatch()
      <div className="flex justify-end">
         
         <CloseIcon onClose={() => setPage(null)} />
+        
       </div>
-         
+           <button onClick={()=>suspendUser(userData.id)} >
+          {userData?.isSuspend?"UnSuspend!!!":"Suspend"}
+        </button>
 
           {/* KPIs */}
        

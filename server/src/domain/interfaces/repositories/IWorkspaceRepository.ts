@@ -31,5 +31,6 @@ updateUserDataInWorkspace(workspaceId:Types.ObjectId,userId:Types.ObjectId,data:
   projectId: string | null
 ): Promise<{ items: UserDoument[] | null; totalItems: number }>
 findUserStatusInWorkspace(userId:Types.ObjectId,workspaceId:Types.ObjectId):Promise<UserInWorkspaceDTO|null>
-findActiveWorkspace(userId:Types.ObjectId):Promise<Workspace|null>
+findActiveWorkspace(userId:Types.ObjectId):Promise<Workspace|null>;
+
 }

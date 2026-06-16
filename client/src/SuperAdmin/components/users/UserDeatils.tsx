@@ -21,6 +21,7 @@ interface Member {
   permissions: string;
   role: string;
   isBlocked: boolean;
+  isSuspend:boolean;
   isDeleted: boolean;
   isOnline: boolean;
   createdAt: string;
@@ -50,6 +51,7 @@ interface User {
   createdAt: string;
   updatedAt: string;
   about: string | null;
+  isSuspend:boolean;
   address: string | null;
   imageUrl: string | null;
   location: string;

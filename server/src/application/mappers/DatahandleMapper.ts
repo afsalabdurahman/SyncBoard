@@ -101,6 +101,7 @@ static mapAllUserToResponse(result: UserAggResponseDTO) {
       avatar: u.imageUrl || "/placeholder.svg?height=40&width=40",
       role: u.role?.toLowerCase() || "member",
       status: u.status || "inactive",
+      isSuspend:u.isSuspend,
       phone: u.phone || "",
 
       workspace: {
@@ -130,6 +131,7 @@ static mapUserDetailsToResponse(result: SuperUserResponseDto) {
     phone: result.phone || "NA",
     joinedAt: result.createdAt,
 location:result.location || "NA",
+isSuspend:result.isSuspend,
    workspaces: (result.workspace || []).map((works) => ({
       id: works._id.toString(),
       name: works.name,

@@ -119,7 +119,7 @@ export interface AllUserDTO {
   status?: string;
   phone?:string;
   imageUrl?:string;
-
+isSuspend?:boolean;
   workspaceDetails: {
     name:string,
     plan:string
@@ -276,6 +276,7 @@ export interface SuperUserResponseDto {
   about?: string | null;
   isVerified: boolean;
   isSuperAdmin?: boolean;
+  isSuspend?:boolean;
   createdAt: Date;
   workspace: WorkspaceResponseDto[];
 }

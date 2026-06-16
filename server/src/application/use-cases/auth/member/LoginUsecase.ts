@@ -33,7 +33,7 @@ export class LoginUsecase implements ILogin {
     }
 const workspaceId =await this._workspaceRepository.findActiveWorkspace(stringToMongoObj(user._id?.toString()))
 console.log(workspaceId,"LOFIN WORKPSCEISDDD");
-if(!workspaceId?._id) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+if(!workspaceId?._id) throw new NotFoundError("User is suspended")
 const workspaceStatus = await this._workspaceRepository.findByObjectId(stringToMongoObj(workspaceId._id.toString()));
 console.log(workspaceStatus,"status")
 const userId=user._id ??""
