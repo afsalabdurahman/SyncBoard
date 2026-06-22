@@ -185,7 +185,7 @@ result.push(totalDocCount)
    const result = await UserModel.aggregate([
   {
     $match: {
-      role: { $ne: "superAdmin" }
+      role: { $ne: "SuperAdmin" }
     }
   },
   {
@@ -215,14 +215,14 @@ result.push(totalDocCount)
 
   async  getUserDetails(userId: string):Promise<SuperUserResponseDto> {
      const id = new mongoose.Types.ObjectId(userId);
-const user = await UserModel.findById(id)
-  .populate({
-    path: "workspace",
-    populate: {
-      path: "members.userId",
-      select: "name email "
-    }
-  });
+const user = await UserModel.findById(id).populate({
+  path: "workspace",
+  populate: {
+    path: "members.userId",
+    match: { _id: id },
+    select: "name email",
+  },
+});
 
 return user as unknown as SuperUserResponseDto
 

@@ -127,6 +127,7 @@ const workspaceId = useWorkspaceid() as string
   return (
     <div className='flex w-full'>
       {/* Left Section */}
+      <ToastContainer></ToastContainer>
       <div className='flex-1 p-6 bg-white'>
         <div className='flex items-center space-x-2 mb-8'>
           <img className='h-25' src='/images/company-logo.png' alt='' />

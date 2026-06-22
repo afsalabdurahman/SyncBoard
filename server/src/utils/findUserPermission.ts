@@ -8,7 +8,7 @@ export const findPermision=async(userId:string,workspaceId:string):Promise<strin
   const workspaceUsecase =container.resolve(CreateWorkspaceUsecases)
 const workspace = await workspaceUsecase.findWorkspace(stringToMongoObj(workspaceId));
  const user = workspace?.members?.find(
-    (member) => member.userId === userId
+    (member) => member.userId?.toString() === userId
   );
 return user?.permissions as string
 

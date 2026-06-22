@@ -26,6 +26,7 @@ import { RootState } from "../../Redux/store";
 import {Attachment,Message} from "../types/workspaceTypes"
 import { chatHistory, chatOnline, findPermission } from "../apis/workspaceapis";
 import { NoPermission } from "../../Custom/reusecomponents/NoPermission";
+import LoadingSpinner from "../../Custom/reusecomponents/LoadingSpinner";
 
 
 export default function GroupChannel() {
@@ -57,7 +58,14 @@ const [permission,setPermission]=useState("")
   content?: string;
   attachments?: string[];
 }
+useEffect(()=>{
+ async function fetchPermission(){
+const data=await findPermission(workspaceid,userId);
 
+setPermission(data)
+ }
+ fetchPermission()
+},[ userId, workspaceid])
 
 
 
@@ -373,15 +381,10 @@ if(!isAllow) {toast.error("file not supported")
     return groups;
   }, []);
 
-
-useEffect(()=>{
- async function fetchPermission(){
-const data=await findPermission(workspaceid,userId);
-
-setPermission(data)
+if(!permission){
+  return(<LoadingSpinner/>)
  }
- fetchPermission()
-},[ userId, workspaceid])
+
 if(permission=="Viewer"){
   return(<><NoPermission/></>)
 }

@@ -37,5 +37,6 @@ export interface UserDetailsResponseDto {
     status: string;
     isOwner: boolean;
     membersCount: number;
+    isBlocked:boolean;
   }[];
 }

@@ -56,6 +56,7 @@ export class TaskUsecase implements ITaskUseCase {
   async myTask(userName: string, query: string): Promise<Task[]> {
 
     const myTask = await this._taskRepository.myTask(userName, query);
+    
     return myTask;
   }
   async updateTaskStatus(taskId: string, status: string): Promise<void> {
@@ -156,6 +157,7 @@ return UiData
 async findMytaskByworkspaceId(workspaceId: string): Promise<Task[]> {
  const tasks= await this._taskRepository.findUserTaskByWorkspaceId(stringToMongoObj(workspaceId));
  if(!tasks) throw new NotFoundError(ResponseMessages.TASK_NOT_FOUND);
- return tasks
+ const refineTask = tasks.filter((task)=>task.approvalStatus!=="Approved")
+ return refineTask
 }
 }

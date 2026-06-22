@@ -27,7 +27,6 @@ import {
 import { updateUser } from "../../Redux/feature/users/AlluserThunks";
 import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { updatePermissionApi } from "../apis/dashboardApi";
-import { updateUserInWorkspace } from "../apis/taskApi";
 
 /* ---------------- TYPES ---------------- */
 
@@ -48,58 +47,56 @@ interface UserModalProps {
   user?: User | null;
 }
 
-export interface FormState {
+interface FormState {
   name: string;
   email: string;
   role: "Admin" | "Member" | "";
   isBlocked: "Yes" | "No" | "";
   isAdmin: boolean;
-  // permissions: "Viewer" | "Editor" | "Admin",
-  title:string,
+  permission: "Viewer" | "Member" | "Admin";
+  title: string;
 }
 
 /* ---------------- COMPONENT ---------------- */
 
 export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   const dispatch = useDispatch<AppDispatch>();
-const workspaceId = useWorkspaceid()
-console.log(user,"userssss",workspaceId)
-  const [formData, setFormData] = useState<FormState>({
-    name: "",
-    email: "",
-    role: "",
-    isBlocked: "",
-    isAdmin: false,
-    // permissions: "Editor",
-    title:""
-  });
+  const workspaceId = useWorkspaceid()
 
+  const [formData, setFormData] = useState<FormState>({
+  name: "",
+  email: "",
+  role: "",
+  isBlocked: "",
+  isAdmin: false,
+  permission: "Member",
+  title: "",
+});
   /* ---------------- LOAD USER DATA ---------------- */
 
   useEffect(() => {
     if (!user) {
       setFormData({
-        
-        name: "",
-        email: "",
-        role: "",
-        isBlocked: "",
-        isAdmin: false,
-        // permissions: "Editor",
-        title:""
-      });
+  name: "",
+  email: "",
+  role: "",
+  isBlocked: "",
+  isAdmin: false,
+  permission: "Member",
+  title: "",
+});
       return;
     }
 
     setFormData({
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isBlocked: user.isBlocked ? "Yes" : "No",
-      isAdmin: user.role === "Admin",
-      // permissions: user.permission == "Member" ? "Editor" : "Viewer",
-      title:user.title||""
-    });
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  isBlocked: user.isBlocked ? "Yes" : "No",
+  isAdmin: user.role === "Admin",
+  permission: user?.workspace?.[0]?.permissions || "Member",
+  title: user.title || "",
+});
   }, [user, isOpen]);
 
   /* ---------------- SUBMIT ---------------- */
@@ -117,15 +114,14 @@ await updatePermissionApi(permission,user._id,workspaceId)
       isBlocked: formData.isBlocked === "Yes",
       isAdmin: formData.role === "Admin",
     };
-console.log(updatedData,"UpdatedDaea")
+console.log(updatedData,"UPdatedData")
     try {
-      // await dispatch(
-      //   updateUser({
-      //     userId: user._id,
-      //     updatedData,
-      //   })
-      // ).unwrap();
-      await updateUserInWorkspace(workspaceId??"",user._id,updatedData)
+      await dispatch(
+        updateUser({
+          userId: user._id,
+          updatedData,
+        })
+      ).unwrap();
 
       toast.success("User updated successfully");
 
@@ -274,35 +270,31 @@ console.log(updatedData,"UpdatedDaea")
             )}
             {/* UPdate permision */}
 
-            <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+  <Label className="text-right">Permission</Label>
 
-              <Label className="text-right">Permission</Label>
+  <Select
+    value={formData.permission}
+    onValueChange={(value: "Viewer" | "Member" | "Admin") => {
+      setFormData((prev) => ({
+        ...prev,
+        permission: value,
+      }));
 
-              <Select
-                value={formData.permission}
-  onValueChange={(value: "Viewer" | "Member" | "Admin") => {
-    setFormData((prev) => ({
-      ...prev,
-      permission: value,
-    }));
+      apiUpdatePermission(value);
+    }}
+  >
+    <SelectTrigger className="col-span-3">
+      <SelectValue placeholder="Select Permission" />
+    </SelectTrigger>
 
-    apiUpdatePermission(value);
-  }}
-              >
-
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select Permission" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectItem value="Viewer">Viewer</SelectItem>
-                  <SelectItem value="Member">Editor</SelectItem>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                </SelectContent>
-
-              </Select>
-
-            </div>
+    <SelectContent>
+      <SelectItem value="Viewer">Viewer</SelectItem>
+      <SelectItem value="Member">Editor</SelectItem>
+      <SelectItem value="Admin">Admin</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
           </div>
 
           <DialogFooter>

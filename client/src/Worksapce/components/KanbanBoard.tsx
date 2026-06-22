@@ -27,7 +27,7 @@ import { SubtaskPage } from "../pages/SubtaskPage";
 import { toast } from "react-toastify";
 import { KanbanApiTask, KanbanTask } from "../types/workspaceTypes"
 import { catchErrorHandle } from "../../Utility/catchErrorHandle";
-import { findTeamsTasks } from "../apis/workspaceapis";
+import { findPermission, findTeamsTasks } from "../apis/workspaceapis";
 import { useWorkspaceid } from "../hooks/workspacehooks";
 
 
@@ -45,7 +45,10 @@ export default function KanbanBoard() {
   // const [notify,setNotify]=useState(false)
   const [notifyTaskIds, setNotifyTaskIds] = useState<string[]>([]);
   const [isOpensub, setOpensub] = useState<string | null>(null);
+  const[permission,setPermission]=useState(null)
   const user = useSelector((state: RootState) => state.user.user);
+
+  const userId  = useSelector((state:RootState)=>state.user.user?._id)
   // const areAllSubtasksCompleted = (task: KanbanTask): boolean => {
   //   if (!task.subTask || task.subTask.length === 0) return true;
   //   return task.subTask.every((sub) => sub.status === "Completed");
@@ -136,6 +139,10 @@ export default function KanbanBoard() {
   };
 
   const handleDrop = async (e: React.DragEvent, newStatus: KanbanTask["status"]) => {
+if(permission == "Viewer"){
+  toast.warning("You don't have permission")
+  return false
+}
 
     if (newStatus == "completed") {
       const isFound = draggedTask?.subTask?.filter((task) => {
@@ -207,7 +214,14 @@ export default function KanbanBoard() {
     { id: "progress", title: "In Progress", status: "progress" as const },
     { id: "completed", title: "Completed", status: "completed" as const },
   ];
-
+ useEffect(()=>{
+  async function fetchPermission(){
+ const data=await findPermission(workspaceId,userId);
+ 
+ setPermission(data)
+  }
+  fetchPermission()
+ },[ userId, workspaceId])
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">

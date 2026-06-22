@@ -38,7 +38,8 @@ export class NodemailerService implements IEmailService {
     await this.transporter.sendMail(mailOptions);
   }
   async inviteMembers(email: string, invitationLink: string, token: number): Promise<void> {
-    const mailOptions = {
+   try {
+     const mailOptions = {
       from: process.env.EMAIL_USER || "your-email@gmail.com",
       to: email,
       subject: "🔐 Your Invite link",
@@ -64,7 +65,11 @@ export class NodemailerService implements IEmailService {
 
       `,
     };
-    await this.transporter.sendMail(mailOptions);
+     await this.transporter.sendMail(mailOptions);
+   } catch (error) {
+    console.log(error,"err")
+   }
+   
   }
   async sentRecipt(customerEmail: string, pdfPath: string): Promise<void> {
     const mailOptions = {

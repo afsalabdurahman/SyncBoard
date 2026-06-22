@@ -46,7 +46,7 @@ const workspaceId= req.params.workspaceId as string
       }
 
 
-      if (!user) {
+      if (!user||user.isSuspend) {
         throw new ForbiddenError('User not found');
       }
       console.log(workspaceId,"WORKSPCEIDD")

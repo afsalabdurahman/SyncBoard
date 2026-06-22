@@ -45,6 +45,7 @@ export class DatahandleUsecase implements IDatahandleUsecase {
         const result = await this._superAdminRepository.getUserDetails(userId);
         console.log(result,"REsultsssssssssss")
          const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result);
+         console.log(responseDTO,"REPOSNEDTOOO")
        return responseDTO
         // return responseDTO
     }

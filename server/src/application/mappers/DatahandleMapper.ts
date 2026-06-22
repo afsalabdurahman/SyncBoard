@@ -1,7 +1,7 @@
 import { Abuse } from "../../domain/entities/Abuse";
 import { formatDate, getNextMonthEnd } from "../../utils/dateCoverter";
-import {  CountWorkspaceReponseDTO } from "../dto/DatahandleDTO";
-import {  listOfSubscriptionsDTO, SubscriptionAggregateDTO,   SuperSubscriptionResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserDetailsResponseDTO, WorkspaceAggResponseDTO } from "../dto/SuperDTO";
+import { CountWorkspaceReponseDTO } from "../dto/DatahandleDTO";
+import { listOfSubscriptionsDTO, SubscriptionAggregateDTO, SuperSubscriptionResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserDetailsResponseDTO, WorkspaceAggResponseDTO } from "../dto/SuperDTO";
 export class DatahandleMapper {
   static mapSuperEntityToResponse(userCount: number, workspaceCount: number, data: SubscriptionAggregateDTO[], abusereportlas: Abuse[]) {
     const Abuse = abusereportlas.map((report) => ({
@@ -20,136 +20,162 @@ export class DatahandleMapper {
       Abuse: Abuse
     }
   }
-static async mapSuperWorkspaceToResponse(
-  results: WorkspaceAggResponseDTO[],
-  search: string,
-  filterStatus: string,
-  plan: string
-): Promise<{ responseDTO: CountWorkspaceReponseDTO[]; totalCount: number }> {
+  static async mapSuperWorkspaceToResponse(
+    results: WorkspaceAggResponseDTO[],
+    search: string,
+    filterStatus: string,
+    plan: string
+  ): Promise<{ responseDTO: CountWorkspaceReponseDTO[]; totalCount: number }> {
 
-  const totalCount = results.pop()?.totalDocCount ?? 0;
+    const totalCount = results.pop()?.totalDocCount ?? 0;
 
-  const searchQuery = search?.trim().toLowerCase();
+    const searchQuery = search?.trim().toLowerCase();
 
-  const filteredResults = results.filter((result) => {
+    const filteredResults = results.filter((result) => {
 
-    // SEARCH
-    const matchesSearch =
-      !searchQuery ||
-      result.workspaceName?.toLowerCase().includes(searchQuery) ||
-      result.ownerName?.toLowerCase().includes(searchQuery) ||
-      result.ownerEmail?.toLowerCase().includes(searchQuery);
+      // SEARCH
+      const matchesSearch =
+        !searchQuery ||
+        result.workspaceName?.toLowerCase().includes(searchQuery) ||
+        result.ownerName?.toLowerCase().includes(searchQuery) ||
+        result.ownerEmail?.toLowerCase().includes(searchQuery);
 
-    // STATUS
-    const matchesStatus =
-      filterStatus === "all" ||
-      result.workspaceStatus?.toLowerCase() === filterStatus.toLowerCase();
-    // PLAN
-    const matchesPlan =
-      plan === "all" ||
-      result.subscriptionPlan?.toLowerCase() === plan.toLowerCase();
+      // STATUS
+      const matchesStatus =
+        filterStatus === "all" ||
+        result.workspaceStatus?.toLowerCase() === filterStatus.toLowerCase();
+      // PLAN
+      const matchesPlan =
+        plan === "all" ||
+        result.subscriptionPlan?.toLowerCase() === plan.toLowerCase();
 
-    return matchesSearch && matchesStatus && matchesPlan;
-  });
+      return matchesSearch && matchesStatus && matchesPlan;
+    });
 
-  const responseDTO: CountWorkspaceReponseDTO[] = filteredResults.map((result) => ({
-    id: result.workspaceId,
-    name: result.workspaceName,
-    slug: result.workspaceSlug,
+    const responseDTO: CountWorkspaceReponseDTO[] = filteredResults.map((result) => ({
+      id: result.workspaceId,
+      name: result.workspaceName,
+      slug: result.workspaceSlug,
 
-    owner: {
-      name: result.ownerName,
-      email: result.ownerEmail,
-      avatar: result.ownerImageUrl,
-    },
-
-    plan: result.subscriptionPlan,
-    status: result.workspaceStatus,
-    members: result.memberCount,
-
-    createdAt: formatDate(result.workspaceCreatedDate),
-    lastActivity: formatDate(result.lastProjectUpdatedDate),
-
-    monthlyRevenue: result.monthlyRevenue / 100,
-    storage: { used: result.workspaceStorage ?? 0, limit: 10 },
-  }));
-
-  return {
-    responseDTO,
-    totalCount,
-  };
-}
-
-static mapAllUserToResponse(result: UserAggResponseDTO) {
-  const totalCount = result.totalCount;
-
-  const responseDTO = result.userList.map((u) => {
-    // Handle workspaceDetails - it can be array or object
-    const workspace = Array.isArray(u.workspaceDetails) 
-      ? u.workspaceDetails[0] || {} 
-      : u.workspaceDetails || {};
-
-    // Handle subscriptionDetails safely (can be empty array)
-    const subscription = Array.isArray(u.subscriptionDetails) && u.subscriptionDetails.length > 0
-      ? u.subscriptionDetails[0]
-      : { planKey: "free" };
-
-    return {
-      id: u._id?.toString() || "",
-      name: u.name || "",
-      email: u.email || "",
-      avatar: u.imageUrl || "/placeholder.svg?height=40&width=40",
-      role: u.role?.toLowerCase() || "member",
-      status: u.status || "inactive",
-      isSuspend:u.isSuspend,
-      phone: u.phone || "",
-
-      workspace: {
-        name: workspace.name || "",
-        plan: subscription.planKey || "free",
+      owner: {
+        name: result.ownerName,
+        email: result.ownerEmail,
+        avatar: result.ownerImageUrl,
       },
 
-      joinedAt: u.createdAt ? new Date(u.createdAt).toISOString() : "",
-      lastActivity: u.updatedAt ? new Date(u.updatedAt).toISOString() : "",
-      loginCount: u.loginCount || 0,
-      isEmailVerified: u.isEmailVerified ?? true,
-      twoFactorEnabled: u.twoFactorEnabled ?? false,
+      plan: result.subscriptionPlan,
+      status: result.workspaceStatus,
+      members: result.memberCount,
+
+      createdAt: formatDate(result.workspaceCreatedDate),
+      lastActivity: formatDate(result.lastProjectUpdatedDate),
+
+      monthlyRevenue: result.monthlyRevenue / 100,
+      storage: { used: result.workspaceStorage ?? 0, limit: 10 },
+    }));
+
+    return {
+      responseDTO,
+      totalCount,
     };
-  });
+  }
 
-  return {
-    responseDTO,
-    totalCount,
-  };
-}
-static mapUserDetailsToResponse(result: SuperUserResponseDto) {
-  return {
-    id: result?._id.toString()||"",
-    name: result.name,
-    email: result.email,
-    isVerified: result.isVerified,
-    phone: result.phone || "NA",
-    joinedAt: result.createdAt,
-location:result.location || "NA",
-isSuspend:result.isSuspend,
-   workspaces: (result.workspace || []).map((works) => ({
-      id: works._id.toString(),
-      name: works.name,
-      slug: works.slug,
-      createdAt: works.createdAt,
-      status: works.status,
+  static mapAllUserToResponse(result: UserAggResponseDTO) {
+    const totalCount = result.totalCount;
 
-      isOwner:
-        works.ownerId?.toString?.() === result._id?.toString?.(),
+    const responseDTO = result.userList.map((u) => {
+      // Handle workspaceDetails - it can be array or object
+      const workspace = Array.isArray(u.workspaceDetails)
+        ? u.workspaceDetails[0] || {}
+        : u.workspaceDetails || {};
 
-      membersCount: works.members?.length || 0,
-    })),
-  };
-}
-  static mapSubscriptionToResponse(subscriptions:listOfSubscriptionsDTO[],totalDocCounts:number) {
+      // Handle subscriptionDetails safely (can be empty array)
+      const subscription = Array.isArray(u.subscriptionDetails) && u.subscriptionDetails.length > 0
+        ? u.subscriptionDetails[0]
+        : { planKey: "free" };
+
+      return {
+        id: u._id?.toString() || "",
+        name: u.name || "",
+        email: u.email || "",
+        avatar: u.imageUrl || "/placeholder.svg?height=40&width=40",
+        role: u.role?.toLowerCase() || "member",
+        status: u.status || "inactive",
+        isSuspend: u.isSuspend,
+        phone: u.phone || "",
+
+        workspace: {
+          name: workspace.name || "",
+          plan: subscription.planKey || "free",
+        },
+
+        joinedAt: u.createdAt ? new Date(u.createdAt).toISOString() : "",
+        lastActivity: u.updatedAt ? new Date(u.updatedAt).toISOString() : "",
+        loginCount: u.loginCount || 0,
+        isEmailVerified: u.isEmailVerified ?? true,
+        twoFactorEnabled: u.twoFactorEnabled ?? false,
+      };
+    });
+
+    return {
+      responseDTO,
+      totalCount,
+    };
+  }
+  static mapUserDetailsToResponse(result: SuperUserResponseDto) {
+    console.log(result, "Resulttt000")
+    console.log(result._id.toString(), "Resyultttt")
+    let isBlocked = false;
+    result.workspace.forEach((works) => {
+      works.members?.forEach((mem) => {
+
+        console.log(mem, "MEMBERSSS")
+      })
+    })
+    for (const workspace of result.workspace) {
+      const member = workspace.members?.find(
+        (member) => member.userId
+      );
+console.log(member,"FINDOUtmember")
+      if (member) {
+        console.log(member, "Member11111111")
+        isBlocked = member.isBlocked;
+        
+      }
+    }
+
+    console.log(isBlocked, "ISblaocekd");
+
+    return {
+      id: result?._id.toString() || "",
+      name: result.name,
+      email: result.email,
+      isVerified: result.isVerified,
+      phone: result.phone || "NA",
+      joinedAt: result.createdAt,
+      location: result.location || "NA",
+      isSuspend: result.isSuspend,
+      workspaces: (result.workspace || []).map((works) => ({
+        id: works._id.toString(),
+        name: works.name,
+        slug: works.slug,
+        createdAt: works.createdAt,
+        status: works.status,
+         isBlocked:
+    works.members?.find(
+      (member) =>
+        member.userId?._id.toString() === result._id?.toString()
+    )?.isBlocked ?? false,
+        isOwner: works.ownerId?.toString?.() === result._id?.toString?.(),
+
+        membersCount: works.members?.length || 0,
+      })),
+    };
+  }
+  static mapSubscriptionToResponse(subscriptions: listOfSubscriptionsDTO[], totalDocCounts: number) {
 
     const responseDTO = subscriptions.map((u): SuperSubscriptionResponseDTO => ({
-  
+
       workspace: {
         name: u.name,
         ownerName: u.userName,
@@ -171,7 +197,7 @@ isSuspend:result.isSuspend,
         expYear: 2027,
       },
       lastInvoiceStatus: "paid",
-      history:u.history
+      history: u.history
     }));
     return { totalDocCounts, responseDTO }
   }

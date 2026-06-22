@@ -18,7 +18,7 @@ export const handleApiError = (error: AxiosError): void => {
       case 401: {
         const url = error?.config?.url || "";
         const protectedRoutes = ["projects", "activities", "invitation", "workspace"];
-         const isProtectedRequest = protectedRoutes.some(route =>
+        const isProtectedRequest = protectedRoutes.some(route =>
           url.includes(route)
         );
 
@@ -35,7 +35,7 @@ export const handleApiError = (error: AxiosError): void => {
 
       case 403: {
         const message = data?.message || "Access denied.";
-  
+
 
         const isUserLoggedIn = store.getState().auth?.user;
 
@@ -58,7 +58,7 @@ export const handleApiError = (error: AxiosError): void => {
       }
 
       case 404:
-        
+
         message = data?.message || "Requested resource not found.";
         break;
       case 409:

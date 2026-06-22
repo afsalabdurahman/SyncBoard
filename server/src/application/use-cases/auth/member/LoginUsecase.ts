@@ -28,7 +28,7 @@ export class LoginUsecase implements ILogin {
     const user = await this._userRepository.findUser(isExist._id );
 
     this._logger.info(`Login attempt for email: ${input.email}`);
-    if (!user||!user.workspace||!user._id) {
+    if (!user||!user.workspace||!user._id ||user.isSuspend) {
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     }
 const workspaceId =await this._workspaceRepository.findActiveWorkspace(stringToMongoObj(user._id?.toString()))

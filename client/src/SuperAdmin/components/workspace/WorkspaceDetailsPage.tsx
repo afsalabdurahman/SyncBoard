@@ -111,7 +111,12 @@ export default function WorkspaceDetailsPage(props) {
       <main className={cn("transition-all duration-300 pt-16", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <div className="p-6 space-y-6">
           <div className="flex justify-end">
-            <CloseIcon onClose={() => props.setDetails(null)} />
+            <button
+    onClick={() => props.setDetails(null)}
+    className="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition"
+  >
+    Back
+  </button>
           </div>
 
           {/* Header */}

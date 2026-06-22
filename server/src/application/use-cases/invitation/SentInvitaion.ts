@@ -27,10 +27,12 @@ export class SentInvitaionUsecase implements ISentInvitaion {
       console.log(invitaionLink, "link")
       for (const email of emails) {
          const isValid = AuthMapper.emailValidator(email);
+         console.log(isValid,"Validtu check")
          const user = await this._userRepository.findByEmail(email);
-
+console.log(user,"Is User")
          if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
          const randomToken = generateRandom5Digit();
+         console.log(randomToken,"Token")
          const inviteEntity = new Invitation({ workspaceId: workspaceId, status: InvitationStatus.PENDING, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), invitedTo: email, token: randomToken })
          await this._invitaionRepository.create(inviteEntity)
          if (user) {

@@ -33,6 +33,7 @@ import { fetchAUserDetails } from "../../apis/fetchApi"
 import { UserDetailsResponseDto } from "../../types/mapData"
 import { formatTimestamp } from "../../../Utility/dateConverter"
 import { profilePartialUpdate } from "../../../Worksapce/apis/workspaceapis"
+import { updateUserInWorkspace } from "../../../Admin/apis/taskApi"
 type MemberRole = "owner" | "admin" | "member" | "guest"
 type Plan = "basic" | "pro" | "enterprise"|"free"
 
@@ -72,7 +73,8 @@ function fmtDateTime(d: string) {
 
 export default function UserProfilePage({setPage,user}) {
   const [userData,setUser]=useState<UserDetailsResponseDto>(null)
-  
+  const [isBlocked,setBlocked]=useState(false)
+  const [isSuspend,setisSuspend]=useState(false)
 const totalWorkspaceCount = userData?.workspaces?.length || 0;
 
 const activeWorkspaceCount =
@@ -85,33 +87,38 @@ useEffect(()=>{
   async function fetchUserDetails (){
   const userDetails = await fetchAUserDetails(user.id)
   setUser(userDetails);
-  setisSuspend(userData.isSuspend)
+  setisSuspend(userDetails.isSuspend)
   }
   fetchUserDetails()
 
-},[user])
+},[user,isBlocked])
 
 console.log(userData,"Data++++")
   const [sidebarCollapsed, ] = useState(false)
 
 
-const [isSuspend,setisSuspend]=useState()
+
   const userDefault = user
   const [status, setStatus] = useState<User["status"]>(userDefault.status)
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(userDefault.isEmailVerified)
 
 
-const suspendUser = async (id)=>{
-  
-  const updatedProfile = {
-         isSuspend:isSuspend?"false":"true"
-        };
-        console.log()
-const status=await profilePartialUpdate(id,updatedProfile);
-console.log(isSuspend,"STataus")
-setisSuspend(false)
+const suspendUser = async (id: string) => {
+  const newStatus = !isSuspend;
 
-}
+  const response = await profilePartialUpdate(id, {
+    isSuspend: newStatus,
+  });
+
+  if (response) {
+    setisSuspend(newStatus);
+    toast.success(
+      newStatus ? "User suspended successfully" : "User unsuspended successfully"
+    );
+  } else {
+    toast.error("Failed to update user status");
+  }
+};
  console.log(isSuspend,"isSuspendd")
 const dispatch = useDispatch()
   const suspend = async() => {
@@ -147,7 +154,13 @@ const dispatch = useDispatch()
   // const storageUsedGB = 12
   // const storageLimitGB = 50
   // const storagePct = Math.min(100, Math.round((storageUsedGB / storageLimitGB) * 100))
-
+const blockUser= async(workspaceId,userId,status)=>{
+  console.log(workspaceId,"WOKIDD",status)
+  const updatedData={isBlocked:status?false:true}
+ await updateUserInWorkspace(workspaceId??"",userId,updatedData);
+ setBlocked(status)
+ toast.success("User status updated" )
+}
   return (
     <div className="min-h-screen bg-gray-50">
     
@@ -156,7 +169,23 @@ const dispatch = useDispatch()
         <div className="p-6 space-y-8">
           {/* Header */}
 {/* UserDetails Header */}
+<div className="flex items-center justify-between mb-8">
+  <div>
+    <h1 className="text-3xl font-bold text-slate-900">
+      User Profile
+    </h1>
+    <p className="text-slate-500 mt-1">
+      Manage account and workspace access
+    </p>
+  </div>
 
+  <button
+    onClick={() => setPage(null)}
+    className="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition"
+  >
+    Back
+  </button>
+</div>
  <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-8 py-8">
         <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -284,8 +313,8 @@ const dispatch = useDispatch()
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-xl font-medium transition-colors">
-          Block this user in this workspace
+        <button onClick={()=>blockUser(space.id,userData.id,space.isBlocked)} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-xl font-medium transition-colors">
+          {space.isBlocked?"Un block this user in this workspace":"Block this user in this workspace"}
         </button>
 
         
@@ -298,14 +327,28 @@ const dispatch = useDispatch()
 {/* end List */}
 
 
-     <div className="flex justify-end">
-        
-        <CloseIcon onClose={() => setPage(null)} />
-        
-      </div>
-           <button onClick={()=>suspendUser(userData.id)} >
-          {userData?.isSuspend?"UnSuspend!!!":"Suspend"}
-        </button>
+     
+    <div className="mt-6 max-w-sm rounded-xl border border-red-200 bg-red-50 p-4">
+  <h3 className="text-sm font-semibold text-red-700 mb-1">
+    Danger Zone
+  </h3>
+  <p className="text-xs text-red-600 mb-3">
+    {isSuspend
+      ? "This user is currently suspended."
+      : "Suspending this user will restrict access."}
+  </p>
+
+  <button
+    onClick={() => suspendUser(userData.id)}
+    className={`w-full rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+      isSuspend
+        ? "border-green-300 bg-white text-green-700 hover:bg-green-50"
+        : "border-red-300 bg-white text-red-700 hover:bg-red-50"
+    }`}
+  >
+    {isSuspend ? "Unsuspend User" : "Suspend User"}
+  </button>
+</div>
 
           {/* KPIs */}
        

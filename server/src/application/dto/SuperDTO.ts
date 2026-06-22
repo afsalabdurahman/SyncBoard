@@ -253,7 +253,14 @@ export interface WorkspaceMemberResponseDto {
   isDeleted: boolean;
   isOnline: boolean;
 }
-
+export interface UserDetailsInsuperAdmin{
+  userId?:{
+    _id:string | Types.ObjectId,
+    email:string,
+    name:string
+  },
+  isBlocked:boolean
+}
 export interface WorkspaceResponseDto {
   _id: string;
   name: string;
@@ -262,8 +269,9 @@ export interface WorkspaceResponseDto {
   status: string;
   storage?: number;
   createdAt: Date;
+  isBlocked:boolean;
   currentSubscription?: string | null;
-  members?: WorkspaceMemberResponseDto[];
+  members?: UserDetailsInsuperAdmin[];
 }
 
 export interface SuperUserResponseDto {
