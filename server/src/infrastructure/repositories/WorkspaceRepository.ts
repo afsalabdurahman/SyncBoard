@@ -146,7 +146,8 @@ async findPermisssion(
 }
 
 async updateUserDataInWorkspace(workspaceId: Types.ObjectId, userId: Types.ObjectId, data: UserInWorkspaceDTO): Promise<void> {
-   const setData: Record<string, unknown> = {};
+  console.log(workspaceId,userId,data,"77777")
+  const setData: Record<string, unknown> = {};
      Object.entries(data).forEach(([key, value]) => {
     setData[`members.$.${key}`] = value;
   });

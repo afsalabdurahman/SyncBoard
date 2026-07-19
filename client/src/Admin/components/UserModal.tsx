@@ -114,6 +114,7 @@ await updatePermissionApi(permission,user._id,workspaceId)
       ...formData,
       isBlocked: formData.isBlocked === "Yes",
       isAdmin: formData.role === "Admin",
+      workspaceId:workspaceId
     };
 console.log(updatedData,"UPdatedData")
     try {
