@@ -49,10 +49,10 @@ import { useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 /* ---------------- COMPONENT ---------------- */
 
 export function UsersPage() {
-  const projectID=useSelector((state)=>state.switch.projectId);
-  
+  const projectID = useSelector((state) => state.switch.projectId);
+
   const dispatch = useDispatch<AppDispatch>();
-const workspaceid = useWorkspaceid();
+  const workspaceid = useWorkspaceid() as string
 
   const users = useUsers();
 
@@ -85,10 +85,10 @@ const workspaceid = useWorkspaceid();
         page,
         limit: rowPerPage,
         workspaceslug: workspaceSlug,
-        projectId:projectID
+        projectId: projectID
       })
     );
-  }, [dispatch, refreshKey, page, rowPerPage, workspaceSlug,projectID]);
+  }, [dispatch, refreshKey, page, rowPerPage, workspaceSlug, projectID]);
 
   /* ---------------- PAGINATION ---------------- */
 
@@ -131,10 +131,11 @@ const workspaceid = useWorkspaceid();
     await dispatch(
       removeUser({
         deleteUser: deleteUserId,
-        updatedProfile: { isDeleted: !isRestore },
+        workspaceId: workspaceid,
+        formData: { isDeleted: !isRestore },
       })
     ).unwrap();
-toast.success("Update successfull")
+    toast.success("Update successfull")
     setRefreshKey((prev) => prev + 1);
 
     setIsDialogOpen(false);
@@ -218,31 +219,31 @@ toast.success("Update successfull")
                   <TableCell>
                     <Badge>{user.title}</Badge>
                   </TableCell>
- <TableCell>
+                  <TableCell>
                     <Badge variant={getRoleBadgeVariant(user.role)}>
                       {user.role}
                     </Badge>
                   </TableCell>
-                  
-                  <TableCell>
+
+                  <TableCell className="text-center">
                     <Badge variant={user.isBlocked ? "destructive" : "default"}>
-                      {user.isBlocked ? "Yes" : "No"}
+                      {user.isBlocked ? "    Yes" : "   No"}
                     </Badge>
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className="text-center">
                     <Badge variant={user.isDeleted ? "destructive" : "default"}>
                       {user.isDeleted ? "Yes" : "No"}
                     </Badge>
                   </TableCell>
-<TableCell>
-  <Badge>
-    {
-      user.permissions|| "No Permission"
-    }
-  </Badge>
-</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
+                    <Badge>
+                      {
+                        user.permissions || "No Permission"
+                      }
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
 
                     <div className="flex justify-end gap-2">
 
@@ -293,7 +294,7 @@ toast.success("Update successfull")
       <UserModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={() => {setRefreshKey((prev) => prev + 1)}}
+        onSubmit={() => { setRefreshKey((prev) => prev + 1) }}
         user={editingUser}
       />
 

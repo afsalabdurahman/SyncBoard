@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useWorkspaceid } from '../hooks/workspacehooks';
 import { NoPermission } from '../../Custom/reusecomponents/NoPermission';
 import { useSelector } from 'react-redux';
+import LoadingSpinner from '../../Custom/reusecomponents/LoadingSpinner';
 export default function AbuseReportForm() {
   const memeber = useMember();
   const workspace = useWorkspaceid();
@@ -32,7 +33,14 @@ const [permission,setPermission]=useState("")
  const userId = useSelector((state: RootState) => state.user.user?._id);
  const workspaceid=useWorkspaceid() as string
  
+useEffect(()=>{
+ async function fetchPermission(){
+const data=await findPermission(workspaceid,userId);
 
+setPermission(data)
+ }
+ fetchPermission()
+},[ userId, workspaceid])
 
 
 
@@ -190,14 +198,11 @@ const [permission,setPermission]=useState("")
       t.type.toLowerCase().includes(search.toLowerCase()) ||
       t.status.toLowerCase().includes(search.toLowerCase())
   );
- useEffect(()=>{
-  async function fetchPermission(){
- const data=await findPermission(workspaceid,userId);
  
- setPermission(data)
+ if(!permission){
+   return(<LoadingSpinner/>)
   }
-  fetchPermission()
- },[ userId, workspaceid])
+ 
  if(permission=="Viewer"){
    return(<><NoPermission/></>)
  }

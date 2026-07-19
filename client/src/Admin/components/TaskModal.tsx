@@ -219,10 +219,11 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">Description</Label>
               <textarea
+              
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="col-span-3"
+                className="col-span-3 border rounded p-2"
               />
               <p className="text-red-500 text-sm col-span-4">{errors.description}</p>
             </div>

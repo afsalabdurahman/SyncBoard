@@ -53,7 +53,7 @@ export const ROUTES = {
     CHANGE_PASSWORD:'/member/change/password/:userId',
     REGISTER_USER:'/auth/user/register',
     RESET_PASSWORD:'/member/reset/password/:userId',
-    REMOVE_MEMBER:'/member/profile/update/:deleteUser',
+    REMOVE_MEMBER:'/workspace/update/member/profile/:userId/:workspaceId',
     UPDATE_MEMBER:'member/profile/update/:userId',
    
    

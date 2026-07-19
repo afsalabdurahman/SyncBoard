@@ -37,7 +37,8 @@ interface User {
   role: "Admin" | "Member";
   isBlocked: boolean;
   title?: string;
-  permission?: string
+  permission?: string;
+  permissions?:string;
 }
 
 interface UserModalProps {
@@ -73,7 +74,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   title: "",
 });
   /* ---------------- LOAD USER DATA ---------------- */
-
+console.log(user,"USER")
   useEffect(() => {
     if (!user) {
       setFormData({
@@ -94,7 +95,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   role: user.role,
   isBlocked: user.isBlocked ? "Yes" : "No",
   isAdmin: user.role === "Admin",
-  permission: user?.workspace?.[0]?.permissions || "Member",
+  permission: user?.permissions || "Member",
   title: user.title || "",
 });
   }, [user, isOpen]);

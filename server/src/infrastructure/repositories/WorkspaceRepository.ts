@@ -241,6 +241,7 @@ async paginationUserInWorkspace(
       permissions: "$members.permissions",
       role: "$members.role",
       isBlocked: "$members.isBlocked",
+      isDeleted:"$members.isDeleted",
       isOnline: "$members.isOnline"
     }
   },

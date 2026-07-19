@@ -23,18 +23,18 @@ console.log(response,"API++++++")
       throw new Error(err)
   }
 });
-export const removeUser = createAsyncThunk('/adminUserData/removeuser', async ({ deleteUser, updatedProfile }: { deleteUser: string, updatedProfile: { isDelete: true } }, { rejectWithValue }) => {
+export const removeUser = createAsyncThunk('/adminUserData/removeuser', async ({ deleteUser,workspaceId, formData }: { deleteUser: string,workspaceId:string, formData: { isDeleted: true } }, { rejectWithValue }) => {
   try {
 
-    const response = await apiService.patch(
-      ROUTES.MEMBER.REMOVE_MEMBER.replace(":deleteUser",deleteUser),
+    const response = await apiService.post(
+      ROUTES.MEMBER.REMOVE_MEMBER.replace(":userId",deleteUser).replace(":workspaceId",workspaceId),
       {
-        profileData: updatedProfile, // Use the up-to-date object
+        formData:formData, // Use the up-to-date object
       },
       { withCredentials: true })
 
-    if (response.status === 201) {
-      return response.data.updatedData;
+    if (response.status === 200) {
+      return true
     } else {
       return rejectWithValue("something went to wrong")
     }

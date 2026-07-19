@@ -14,9 +14,9 @@ export class UpdateUserProfileUsecase implements IUpdateProfileUsecases {
     userId: string,
     ...args: string[]
   ): Promise<User> {
-
+console.log(args,"argsss")
     const merged = Object.assign({}, ...args);
-console.log(merged,"Memrgedddd")
+console.log(merged.profileData,"Memrgedddd")
     const isValid = UserMapper.updateProfileValidator(merged.profileData);
     if (!isValid.success) throw new ValidationError(isValid.error.issues[0].message);
     const updatedUser = await this._userRepository.updateProfile(userId, merged);

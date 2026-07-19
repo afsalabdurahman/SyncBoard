@@ -186,10 +186,11 @@ async invitationRejected(req:Request,res:Response):Promise<void>{
   res.status(HttpStatusCode.OK)
 }
 async updateUserInWorkspace(req:Request,res:Response):Promise<void>{
+  console.log("456")
   const userId =req.params.userId;
   const workspaceId=req.params.workspaceId;
   const data = req.body.formData;
-  console.log(req.body)
+  console.log(req.body,userId,workspaceId,"Caling....")
   await this._createWorkspceUsecases.updateUserInWorkspace(workspaceId,userId,data);
     res.status(HttpStatusCode.OK)
 }
