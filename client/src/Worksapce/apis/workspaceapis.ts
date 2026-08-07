@@ -244,7 +244,7 @@ export const acceptInvitaion=async(userId:string,slug:string)=>{
             userId,
             slug
         });
-         console.log(response)
+     
         return response?.data?.message
        
     } catch (error) {

@@ -9,7 +9,6 @@ import mongoose from "mongoose";
 import { UserResponseDTO } from "../../application/dto/SuperDTO";
 import { ProjectModel } from "../database/models/ProjectModel";
 import { stringToMongoObj } from "../../utils/convertMongoObject";
-import { listWorkspace, PopulatedWorkspace } from "../../application/dto/WorkspaceDTOs";
 @injectable()
 export class UserMongooseRepository extends BaseRepository<User,UserDoument> implements IUserRepository {
   constructor() {

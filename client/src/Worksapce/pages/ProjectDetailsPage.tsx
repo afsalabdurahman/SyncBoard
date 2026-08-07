@@ -49,20 +49,10 @@ useEffect(() => {
 
   const [activeTab, setActiveTab] = useState("overview");
   
-  // const [task1] = useState(null);
+ 
   const [projectAdminName] = useState(null);
 
-  //find pdf or image
-  // const isImage = (filename: string) =>
-  //  /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
-  // const isPdf = (filename: string) => /\.pdf$/i.test(filename);
-  // let hasPdf = false;
-  // let hasImage = false;
-
-  // if (props.projectDetails) {
-  //   hasPdf = props?.projectDetails.attachedUrl.some(isPdf);
-  //   hasImage = props?.projectDetails.attachedUrl.some(isImage);
-  // }
+ 
   const pdfArray = props?.projectDetails.attachedUrl.map((url: string) => {
     if (url.includes(".pdf")) {
       return url;
@@ -73,72 +63,6 @@ useEffect(() => {
     (url: string) => url.includes(".jpg") || url.includes(".png") ||url.includes(".webp")
   );
   
-  //Define task
-  // const tasks = [
-  //   {
-  //     id: 1,
-  //     title: "Design Homepage Layout",
-  //     assignee: "Maria Garcia",
-  //     status: "completed",
-  //     priority: "high",
-  //     dueDate: "2024-06-15",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Implement User Authentication",
-  //     assignee: "Alex Chen",
-  //     status: "in-progress",
-  //     priority: "high",
-  //     dueDate: "2024-06-18",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Setup Database Schema",
-  //     assignee: "David Kim",
-  //     status: "completed",
-  //     priority: "medium",
-  //     dueDate: "2024-06-12",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Write API Documentation",
-  //     assignee: "David Kim",
-  //     status: "To Do",
-  //     priority: "Low",
-  //     dueDate: "2024-06-25",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Mobile Responsive Testing",
-  //     assignee: "Emma Wilson",
-  //     status: "in-progress",
-  //     priority: "medium",
-  //     dueDate: "2024-06-20",
-  //   },
-  // ];
-
- 
-
- 
-  // const projectData = {
-  //   id: "PRJ-001",
-  //   name: "E-Commerce Platform Redesign",
-  //   description:
-  //     "Complete redesign of the company e-commerce platform with modern UI/UX, improved performance, and mobile responsiveness.",
-  //   status: "In Progress",
-  //   priority: "High",
-  //   startDate: "2024-01-15",
-  //   endDate: "2024-06-30",
-  //   progress: 0,
-  //   budget: "$125,000",
-  //   spent: "$81,250",
-  //   manager: {
-  //     name: "Sarah Johnson",
-  //     email: "sarah.johnson@company.com",
-  //     avatar: "/api/placeholder/40/40",
-  //   },
-  //   client: "TechCorp Solutions",
-  // };
 
 
   const getStatusColor = (status: string) => {

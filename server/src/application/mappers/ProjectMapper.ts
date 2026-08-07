@@ -3,7 +3,6 @@ import {  ProjectRequstDTO, ProjectResponseDTO } from "../dto/ProjectDTOs";
 import { z } from "zod";
 
 import mongoose from "mongoose";
-import { string } from "zod/v4";
 import { stringToMongoObj } from "../../utils/convertMongoObject";
 
 

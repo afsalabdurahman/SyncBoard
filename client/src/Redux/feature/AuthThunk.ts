@@ -14,7 +14,7 @@ export const logoutUserAuth = createAsyncThunk<
       }
 
       return true;
-    } catch (error: any) {
+    } catch (error) {
       console.warn(
         "Logout API failed, but clearing local state anyway",
         error

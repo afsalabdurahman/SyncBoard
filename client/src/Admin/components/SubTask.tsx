@@ -7,21 +7,13 @@ import { deleteSubTaskRedux } from "../../Redux/feature/task/taskSlice";
 import { formatEstimateShort } from "../../Utility/dateformate";
 /* ─── Types ─────────────────────────────────────────── */
 interface Subtask {
-  // id: string;
   title: string;
   estimate: number|null;
-  // description: string;
-  // priority: "Low" | "Medium" | "High";
-  // completed: boolean;
   status: "Pending" | "Completed",
   taskDeadline?:string
 }
 
-// const PRIORITY_META = {
-//   Low: { color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200", dot: "bg-emerald-500" },
-//   Medium: { color: "text-amber-600", bg: "bg-amber-50   border-amber-200", dot: "bg-amber-500" },
-//   High: { color: "text-rose-600", bg: "bg-rose-50    border-rose-200", dot: "bg-rose-500" },
-// };
+
 
 /* ─── Subtask Popup ──────────────────────────────────── */
 function SubtaskPopup({
@@ -36,8 +28,7 @@ function SubtaskPopup({
   const [title, setTitle] = useState("");
   const [estimate, setEst] = useState<number>(null);
   const [error,setError]=useState("")
-  console.log(estimate,"Estimate")
-  console.log(taskDeadline,"popuDEADINE")
+
   // const [description, setDesc] = useState("");
   // const [priority, setPriority] = useState<Subtask["priority"]>("Medium");
   const titleRef = useRef<HTMLInputElement>(null);
@@ -121,30 +112,7 @@ function SubtaskPopup({
            <p className="text-red-500">{error}</p>
           </div>
 
-          {/* Priority */}
-          {/* <div>
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
-              Priority
-            </label>
-            <div className="flex gap-1.5">
-              {(["Low", "Medium", "High"] as const).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPriority(p)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border text-[11px] font-semibold transition-all ${
-                    priority === p
-                      ? `${PRIORITY_META[p].bg} ${PRIORITY_META[p].color}`
-                      : "border-gray-200 text-gray-400 hover:border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${priority === p ? PRIORITY_META[p].dot : "bg-gray-300"}`} />
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div> */}
-
+        
           {/* Actions */}
           <div className="flex gap-2 pt-1">
             <button
@@ -171,7 +139,7 @@ function SubtaskPopup({
 
 /* ─── SubtaskSection — drop this inside your form ───── */
 export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
-  console.log(deadLine,"deadline")
+
   const [subtasks, setSubtasks] = useState<Subtask[]>(subTask || []);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -180,11 +148,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
   const addSubtask = (data: Omit<Subtask, "id" | "completed">) =>
     setSubtasks((p) => [...p, { ...data }]);
   setSubTask(subtasks)
-  // const toggleSubtask = (id: string) =>
-  //   setSubtasks((p) => p.map((s) => s.id === id ? { ...s, completed: !s.completed } : s));
-
-  // const removeSubtask = (id: string) =>
-  //   setSubtasks((p) => p.filter((s) => s.id !== id));
+ 
 
   const deleteSubTask = async (subTask) => {
     
@@ -223,16 +187,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
         {/* Content */}
         <div className="col-span-3 space-y-2">
 
-          {/* Progress bar */}
-          {/* {subtasks.length > 0 && (
-            <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-violet-500 to-indigo-400 rounded-full transition-all duration-500"
-                style={{ width: `${(completed / subtasks.length) * 100}%` }}
-              />
-            </div>
-          )} */}
-
+          
           {/* Subtask list */}
           {subtasks.length > 0 && (
             <ul className="space-y-1.5">
@@ -242,21 +197,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
                   className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-100 bg-gray-50 group hover:border-gray-200 transition-all"
                 >
                   {/* Checkbox */}
-                  {/* <button
-                    type="button"
-                    onClick={() => toggleSubtask(s.id)}
-                    className={`flex-shrink-0 w-4 h-4 rounded-[4px] border-2 flex items-center justify-center transition-all ${s.completed
-                        ? "bg-violet-600 border-violet-600"
-                        : "border-gray-300 hover:border-violet-400"
-                      }`}
-                  >
-                    {s.completed && (
-                      <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1.5 5l2.5 2.5 4.5-4.5" />
-                      </svg>
-                    )}
-                  </button> */}
-
+                  
                   {/* Title */}
                   <span className={`flex-1 text-[12px] leading-tight transition-all ${s.completed ? "line-through text-gray-300" : "text-gray-700"
                     }`}>
@@ -278,12 +219,7 @@ export const SubtaskSection = ({ setSubTask, subTask, taskId,deadLine }) => {
                     </span>
                   )}
 
-                  {/* Priority */}
-                  {/* <span className={`flex-shrink-0 flex items-center gap-1 text-[10px] font-semibold ${PRIORITY_META[s.priority].color}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${PRIORITY_META[s.priority].dot}`} />
-                    {s.priority}
-                  </span> */}
-
+                
                   {/* Delete */}
                   <button
                     type="button"

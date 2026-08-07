@@ -4,13 +4,11 @@ import SignupPage from "./Member/pages/SignupPage";
 import PasswordResetPage from "./Member/pages/PasswordResetPage";
 import OtpVerification from "./Member/pages/OtpVerification";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import ForgotPasswordOtpPage from "./Member/pages/ForgotPasswordOtpPage";
 import ChangePasswordPage from "./Member/pages/ChangePasswordPage";
 import CreateWorkspacePage from "./Member/pages/CreateWorkspecePage";
 import InviteMembers from "./Member/pages/InviteMembers";
 import WorkSpacePage from "./Worksapce/pages/WorkSpacePage";
 import LinkInvitaionPage from "./Worksapce/pages/LinkInvitationPage";
-//import MulipleWorkspace from "./Member/components/landing/home/MulipleWorkspace/MulipleWorkspace";
 import Profile from "./Worksapce/components/Profile";
 import AdminDashboard from "./Admin/Pages/AdminDashboard";
 import AdminLogin from "./Admin/Pages/AdminLogin";
@@ -19,11 +17,9 @@ import { Layout } from "./SuperAdmin/Layout/Layout";
 import { Login } from "./SuperAdmin/pages/Login";
 import PaymentCompleted from "./Admin/Pages/PaymentCompleted";
 import PaymentRejected from "./Admin/Pages/PaymentRejected";
-// import OtpProtectedRoute from "./Member/protectedRoutes/OtpProtectedRoute";
 import AuthProvider from "./Worksapce/protectedRoutes/AuthProvider"
 import PublicRoute from"./Worksapce/protectedRoutes/PublicRoute";
 import ProtectedRoute from"./Worksapce/protectedRoutes/ProtectedRoute";
-// import CheckoutPage from "./Admin/Pages/CheckoutPage";
 import  AddPassword  from "./Worksapce/components/AddPassword";
 import { Features } from "./Worksapce/components/Features";
 import { PricingPage } from "./Worksapce/components/Prices";
@@ -32,7 +28,7 @@ import WorkspaceDetailsPage from "./SuperAdmin/components/workspace/WorkspaceDet
 
 function App() {
 useSelector((state)=>{
-  console.log(state,"state++")
+
 })
   return (
     <>
@@ -79,20 +75,11 @@ useSelector((state)=>{
             }></Route>
           <Route path='/signup' element={<SignupPage />}></Route>
           <Route path='/verify/otp' element={
-    // <OtpProtectedRoute>
+    
       <OtpVerification />
-    // </OtpProtectedRoute>
+    
   }></Route>
-          {/* <Route
-            path='/reset/password'
-            element={
-           <OtpProtectedRoute>
-<ForgotPasswordOtpPage />
-           </OtpProtectedRoute>
-              
-          
-          }
-          ></Route> */}
+        
           <Route
             path='/forgot/password'
             
@@ -152,10 +139,7 @@ element={
           
           }
           ></Route>
-          {/* <Route
-            path='/multiple-workspace'
-            element={<MulipleWorkspace />}
-          ></Route> */}
+        
           <Route path='/user-profile' element={<Profile />}></Route>
           {/* Admin DashBorad */}
           <Route path='/admin' element={<AdminLogin />}></Route>
@@ -170,7 +154,7 @@ element={
           <Route path='/test' element={<Invite />}></Route>
           <Route path='/payment/success' element={<PaymentCompleted/>}></Route>
           <Route path='/payment/cancel' element={<PaymentRejected/>}></Route>
-         {/* // <Route path='/checkout' element={<CheckoutPage />}></Route> */}
+         
 
           {/* SuperAdmin */}
           <Route path='/platform/login' element={<Login />} />

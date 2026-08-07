@@ -12,7 +12,7 @@ export const roleMiddleware = (roles: Array<'Member' | 'Admin' | 'SuperAdmin'>) 
 
 
     const userRole = req.user?.role;
-console.log(userRole,"role")
+
     if (!userRole || !roles.includes(userRole)) {
       res.status(403).json({ message: 'Forbidden: Insufficient role permissions' });
       return;

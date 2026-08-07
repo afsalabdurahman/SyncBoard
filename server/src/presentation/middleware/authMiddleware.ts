@@ -1,5 +1,5 @@
 import {  Response, NextFunction } from "express";
-import { AuthenticationError, ForbiddenError, NotFoundError } from "../../utils/errors";
+import { AuthenticationError, ForbiddenError } from "../../utils/errors";
 
 import { AuthService } from "../../infrastructure/services/AuthService"
 import { container } from "tsyringe";
@@ -9,7 +9,6 @@ import { User } from "../../domain/entities/User";
 import { CreateWorkspaceUsecases } from "../../application/use-cases/workspace/CreateWorkspaceUsecase"
 import { stringToMongoObj } from "../../utils/convertMongoObject";
 import { ResponseMessages } from "../../common/erroResponse";
-import { UserMongooseRepository } from "../../infrastructure/repositories/UserRepository";
 
 
 
@@ -19,7 +18,7 @@ export const authMiddelware = () => {
     const authService = container.resolve(AuthService)
     const getUserUseCase = container.resolve(GetUserUseCase)
     const workspaceUsecse = container.resolve(CreateWorkspaceUsecases)
-    const userRepository = container.resolve(UserMongooseRepository)
+    
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
       throw new AuthenticationError('No token Provided')
@@ -29,7 +28,7 @@ const workspaceId= req.params.workspaceId as string
 
     try {
       const decoded = await authService.verifyAccessToken(accessToken)
-      console.log(decoded,"DECOEDE")
+      
       if (!decoded.userId || !decoded.role) {
         throw new AuthenticationError('Invalid token payload');
       }
@@ -39,7 +38,7 @@ const workspaceId= req.params.workspaceId as string
         throw new AuthenticationError('Invalid user role');
       }
       const user: User | null = await getUserUseCase.execute(decoded.userId);
-      console.log(user,"User IN middlew")
+      
       if (user?.isSuperAdmin) {
         req.user = { id: decoded.userId, role };
         return next()
@@ -49,18 +48,18 @@ const workspaceId= req.params.workspaceId as string
       if (!user||user.isSuspend) {
         throw new ForbiddenError('User not found');
       }
-      console.log(workspaceId,"WORKSPCEIDD")
+      
 const workspaceObjectId = stringToMongoObj(workspaceId);
       // const isWorkspaceMember = user.workspace?.some((membership) =>
        
       //   membership.workspaceId.toString() === workspaceObjectId.toString()
       // );
-      console.log(workspaceObjectId,"MEMSBER >>>???")
+      
       if (!workspaceObjectId) {
         throw new ForbiddenError(ResponseMessages.NO_CONTENT);
       }
     const workspaceData = await workspaceUsecse.findWorkspace(workspaceObjectId);
-    console.log(workspaceData,"DATA")
+  
    if(workspaceData?.status == "Suspend"){
     throw  new ForbiddenError('Workspace is Suspend')
    }
@@ -70,27 +69,7 @@ const workspaceObjectId = stringToMongoObj(workspaceId);
 if(memberStatus?.isBlocked || memberStatus?.isBlocked){
  throw new ForbiddenError(ResponseMessages.USER_BLOCKED);
 }
-   console.log(memberStatus,"999")
-      // if (!user.workspace || user.workspace.length === 0) {
-      //   throw new ForbiddenError(ResponseMessages.NO_CONTENT);
-      // }
-      // const workspaceId = user.workspace[0].workspaceId;
-
-      // if (!workspaceId) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-      // const workspace = await workspaceUsecse.findWorkspace(workspaceId);
-      // if (workspace?.status.toLowerCase() == "suspend") {
-      //  throw new ForbiddenError('Workspace is Suspended')
-      // }
-
-      // if (user.isBlocked) {
-      //   await userRepository.changeOnlineStatus(stringToMongoObj(user._id ?? ""))
-      //   throw new ForbiddenError('User is blocked');
-      // }
-      // if (user.isDeleted) {
-      //   await userRepository.changeOnlineStatus(stringToMongoObj(user._id ?? ""))
-      //   throw new ForbiddenError('User is removed');
-
-      // }
+   
       req.user = { id: decoded.userId, role };
       next();
 

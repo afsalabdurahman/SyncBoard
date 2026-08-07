@@ -93,7 +93,6 @@ useEffect(()=>{
 
 },[user,isBlocked])
 
-console.log(userData,"Data++++")
   const [sidebarCollapsed, ] = useState(false)
 
 
@@ -119,7 +118,7 @@ const suspendUser = async (id: string) => {
     toast.error("Failed to update user status");
   }
 };
- console.log(isSuspend,"isSuspendd")
+
 const dispatch = useDispatch()
   const suspend = async() => {
     setStatus("suspended")
@@ -133,29 +132,14 @@ const dispatch = useDispatch()
 
     toast.success("Activated")
   }
-  // const toggle2FA = () => {
-  //   setTwoFA((v) => !v)
-  //   toast({
-  //     title: "Two-factor updated",
-  //     description: twoFA ? "2FA disabled for this user." : "2FA enabled for this user.",
-  //   })
-  // }
+
   const resendVerification = () => {
     setIsEmailVerified(true)
     toast({ title: "Verification sent", description: `Verification email has been sent to ${userDefault.email}.` })
   }
-  // const revokeSession = (id: string) => {
-  //   toast({ title: "Session revoked", description: `Session ${id} has been revoked.` })
-  // }
-  // const editUser = () => toast({ title: "Open edit modal", description: "Hook up your edit user modal here." })
-  // const messageUser = () => toast({ title: "Start message", description: "Open your internal DM or email composer." })
-  // const resetPassword = () => toast({ title: "Password reset", description: "Password reset email has been sent." })
-
-  // const storageUsedGB = 12
-  // const storageLimitGB = 50
-  // const storagePct = Math.min(100, Math.round((storageUsedGB / storageLimitGB) * 100))
+ 
 const blockUser= async(workspaceId,userId,status)=>{
-  console.log(workspaceId,"WOKIDD",status)
+ 
   const updatedData={isBlocked:status?false:true}
  await updateUserInWorkspace(workspaceId??"",userId,updatedData);
  setBlocked(status)
@@ -220,13 +204,7 @@ const blockUser= async(workspaceId,userId,status)=>{
             </div>
 
             <div className="flex gap-4">
-              {/* <button 
-                onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-2xl font-medium transition-colors"
-              >
-                <Settings className="w-5 h-5" />
-                Edit Profile
-              </button> */}
+         
             
             </div>
           </div>

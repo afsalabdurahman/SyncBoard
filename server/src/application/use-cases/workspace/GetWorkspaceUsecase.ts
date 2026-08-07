@@ -25,12 +25,12 @@ export class GetWorkspaceUsecase implements IWokspaceMember {
       const workspceData = await this.workspaceRepository.findbySlug(slug)
       if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT)
       const { items, totalItems } = await this.workspaceRepository.paginationUserInWorkspace(workspceData._id.toString(), page, limit, skip,projectId)
-      console.log(items,"ITESSSSS")
+     
       return { items: items, totalItems }
    }
   async  getMembers(slug: string,  query: string) :Promise<UserResponseDTO[]>{
           const workspceData = await this.workspaceRepository.findbySlug(slug);
-          console.log(workspceData,"DATA WORKP IN GET USECSE")
+          
             if (!workspceData || !workspceData._id) throw new NotFoundError(ResponseMessages.NO_CONTENT + ' Workspace');
                const users=await this.userRepository.searchUser(stringToMongoObj(workspceData._id.toString()),query);
                return users

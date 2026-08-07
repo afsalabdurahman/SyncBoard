@@ -12,24 +12,6 @@ useEffect(()=>{
 setTasks(approvalData)
 },[approvalData])
  
-  // const [tasks, setTasks] = useState([
-  //   {
-  //     id: 1,
-  //     title: "Homepage Final UI",
-  //     user: "Priya Patel",
-  //     status: "pending",
-  //     date: "Today • 10:30 AM",
-  //     reason: "",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "SEO Meta Tags",
-  //     user: "Marcus Reed",
-  //     status: "pending",
-  //     date: "Today • 09:15 AM",
-  //     reason: "",
-  //   },
-  // ]);
 
   const [rejectId, setRejectId] = useState(null);
   const [message, setMessage] = useState("");

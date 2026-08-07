@@ -1,6 +1,6 @@
 import { Types } from "mongoose"
 import { PlanRequestDTO } from "../../../application/dto/PlanDTO"
-import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../../application/dto/SuperDTO"
+import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../../application/dto/SuperDTO"
 import { PlanDocument } from "../../../infrastructure/database/models/PlanModel"
 import { TicketDocument } from "../../../infrastructure/database/models/TicketModel"
 

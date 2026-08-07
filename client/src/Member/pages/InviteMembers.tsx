@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Copy, Plus, } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RootState } from "../../Redux/store";
@@ -8,7 +7,6 @@ import { useDispatch } from "react-redux";
 const INVITE_LINK = import.meta.env.VITE_BASE_INVITE_LINK
 import { useSelector } from "react-redux";
 import Loader from "../../Custom/reusecomponents/Loader";
-import { sendInvitaionMail } from "../apis/workspaceApi";
 import { setUserAuth } from "../../Redux/feature/AuthSlice";
 import { useUser, useWorkspaceid } from "../../Worksapce/hooks/workspacehooks";
 import { EmailField } from "../types/memberType";

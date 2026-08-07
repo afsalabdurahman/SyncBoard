@@ -3,8 +3,7 @@ import { NotFoundError } from "../../../utils/errors";
 import { ILoginUseCase } from "../../../application/repositories/admin/ILoginUseCase";
 import { inject, injectable } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
-import { LoginRequestDTO } from "../../../application/dto/AuthDTOs";
-import { setTokensInCookies } from "../../../utils/CookieUtile";
+
 import { CustomRequest } from "../../types/CustomRequest";
 
 @injectable()
@@ -12,7 +11,7 @@ export class AdminAuthController {
   constructor(@inject("ILoginUsesCase") private _loginUseCase: ILoginUseCase) { }
 
   async LoginUsesCase(req: CustomRequest,res: Response): Promise<void> {
-    console.log(req.user,req.params.workspaceId,"!@$234")
+  
     const userId =  req.user?.id as string
     const response = await this._loginUseCase.execute(userId,req.params.workspaceId);
       res.status(HttpStatusCode.OK).json({ user: response?.user, workspace: response?.workspace, suscribe: response?.suscribe });

@@ -16,7 +16,7 @@ export class ChatUsecase implements IChatUsecase {
   }
   async history(workspaceid: string): Promise<ChatMessage[]> {
     const chats = await this._chatRepository.findAllChats(stringToMongoObj(workspaceid));
-console.log(chats,"CHATSSSSS++++")
+
     return chats
   }
   async findUserSatatus(worksoaceid: string): Promise<User[]> {

@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import  { Types } from "mongoose";
 import { ObjectId } from "mongoose";
 export interface WorkspaceMembership {
   workspaceId: Types.ObjectId;

@@ -16,6 +16,7 @@ export class OTPService implements IOTP {
   constructor(
     @inject("OTPRepository") private _otpRepository: IOtpRepository,
     @inject("IEmailService") private _emailService: IEmailService,
+    @inject("IResendMailService") private _resendMailService: IEmailService,
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("AuthService") private _authService: IAuthService,
 
@@ -32,7 +33,8 @@ export class OTPService implements IOTP {
       await this._otpRepository.deleteOTP(input.email)
     }
     const otp = this._otpRepository.generateOTP();
-     await this._emailService.sendOtp(input.email, otp);
+    console.log("OTP GENERATED", otp, "EMAIL", input.email)
+     await this._resendMailService.sendOtp(input.email, otp);
    
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);
@@ -47,7 +49,7 @@ export class OTPService implements IOTP {
     if (isOtp && isOtp.otp === input.otp) {
 
       const savedUser = await this._userRepository.userVerified(stringToMongoObj(user._id), true, null)
-     console.log(savedUser,"SAVEDUSER")
+     
       if (!savedUser) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
       const token = this._authService.generateToken({
         id: savedUser._id!,

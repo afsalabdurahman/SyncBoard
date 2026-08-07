@@ -188,14 +188,7 @@ const handleSave = async () => {
   // };
 
   const toggleActive = async (id: string) => {
-    // setPlans((prev) =>
-    //   prev.map((p) =>
-    //     p.id === id
-    //       ? { ...p, status: p.status === "Active" ? "Active" : "Inactive" }
-    //       : p
-    //   )
-    // );
-    // console.log(id,"id,")
+   
    try {
      await removePlan(id);
      refetch()

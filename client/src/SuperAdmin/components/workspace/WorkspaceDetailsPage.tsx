@@ -18,7 +18,7 @@ import { useGetAlluserListQuery, useUpdateWorkspaceMutation } from "../../apis/f
 import { CloseIcon } from "../../../Custom/reusecomponents/CloseIcon";
 
 export default function WorkspaceDetailsPage(props) {
-  console.log(props,"Propss++")
+ 
   const [updateWorkspace, { isLoading: isUpdating }] = useUpdateWorkspaceMutation();
   const { data, isLoading } = useGetAlluserListQuery(
     { workspaceslug: props.viewDetails?.slug, page: 1, limit: 5 },

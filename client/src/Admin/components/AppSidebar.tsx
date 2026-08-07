@@ -106,9 +106,6 @@ export function AppSidebar({ currentPage, setCurrentPage }: AppSidebarProps) {
     (state: RootState) => state.user.user?._id
   );
 
-  // const isForward = useSelector((state) => state?.forward?.isForward);
-
-// console.log(adminId,"AdminID")
 
 
   useEffect(() => {

@@ -37,7 +37,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
   ): Promise<Workspace | null> {
     const data = { userId: userId, title: title, permissions: permission, role: role };
-    console.log(data, "addTOWorkspace")
+    
     const updatedWorkspce = await WorkspaceModel.findOneAndUpdate(
       { slug },
       { $push: { members: data } }, { new: true }
@@ -146,7 +146,7 @@ async findPermisssion(
 }
 
 async updateUserDataInWorkspace(workspaceId: Types.ObjectId, userId: Types.ObjectId, data: UserInWorkspaceDTO): Promise<void> {
-  console.log(workspaceId,userId,data,"77777")
+
   const setData: Record<string, unknown> = {};
      Object.entries(data).forEach(([key, value]) => {
     setData[`members.$.${key}`] = value;

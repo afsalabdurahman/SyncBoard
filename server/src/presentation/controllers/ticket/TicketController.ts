@@ -12,7 +12,7 @@ constructor(
     @inject("TicketUsecase")private _ticketUsecases:ITicketUsecase
 ){}
 async createTicket(req:Request,res:Response):Promise<void>{
-        console.log(req.body,"BU))))")
+      
     const input = req.body as ticketRequestDTO
     await this._ticketUsecases.execute(input)
 res.status(HttpStatusCode.CREATED).json({message:ResponseMessages.CREATED})

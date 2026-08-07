@@ -14,18 +14,7 @@ export interface Message {
   timestamp: Date;
 }
 
-// export interface Ticket {
-//   _id: string;
-//   title: string;
-//   description: string;
-//   status: TicketStatus;
-//   priority: "low" | "medium" | "high" | "critical";
-//   workspace: string;
-//   company: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   messages: Message[];
-// }
+
 
 export const TicketIndex = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);

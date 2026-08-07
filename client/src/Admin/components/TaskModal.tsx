@@ -44,14 +44,14 @@ interface Task {
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data) => void;
   task?: Task | null;
 }
 
 export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
   const [selectAttachmanet, setAttachements] = useState<string>();
-  const [subTask, setSubTask] = useState<any[]>([]);
-  const [criteria, setCriteria] = useState<any[]>([]);
+  const [subTask, setSubTask] = useState<object[]>([]);
+  const [criteria, setCriteria] = useState<object[]>([]);
   const [expire, setExpire] = useState<string>("");
 
   const [errors, setError] = useState({
@@ -77,14 +77,14 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
     acceptanceCriteria: [],
   });
 
-  const [uploads, setUploads] = useState<any[]>([]);
+  const [uploads, setUploads] = useState<string[]>([]);
   const [showUploadPage, setUploadPage] = useState(false);
 
   const projects = useProjects();
 
   const users = new Set(
     projects
-      .map((user: any) => user.assignedUsers || [])
+      .map((user) => user.assignedUsers || [])
       .flat()
   );
 
@@ -172,7 +172,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
 
     try {
       if (uploads.length > 0) {
-        const uploadPromises = uploads.map((file: any) => uploadAttachment(file.file));
+        const uploadPromises = uploads.map((file) => uploadAttachment(file.file));
         const uploadedUrls = await Promise.all(uploadPromises);
         formData.attachedURLs = uploadedUrls;
       }
@@ -234,7 +234,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
               <Select
                 value={formData.projectId}
                 onValueChange={(value) => {
-                  const selectedProject = projects.find((p: any) => p._id === value);
+                  const selectedProject = projects.find((p) => p._id === value);
                   if (selectedProject) {
                     setFormData({
                       ...formData,
@@ -250,8 +250,8 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                   <SelectValue placeholder="Select a project" />
                 </SelectTrigger>
                 <SelectContent>
-                  {projects.map((project: any) => (
-                    <SelectItem key={project._id} value={project._id}>
+                  {projects.map((project) => (
+                    <SelectItem key={String(project._id)} value={String(project._id)}>
                       {project.name}
                     </SelectItem>
                   ))}
@@ -271,7 +271,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
                   <SelectValue placeholder="Select a user" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from(users).map((name: any) => (
+                  {Array.from(users).map((name: string) => (
                     <SelectItem key={name} value={name}>
                       {name}
                     </SelectItem>
@@ -392,7 +392,7 @@ export function TaskModal({ isOpen, onClose, onSubmit, task }: TaskModalProps) {
         <Upload
           isOpen={showUploadPage}
           onClose={() => setUploadPage(false)}
-          onSubmit={(files: any[]) => setUploads(files)}
+          onSubmit={(files) => setUploads(files)}
         />
       </DialogContent>
     </Dialog>

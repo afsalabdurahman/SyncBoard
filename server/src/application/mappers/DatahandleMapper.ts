@@ -1,7 +1,7 @@
 import { Abuse } from "../../domain/entities/Abuse";
 import { formatDate, getNextMonthEnd } from "../../utils/dateCoverter";
 import { CountWorkspaceReponseDTO } from "../dto/DatahandleDTO";
-import { listOfSubscriptionsDTO, SubscriptionAggregateDTO, SuperSubscriptionResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserDetailsResponseDTO, WorkspaceAggResponseDTO } from "../dto/SuperDTO";
+import { listOfSubscriptionsDTO, SubscriptionAggregateDTO, SuperSubscriptionResponseDTO, SuperUserResponseDto, UserAggResponseDTO, WorkspaceAggResponseDTO } from "../dto/SuperDTO";
 export class DatahandleMapper {
   static mapSuperEntityToResponse(userCount: number, workspaceCount: number, data: SubscriptionAggregateDTO[], abusereportlas: Abuse[]) {
     const Abuse = abusereportlas.map((report) => ({
@@ -123,28 +123,27 @@ export class DatahandleMapper {
     };
   }
   static mapUserDetailsToResponse(result: SuperUserResponseDto) {
-    console.log(result, "Resulttt000")
-    console.log(result._id.toString(), "Resyultttt")
+ 
     let isBlocked = false;
     result.workspace.forEach((works) => {
       works.members?.forEach((mem) => {
 
-        console.log(mem, "MEMBERSSS")
+      
       })
     })
     for (const workspace of result.workspace) {
       const member = workspace.members?.find(
         (member) => member.userId
       );
-console.log(member,"FINDOUtmember")
+
       if (member) {
-        console.log(member, "Member11111111")
+        
         isBlocked = member.isBlocked;
         
       }
     }
 
-    console.log(isBlocked, "ISblaocekd");
+    
 
     return {
       id: result?._id.toString() || "",

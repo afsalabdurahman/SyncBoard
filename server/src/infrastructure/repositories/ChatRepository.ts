@@ -18,11 +18,9 @@ export class ChatRepository implements IChatRepository {
 async findAllChats(
   workspaceId: Types.ObjectId
 ): Promise<ChatMessage[]> {
-  console.log(workspaceId,"IDDDD")
   const chats = await ChatMessageModel
     .find({ workspaceId })
     .lean<ChatMessage[]>();
-console.log(chats,"CHATSSSS")
   return chats;
 }
 

@@ -54,9 +54,9 @@ export class CreateWorkspaceUsecases implements IWorkspace {
       user._id ?? "",
       input.title,
     );
-console.log(workspaceEntity,"Entyity")
+
     const isCreateWorkspace = await this._workspaceRepository.create(workspaceEntity);
-    console.log(isCreateWorkspace,"Workspace")
+    
     if (!isCreateWorkspace || !isCreateWorkspace._id)
       throw new ValidationError(ResponseMessages.NO_CONTENT + ' Workspace');
 if(!user._id) throw new NotFoundError("user not found")
@@ -90,7 +90,7 @@ if(!user._id) throw new NotFoundError("user not found")
     if (merge.planKey) {
      await this._suscriptionRepository.updateSubscriptionByWorkspaceId(stringToMongoObj(id), merge.planKey, "Active")
     }
-    console.log(merge,"MergeDATA++")
+    
     await this._workspaceRepository.updateWorkspaceDate(id, merge)
 
 
@@ -168,17 +168,17 @@ if(!user._id) throw new NotFoundError("user not found")
     return list
   }
   async updatePermission(workspaceId: string, userId: string, permission: string): Promise<void> {
-    console.log("calling", workspaceId, userId, permission)
+
     await this._workspaceRepository.updatePermissions(stringToMongoObj(workspaceId), stringToMongoObj(userId), permission);
 
   }
   async findPermission(workspaceId: string, userId: string): Promise<string> {
     const permission = await this._workspaceRepository.findPermisssion(stringToMongoObj(workspaceId), stringToMongoObj(userId));
-    console.log(permission, "Permissionsssss")
+  
     return permission
   }
   async updateUserInWorkspace(workspaceId: string, userId: string, data: UserInWorkspaceDTO): Promise<void> {
-    console.log(data,userId,workspaceId,"++++++++++")
+   
     await this._workspaceRepository.updateUserDataInWorkspace(stringToMongoObj(workspaceId),stringToMongoObj(userId),data)
   }
   async workspaceUserStatus(workspaceId: Types.ObjectId, userId: Types.ObjectId): Promise<UserInWorkspaceDTO | null> {

@@ -4,7 +4,7 @@ import { WorkspaceModel } from "../database/models/WorkspaceModel";
 import { SubscriptionModel } from "../database/models/SuscriptionModel";
 import mongoose, { Types } from "mongoose";
 import { TicketDocument, TicketModel } from "../database/models/TicketModel";
-import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserDetailsAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
+import { GetAllCountResponseDTO, RevenuChartReponseDTO, SubscriptionAggResponseDTO, SuperUserResponseDto, UserAggResponseDTO, UserGrowthChartReponseDTO, WorkspaceAggResponseDTO } from "../../application/dto/SuperDTO";
 import { AbuseModel } from "../database/models/AbuseModel";
 import { PlanDocument, PlanModel } from "../database/models/PlanModel";
 import { PlanRequestDTO } from "../../application/dto/PlanDTO";

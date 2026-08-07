@@ -32,7 +32,7 @@ const AdminLogin = () => {
          
         );
 
-        console.log(response.data, "response+++");
+        
 
         dispatch(setUserAuth(response.data?.user?._id));
         dispatch(setWorkspace(response.data.workspace));
@@ -40,7 +40,7 @@ const AdminLogin = () => {
         dispatch(setUserData(response.data.user));
 
         navigate("/admin/dashboard");
-      } catch (err: any) {
+      } catch (err:unknown) {
         console.error("Admin login failed:", err);
         setError(
           err?.response?.data?.message || "Login failed. Please try again."

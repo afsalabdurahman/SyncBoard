@@ -45,7 +45,7 @@ export default function Profile() {
   };
 
 const member=getMemberDataBasedWorkspace();
-console.log(member,"Member+++")
+
   const Userdata = useSelector((state: RootState) => {
     const date = new Date(state.workspace.workspace.createdAt);
     const formateDate = date.toLocaleString("en-US", {

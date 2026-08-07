@@ -58,6 +58,7 @@ import { RagUseCase } from "../../../application/use-cases/rag/RagUsecase"
 import { AbuseUsecase } from "../../../application/use-cases/workspace/AbuseUsecase";
 import { TicketRepository } from "../../repositories/TicketRepository";
 import { TicketUsecase } from "../../../application/use-cases/ticket/TicketUsecase";
+import { ResendMailService } from "../../services/ResendMailService";
 container.register("TicketUsecase", { useClass: TicketUsecase })
 container.register("GetUserUsecase",{useClass:GetUserUseCase})
 container.register("TicketRepository", { useClass: TicketRepository })
@@ -109,6 +110,7 @@ container.register("Workspaceuse", { useClass: CreateWorkspaceUsecases });
 
 container.register(EmailConfig, { useClass: EmailConfig });
 container.register("IEmailService", { useClass: NodemailerService });
+container.register("IResendMailService", { useClass: ResendMailService });
 container.register("OTPRepository", { useClass: OTPRepository });
 container.register("OTPService", { useClass: OTPService });
 

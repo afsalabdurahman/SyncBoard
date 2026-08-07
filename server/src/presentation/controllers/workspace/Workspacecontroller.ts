@@ -1,5 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { NextFunction, Request, Response } from "express";
+import {  Request, Response } from "express";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { ResponseMessages } from "../../../common/erroResponse";
 import { ISentInvitaion } from "../../../application/repositories/imail/ISentInvitation";
@@ -22,7 +22,7 @@ export class WorkspaceController {
   ) { }
 
   async Create(req: Request, res: Response, ): Promise<void> {
-    console.log(req.body,"bodyydd")
+    
     const input: WorkspaceRequestDTO = req.body
       const workspaceResponseDTO = await this._createWorkspceUsecases.createWorkspace(input);
       res
@@ -67,7 +67,7 @@ export class WorkspaceController {
   async updateWorkspace(req: Request, res: Response,): Promise<void> {
       const workspaceId = req.params.id as string
       const merge = req.body;
-      console.log(merge,"Merge")
+    
       await this._createWorkspceUsecases.updateWorkspaceData(workspaceId, merge)
       res.status(HttpStatusCode.OK).json({ message: "Updated" })
     
@@ -148,7 +148,7 @@ export class WorkspaceController {
  async listWorkspaces(req:Request,res:Response):Promise<void>{
     
     const userId = req.params.id;
-    console.log(userId)
+    
    const list= await this._createWorkspceUsecases.listWorkspacesByUserId(userId);
    res.status(HttpStatusCode.OK).json(list)
   }
@@ -165,15 +165,15 @@ await this._createWorkspceUsecases.updatePermission(workspaceId,userId,permissio
 res.status(HttpStatusCode.OK).json(ResponseMessages.UPDATED)
 }
 async findPermission(req:Request,res:Response):Promise<void>{
-  console.log(req.body,"BODYYY")
+ 
   const workspaceId = req.params.workspaceId as string;
   const userId=req.body.userId;
-console.log(workspaceId,userId,"++++++++++++Controller")
+
 const permission=await this._createWorkspceUsecases.findPermission(workspaceId,userId)
 res.status(HttpStatusCode.OK).json(permission)
 }
 async invitationForExistingUser(req:Request,res:Response):Promise<void>{
-  console.log(req.body,"Controler")
+
   const userId=req.body.userId;
   const slug = req.body.slug;
   await this._sentInvitaionUsecase.accpetinvitaion(slug,userId);
@@ -186,11 +186,11 @@ async invitationRejected(req:Request,res:Response):Promise<void>{
   res.status(HttpStatusCode.OK)
 }
 async updateUserInWorkspace(req:Request,res:Response):Promise<void>{
-  console.log("456")
+
   const userId =req.params.userId;
   const workspaceId=req.params.workspaceId;
   const data = req.body.formData;
-  console.log(req.body,userId,workspaceId,"Caling....")
+ 
   await this._createWorkspceUsecases.updateUserInWorkspace(workspaceId,userId,data);
     res.status(HttpStatusCode.OK)
 }

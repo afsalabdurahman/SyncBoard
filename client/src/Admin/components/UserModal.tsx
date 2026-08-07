@@ -74,7 +74,7 @@ export function UserModal({ isOpen, onClose, onSubmit, user }: UserModalProps) {
   title: "",
 });
   /* ---------------- LOAD USER DATA ---------------- */
-console.log(user,"USER")
+
   useEffect(() => {
     if (!user) {
       setFormData({
@@ -116,7 +116,7 @@ await updatePermissionApi(permission,user._id,workspaceId)
       isAdmin: formData.role === "Admin",
       workspaceId:workspaceId
     };
-console.log(updatedData,"UPdatedData")
+
     try {
       await dispatch(
         updateUser({

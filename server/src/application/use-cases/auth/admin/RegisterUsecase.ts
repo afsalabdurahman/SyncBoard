@@ -25,7 +25,8 @@ export class RegisterUseCase implements IAuth {
     @inject("AuthService") private _authService: IAuthService,
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("OTPRepository") private _otpRepository: IOtpRepository,
-    @inject("IEmailService") private _emailService: IEmailService,
+    // @inject("IEmailService") private _emailService: IEmailService,
+    @inject("IResendMailService") private _resendMailService: IEmailService,
     @inject("WorkspaceRepository") private _workspceRepository: IWorkspaceRepository,
 
   ) { }
@@ -50,15 +51,13 @@ export class RegisterUseCase implements IAuth {
     const hashedPassword = await this._authService.hashPassword(input.password as string);
     input.password = hashedPassword;
     const AdminEntity = AuthMapper.mapUserToEntity(input)
-console.log(AdminEntity,"entit7")
+
     const savedUser = await this._userRepository.create(AdminEntity);
-    //    const findOTP = await this._otpRepository.findOTPbyEMAIL(input.email);
-    //   if (findOTP) {
-    //   await this._otpRepository.deleteOTP(input.email)
-    // }
+ 
     
     const otp = this._otpRepository.generateOTP();
-   await this._emailService.sendOtp(input.email, otp);
+   
+   await this._resendMailService.sendOtp(input.email, otp);
 
     const SaveOtp = new OTP(input.email, otp);
     await this._otpRepository.save(SaveOtp);

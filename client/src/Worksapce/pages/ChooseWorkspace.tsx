@@ -44,13 +44,10 @@ const naviagate = useNavigate()
       id: workspaceId,
     });
 
-    // useEffect(()=>{
-    //   findWorkspaceById(selectedWorkspace.id)
-    // })
-
+   
 
 const selectWorkspace = async (sWorkspace)=>{
- console.log(sWorkspace,"SWORKDPSCE")
+ 
   setSelectedWorkspace(sWorkspace)
   const workspaceData=await findWorkspaceById(sWorkspace.id)
    dispatch(reduxSetWorkspace(workspaceData))

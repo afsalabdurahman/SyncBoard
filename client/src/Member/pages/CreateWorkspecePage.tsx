@@ -22,7 +22,6 @@ const CreateWorkspacePage: React.FC = () => {
   const navigate=useNavigate()
 const dispatch =useDispatch()
   const email  = useSelector((state: RootState) => state?.user?.user?.email);
-  const Userrole= useSelector((state:RootState) =>state?.user?.user?.role);
  const ownerId=useSelector((state:RootState) =>state?.user?.user?.id);
 const userId=useUser();
 

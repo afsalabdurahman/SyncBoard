@@ -25,7 +25,7 @@ export interface UserDoument extends Document {
 
 const userSchema = new Schema<UserDoument>(
   {
-    googleId: { type: String, unique: true, sparse: true,default:null },
+    googleId: { type: String, unique: true, sparse: true},
     email: { type: String, required: true, unique: true },
     password: { type: String, select: false },
     name: { type: String, required: true },

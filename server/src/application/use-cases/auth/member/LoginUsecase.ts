@@ -23,7 +23,7 @@ export class LoginUsecase implements ILogin {
   async loginUser(input: LoginRequestDTO): Promise<LoginResponseDTO> {
    if (!input.email || !input.password) throw new ValidationError(ResponseMessages.INVALID_INPUT)
    const isExist = await this._userRepository.findByEmail(input.email);
-  console.log(isExist,"isexuist")
+  
     if(!isExist || !isExist?._id || !isExist.isVerified) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     const user = await this._userRepository.findUser(isExist._id );
 
@@ -32,10 +32,10 @@ export class LoginUsecase implements ILogin {
       throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
     }
 const workspaceId =await this._workspaceRepository.findActiveWorkspace(stringToMongoObj(user._id?.toString()))
-console.log(workspaceId,"LOFIN WORKPSCEISDDD");
+
 if(!workspaceId?._id) throw new NotFoundError("User is suspended")
 const workspaceStatus = await this._workspaceRepository.findByObjectId(stringToMongoObj(workspaceId._id.toString()));
-console.log(workspaceStatus,"status")
+
 const userId=user._id ??""
 const member = workspaceStatus?.members?.find(
   (member) => member.userId.toString() === userId.toString()

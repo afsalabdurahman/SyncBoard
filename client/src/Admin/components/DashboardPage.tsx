@@ -120,50 +120,6 @@ export function DashboardPage() {
           </h4>
         </div>
 
-        {/* Project Selector */}
-        {/* <div className="relative">
-         <select
-    value={projectID}
-onChange={(e) => {
-  const selectedProject = projects.find(
-    (project) => project._id === e.target.value
-  );
-
-  dispatch(
-    setSwitchProject({
-      projectId: selectedProject?._id||"",
-      projectName: selectedProject?.name||"",
-      isSwitch: true,
-    })
-  );
-}}
-    className="appearance-none bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-  >
-    {projects.map((project) => (
-      <option key={project._id} value={project._id}  >
-        {project.name}
-      </option>
-    ))}
-  </select>
-
-          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-        </div> */}
-
-
       </div>
       {projectID ? <SwichDashboard selectedProject={projectID} /> :
         <aside>

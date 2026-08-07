@@ -217,22 +217,7 @@ useEffect(() => {
                         Team ({project.assignedUsers.length})
                       </span>
                     </div>
-                    {/* <div className="flex -space-x-2">
-                    {project.assignedUsers.slice(0, 4).map((name, index) => (
-                      <div
-                        key={member.id}
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-medium border-2 border-white"
-                        title={`${member.name} - ${member.role}`}
-                      >
-                        {member.avatar}
-                      </div>
-                    ))}
-                    {project.members.length > 4 && (
-                      <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-medium border-2 border-white">
-                        +{project.members.length - 4}
-                      </div>
-                    )}
-                  </div> */}
+                    
                   </div>
                 </div>
 

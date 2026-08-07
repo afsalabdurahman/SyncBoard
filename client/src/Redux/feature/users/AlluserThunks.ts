@@ -10,7 +10,7 @@ export const fetchAllUsers = createAsyncThunk('/adminUserData/fetchusers', async
 
     const response = await apiService.get(ROUTES.WORKSPACE.FECTCH_ALL_USERS.replace(":workspaceslug",workspaceslug)+`?page=${page}&limit=${limit}&projectId=${projectId}`);
     if (response.status == 200) {
-console.log(response,"API++++++")
+
       return response.data;
     } else {
       return rejectWithValue("something went to wrong")

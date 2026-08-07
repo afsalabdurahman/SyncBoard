@@ -178,19 +178,6 @@ function formatEstimateShort(minutes?: number): string {
         ))}
       </ul>
 
-      {/* ══ Footer ══ */}
-      
-        {/* <button
-          className="w-full text-[12px] text-indigo-400 hover:text-indigo-300 font-medium transition-colors py-0.5"
-          onClick={(e) => {
-            e.stopPropagation();
-            const label = prompt("New subtask name:");
-            if (label?.trim())
-              setSubtasks((prev) => [...prev, { id: Date.now(), label: label.trim(), completed: false }]);
-          }}
-        >
-          + Add subtask
-        </button> */}
     
     </div>
   );

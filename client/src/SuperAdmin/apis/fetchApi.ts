@@ -187,7 +187,7 @@ throw Error(err)
 export const fetchAUserDetails = async(userId)=>{
   try {
    const response= await apiService.get(`super/user/details/${userId}`)
-   console.log(response.data,"+++++")
+ 
    return response.data.data
   } catch (error) {
     catchErrorHandle(error,"Not found ")

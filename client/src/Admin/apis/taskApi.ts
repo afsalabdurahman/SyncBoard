@@ -92,7 +92,7 @@ export const updateTaskCriteria=async(id:string,title:string)=>{
     title
   })
 }
-export const updateUserInWorkspace =async (workspaceId:string,userId:string,formData:Record<string,any>)=>{
+export const updateUserInWorkspace =async (workspaceId:string,userId:string,formData:Record<string,unknown>)=>{
   try {
     apiService.post(`/workspace/update/member/profile/${userId}/${workspaceId}`,{formData})
   } catch (error) {

@@ -17,8 +17,8 @@ const Invite = () => {
     const slug = state.workspace.workspace?.slug
     return { isAdmin, name, slug };
   });
-  const workspaceId=useWorkspaceid()
-  console.log(workspaceId)
+
+
   const workspaceid=useWorkspaceid() as string
 const [permission,setPermission]=useState(null)
   const userId = useSelector((state: RootState) => state.user.user?._id);

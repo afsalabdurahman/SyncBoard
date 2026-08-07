@@ -92,37 +92,6 @@ export const TaskDetailsPage = ({ id }) => {
   };
 
 
-  // const toggleApproval = async (id: number) => {
-
-  //   const updated = task?.approvalCriteria?.map((item) =>
-  //     item.id === id
-  //       ? { ...item, completed: !item.completed }
-  //       : item
-  //   );
-  //   setTask({
-  //     ...task,
-  //     subTask: updated,
-  //   });
-
-  //   await ApprovalCriteria(task?._id, task?.name)
-
-  // };
-
-
-  /* Add Comment */
-  // const handleAddComment = () => {
-  //   if (!newComment.trim()) return;
-
-  //   const newItem = {
-  //     id: Date.now(),
-  //     user: "You",
-  //     text: newComment,
-  //     time: "Just now",
-  //   };
-
-  //   setComments([...comments, newItem]);
-  //   setNewComment("");
-  // };
 
   const completedCount = task?.subTask?.filter(
     (item) => item.done
@@ -226,69 +195,7 @@ export const TaskDetailsPage = ({ id }) => {
               </div>
             </div>
 
-            {/* COMMENTS */}
-            {/* <div className="bg-white rounded-2xl p-6 border shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <MessageSquare className="text-blue-500" />
-                <h2 className="text-lg font-semibold">
-                  Comments
-                </h2>
-              </div>
-
-     
-              <div className="border rounded-xl p-4 mb-5">
-                <textarea
-                  rows={3}
-                  value={newComment}
-                  onChange={(e) =>
-                    setNewComment(e.target.value)
-                  }
-                  placeholder="Write comment..."
-                  className="w-full resize-none outline-none"
-                />
-
-                <div className="flex justify-between mt-4">
-                  <button className="flex items-center gap-2 text-purple-600">
-                    <Paperclip size={18} />
-                    Attach File
-                  </button>
-
-                  <button
-                    onClick={handleAddComment}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                  >
-                    <Send size={16} />
-                    Send
-                  </button>
-                </div>
-              </div>
-
-          
-             {
-              comments?.length!==0? (<div className="space-y-4 max-h-[300px] overflow-y-auto">
-                {comments?.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="border rounded-xl p-4"
-                  >
-                    <div className="flex justify-between">
-                      <h4 className="font-medium">
-                        {comment.user}
-                      </h4>
-                      <span className="text-sm text-gray-500">
-                        {comment.time}
-                      </span>
-                    </div>
-
-                    <p className="text-gray-600 mt-2">
-                      {comment.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
-          ):null
-             }
-             </div> */}
+         
 
 
 

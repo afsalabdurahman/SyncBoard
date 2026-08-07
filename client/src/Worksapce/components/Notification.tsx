@@ -113,7 +113,7 @@ useEffect(() => {
 const acceptHandle = async(name:string)=>{
 const slug =name.split("-")[1]
   const response=await acceptInvitaion(user?._id??"",slug);
-console.log(name,notifications,"notifiactions")
+
  setNotifications((prev) =>
     prev.map((notification) =>
       notification.workspaceName === name

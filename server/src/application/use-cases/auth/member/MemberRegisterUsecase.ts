@@ -28,11 +28,10 @@ export class MemberRegisterUsecase implements IMemberRegister {
     dto: MemeberRegisterRequestDTO
   ): Promise<MemberRegisterResposeDTO> {
    const isValidLink=await this._invitaionRepository.findInvitaionLinkByEmail(dto.email);
-  console.log(isValidLink,"LINKSS");
-  console.log(dto,"DTOOO")
+  
    if(!isValidLink) throw new NotFoundError("Invalid link")
   const status=AuthMapper.InvitationLinkValidation(isValidLink?.status,isValidLink?.invitedTo,dto.email,isValidLink?.token.toString(),dto.token)
- console.log(status,"status")
+ 
    if(!status) throw new NotFoundError("Invalid link")
    const isValid= AuthMapper.memberRegisterValidation(dto)
     if (!isValid.success) throw new ValidationError( isValid.error.issues[0].message);

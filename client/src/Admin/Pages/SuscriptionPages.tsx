@@ -75,29 +75,7 @@ export default function SubscriptionPage() {
     return baseMetrics[currentPlan]
   })
 
-  // const [billingHistory] = useState<BillingRecord[]>([
-  //   {
-  //     id: "1",
-  //     amount: "$10.00",
-  //     date: "2024-01-15",
-  //     status: "Success",
-  //     description: "Basic Plan - Monthly",
-  //   },
-  //   {
-  //     id: "2",
-  //     amount: "$20.00",
-  //     date: "2023-12-15",
-  //     status: "Success",
-  //     description: "Pro Plan - Monthly",
-  //   },
-  //   {
-  //     id: "3",
-  //     amount: "$50.00",
-  //     date: "2023-11-15",
-  //     status: "Success",
-  //     description: "Pro Plan - Monthly",
-  //   },
-  // ])
+ 
 
   const handleUpgrade = async (targetPlan: Plan) => {
     setIsProcessing(true)

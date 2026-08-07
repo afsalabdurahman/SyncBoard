@@ -3,7 +3,7 @@ import { CountResponseDTO, CountWorkspaceReponseDTO } from "../../dto/Datahandle
 import { IDatahandleUsecase } from "../../repositories/IDatahandle";
 import { ISuperAdminRepository } from "../../../domain/interfaces/repositories/ISuperAdminRepository";
 import { DatahandleMapper } from "../../mappers/DatahandleMapper";
-import {  RevenuChartReponseDTO, SuperSubscriptionResponseDTO, SuperUserResponseDto, UserDetailsResponseDto, UserDetailsResponseDTO, UserGrowthChartReponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
+import {  RevenuChartReponseDTO, SuperSubscriptionResponseDTO,  UserDetailsResponseDto, UserGrowthChartReponseDTO, UserResponseDTO } from "../../dto/SuperDTO";
 import { Ticket } from "../../../domain/entities/Ticket";
 import { TicketMapper } from "../../mappers/TicketMapper";
 import { Plan } from "../../../domain/entities/Plan";
@@ -43,9 +43,9 @@ export class DatahandleUsecase implements IDatahandleUsecase {
     }
     async fetchAUser(userId: string): Promise<UserDetailsResponseDto> {
         const result = await this._superAdminRepository.getUserDetails(userId);
-        console.log(result,"REsultsssssssssss")
+    
          const responseDTO = DatahandleMapper.mapUserDetailsToResponse(result);
-         console.log(responseDTO,"REPOSNEDTOOO")
+       
        return responseDTO
         // return responseDTO
     }

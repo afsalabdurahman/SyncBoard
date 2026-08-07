@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
 import { WorkspaceMembership } from "../../types/workpaceTypes";
-import { Interface } from "readline";
 
 export interface UserResponseDTO{
 id?:string;

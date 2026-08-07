@@ -461,12 +461,11 @@ export class TaskRepository implements ITaskRepository {
     workspaceId: workspaceId
   });
 
-  console.log(projects, "projects");
+  
 
   // Extract project IDs
   const projectIds = projects.map((project) => project._id);
 
-  console.log(projectIds, "projectIds");
 
   // Find all tasks belonging to those projects
   const tasks = await TaskModel.find({
