@@ -384,7 +384,7 @@ useEffect(()=>{
     <path d="M12 21v-6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M7 21h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
-  Go to admin
+Switch to Admin
 </a>
   </div>)}
 

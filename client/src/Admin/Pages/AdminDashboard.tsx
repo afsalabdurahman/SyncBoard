@@ -62,17 +62,20 @@ useEffect(() => {
       case "tasks":
         return <TasksPage />;
       case "logout":
-        logout(user?._id).then((res) => {
-          if (res == 204) {
-            const id = "logout-success"
-            if (!toast.isActive(id)) {
-              toast.success("Logout success", { toastId: id });
-            }
+        // logout(user?._id).then((res) => {
+        //   if (res == 204) {
+        //     const id = "logout-success"
+        //     if (!toast.isActive(id)) {
+        //       toast.success("Logout success", { toastId: id });
+        //     }
 
-            navigate("/admin",{replace:true})
+        //     navigate("/admin",{replace:true})
 
-          }
-        })
+        //   }
+        // })
+        
+        window.close()
+       
         break;
       case "approval":
         return <TaskApproval />;
