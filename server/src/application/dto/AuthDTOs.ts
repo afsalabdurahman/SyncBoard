@@ -63,8 +63,8 @@ export interface adminResponseDTO{
  user:User;
  workspace:Workspace,
  suscribe:Subscription,
- token:string,
- refreshToken:string
+//  token:string,
+//  refreshToken:string
 }
 export interface IWorkspaceChanges{
   nameOfWorkspace:string,

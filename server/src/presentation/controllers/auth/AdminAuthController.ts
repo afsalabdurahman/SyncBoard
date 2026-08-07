@@ -5,19 +5,24 @@ import { inject, injectable } from "tsyringe";
 import { HttpStatusCode } from "../../../common/errorCodes";
 import { LoginRequestDTO } from "../../../application/dto/AuthDTOs";
 import { setTokensInCookies } from "../../../utils/CookieUtile";
+import { CustomRequest } from "../../types/CustomRequest";
 
 @injectable()
 export class AdminAuthController {
   constructor(@inject("ILoginUsesCase") private _loginUseCase: ILoginUseCase) { }
 
-  async LoginUsesCase(req: Request,res: Response): Promise<void> {
-  const input: LoginRequestDTO = req.body as LoginRequestDTO;
-  const response = await this._loginUseCase.execute(input);
-    if (!response) {
-      throw new NotFoundError("User is found");
-    }
-    setTokensInCookies(res, response.token, response.refreshToken);
-    res.status(HttpStatusCode.OK).json({ user: response.user, workspace: response.workspace, suscribe: response.suscribe });
+  async LoginUsesCase(req: CustomRequest,res: Response): Promise<void> {
+    console.log(req.user,req.params.workspaceId,"!@$234")
+    const userId =  req.user?.id as string
+    const response = await this._loginUseCase.execute(userId,req.params.workspaceId);
+      res.status(HttpStatusCode.OK).json({ user: response?.user, workspace: response?.workspace, suscribe: response?.suscribe });
+  // const input: LoginRequestDTO = req.body as LoginRequestDTO;
+  // const response = await this._loginUseCase.execute(input);
+    // if (!response) {
+    //   throw new NotFoundError("User is found");
+    // }
+    // setTokensInCookies(res, response.token, response.refreshToken);
+    // res.status(HttpStatusCode.OK).json({ user: response.user, workspace: response.workspace, suscribe: response.suscribe });
   }
   async googleAdminAuth(req: Request, res: Response): Promise<void> {
 
@@ -26,7 +31,7 @@ export class AdminAuthController {
     if (!response) {
       throw new NotFoundError("User is found");
     }
-    setTokensInCookies(res, response.token, response.refreshToken);
+    
     res.status(HttpStatusCode.OK).json({ user: response.user, workspace: response.workspace, suscribe: response.suscribe });
 
   }

@@ -12,6 +12,7 @@ import { envConfig } from "../../../../infrastructure/config/env.config";
 import { OAuth2Client } from "google-auth-library";
 import { User } from "../../../../domain/entities/User";
 import { stringToMongoObj } from "../../../../utils/convertMongoObject";
+import { Workspace } from "../../../../domain/entities/Workspace";
 
 @injectable()
 export class AdminLoginUseCase implements ILoginUseCase {
@@ -23,53 +24,70 @@ export class AdminLoginUseCase implements ILoginUseCase {
     @inject("SuscriptionRepository") private _suscriptionRepository: ISuscription,
   ) {}
 
-  async execute(input: LoginRequestDTO): Promise<adminResponseDTO> {
-    const isExist = await this._userRepository.findByEmail(input.email);
-    if (!isExist?._id || !isExist.workspace?.length) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
-    const user = await this._userRepository.findUser(isExist?._id)
-    // if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NO_CONTENT)
-    //const workspceId = user.workspace[0].workspaceId
-    if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
-    const isValid = await this._authService.comparePassword(
-      input.password,
-      user.password!
-    );
-    if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
-
-    const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(input.workspaceId ?? ""));
-    console.log(workspace,"WORKPSCEPE")
-    if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
-    if (workspace?.status.toLowerCase() == "suspend") throw new ForbiddenError("Workspace not found")
-    if (!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
-    const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id);
-
-    let mySuscription;
-    if (!isSuscribed) {
-      const entity = new Subscription({
-        user: user._id,
-        workspace: workspace._id?.toString(),
-        planKey: "free",
-        status: "trialing"
-      });
-      mySuscription = await this._suscriptionRepository.create(entity)
-    }
-    const suscribe = isSuscribed ? isSuscribed : mySuscription;
-
-    const token = await this._authService.generateToken({
-      id: user._id!,
-      email: user.email!,
-      role:"Admin"
+  async execute(userId:string,workspaceId:string): Promise<adminResponseDTO> {
+   const user = await this._userRepository.findUser(userId) as User
+     const workspace = await this._workspceRepository.findByObjectId(stringToMongoObj(workspaceId))  as Workspace
+         const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(userId);
+         let mySuscription;
+     if (!isSuscribed) {
+       const entity = new Subscription({
+         user: userId,
+         workspace: workspaceId,
+         planKey: "free",
+         status: "trialing"
+       });
+       mySuscription = await this._suscriptionRepository.create(entity)
+     }
+     const suscribe = isSuscribed ? isSuscribed : mySuscription as Subscription
+    return {user,workspace,suscribe}  
     
-    });
+     // if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+     // const isExist = await this._userRepository.findByEmail(input.email);
+    // if (!isExist?._id || !isExist.workspace?.length) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+    // const user = await this._userRepository.findUser(isExist?._id)
+    // // if (!user || !user.workspace) throw new NotFoundError(ResponseMessages.NO_CONTENT)
+    // //const workspceId = user.workspace[0].workspaceId
+    // if (!user) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND);
+    // const isValid = await this._authService.comparePassword(
+    //   input.password,
+    //   user.password!
+    // );
+    // if (!isValid) throw new ValidationError(ResponseMessages.PASSWORD_FAILED);
 
-    const refreshToken = await this._authService.generateRefreshToken({
-      id: user._id!,
-      email: user.email!,
-     role:"Admin"
-    });
+   
+    // console.log(workspace,"WORKPSCEPE")
+    // if (!workspace || !workspace.status) throw new NotFoundError(ResponseMessages.WORKSPACE_NOT_FOUND)
+    // if (workspace?.status.toLowerCase() == "suspend") throw new ForbiddenError("Workspace not found")
+    // if (!user._id || !workspace?._id) throw new NotFoundError(ResponseMessages.USER_NOT_FOUND)
+    // const isSuscribed = await this._suscriptionRepository.findSuscriptionByUserId(user._id);
+
+    // let mySuscription;
+    // if (!isSuscribed) {
+    //   const entity = new Subscription({
+    //     user: user._id,
+    //     workspace: workspace._id?.toString(),
+    //     planKey: "free",
+    //     status: "trialing"
+    //   });
+    //   mySuscription = await this._suscriptionRepository.create(entity)
+    // }
+    // const suscribe = isSuscribed ? isSuscribed : mySuscription;
+
+    // const token = await this._authService.generateToken({
+    //   id: user._id!,
+    //   email: user.email!,
+    //   role:"Admin"
+    
+    // });
+
+    // const refreshToken = await this._authService.generateRefreshToken({
+    //   id: user._id!,
+    //   email: user.email!,
+    //  role:"Admin"
+    // });
 
 
-    return { user, workspace, suscribe, token, refreshToken } as adminResponseDTO;
+
   }
 
   async googleAuthAdmin(credential: string): Promise<adminResponseDTO | null> {

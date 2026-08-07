@@ -22,6 +22,7 @@ export default function ActivityFeed() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
+  localStorage.setItem("workspaceId", workspaceId);
     const fetchLogs = async () => {
       const result = await myLogs(workspaceId);
 

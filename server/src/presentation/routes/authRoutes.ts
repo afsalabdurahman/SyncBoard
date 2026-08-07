@@ -21,7 +21,7 @@ router.post("/user/register", (req, res) => authController.register(req, res));
 router.post("/user/sendotp", (req, res,) => otpController.sendOTP(req, res));
 router.post("/user/verifyotp", (req, res) => otpController.verifyOtp(req, res));
 router.post("/user/login", (req, res, ) => authController.login(req, res, ));
-router.post("/admin/login", (req, res) => adminController.LoginUsesCase(req, res));
+router.post("/admin/login/:workspaceId",memberAuth, adminController.LoginUsesCase.bind(adminController));
 router.post("/admin/google",(req, res) => adminController.googleAdminAuth(req, res));
 router.post("/super/login", (req, res) => { superController.LoginUsesCase(req, res) })
 router.post("/refresh-token", (req, res, ) => sharedAuthController.generateNewToken(req, res));
