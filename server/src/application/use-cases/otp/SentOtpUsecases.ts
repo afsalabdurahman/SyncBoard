@@ -81,7 +81,7 @@ export class OTPService implements IOTP {
       await this._otpRepository.deleteOTP(email)
     }
     const otp = this._otpRepository.generateOTP();
-     await this._emailService.sendOtp(email, otp);
+     await this._resendMailService.sendOtp(email, otp);
     const SaveOtp = new OTP(email, otp);
     await this._otpRepository.save(SaveOtp);
 

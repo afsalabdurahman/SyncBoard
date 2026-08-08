@@ -12,7 +12,8 @@ export class SubscriptionUsecase implements ISuscriptionUsecase {
   constructor(
     @inject("SuscriptionRepository")
     private _suscriptionRepository: ISuscription,
-    @inject("IEmailService") private _EmailService: IEmailService
+    @inject("IEmailService") private _EmailService: IEmailService,
+    @inject("IResendMailService") private _resendMailService: IEmailService
   ) { }
 
 
@@ -27,7 +28,7 @@ export class SubscriptionUsecase implements ISuscriptionUsecase {
     return updatedSubscription
   }
   async sendReceipt(name: string, email: string, link: string): Promise<void> {
-    await this._EmailService.sendReceipts(name, email, link)
+    await this._resendMailService.sendReceipts(name, email, link)
 
   }
   async updateHistory(userId: string, id: string, date: Date, amount: number, status: string): Promise<void> {

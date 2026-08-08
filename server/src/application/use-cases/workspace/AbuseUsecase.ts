@@ -17,7 +17,8 @@ export class AbuseUsecase implements IAbuseUsecase {
   constructor(@inject("AbuseRepository") private _abuseRepository: IAbuseRepository,
     @inject("UserRepository") private _userRepository: IUserRepository,
     @inject("WorkspaceRepository") private _workspaceRepository: IWorkspaceRepository,
-    @inject("IEmailService") private _emailService: IEmailService
+    @inject("IEmailService") private _emailService: IEmailService,
+    @inject("IResendMailService") private _resendMailService: IEmailService
   ) { }
   async execute(input: AbuseRequestDTO, userId: string, workspaceId: string): Promise<string> {
     const description = input.description.trim();
@@ -50,7 +51,7 @@ export class AbuseUsecase implements IAbuseUsecase {
     await this._abuseRepository.updateReport(stringToMongoObj(reportId), input.status);
     const msg = getStatusBasedMsg(input.status);
     if (msg) {
-      this._emailService.sendAbuseStatus(user.email, msg, input.status, user.name)
+      this._resendMailService.sendAbuseStatus(user.email, msg, input.status, user.name)
     }
 
   }

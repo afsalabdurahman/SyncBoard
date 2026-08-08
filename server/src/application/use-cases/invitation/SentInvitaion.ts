@@ -17,6 +17,7 @@ import { ResponseMessages } from "../../../common/erroResponse";
 @injectable()
 export class SentInvitaionUsecase implements ISentInvitaion {
    constructor(@inject("IEmailService") private _EmailService: IEmailService,
+   @inject("IResendMailService") private _resendMailService: IEmailService,
       @inject("UserRepository") private _userRepository: IUserRepository,
       @inject("InvitaionRepository") private _invitaionRepository: IinvitationRepository,
       @inject("WorkspaceRepository")
@@ -50,7 +51,7 @@ if(exists) throw new CustomError("User already have this workspace",200)
          } else {
 
 
-            await this._EmailService.inviteMembers(email, invitaionLink, randomToken);
+            await this._resendMailService.inviteMembers(email, invitaionLink, randomToken);
          }
       }
       return true
